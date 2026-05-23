@@ -19,7 +19,7 @@ Coming soon: `planning` · `debugging` · `ai-integration`
 
 **Linux / Mac / WSL:**
 ```bash
-git clone https://github.com/your-username/agent-skills.git
+git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
 chmod +x install-skills.sh
 ./install-skills.sh
@@ -27,7 +27,7 @@ chmod +x install-skills.sh
 
 **Windows (PowerShell):**
 ```powershell
-git clone https://github.com/your-username/agent-skills.git
+git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
 .\install-skills.ps1
 ```
