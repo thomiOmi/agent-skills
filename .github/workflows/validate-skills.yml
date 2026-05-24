@@ -1,0 +1,138 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**/SKILL.md"
+      - "AGENTS.md"
+  pull_request:
+    branches: [main]
+    paths:
+      - "skills/**/SKILL.md"
+      - "AGENTS.md"
+
+jobs:
+  validate:
+    name: Validate SKILL.md frontmatter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install skills-ref
+        run: pip install skills-ref
+
+      - name: Validate all skills
+        run: |
+          echo "=== Validating all SKILL.md files ==="
+          FAILED=0
+
+          for skill_dir in skills/*/; do
+            skill_name=$(basename "$skill_dir")
+
+            # Skip if no SKILL.md (e.g. empty placeholder dirs)
+            if [ ! -f "$skill_dir/SKILL.md" ]; then
+              echo "⚠  SKIP $skill_name — no SKILL.md found"
+              continue
+            fi
+
+            echo -n "→ Validating $skill_name ... "
+
+            if agentskills validate "$skill_dir" 2>&1; then
+              echo "✓ PASS"
+            else
+              echo "✗ FAIL"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          echo ""
+          echo "=== Summary ==="
+          TOTAL=$(find skills -name "SKILL.md" | wc -l)
+          echo "Total skills: $TOTAL"
+
+          if [ "$FAILED" -gt 0 ]; then
+            echo "Failed: $FAILED"
+            exit 1
+          else
+            echo "All skills passed validation ✓"
+          fi
+
+      - name: Check AGENTS.md exists and is non-empty
+        run: |
+          if [ ! -f "AGENTS.md" ]; then
+            echo "✗ AGENTS.md not found at repo root"
+            exit 1
+          fi
+
+          LINES=$(wc -l < AGENTS.md)
+          if [ "$LINES" -lt 10 ]; then
+            echo "✗ AGENTS.md looks too short ($LINES lines) — may be incomplete"
+            exit 1
+          fi
+
+          echo "✓ AGENTS.md found ($LINES lines)"
+
+      - name: Check skill name matches directory name
+        run: |
+          echo "=== Checking name field matches directory ==="
+          FAILED=0
+
+          for skill_dir in skills/*/; do
+            skill_name=$(basename "$skill_dir")
+
+            if [ ! -f "$skill_dir/SKILL.md" ]; then
+              continue
+            fi
+
+            # Extract name field from frontmatter
+            name_field=$(grep "^name:" "$skill_dir/SKILL.md" | head -1 | sed 's/^name: *//')
+
+            if [ "$name_field" = "$skill_name" ]; then
+              echo "✓ $skill_name — name matches directory"
+            else
+              echo "✗ $skill_name — name field '$name_field' does not match directory '$skill_name'"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          if [ "$FAILED" -gt 0 ]; then
+            exit 1
+          fi
+
+      - name: Check description length
+        run: |
+          echo "=== Checking description lengths ==="
+          FAILED=0
+
+          for skill_dir in skills/*/; do
+            skill_name=$(basename "$skill_dir")
+
+            if [ ! -f "$skill_dir/SKILL.md" ]; then
+              continue
+            fi
+
+            desc=$(grep "^description:" "$skill_dir/SKILL.md" | head -1 | sed 's/^description: *//')
+            len=${#desc}
+
+            if [ "$len" -eq 0 ]; then
+              echo "✗ $skill_name — description is empty"
+              FAILED=$((FAILED + 1))
+            elif [ "$len" -gt 1024 ]; then
+              echo "✗ $skill_name — description too long ($len chars, max 1024)"
+              FAILED=$((FAILED + 1))
+            else
+              echo "✓ $skill_name — description OK ($len chars)"
+            fi
+          done
+
+          if [ "$FAILED" -gt 0 ]; then
+            exit 1
+          fi
