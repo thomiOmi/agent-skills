@@ -1,6 +1,12 @@
 ---
 name: planning
-description: Use this skill when designing systems, planning projects, or creating visual artifacts before writing code. Triggers: "buat ERD", "design database", "MVP plan", "timeline", "flowchart", "system design", "architecture diagram", "user flow", "wireframe", "roadmap", "milestone". Use this skill before starting any non-trivial project or feature.
+description: >
+  Use this skill when designing systems, planning projects, or creating visual
+  artifacts before writing code. Triggers: "buat ERD", "design database",
+  "MVP plan", "timeline", "flowchart", "system design",
+  "architecture diagram", "user flow", "wireframe", "roadmap",
+  "milestone". Use this skill before starting any non-trivial project or
+  feature.
 license: MIT
 compatibility: Designed for OpenCode, Claude Code, Cursor, and similar AI coding agents. No system dependencies required.
 metadata:

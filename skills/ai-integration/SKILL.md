@@ -1,6 +1,12 @@
 ---
 name: ai-integration
-description: Use this skill when integrating LLM APIs, building AI-powered features, designing prompts, or working with RAG, agents, or embeddings. Triggers: "integrasikan Claude", "pakai OpenAI", "prompt engineering", "RAG", "vector database", "AI agent", "LLM", "embeddings", "chatbot", "AI feature". Use this skill before writing any code that calls an LLM API.
+description: >
+  Use this skill when integrating LLM APIs, building AI-powered features,
+  designing prompts, or working with RAG, agents, or embeddings.
+  Triggers: "integrasikan Claude", "pakai OpenAI", "prompt engineering",
+  "RAG", "vector database", "AI agent", "LLM", "embeddings",
+  "chatbot", "AI feature". Use this skill before writing any code that calls
+  an LLM API.
 license: MIT
 compatibility: Designed for OpenCode, Claude Code, Cursor, and similar AI coding agents. No system dependencies required.
 metadata:

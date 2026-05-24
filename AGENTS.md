@@ -5,7 +5,7 @@
 Plain Markdown — no proprietary syntax. Works across all major AI coding tools.
 
 | Tool | Reads from |
-|------|-----------|
+| ------ | ----------- |
 | OpenCode | `~/.config/opencode/AGENTS.md` (global) |
 | Claude Code | `~/.claude/AGENTS.md` (global) |
 | Cursor | `AGENTS.md` at project root (or `.cursorrules` symlink) |
@@ -17,7 +17,7 @@ Plain Markdown — no proprietary syntax. Works across all major AI coding tools
 
 Priority (highest → lowest):
 
-```
+```text
 1. Global AGENTS.md   — always applies
 2. Project AGENTS.md  — fills [Project Context] only
 3. Subdir AGENTS.md   — scoped overrides for a subtree
@@ -55,16 +55,19 @@ all rules here apply automatically.
 No exceptions.
 
 **Before acting:**
+
 - Read relevant files before proposing changes — never assume structure or content.
 - Do not reference any function, class, endpoint, or config key unless seen in the codebase or stated by the user.
 - Do not suggest a library unless it appears in the project manifest (`package.json`, `requirements.txt`, `go.mod`, `Cargo.toml`, etc.) or the user confirmed it.
 
 **When uncertain:**
+
 - Say so: "I don't see this in the codebase — can you point me to it?"
 - Ask one targeted question. Never fill gaps with guesses.
 
 **Never:**
-```
+
+```markdown
 ❌ Invent names, endpoints, or config keys not visible in the code
 ❌ Cite a library version without checking the manifest
 ❌ Write "I'll assume X" and continue without confirmation
@@ -95,7 +98,7 @@ No exceptions.
 
 One logical change per commit. Conventional Commits:
 
-```
+```text
 type(scope): short description
 
 - detail 1
@@ -129,14 +132,14 @@ Valid types: `feat` · `fix` · `refactor` · `test` · `docs` · `chore`
 Always check available MCP servers before implementing something manually.
 
 | Task | Prefer |
-|------|--------|
+| ------ | -------- |
 | Read/write files on disk | filesystem MCP |
 | Query a database | database MCP |
 | Fetch a URL or search the web | browser or search MCP |
 | Interact with GitHub | GitHub MCP |
 | Run shell commands | shell MCP |
 
-```
+```text
 ❌ Do not write code to do something an available MCP server already handles
 ✅ If no MCP covers the task, write the code and note it as a candidate for MCP
 ```
@@ -163,7 +166,7 @@ Always check available MCP servers before implementing something manually.
 ## Quick Reference
 
 | Rule | Value |
-|------|-------|
+| ------ | ------- |
 | Check skills before starting | ✅ Always |
 | Check MCP before writing code | ✅ Always |
 | Unknown info | Read the file or ask — never guess |

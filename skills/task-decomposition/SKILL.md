@@ -1,6 +1,10 @@
 ---
 name: task-decomposition
-description: Use this skill for any task that touches more than one file, spans multiple systems, or has unclear scope. Triggers: "implement", "build", "migrate", "refactor end-to-end", "integrate", "set up from scratch". When in doubt, use this skill first.
+description: >
+  Use this skill for any task that touches more than one file, spans multiple
+  systems, or has unclear scope. Triggers: "implement", "build", "migrate",
+  "refactor end-to-end", "integrate", "set up from scratch". When in doubt,
+  use this skill first.
 license: MIT
 compatibility: Designed for OpenCode, Claude Code, Cursor, and similar AI coding agents. No system dependencies required.
 metadata:

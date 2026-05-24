@@ -1,6 +1,10 @@
 ---
 name: code-style
-description: Use this skill when writing, reviewing, or refactoring any code in any language. Triggers: "write a function", "refactor this", "clean this up", "add comments", "review my code". Apply this skill whenever producing or modifying source code.
+description: >
+  Use this skill when writing, reviewing, or refactoring any code in any
+  language. Triggers: "write a function", "refactor this", "clean this up",
+  "add comments", "review my code". Apply this skill whenever producing or
+  modifying source code.
 license: MIT
 compatibility: Designed for OpenCode, Claude Code, Cursor, and similar AI coding agents. No system dependencies required.
 metadata:

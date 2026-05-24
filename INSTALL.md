@@ -43,29 +43,29 @@ chmod +x install-skills.sh
 
 After running the install script:
 
-```
+```text
 # Linux / Mac
 ~/.config/opencode/
 ├── AGENTS.md                    ← global agent rules
 ├── INSTALL.md                   ← this file
 ├── opencode.json                ← model + permission + MCP config
 └── skills/
-    ├── task-decomposition/      ← multi-step task planning & execution
-    │   └── SKILL.md
-    ├── code-style/              ← naming, docstrings, inline comments
-    │   └── SKILL.md
-    ├── api-conventions/         ← REST, GraphQL, WebSocket design
-    │   └── SKILL.md
-    ├── testing/                 ← unit, integration, snapshot, contract
-    │   └── SKILL.md
-    ├── documentation/           ← README, changelog, ADR, OpenAPI
-    │   └── SKILL.md
-    ├── planning/                ← ERD, MVP doc, timeline, flowchart
-    │   └── SKILL.md
-    ├── debugging/               ← systematic bug diagnosis workflow
-    │   └── SKILL.md
-    └── ai-integration/          ← LLM API, prompt design, RAG, agents
-        └── SKILL.md
+  ├── task-decomposition/      ← multi-step task planning & execution
+  │   └── SKILL.md
+  ├── code-style/              ← naming, docstrings, inline comments
+  │   └── SKILL.md
+  ├── api-conventions/         ← REST, GraphQL, WebSocket design
+  │   └── SKILL.md
+  ├── testing/                 ← unit, integration, snapshot, contract
+  │   └── SKILL.md
+  ├── documentation/           ← README, changelog, ADR, OpenAPI
+  │   └── SKILL.md
+  ├── planning/                ← ERD, MVP doc, timeline, flowchart
+  │   └── SKILL.md
+  ├── debugging/               ← systematic bug diagnosis workflow
+  │   └── SKILL.md
+  └── ai-integration/          ← LLM API, prompt design, RAG, agents
+    └── SKILL.md
 
 # Windows
 %APPDATA%\opencode\             ← same structure as above
@@ -155,6 +155,7 @@ aider --read AGENTS.md
 ```
 
 Windows (PowerShell, run as Administrator):
+
 ```powershell
 # Cursor
 New-Item -ItemType SymbolicLink -Path .cursorrules -Target AGENTS.md
@@ -169,12 +170,13 @@ New-Item -ItemType SymbolicLink -Path .github\copilot-instructions.md -Target ..
 ## Finding More Skills
 
 | Source | Best for |
-|--------|----------|
+| --- | --- |
 | [skills.sh](https://skills.sh) | Browse community skill collections |
 | [officialskills.sh](https://officialskills.sh) | Official skills from vendor dev teams (Anthropic, Sentry, Auth0, Apollo, etc.) |
 | [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | Curated list, 1000+ skills |
 
 **Before installing any community skill:**
+
 - Always read the SKILL.md content before installing.
 - Prefer skills from official vendor accounts or verified publishers.
 - Check that the skill's description is specific — vague skills often trigger incorrectly.

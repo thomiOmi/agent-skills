@@ -1,6 +1,11 @@
 ---
 name: debugging
-description: Use this skill when diagnosing bugs, unexpected errors, or incorrect behavior. Triggers: "ada bug", "error ini", "kenapa gagal", "tidak berfungsi", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "exception". Never guess the cause — always diagnose systematically before proposing a fix.
+description: >
+  Use this skill when diagnosing bugs, unexpected errors, or incorrect behavior.
+  Triggers: "ada bug", "error ini", "kenapa gagal", "tidak berfungsi", "fix this",
+  "something is wrong", "tests are failing", "unexpected output", "crash",
+  "exception". Never guess the cause — always diagnose systematically before
+  proposing a fix.
 license: MIT
 compatibility: Designed for OpenCode, Claude Code, Cursor, and similar AI coding agents. No system dependencies required.
 metadata:

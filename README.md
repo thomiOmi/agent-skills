@@ -6,7 +6,7 @@ Works with OpenCode, Claude Code, Cursor, GitHub Copilot, Gemini CLI, Aider, Win
 ## Skills Included
 
 | Skill | Triggers on |
-|-------|------------|
+| ------- | ------------ |
 | `task-decomposition` | "implement", "build", "migrate", multi-file tasks |
 | `code-style` | writing, reviewing, or refactoring any code |
 | `api-conventions` | REST, GraphQL, WebSocket design and review |
@@ -59,7 +59,7 @@ All global rules apply automatically.
 
 ## Structure
 
-```
+```text
 agent-skills/
 ├── README.md
 ├── INSTALL.md
