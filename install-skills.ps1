@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 
 $ScriptDir  = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SkillsSrc  = Join-Path $ScriptDir "skills"
-$Skills     = @("task-decomposition", "code-style", "api-conventions", "testing", "documentation")
+$Skills     = @("task-decomposition", "code-style", "api-conventions", "testing", "documentation", "planning", "debugging", "ai-integration")
 
 Write-Host "=== Agent Skills Installer ===" -ForegroundColor Cyan
 Write-Host ""

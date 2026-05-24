@@ -12,12 +12,14 @@ Works with OpenCode, Claude Code, Cursor, GitHub Copilot, Gemini CLI, Aider, Win
 | `api-conventions` | REST, GraphQL, WebSocket design and review |
 | `testing` | unit, integration, snapshot, contract tests |
 | `documentation` | README, changelog, ADR, OpenAPI spec |
-
-Coming soon: `planning` · `debugging` · `ai-integration`
+| `planning` | ERD, MVP doc, timeline, flowchart |
+| `debugging` | systematic bug diagnosis workflow |
+| `ai-integration` | LLM API usage, prompt design, RAG, agents |
 
 ## Install
 
 **Linux / Mac / WSL:**
+
 ```bash
 git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
@@ -26,6 +28,7 @@ chmod +x install-skills.sh
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
@@ -74,9 +77,12 @@ agent-skills/
     │   └── SKILL.md
     ├── documentation/
     │   └── SKILL.md
-    ├── planning/                ← coming soon
-    ├── debugging/               ← coming soon
-    └── ai-integration/         ← coming soon
+    ├── planning/
+    │   └── SKILL.md
+    ├── debugging/
+    │   └── SKILL.md
+    └── ai-integration/
+        └── SKILL.md
 ```
 
 ## Updating

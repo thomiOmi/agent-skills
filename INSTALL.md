@@ -61,11 +61,11 @@ After running the install script:
     ├── documentation/           ← README, changelog, ADR, OpenAPI
     │   └── SKILL.md
     ├── planning/                ← ERD, MVP doc, timeline, flowchart
-    │   └── SKILL.md            (coming)
+    │   └── SKILL.md
     ├── debugging/               ← systematic bug diagnosis workflow
-    │   └── SKILL.md            (coming)
+    │   └── SKILL.md
     └── ai-integration/          ← LLM API, prompt design, RAG, agents
-        └── SKILL.md            (coming)
+        └── SKILL.md
 
 # Windows
 %APPDATA%\opencode\             ← same structure as above
