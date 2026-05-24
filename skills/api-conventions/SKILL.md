@@ -1,7 +1,11 @@
 ---
 name: api-conventions
-version: 1.1.0
 description: Use this skill when designing, reviewing, or documenting any API — REST, GraphQL, or WebSocket. Triggers: "add an endpoint", "design the API", "add a route", "GraphQL schema", "WebSocket", "response format". Read the existing API surface before designing anything new.
+license: MIT
+compatibility: Designed for OpenCode, Claude Code, Cursor, and similar AI coding agents. No system dependencies required.
+metadata:
+  version: "1.1.0"
+  author: thomiOmi
 ---
 
 # API Conventions

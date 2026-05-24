@@ -1,7 +1,11 @@
 ---
 name: testing
-version: 1.1.0
 description: Use this skill when writing, reviewing, or fixing any tests — unit, integration, e2e, snapshot, or contract. Triggers: "write tests", "add tests", "test this", "improve coverage", "tests are failing", "mock", "stub". Works for all languages and frameworks.
+license: MIT
+compatibility: Designed for OpenCode, Claude Code, Cursor, and similar AI coding agents. No system dependencies required.
+metadata:
+  version: "1.1.0"
+  author: thomiOmi
 ---
 
 # Testing
