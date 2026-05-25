@@ -6,6 +6,7 @@ on:
     paths:
       - "skills/**/SKILL.md"
       - "AGENTS.md"
+  workflow_dispatch:
   pull_request:
     branches: [main]
     paths:
