@@ -1,6 +1,6 @@
 # install-skills.ps1
 # Install global AGENTS.md, SKILL.md files, and INSTALL.md.
-# Works for: OpenCode, Claude Code, Gemini CLI on Windows
+# Works for: OpenCode CLI, Claude Code, Gemini CLI on Windows
 #
 # Usage:
 #   .\install-skills.ps1
@@ -10,18 +10,18 @@
 
 $ErrorActionPreference = "Stop"
 
-$ScriptDir  = Split-Path -Parent $MyInvocation.MyCommand.Path
-$SkillsSrc  = Join-Path $ScriptDir "skills"
-$Skills     = @("task-decomposition", "code-style", "api-conventions", "testing", "documentation", "planning", "debugging", "ai-integration")
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$SkillsSrc = Join-Path $ScriptDir "skills"
+$Skills    = @("task-decomposition", "code-style", "api-conventions", "testing", "documentation", "planning", "debugging", "ai-integration")
 
 Write-Host "=== Agent Skills Installer ===" -ForegroundColor Cyan
 Write-Host ""
 
-# ── 1. OpenCode ───────────────────────────────────────────────────────────────
-$OpenCodeDir    = Join-Path $env:APPDATA "opencode"
+# ── 1. OpenCode CLI ───────────────────────────────────────────────────────────
+$OpenCodeDir    = Join-Path $env:USERPROFILE ".config\opencode"
 $OpenCodeSkills = Join-Path $OpenCodeDir "skills"
 
-Write-Host "-> Installing for OpenCode..." -ForegroundColor Yellow
+Write-Host "-> Installing for OpenCode CLI..." -ForegroundColor Yellow
 New-Item -ItemType Directory -Force -Path $OpenCodeSkills | Out-Null
 
 Copy-Item (Join-Path $ScriptDir "AGENTS.md")  (Join-Path $OpenCodeDir "AGENTS.md")  -Force
@@ -37,21 +37,54 @@ Write-Host "  OK AGENTS.md  -> $OpenCodeDir\AGENTS.md"
 Write-Host "  OK INSTALL.md -> $OpenCodeDir\INSTALL.md"
 Write-Host "  OK Skills     -> $OpenCodeSkills\"
 
-$OpenCodeJson = Join-Path $OpenCodeDir "opencode.json"
-if (-not (Test-Path $OpenCodeJson)) {
-    $jsonContent = @'
-{
-  "model": "anthropic/claude-sonnet-4-5",
-  "instructions": ["$APPDATA/opencode/AGENTS.md"],
-  "permission": {
-    "ask": "ask"
-  }
-}
-'@
-    Set-Content -Path $OpenCodeJson -Value $jsonContent -Encoding UTF8
-    Write-Host "  OK Created opencode.json (add MCP servers as needed - see INSTALL.md)"
+# ── Handle opencode.jsonc / opencode.json ────────────────────────────────────
+# Detect which config file exists (prefer .jsonc if present)
+$ConfigJsonc = Join-Path $OpenCodeDir "opencode.jsonc"
+$ConfigJson  = Join-Path $OpenCodeDir "opencode.json"
+$homePath    = $env:USERPROFILE -replace '\\', '/'
+$agentsPath  = "$homePath/.config/opencode/AGENTS.md"
+
+if (Test-Path $ConfigJsonc) {
+    # .jsonc exists — read and merge instructions field
+    $raw     = Get-Content $ConfigJsonc -Raw
+    $content = $raw.Trim()
+
+    if ($content -match '"instructions"') {
+        # instructions already present — warn, don't overwrite
+        Write-Host "  WARN opencode.jsonc already has 'instructions' field" -ForegroundColor DarkYellow
+        Write-Host "       Manually verify it includes: $agentsPath"
+    } else {
+        # Inject instructions before the closing brace
+        $injected = $content -replace '}(\s*)$', ",`n  `"instructions`": [`"$agentsPath`"]`n}`$1"
+        Set-Content -Path $ConfigJsonc -Value $injected -Encoding UTF8 -NoNewline
+        Write-Host "  OK Added 'instructions' to existing opencode.jsonc"
+    }
+
+} elseif (Test-Path $ConfigJson) {
+    # .json exists — same merge logic
+    $raw     = Get-Content $ConfigJson -Raw
+    $content = $raw.Trim()
+
+    if ($content -match '"instructions"') {
+        Write-Host "  WARN opencode.json already has 'instructions' field" -ForegroundColor DarkYellow
+        Write-Host "       Manually verify it includes: $agentsPath"
+    } else {
+        $injected = $content -replace '}(\s*)$', ",`n  `"instructions`": [`"$agentsPath`"]`n}`$1"
+        Set-Content -Path $ConfigJson -Value $injected -Encoding UTF8 -NoNewline
+        Write-Host "  OK Added 'instructions' to existing opencode.json"
+    }
+
 } else {
-    Write-Host "  WARN opencode.json exists - verify 'instructions' includes AGENTS.md" -ForegroundColor DarkYellow
+    # No config exists — create opencode.jsonc from scratch
+    $jsonContent = @"
+{
+  "`$schema": "https://opencode.ai/config.json",
+  "instructions": ["$agentsPath"]
+}
+"@
+    Set-Content -Path $ConfigJsonc -Value $jsonContent -Encoding UTF8
+    Write-Host "  OK Created opencode.jsonc"
+    Write-Host "     -> Set your model via: opencode providers"
 }
 
 Write-Host ""
@@ -75,7 +108,7 @@ Write-Host "  OK Skills    -> $ClaudeSkills\"
 Write-Host ""
 
 # ── 3. Gemini CLI ─────────────────────────────────────────────────────────────
-$GeminiDir = Join-Path $env:APPDATA "gemini"
+$GeminiDir = Join-Path $env:USERPROFILE ".config\gemini"
 
 Write-Host "-> Installing for Gemini CLI..." -ForegroundColor Yellow
 New-Item -ItemType Directory -Force -Path $GeminiDir | Out-Null
@@ -91,8 +124,13 @@ foreach ($skill in $Skills) {
     Write-Host "  * $skill"
 }
 Write-Host ""
+Write-Host "Install locations:"
+Write-Host "  OpenCode CLI : $OpenCodeDir"
+Write-Host "  Claude Code  : $ClaudeDir"
+Write-Host "  Gemini CLI   : $GeminiDir"
+Write-Host ""
 Write-Host "Next steps:"
-Write-Host "  1. Edit $OpenCodeDir\opencode.json to add your model and MCP servers"
-Write-Host "     (see INSTALL.md for the full template)"
-Write-Host "  2. Per-project: create AGENTS.md at project root, fill in [Project Context]"
-Write-Host "  3. For WSL: run install-skills.sh inside WSL instead"
+Write-Host "  1. Verify config: cat $OpenCodeDir\opencode.jsonc"
+Write-Host "  2. Set provider if not set: opencode providers"
+Write-Host "  3. Per-project: create AGENTS.md at project root, fill in [Project Context]"
+Write-Host "  4. Test: cd to any project, run: opencode"
