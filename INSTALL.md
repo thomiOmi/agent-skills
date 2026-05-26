@@ -6,8 +6,45 @@ Setup guide for humans. Not read by AI agents.
 
 ## Quick Install
 
-### Linux / Mac
+### Option A — Remote (no install needed)
 
+The simplest setup. OpenCode fetches AGENTS.md directly from GitHub every session — always up-to-date automatically.
+
+Edit `~/.config/opencode/opencode.jsonc` (or `opencode.json`):
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"
+  ]
+}
+```
+
+Then install skills locally (skills must be local — they are loaded on-demand):
+
+**Linux / Mac / WSL:**
+```bash
+git clone https://github.com/thomiOmi/agent-skills.git
+cd agent-skills
+chmod +x install-skills.sh
+./install-skills.sh --skills-only   # skip AGENTS.md, only install skills
+```
+
+**Windows (PowerShell):**
+```powershell
+git clone https://github.com/thomiOmi/agent-skills.git
+cd agent-skills
+powershell -ExecutionPolicy Bypass -File .\install-skills.ps1 -SkillsOnly
+```
+
+---
+
+### Option B — Full local install
+
+Install everything locally. AGENTS.md is served from disk, not GitHub.
+
+**Linux / Mac / WSL:**
 ```bash
 git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
@@ -15,26 +52,11 @@ chmod +x install-skills.sh
 ./install-skills.sh
 ```
 
-### Windows (PowerShell)
-
+**Windows (PowerShell):**
 ```powershell
 git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
-
-# If blocked by execution policy, run once:
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-
-.\install-skills.ps1
-```
-
-### Windows (WSL)
-
-If you use WSL as your primary dev environment:
-
-```bash
-cd agent-skills
-chmod +x install-skills.sh
-./install-skills.sh   # installs inside WSL (~/.config/opencode/)
+powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
 ```
 
 ---
@@ -43,47 +65,66 @@ chmod +x install-skills.sh
 
 After running the install script:
 
-```text
-# Linux / Mac
-~/.config/opencode/
+```
+~/.config/opencode/              # Linux / Mac / WSL
+%USERPROFILE%\.config\opencode\  # Windows
 ├── AGENTS.md                    ← global agent rules
 ├── INSTALL.md                   ← this file
-├── opencode.json                ← model + permission + MCP config
+├── opencode.jsonc               ← config (model, permissions, MCP, instructions)
 └── skills/
-  ├── task-decomposition/      ← multi-step task planning & execution
-  │   └── SKILL.md
-  ├── code-style/              ← naming, docstrings, inline comments
-  │   └── SKILL.md
-  ├── api-conventions/         ← REST, GraphQL, WebSocket design
-  │   └── SKILL.md
-  ├── testing/                 ← unit, integration, snapshot, contract
-  │   └── SKILL.md
-  ├── documentation/           ← README, changelog, ADR, OpenAPI
-  │   └── SKILL.md
-  ├── planning/                ← ERD, MVP doc, timeline, flowchart
-  │   └── SKILL.md
-  ├── debugging/               ← systematic bug diagnosis workflow
-  │   └── SKILL.md
-  └── ai-integration/          ← LLM API, prompt design, RAG, agents
-    └── SKILL.md
+    ├── task-decomposition/      ← multi-step task planning & execution
+    │   └── SKILL.md
+    ├── code-style/              ← naming, docstrings, inline comments
+    │   └── SKILL.md
+    ├── api-conventions/         ← REST, GraphQL, WebSocket design
+    │   └── SKILL.md
+    ├── testing/                 ← unit, integration, snapshot, contract
+    │   └── SKILL.md
+    ├── documentation/           ← README, changelog, ADR, OpenAPI
+    │   └── SKILL.md
+    ├── planning/                ← ERD, MVP doc, timeline, flowchart
+    │   └── SKILL.md
+    ├── debugging/               ← systematic bug diagnosis workflow
+    │   └── SKILL.md
+    └── ai-integration/          ← LLM API, prompt design, RAG, agents
+        └── SKILL.md
 
-# Windows
-%APPDATA%\opencode\             ← same structure as above
-%USERPROFILE%\.claude\          ← Claude Code
-%APPDATA%\gemini\               ← Gemini CLI
+~/.claude/skills/                ← Claude Code (same skills, auto-installed)
+~/.config/gemini/                ← Gemini CLI
 ```
 
 ---
 
-## opencode.json Template
+## opencode.jsonc Template
 
-```json
+Full reference template — add only what you need:
+
+```jsonc
 {
-  "model": "anthropic/claude-sonnet-4-5",
-  "instructions": ["~/.config/opencode/AGENTS.md"],
+  "$schema": "https://opencode.ai/config.json",
+  "shell": "pwsh",  // or "bash", "zsh", "fish"
+
+  // Option A: load AGENTS.md from GitHub (always up-to-date)
+  "instructions": [
+    "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"
+  ],
+
+  // Option B: load AGENTS.md from disk (local install)
+  // "instructions": ["~/.config/opencode/AGENTS.md"],
+
+  // Load additional project-specific instruction files
+  // "instructions": ["CONTRIBUTING.md", "docs/guidelines.md"],
+
+  // Skill permissions — control which skills agents can access
   "permission": {
-    "ask": "ask"
+    "skill": {
+      "*": "allow"          // allow all skills by default
+      // "experimental-*": "ask",   // prompt before loading experimental skills
+      // "internal-*": "deny"       // hide internal skills from agent
+    }
   },
+
+  // MCP servers — add only what your project needs
   "mcp": {
     "github": {
       "type": "local",
@@ -110,12 +151,19 @@ After running the install script:
 }
 ```
 
-Add only the MCP servers your project actually needs.
-Project-level `opencode.json` overrides or extends global config.
-
 ---
 
 ## Per-Project Setup
+
+### Option 1 — Run `/init` inside OpenCode
+
+```
+/init
+```
+
+OpenCode scans the important files in your repo, asks targeted questions when needed, and creates or updates AGENTS.md with concise project-specific guidance.
+
+### Option 2 — Create manually
 
 Create `AGENTS.md` at the project root — fill in only the Project Context section:
 
@@ -135,10 +183,61 @@ Create `AGENTS.md` at the project root — fill in only the Project Context sect
 
 All global rules from the global AGENTS.md apply automatically.
 
+### Option 3 — Monorepo with glob patterns
+
+For monorepos, use `opencode.json` with glob patterns instead of duplicating AGENTS.md:
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md",
+    "packages/*/AGENTS.md",
+    "CONTRIBUTING.md"
+  ]
+}
+```
+
+---
+
+## Skill Permissions
+
+Control which skills are available per-agent in `opencode.jsonc`:
+
+```jsonc
+{
+  "permission": {
+    "skill": {
+      "*": "allow",           // allow all by default
+      "experimental-*": "ask" // prompt user before loading
+    }
+  },
+
+  // Override permissions for a specific built-in agent
+  "agent": {
+    "plan": {
+      "permission": {
+        "skill": {
+          "planning": "allow",
+          "*": "deny"
+        }
+      }
+    }
+  }
+}
+```
+
+| Permission | Behavior |
+|------------|----------|
+| `allow` | Skill loads immediately |
+| `deny` | Skill hidden from agent, access rejected |
+| `ask` | User prompted before loading |
+
 ---
 
 ## Symlink Setup for Multi-Tool Use
 
+**Linux / Mac:**
 ```bash
 # Cursor
 ln -s AGENTS.md .cursorrules
@@ -154,8 +253,7 @@ ln -s AGENTS.md GEMINI.md
 aider --read AGENTS.md
 ```
 
-Windows (PowerShell, run as Administrator):
-
+**Windows (PowerShell, run as Administrator):**
 ```powershell
 # Cursor
 New-Item -ItemType SymbolicLink -Path .cursorrules -Target AGENTS.md
@@ -170,28 +268,49 @@ New-Item -ItemType SymbolicLink -Path .github\copilot-instructions.md -Target ..
 ## Finding More Skills
 
 | Source | Best for |
-| --- | --- |
+|--------|----------|
+| [opencode.ai/docs/skills](https://opencode.ai/docs/skills/) | Official skill format reference |
 | [skills.sh](https://skills.sh) | Browse community skill collections |
-| [officialskills.sh](https://officialskills.sh) | Official skills from vendor dev teams (Anthropic, Sentry, Auth0, Apollo, etc.) |
-| [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | Curated list, 1000+ skills |
+| [officialskills.sh](https://officialskills.sh) | Official skills from vendor dev teams |
+| [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | Curated community list |
 
-**Before installing any community skill:**
-
-- Always read the SKILL.md content before installing.
-- Prefer skills from official vendor accounts or verified publishers.
-- Check that the skill's description is specific — vague skills often trigger incorrectly.
+⚠️ **Before installing any community skill:**
+- Always read the SKILL.md content before installing
+- Prefer skills from official vendor accounts
+- Verify the `name` field matches the directory name
+- Check that description is specific — vague descriptions trigger incorrectly
 
 ---
 
-## Updating Skills
+## Updating
 
 ```bash
-# Pull latest from GitHub
+# Pull latest
 git pull
 
-# Re-run the installer
-./install-skills.sh        # Linux / Mac
-.\install-skills.ps1       # Windows
+# Re-run installer
+./install-skills.sh        # Linux / Mac / WSL
+powershell -ExecutionPolicy Bypass -File .\install-skills.ps1  # Windows
 ```
 
-The installer overwrites existing files — your `opencode.json` is preserved if it already exists.
+If you use **Option A (remote)**, AGENTS.md updates automatically — only re-run the installer when new skills are added.
+
+---
+
+## Troubleshooting
+
+**Skill not showing up:**
+1. Verify `SKILL.md` is spelled in ALL CAPS
+2. Check frontmatter has `name` and `description`
+3. Ensure `name` field matches the directory name exactly
+4. Check skill permissions — `deny` hides skills from agent
+
+**AGENTS.md not loading:**
+1. Run `what rules are you following?` in OpenCode to verify
+2. Check `instructions` field in `opencode.jsonc`
+3. For remote URL — verify the URL is accessible (5s timeout)
+
+**Windows execution policy error:**
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
+```
