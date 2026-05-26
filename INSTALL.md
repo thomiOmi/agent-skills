@@ -24,6 +24,7 @@ Edit `~/.config/opencode/opencode.jsonc` (or `opencode.json`):
 Then install skills locally (skills must be local — they are loaded on-demand):
 
 **Linux / Mac / WSL:**
+
 ```bash
 git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
@@ -32,6 +33,7 @@ chmod +x install-skills.sh
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
@@ -45,6 +47,7 @@ powershell -ExecutionPolicy Bypass -File .\install-skills.ps1 -SkillsOnly
 Install everything locally. AGENTS.md is served from disk, not GitHub.
 
 **Linux / Mac / WSL:**
+
 ```bash
 git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
@@ -53,6 +56,7 @@ chmod +x install-skills.sh
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 git clone https://github.com/thomiOmi/agent-skills.git
 cd agent-skills
@@ -88,9 +92,6 @@ After running the install script:
     │   └── SKILL.md
     └── ai-integration/          ← LLM API, prompt design, RAG, agents
         └── SKILL.md
-
-~/.claude/skills/                ← Claude Code (same skills, auto-installed)
-~/.config/gemini/                ← Gemini CLI
 ```
 
 ---
@@ -235,33 +236,18 @@ Control which skills are available per-agent in `opencode.jsonc`:
 
 ---
 
-## Symlink Setup for Multi-Tool Use
+## Other AI Tools
 
-**Linux / Mac:**
-```bash
-# Cursor
-ln -s AGENTS.md .cursorrules
+AGENTS.md follows a standard format and can be used with other tools manually.
+Since this repo is focused on OpenCode CLI, other tools are not installed automatically.
 
-# GitHub Copilot
-mkdir -p .github
-ln -s ../AGENTS.md .github/copilot-instructions.md
-
-# Gemini CLI (project-level)
-ln -s AGENTS.md GEMINI.md
-
-# Aider — pass at runtime
-aider --read AGENTS.md
-```
-
-**Windows (PowerShell, run as Administrator):**
-```powershell
-# Cursor
-New-Item -ItemType SymbolicLink -Path .cursorrules -Target AGENTS.md
-
-# GitHub Copilot
-New-Item -ItemType Directory -Force .github
-New-Item -ItemType SymbolicLink -Path .github\copilot-instructions.md -Target ..\AGENTS.md
-```
+| Tool | How to use AGENTS.md |
+|------|---------------------|
+| Cursor | Copy or symlink `AGENTS.md` to `.cursorrules` |
+| GitHub Copilot | Copy or symlink to `.github/copilot-instructions.md` |
+| Gemini CLI | Copy or symlink to `GEMINI.md` |
+| Aider | `aider --read AGENTS.md` |
+| Claude Code | Place at `~/.claude/AGENTS.md` (global) or project root |
 
 ---
 
@@ -275,6 +261,7 @@ New-Item -ItemType SymbolicLink -Path .github\copilot-instructions.md -Target ..
 | [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | Curated community list |
 
 ⚠️ **Before installing any community skill:**
+
 - Always read the SKILL.md content before installing
 - Prefer skills from official vendor accounts
 - Verify the `name` field matches the directory name
@@ -300,17 +287,20 @@ If you use **Option A (remote)**, AGENTS.md updates automatically — only re-ru
 ## Troubleshooting
 
 **Skill not showing up:**
+
 1. Verify `SKILL.md` is spelled in ALL CAPS
 2. Check frontmatter has `name` and `description`
 3. Ensure `name` field matches the directory name exactly
 4. Check skill permissions — `deny` hides skills from agent
 
 **AGENTS.md not loading:**
+
 1. Run `what rules are you following?` in OpenCode to verify
 2. Check `instructions` field in `opencode.jsonc`
 3. For remote URL — verify the URL is accessible (5s timeout)
 
 **Windows execution policy error:**
+
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
 ```
