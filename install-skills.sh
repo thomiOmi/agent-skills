@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # install-skills.sh
 # Install AGENTS.md and SKILL.md files for OpenCode CLI.
+# Supports the agentskills.io folder structure with references/ and assets/
 #
 # Usage:
 #   ./install-skills.sh              # install everything
 #   ./install-skills.sh --skills-only  # install skills only (skip AGENTS.md)
-#                                       # use when AGENTS.md is loaded remotely
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$SCRIPT_DIR/skills"
-SKILLS="task-decomposition code-style api-conventions testing documentation planning debugging ai-integration"
+SKILLS="task-decomposition code-style api-conventions testing documentation planning debugging ai-integration sdlc-documentation"
 SKILLS_ONLY=false
 
 for arg in "$@"; do
@@ -26,8 +26,8 @@ OPENCODE_SKILLS="$OPENCODE_DIR/skills"
 echo "=== Agent Skills Installer ==="
 [ "$SKILLS_ONLY" = true ] && echo "Mode: skills only (AGENTS.md skipped)"
 echo ""
-
 echo "→ Installing for OpenCode CLI..."
+
 mkdir -p "$OPENCODE_SKILLS"
 
 if [ "$SKILLS_ONLY" = false ]; then
@@ -37,11 +37,23 @@ if [ "$SKILLS_ONLY" = false ]; then
   echo "  ✓ INSTALL.md → $OPENCODE_DIR/INSTALL.md"
 fi
 
+# Copy each skill folder recursively (includes references/ and assets/)
 for skill in $SKILLS; do
-  mkdir -p "$OPENCODE_SKILLS/$skill"
-  cp "$SKILLS_SRC/$skill/SKILL.md" "$OPENCODE_SKILLS/$skill/SKILL.md"
+  src="$SKILLS_SRC/$skill"
+  dest="$OPENCODE_SKILLS/$skill"
+
+  if [ ! -d "$src" ]; then
+    echo "  ⚠ SKIP $skill — folder not found in skills/"
+    continue
+  fi
+
+  # Remove dest first to handle deleted reference files cleanly
+  rm -rf "$dest"
+  cp -r "$src" "$dest"
+
+  ref_count=$(find "$dest/references" -type f 2>/dev/null | wc -l | tr -d ' ')
+  echo "  ✓ $skill ($ref_count references)"
 done
-echo "  ✓ Skills     → $OPENCODE_SKILLS/"
 
 # Handle config file
 if [ "$SKILLS_ONLY" = false ]; then
@@ -91,5 +103,4 @@ else
   echo "  1. Verify: cat ~/.config/opencode/opencode.jsonc"
 fi
 echo "  2. Set provider: opencode providers"
-echo "  3. Per-project: create AGENTS.md and fill in [Project Context]"
-echo "     Or run /init inside OpenCode to generate it automatically"
+echo "  3. Per-project: run /init inside OpenCode to generate AGENTS.md"

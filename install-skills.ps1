@@ -1,5 +1,6 @@
 # install-skills.ps1
 # Install AGENTS.md and SKILL.md files for OpenCode CLI.
+# Supports the new agentskills.io folder structure with references/ and assets/
 #
 # Usage:
 #   powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
@@ -11,15 +12,15 @@ $ErrorActionPreference = "Stop"
 
 $ScriptDir      = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SkillsSrc      = Join-Path $ScriptDir "skills"
-$Skills         = @("task-decomposition","code-style","api-conventions","testing","documentation","planning","debugging","ai-integration")
+$Skills         = @("task-decomposition","code-style","api-conventions","testing","documentation","planning","debugging","ai-integration","sdlc-documentation")
 $OpenCodeDir    = Join-Path $env:USERPROFILE ".config\opencode"
 $OpenCodeSkills = Join-Path $OpenCodeDir "skills"
 
 Write-Host "=== Agent Skills Installer ===" -ForegroundColor Cyan
 if ($SkillsOnly) { Write-Host "Mode: skills only (AGENTS.md skipped)" -ForegroundColor DarkYellow }
 Write-Host ""
-
 Write-Host "-> Installing for OpenCode CLI..." -ForegroundColor Yellow
+
 New-Item -ItemType Directory -Force -Path $OpenCodeSkills | Out-Null
 
 if (-not $SkillsOnly) {
@@ -29,13 +30,27 @@ if (-not $SkillsOnly) {
     Write-Host "  OK INSTALL.md -> $OpenCodeDir\INSTALL.md"
 }
 
+# Copy each skill folder recursively (includes references/ and assets/)
 foreach ($skill in $Skills) {
+    $src  = Join-Path $SkillsSrc $skill
     $dest = Join-Path $OpenCodeSkills $skill
-    New-Item -ItemType Directory -Force -Path $dest | Out-Null
-    Copy-Item (Join-Path $SkillsSrc "$skill\SKILL.md") (Join-Path $dest "SKILL.md") -Force
-}
-Write-Host "  OK Skills -> $OpenCodeSkills\"
 
+    if (-not (Test-Path $src)) {
+        Write-Host "  SKIP $skill — folder not found in skills/" -ForegroundColor DarkYellow
+        continue
+    }
+
+    # Remove dest first to handle deleted reference files cleanly
+    if (Test-Path $dest) {
+        Remove-Item $dest -Recurse -Force
+    }
+
+    Copy-Item $src $dest -Recurse -Force
+    $refCount = (Get-ChildItem "$dest\references" -ErrorAction SilentlyContinue | Measure-Object).Count
+    Write-Host "  OK $skill ($refCount references)"
+}
+
+# Handle opencode.jsonc / opencode.json
 if (-not $SkillsOnly) {
     $ConfigJsonc = Join-Path $OpenCodeDir "opencode.jsonc"
     $ConfigJson  = Join-Path $OpenCodeDir "opencode.json"
@@ -69,7 +84,7 @@ if (-not $SkillsOnly) {
 Write-Host ""
 Write-Host "=== Done ===" -ForegroundColor Green
 Write-Host ""
-Write-Host "Skills installed:"
+Write-Host "Skills installed ($($Skills.Count)):"
 foreach ($skill in $Skills) { Write-Host "  * $skill" }
 Write-Host ""
 Write-Host "Next steps:"
@@ -79,5 +94,4 @@ if ($SkillsOnly) {
     Write-Host "  1. Verify: cat $OpenCodeDir\opencode.jsonc"
 }
 Write-Host "  2. Set provider: opencode providers"
-Write-Host "  3. Per-project: create AGENTS.md and fill in [Project Context]"
-Write-Host "     Or run /init inside OpenCode to generate it automatically"
+Write-Host "  3. Per-project: run /init inside OpenCode to generate AGENTS.md"

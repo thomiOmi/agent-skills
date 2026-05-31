@@ -282,6 +282,8 @@ powershell -ExecutionPolicy Bypass -File .\install-skills.ps1  # Windows
 
 If you use **Option A (remote)**, AGENTS.md updates automatically — only re-run the installer when new skills are added.
 
+If you use **Option B (local)**, you must re-run the installer after pulling to update AGENTS.md and install any new skills.
+
 ---
 
 ## Troubleshooting
