@@ -4,7 +4,7 @@ description: Use this skill for any task that touches more than one file, spans 
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   author: thomiOmi
 ---
 
@@ -12,6 +12,8 @@ metadata:
 
 Structured 6-phase workflow for multi-step tasks.
 For single-file edits, run phases 0, 1, 3, 4 only.
+
+---
 
 ## Phases
 
@@ -26,6 +28,7 @@ PHASE 6 — Document & Hand-off  (skip if no public interface changed)
 ```
 
 See `references/phases.md` for full phase descriptions, gates, and progress report format.
+See `assets/templates.md` for scope document, task tree, progress report, and milestone templates.
 
 ---
 

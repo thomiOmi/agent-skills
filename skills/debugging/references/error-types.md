@@ -1,7 +1,7 @@
 # Common Error Types and Root Causes
 
 | Error type | Usually means |
-|-----------|---------------|
+| ----------- | --------------- |
 | `NullPointerException` / `TypeError: Cannot read property of undefined` | Something is null/undefined that should not be |
 | `KeyError` / `IndexError` | Accessing a key or index that does not exist |
 | `ECONNREFUSED` | Service or port is not running |
@@ -15,7 +15,7 @@
 ## Common Root Cause Patterns
 
 | Symptom | Common root cause |
-|---------|------------------|
+| --------- | ------------------ |
 | Wrong value in DB | Bug in write path (creation/update logic) |
 | Intermittent failures | Race condition, timeout, or flaky network |
 | Works locally, fails in prod | Environment difference (env vars, versions, data) |

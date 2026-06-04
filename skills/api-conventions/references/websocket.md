@@ -23,7 +23,7 @@ Not for request/response patterns where REST or GraphQL suffices.
 
 ## Rules
 
-```
+```text
 ✅ Define a message type registry — no ad-hoc type strings
 ✅ Handle reconnection and message replay on the client
 ✅ Authenticate on connection, not per-message

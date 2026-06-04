@@ -13,7 +13,7 @@
 ## Test Types
 
 | Type | Tool | Owner | Target |
-|------|------|-------|--------|
+| ------ | ------ | ------- | -------- |
 | Unit | [framework] | Dev | 80%+ coverage |
 | Integration | [framework] | Dev | All endpoints |
 | E2E | [tool] | QA | Critical user flows |

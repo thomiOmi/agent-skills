@@ -1,7 +1,7 @@
 # Test Doubles
 
 | Type | Use when |
-|------|----------|
+| ------ | ---------- |
 | **Mock** | Verify a call was made (email sent, event emitted) |
 | **Stub** | Return a fixed value without real logic |
 | **Spy** | Observe calls without replacing behavior |

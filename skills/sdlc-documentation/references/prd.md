@@ -35,7 +35,7 @@ Use when: starting a new feature, product, or significant change.
 ## 3. User Stories
 
 | As a... | I want to... | So that... |
-|---------|-------------|-----------|
+| --------- | ------------- | ----------- |
 | registered user | reset my password via email | I can regain access without contacting support |
 
 ---
@@ -53,7 +53,7 @@ Use when: starting a new feature, product, or significant change.
 ## 5. Non-Functional Requirements
 
 | Category | Requirement |
-|----------|------------|
+| ---------- | ------------ |
 | Performance | API response < 200ms at p95 |
 | Security | All endpoints require authentication |
 | Availability | 99.9% uptime SLA |
@@ -68,7 +68,7 @@ Use when: starting a new feature, product, or significant change.
 ## 7. Dependencies & Risks
 
 | Item | Type | Impact | Mitigation |
-|------|------|--------|------------|
+| ------ | ------ | -------- | ------------ |
 | Payment provider API | Dependency | High | Use abstraction layer |
 
 ---
@@ -76,7 +76,7 @@ Use when: starting a new feature, product, or significant change.
 ## 8. Success Metrics
 
 | Metric | Baseline | Target | Measurement |
-|--------|----------|--------|-------------|
+| -------- | ---------- | -------- | ------------- |
 | Checkout completion | 62% | 75% | Analytics |
 
 ---
@@ -84,7 +84,7 @@ Use when: starting a new feature, product, or significant change.
 ## 9. Timeline
 
 | Phase | Deliverable | Target |
-|-------|-------------|--------|
+| ------- | ------------- | -------- |
 | Design | Mockups approved | Week 1 |
 | Development | Feature complete | Week 3 |
 
@@ -96,7 +96,7 @@ Use when: starting a new feature, product, or significant change.
 
 ## PRD Rules
 
-```
+```text
 ✅ Every FR must have testable acceptance criteria
 ✅ Non-goals must be explicit
 ✅ Success metrics must be measurable

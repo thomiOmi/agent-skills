@@ -1,112 +1,80 @@
-# Docstring Formats by Language
+# Docstring Structure
 
-A good docstring covers:
-1. **What** it does — one clear sentence
-2. **Parameters** — name, type, what it represents
-3. **Return value** — type and what it represents
-4. **Side effects** — writes to DB, emits events, mutates external state
-5. **Exceptions / errors** it may raise or return
-6. **Why** any non-obvious behavior exists
+A docstring answers: what this does, what goes in, what comes out, and what can fail.
+Write for the next developer reading this in 6 months — not for yourself now.
 
 ---
 
-## Python
+## Required Fields
 
-```python
-def calculate_retry_delay(attempt: int, base_ms: int = 100) -> int:
-    """
-    Calculate exponential backoff delay for a retry attempt.
+Every docstring must cover these points, in this order:
 
-    Uses base_ms * 2^attempt, capped at 30 seconds to prevent
-    excessive wait on repeated failures.
+```text
+WHAT    One sentence describing the purpose.
+        Never restate the function name. "getUser" does not need "Gets the user."
 
-    Args:
-        attempt: Zero-indexed retry attempt number.
-        base_ms: Base delay in milliseconds. Defaults to 100.
+PARAMS  For each parameter:
+        - Name
+        - Expected type or shape
+        - What it represents (not just its type)
+        - Valid range or constraints if non-obvious
 
-    Returns:
-        Delay in milliseconds, capped at 30_000.
+RETURN  What comes back:
+        - Type or shape
+        - What it represents
+        - Edge cases (null, empty, zero)
 
-    Raises:
-        ValueError: If attempt is negative.
-    """
+ERRORS  What can go wrong:
+        - Which exceptions or error codes may be raised/returned
+        - Under what conditions
+
+WHY     Only when the behavior is non-obvious:
+        - Why this design choice
+        - Why a specific cap, limit, or formula was chosen
 ```
 
-## TypeScript / JavaScript (JSDoc)
+---
 
-```typescript
-/**
- * Merges two permission sets, giving precedence to explicit denies.
- *
- * When the same key exists in both sets, "deny" always wins over "allow"
- * to enforce least-privilege by default.
- *
- * @param base - Default permission set (e.g. role-level).
- * @param overrides - User-specific overrides applied on top of base.
- * @returns Merged PermissionSet with deny-wins resolution.
- */
-function mergePermissions(base: PermissionSet, overrides: PermissionSet): PermissionSet
-```
+## Format by Language
 
-## Go
+Use the **idiomatic format for your language**:
 
-```go
-// chunkSlice splits a slice into chunks of at most size elements.
-// The last chunk may be smaller if len(s) is not evenly divisible.
-//
-// Returns nil if s is empty. Panics if size <= 0.
-func chunkSlice[T any](s []T, size int) [][]T
-```
+| Language | Format |
+| ---------- | -------- |
+| Python | Google-style or NumPy-style docstrings |
+| TypeScript / JavaScript | JSDoc (`/** ... */`) |
+| Go | Plain comment above the function (`// FunctionName ...`) |
+| Rust | `///` doc comments with `# Examples`, `# Panics` sections |
+| PHP | PHPDoc (`/** @param @return @throws */`) |
+| Java / Kotlin | Javadoc (`/** @param @return @throws */`) |
+| C# | XML doc comments (`/// <summary>`) |
 
-## Rust
+---
 
-```rust
-/// Splits a slice into chunks of at most `size` elements.
-///
-/// The last chunk may be smaller than `size` if the slice length
-/// is not evenly divisible. Returns an empty iterator if `s` is empty.
-///
-/// # Panics
-/// Panics if `size` is zero.
-///
-/// # Examples
-/// ```
-/// let chunks: Vec<_> = chunk_slice(&[1, 2, 3, 4, 5], 2).collect();
-/// assert_eq!(chunks, vec![&[1, 2][..], &[3, 4], &[5]]);
-/// ```
-pub fn chunk_slice<T>(s: &[T], size: usize) -> impl Iterator<Item = &[T]>
-```
+## Quality Rules
 
-## PHP
+- One sentence per field. If a parameter needs a paragraph, the API design is too complex.
+- Do not use decorative banners, emoji, ASCII art, or section dividers inside docstrings.
+- Do not list `@param name Type` without describing what the parameter represents.
+- Document the **why** for non-obvious caps, formulas, or behavior — not the what.
 
-```php
-/**
- * Calculate exponential backoff delay for a retry attempt.
- *
- * Uses base_ms * 2^attempt, capped at 30 seconds to prevent
- * excessive wait on repeated failures.
- *
- * @param int $attempt Zero-indexed retry attempt number.
- * @param int $base_ms Base delay in milliseconds. Defaults to 100.
- * @return int Delay in milliseconds, capped at 30000.
- * @throws \InvalidArgumentException If attempt is negative.
- */
-public function calculateRetryDelay(int $attempt, int $base_ms = 100): int
-```
+---
 
-## Java / Kotlin
+## Template (language-agnostic)
 
-```java
-/**
- * Calculates exponential backoff delay for a retry attempt.
- *
- * Uses baseMs * 2^attempt, capped at 30 seconds to prevent
- * excessive wait on repeated failures.
- *
- * @param attempt  Zero-indexed retry attempt number.
- * @param baseMs   Base delay in milliseconds.
- * @return         Delay in milliseconds, capped at 30_000.
- * @throws IllegalArgumentException if attempt is negative.
- */
-public int calculateRetryDelay(int attempt, int baseMs)
+```text
+[One sentence: what this function/method/class does.]
+
+[PARAMS]
+  param_name (Type): [what it represents]. [constraints if any]
+  param_two  (Type): [what it represents]. [default if optional]
+
+[RETURN]
+  Type: [what the return value represents]. [edge cases]
+
+[ERRORS / EXCEPTIONS]
+  ErrorType: [when this is raised]
+
+[WHY — optional, only if non-obvious]
+  [Explanation of design choice or formula]
 ```

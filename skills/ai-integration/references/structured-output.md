@@ -1,55 +1,61 @@
 # Structured Output
 
-## Request JSON Explicitly
+When the response will be parsed programmatically, always request structured output explicitly.
 
-```python
-prompt = """
-Extract the following fields from the invoice text.
-Respond ONLY with valid JSON. No explanation, no markdown fences.
+---
 
-Schema:
-{
-  "vendor": string,
-  "amount_cents": integer,
-  "date": "YYYY-MM-DD",
-  "line_items": [{ "description": string, "amount_cents": integer }]
-}
+## Requesting Structured Output
 
-Invoice text:
-{invoice_text}
-"""
+In the prompt, instruct the model to return only the format — no explanation, no markdown fences.
+
+```text
+PROMPT INSTRUCTION:
+  Respond with valid JSON only.
+  Do not include any explanation, preamble, or markdown code fences.
+
+  Required schema:
+  {
+    "field_one": string,
+    "field_two": integer,
+    "field_three": ["string"]
+  }
 ```
 
-## Parse Defensively
+---
 
-```python
-try:
-    clean = response.strip().removeprefix("```json").removesuffix("```").strip()
-    data = json.loads(clean)
-except json.JSONDecodeError as e:
-    logger.error(f"Failed to parse model response: {response!r}")
-    raise
-```
+## Parsing Defensively
 
-## Use Native Structured Output When Available
+Always parse model output inside a try/catch block.
+Never assume the output will be perfectly formatted.
 
-```python
-# Anthropic — tool use for structured output
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    tools=[{
-        "name": "extract_invoice",
-        "description": "Extract invoice fields",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "vendor": { "type": "string" },
-                "amount_cents": { "type": "integer" }
-            },
-            "required": ["vendor", "amount_cents"]
-        }
-    }],
-    tool_choice={"type": "tool", "name": "extract_invoice"},
-    messages=[{ "role": "user", "content": prompt }]
-)
-```
+Steps:
+
+1. Trim whitespace from the response.
+2. Strip any markdown code fences if present (`\`\`\`json` ... `\`\`\``).
+3. Parse the cleaned string.
+4. Validate that required fields are present and have the expected types.
+5. If parsing fails, log the raw response for debugging before raising an error.
+
+---
+
+## Using Native Structured Output APIs
+
+Most LLM providers offer a way to enforce structured output at the API level.
+This is more reliable than prompting alone.
+
+Common approaches:
+
+- **Tool use / function calling**: define a schema the model must fill. The response is guaranteed to match the schema.
+- **JSON mode**: instructs the model to return valid JSON. Does not enforce a specific schema.
+- **Response format parameter**: some providers accept a JSON schema directly.
+
+Prefer tool use / function calling over prompt-only JSON when the structure is critical.
+
+---
+
+## Rules
+
+- Never parse model output without a try/catch.
+- Log the raw response when parsing fails — do not swallow the error silently.
+- Validate required fields after parsing — the model may omit them.
+- Do not trust field types from the parsed output without checking — strings may come back as numbers.

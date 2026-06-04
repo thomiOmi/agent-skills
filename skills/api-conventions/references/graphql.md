@@ -35,7 +35,7 @@ type UserError {
 
 ## Rules
 
-```
+```text
 ✅ Every mutation returns a payload type
 ✅ Paginated lists use connection types: UserConnection
 ✅ Use input types for mutations: CreateUserInput

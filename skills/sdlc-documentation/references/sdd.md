@@ -25,15 +25,12 @@ Use when: engineers are about to implement something non-trivial.
 ## 2. Architecture
 
 ### High-Level Design
-```
-CLIENT → API GATEWAY → SERVICE → DATABASE
-                              → MESSAGE QUEUE → WORKER
-```
+CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 
 ### Component Breakdown
 
 | Component | Responsibility | Technology |
-|-----------|---------------|------------|
+| ----------- | --------------- | ------------ |
 | API Gateway | Auth, rate limiting, routing | [framework] |
 
 ---
@@ -58,7 +55,7 @@ CLIENT → API GATEWAY → SERVICE → DATABASE
 ## 5. Key Design Decisions
 
 | Decision | Options | Chosen | Reason |
-|----------|---------|--------|--------|
+| ---------- | --------- | -------- | -------- |
 | Auth method | JWT vs Session | JWT | Stateless, works for mobile + web |
 
 ---
@@ -89,7 +86,7 @@ CLIENT → API GATEWAY → SERVICE → DATABASE
 ## 9. Rollout Plan
 
 | Phase | Scope | Criteria |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Internal | Dev team | All tests passing |
 | Beta | 10% users | Error rate < 0.1% |
 | GA | 100% | Beta stable 48h |
@@ -102,7 +99,7 @@ CLIENT → API GATEWAY → SERVICE → DATABASE
 
 ## SDD Rules
 
-```
+```text
 ✅ Link to the PRD — SDD explains HOW, PRD explains WHAT and WHY
 ✅ Document all major design decisions with reasoning
 ✅ Include rollout plan for production changes

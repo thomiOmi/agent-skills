@@ -2,7 +2,7 @@
 
 ## Format
 
-```
+```markdown
 As a [type of user],
 I want to [perform an action],
 So that [I achieve a goal / get a benefit].
@@ -19,7 +19,7 @@ Definition of Done:
 
 ## Example
 
-```
+```markdown
 As a registered user,
 I want to reset my password via email,
 So that I can regain access without contacting support.
@@ -39,7 +39,7 @@ Definition of Done:
 
 ## Rules
 
-```
+```text
 ✅ One story = one user action with clear value
 ✅ Acceptance criteria must be testable
 ✅ Definition of Done agreed before sprint starts

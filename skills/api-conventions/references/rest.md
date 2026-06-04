@@ -4,7 +4,7 @@
 
 Resources are **nouns, plural**. HTTP verbs express the action.
 
-```
+```text
 ✅  GET    /users
 ✅  GET    /users/{id}
 ✅  POST   /users
@@ -22,7 +22,7 @@ No trailing slashes. Lowercase, kebab-case: `/payment-methods`.
 ## HTTP Methods
 
 | Method | Purpose | Idempotent |
-|--------|---------|-----------|
+| -------- | --------- | ----------- |
 | GET | Read | ✅ |
 | POST | Create or trigger | ❌ |
 | PUT | Replace entirely | ✅ |
@@ -32,16 +32,19 @@ No trailing slashes. Lowercase, kebab-case: `/payment-methods`.
 ## Response Shapes
 
 Single resource:
+
 ```json
 { "data": { "id": "usr_123", "email": "user@example.com", "createdAt": "2026-01-15T10:00:00Z" } }
 ```
 
 Collection:
+
 ```json
 { "data": [...], "meta": { "total": 142, "page": 1, "perPage": 20 } }
 ```
 
 Error (consistent across all endpoints):
+
 ```json
 {
   "error": {
@@ -55,7 +58,7 @@ Error (consistent across all endpoints):
 ## Status Codes
 
 | Code | When |
-|------|------|
+| ------ | ------ |
 | 200 | Successful GET, PATCH, PUT |
 | 201 | Successful POST (resource created) |
 | 204 | Successful DELETE (no body) |
@@ -68,7 +71,7 @@ Error (consistent across all endpoints):
 | 429 | Rate limit exceeded |
 | 500 | Unexpected server error |
 
-```
+```text
 ❌ Never return 200 for an error
 ❌ Never return 500 for a client mistake
 ```

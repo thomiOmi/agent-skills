@@ -4,7 +4,7 @@ description: Use this skill when writing, reviewing, or fixing any tests — uni
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   author: thomiOmi
 ---
 
@@ -15,30 +15,36 @@ Framework-agnostic — adapt syntax to your language and test runner.
 
 ## Core Principles
 
-1. **Tests are documentation** — a test explains what the code is supposed to do.
-2. **Test behavior, not implementation** — if renaming a private method breaks tests, the tests are wrong.
-3. **One scenario per test** — multiple assertions are fine if they verify one scenario.
-4. **Deterministic** — no random data, no uncontrolled time, no real network calls in unit tests.
+1. Tests are documentation — a test explains what the code is supposed to do.
+2. Test behavior, not implementation — if renaming a private method breaks tests, the tests are wrong.
+3. One scenario per test — multiple assertions are fine if they all verify one scenario.
+4. Deterministic — no random data, no uncontrolled time, no real network calls in unit tests.
 
-See `references/naming.md` for test naming patterns per language.
-See `references/structure.md` for AAA pattern and what to test.
-See `references/doubles.md` for mocks, stubs, fakes, and spies.
-See `references/advanced.md` for snapshot and contract testing.
+---
+
+## References
+
+- `references/naming.md` — test naming patterns per language (Python, TS, Go, PHP)
+- `references/structure.md` — AAA pattern, what to test, what not to test, integration tests
+- `references/doubles.md` — mocks, stubs, fakes, spies and when to use each
+- `references/advanced.md` — snapshot tests and contract tests (Pact)
+
+See `assets/templates.md` for unit, integration, and test case documentation templates.
 
 ---
 
 ## Checklist
 
-```
+```markdown
 - [ ] Test name clearly describes the scenario and expected outcome
-- [ ] Follows Arrange → Act → Assert
+- [ ] Follows Arrange, Act, Assert structure
 - [ ] Happy path covered
 - [ ] Boundary and edge cases covered
-- [ ] Error / exception cases covered
-- [ ] No real network calls, random values, or uncontrolled time (unit tests)
+- [ ] Error and exception cases covered
+- [ ] No real network calls, random values, or uncontrolled time in unit tests
 - [ ] Test does not depend on other tests or execution order
 - [ ] Mocks used sparingly — behavior tested, not call signatures
-- [ ] Snapshot diffs reviewed deliberately (if applicable)
-- [ ] Contract tests in place for cross-service interfaces (if applicable)
+- [ ] Snapshot diffs reviewed deliberately before approving
+- [ ] Contract tests in place for cross-service interfaces
 - [ ] Test passes when run in isolation
 ```

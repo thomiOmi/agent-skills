@@ -1,6 +1,6 @@
 # Document Storage Conventions
 
-```
+```text
 docs/
 ├── prd/
 │   └── YYYY-MM-feature-name.md

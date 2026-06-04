@@ -21,7 +21,7 @@
 
 ## Rules
 
-```
+```text
 ✅ Write for end users — avoid technical jargon
 ✅ Breaking changes must have migration instructions
 ✅ Link to documentation for complex changes
