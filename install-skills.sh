@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # install-skills.sh
 # Install AGENTS.md and SKILL.md files for OpenCode CLI.
-# Supports the agentskills.io folder structure with references/ and assets/
+# Supports agentskills.io folder structure with references/ and assets/
+# Also installs to ~/.agents/skills (universal: OpenCode, Claude Code, GitHub Copilot)
 #
 # Usage:
 #   ./install-skills.sh              # install everything
@@ -22,12 +23,38 @@ done
 
 OPENCODE_DIR="$HOME/.config/opencode"
 OPENCODE_SKILLS="$OPENCODE_DIR/skills"
+UNIVERSAL_SKILLS="$HOME/.agents/skills"   # universal: OpenCode v1.0.190+, Claude Code, GitHub Copilot
 
 echo "=== Agent Skills Installer ==="
 [ "$SKILLS_ONLY" = true ] && echo "Mode: skills only (AGENTS.md skipped)"
 echo ""
-echo "→ Installing for OpenCode CLI..."
 
+# Helper: install skills to a target directory
+install_skills() {
+  local target_dir="$1"
+  mkdir -p "$target_dir"
+
+  for skill in $SKILLS; do
+    src="$SKILLS_SRC/$skill"
+    dest="$target_dir/$skill"
+
+    if [ ! -d "$src" ]; then
+      echo "  ⚠ SKIP $skill — not found in skills/"
+      continue
+    fi
+
+    rm -rf "$dest"
+    cp -r "$src" "$dest"
+
+    ref_count=$(find "$dest/references" -type f 2>/dev/null | wc -l | tr -d ' ')
+    echo "  ✓ $skill ($ref_count references)"
+  done
+
+  echo "  → $target_dir"
+}
+
+# ── 1. OpenCode CLI ──────────────────────────────────────────────────────────
+echo "→ Installing for OpenCode CLI..."
 mkdir -p "$OPENCODE_SKILLS"
 
 if [ "$SKILLS_ONLY" = false ]; then
@@ -37,23 +64,7 @@ if [ "$SKILLS_ONLY" = false ]; then
   echo "  ✓ INSTALL.md → $OPENCODE_DIR/INSTALL.md"
 fi
 
-# Copy each skill folder recursively (includes references/ and assets/)
-for skill in $SKILLS; do
-  src="$SKILLS_SRC/$skill"
-  dest="$OPENCODE_SKILLS/$skill"
-
-  if [ ! -d "$src" ]; then
-    echo "  ⚠ SKIP $skill — folder not found in skills/"
-    continue
-  fi
-
-  # Remove dest first to handle deleted reference files cleanly
-  rm -rf "$dest"
-  cp -r "$src" "$dest"
-
-  ref_count=$(find "$dest/references" -type f 2>/dev/null | wc -l | tr -d ' ')
-  echo "  ✓ $skill ($ref_count references)"
-done
+install_skills "$OPENCODE_SKILLS"
 
 # Handle config file
 if [ "$SKILLS_ONLY" = false ]; then
@@ -91,10 +102,22 @@ EOF
 fi
 
 echo ""
+
+# ── 2. Universal path ~/.agents/skills ──────────────────────────────────────
+# Supported by: OpenCode v1.0.190+, Claude Code, GitHub Copilot (~/.agents/skills)
+echo "→ Installing to universal path (~/.agents/skills)..."
+install_skills "$UNIVERSAL_SKILLS"
+echo ""
+
+# ── Summary ──────────────────────────────────────────────────────────────────
 echo "=== Done ==="
 echo ""
 echo "Skills installed:"
 for skill in $SKILLS; do echo "  • $skill"; done
+echo ""
+echo "Install locations:"
+echo "  OpenCode CLI  : $OPENCODE_SKILLS"
+echo "  Universal     : $UNIVERSAL_SKILLS  (OpenCode, Claude Code, GitHub Copilot)"
 echo ""
 echo "Next steps:"
 if [ "$SKILLS_ONLY" = true ]; then
