@@ -1,10 +1,10 @@
 ---
 name: documentation
-description: Use this skill when writing or updating developer documentation — README, changelog, ADR, OpenAPI spec, or setup guides. Triggers: "update the README", "write docs", "document this", "changelog entry", "ADR", "OpenAPI spec". For PRD, SDD, or requirements documents use sdlc-documentation instead.
+description: Use this skill when writing, updating, or auditing any developer documentation. Triggers: "update the README", "write docs", "document this", "changelog entry", "write an ADR", "check what is documented", "audit the docs", "OpenAPI spec". Also apply when a code change clearly requires a documentation update.
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   author: thomiOmi
 ---
 
@@ -28,7 +28,7 @@ See `assets/templates.md` for README skeleton, changelog entry, and ADR template
 
 ## Checklist
 
-```markdown
+```
 - [ ] README updated if setup, config, or usage changed
 - [ ] CHANGELOG entry added under [Unreleased]
 - [ ] OpenAPI spec updated if any REST endpoint changed

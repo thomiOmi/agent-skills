@@ -1,10 +1,10 @@
 ---
 name: debugging
-description: Use this skill when diagnosing bugs, unexpected errors, or incorrect behavior. Triggers: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "exception". Never guess the cause — always diagnose systematically before proposing a fix.
+description: Use this skill when diagnosing bugs, errors, slow performance, or incorrect behavior. Triggers: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "why is this slow", "performance issue", "N+1 query". Never guess — diagnose systematically before fixing.
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   author: thomiOmi
 ---
 
@@ -15,7 +15,7 @@ Systematic approach to diagnosing and fixing bugs.
 
 ## Core Rule
 
-```text
+```
 Wrong: "The bug is probably X, let me fix it."
 Right: "Let me reproduce it, read the error, trace the cause, then fix it."
 ```
@@ -46,7 +46,7 @@ See `assets/templates.md` for bug report and RCA document templates.
 
 ## Checklist
 
-```markdown
+```
 - [ ] Bug is reproduced consistently
 - [ ] Full error message and stack trace read (not just the first line)
 - [ ] Failure point located in the code

@@ -1,10 +1,10 @@
 ---
 name: sdlc-documentation
-description: Use this skill when creating or updating any SDLC artifact — PRD, SDD, BRD, FRD, user stories, acceptance criteria, test plans, or release notes. Triggers: "write a PRD", "create SDD", "document requirements", "user stories", "acceptance criteria", "business requirements", "functional spec", "release notes", "test plan". Use before starting any feature or product that requires formal documentation.
+description: Use this skill when creating or reviewing any SDLC artifact — PRD, SDD, BRD, FRD, user stories, acceptance criteria, test plans, or release notes. Triggers: "write a PRD", "create SDD", "document requirements", "user stories", "acceptance criteria", "review the PRD", "audit requirements". Use before starting any feature requiring formal documentation.
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
-  version: "1.1.0"
+  version: "2.2.0"
   author: thomiOmi
 ---
 
@@ -44,7 +44,7 @@ See `assets/doc-conventions.md` for document storage and naming conventions.
 
 ## SDLC Checklist
 
-```markdown
+```
 - [ ] PRD written and approved before design starts
 - [ ] SDD written and reviewed before development starts
 - [ ] User stories have acceptance criteria and Definition of Done

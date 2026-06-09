@@ -1,10 +1,10 @@
 ---
 name: planning
-description: Use this skill when creating technical design artifacts before building anything. Triggers: "design the database", "ERD", "system architecture", "flowchart", "user flow", "architecture diagram", "data model", "component diagram", "sequence diagram". Domain-agnostic — applies to software, business processes, and system design. For PRD, SDD, or requirements documents use sdlc-documentation instead.
+description: Use this skill when creating or reviewing technical design artifacts. Triggers: "design the database", "ERD", "system architecture", "flowchart", "review the system design", "audit the data model", "sequence diagram", "component diagram", "user flow". Domain-agnostic. For PRD, SDD, or requirements use sdlc-documentation instead.
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   author: thomiOmi
 ---
 
@@ -44,7 +44,7 @@ See `assets/` for diagram templates ready to fill in.
 
 ## Technical Design Checklist
 
-```markdown
+```
 - [ ] All diagrams use Mermaid.js syntax
 - [ ] ERD completed if any data storage is involved
 - [ ] All key types defined (PK, UK, FK, IDX)

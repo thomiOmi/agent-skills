@@ -7,8 +7,7 @@ A well-structured prompt has these sections in this order:
 ```
 ROLE (optional)
   Describe the persona the model should adopt.
-  Use this when tone, domain expertise, or communication style matters.
-  Example: "You are a senior software architect reviewing API designs."
+  Use when tone, domain expertise, or communication style matters.
 
 TASK
   One clear description of what the model must do.
@@ -17,7 +16,7 @@ TASK
 
 CONTEXT
   All information the model needs to complete the task.
-  Include only what is relevant — do not pad with unnecessary background.
+  Include only what is relevant.
   Use variables for dynamic content: {user_input}, {document}, {history}
 
 CONSTRAINTS
@@ -29,33 +28,50 @@ CONSTRAINTS
 
 OUTPUT FORMAT
   The exact structure of the expected response.
-  Specify JSON schema, markdown structure, or plain text format.
   For JSON: provide the schema with field names and types.
-  For structured text: provide a template.
+  For structured text: provide a template with placeholders.
+  Always say: "Respond with valid JSON only. No explanation. No markdown fences."
 
 EXAMPLES (optional)
-  One or two input/output pairs that demonstrate the expected behavior.
-  Use these when the output format is non-obvious or when precision matters.
-  Few-shot examples improve output quality significantly for complex tasks.
+  One or two input/output pairs demonstrating the expected behavior.
+  Use when the output format is non-obvious or precision is critical.
 ```
+
+---
+
+## Model Configuration
+
+Never hardcode a model name in prompt code.
+Read the model identifier from an environment variable or configuration file.
+
+```
+Config file or environment variable:
+  LLM_PROVIDER = "anthropic"    (or "openai", "google", "mistral", etc.)
+  LLM_MODEL    = "[model-id]"   (set by the operator, not the developer)
+  LLM_API_KEY  = "[key]"        (always from environment, never hardcoded)
+```
+
+This allows the operator to switch models or providers without changing code.
 
 ---
 
 ## Rules
 
-- Critical instructions belong near the top of the prompt, not buried at the end.
-- Tell the model what to avoid, not just what to do — negatives reduce hallucination.
-- Request step-by-step reasoning for tasks that require multi-step logic.
+- Critical instructions belong near the top — not buried at the end.
+- Tell the model what to avoid, not just what to do.
+- Request step-by-step reasoning for tasks requiring multi-step logic.
 - Specify the output format explicitly — do not assume the model will infer it.
-- Do not use the same prompt across different model families without testing — behavior varies.
-- For structured output: always instruct the model to return only the format, with no preamble or explanation.
+- Do not use the same prompt across different model families without testing.
+- For structured output: always instruct the model to return only the format, with no preamble.
+- Test prompts with the actual model being used — behavior varies between providers and versions.
 
 ---
 
-## Clarification Before Prompting
+## Clarify Before Writing Prompts
 
-Before writing a prompt, answer:
+Before writing any prompt, answer:
 1. What task must the model perform?
-2. What information does the model need — and what should it not have access to?
+2. What information does the model need?
 3. What is the exact output format the calling code expects?
 4. What should the model say when it cannot answer from the provided context?
+5. Which provider and model is configured for this project?
