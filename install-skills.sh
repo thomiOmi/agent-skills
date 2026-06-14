@@ -12,7 +12,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$SCRIPT_DIR/skills"
-SKILLS="task-decomposition code-style api-conventions testing documentation planning debugging ai-integration sdlc-documentation"
+SKILLS="task-decomposition code-style api-conventions testing documentation planning debugging ai-integration sdlc-documentation git-workflow security-review database"
 SKILLS_ONLY=false
 
 for arg in "$@"; do

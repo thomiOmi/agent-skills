@@ -5,15 +5,19 @@ Global AGENTS.md and SKILL.md collection for [OpenCode CLI](https://opencode.ai)
 ## Skills
 
 | Skill | Triggers on |
-|-------|------------|
-| `task-decomposition` | "implement", "build", "migrate", multi-file tasks |
-| `code-style` | writing, reviewing, or refactoring any code |
+| ------- | ------------ |
+| `task-decomposition` | multi-file tasks, module reviews, unclear scope |
+| `code-style` | writing, reviewing, refactoring, auditing any code |
 | `api-conventions` | REST, GraphQL, WebSocket design and review |
-| `testing` | unit, integration, snapshot, contract tests |
+| `testing` | unit, integration, snapshot, contract tests, coverage audit |
 | `documentation` | README, changelog, ADR, OpenAPI spec |
-| `planning` | ERD, MVP doc, timeline, flowchart, system design |
-| `debugging` | bug diagnosis, root cause analysis |
+| `planning` | ERD, system architecture, flowchart, sequence diagram |
+| `debugging` | bug diagnosis, slow queries, root cause analysis |
 | `ai-integration` | LLM API, prompt design, RAG, agents, embeddings |
+| `sdlc-documentation` | PRD, SDD, user stories, test plan, release notes |
+| `git-workflow` | branching, commits, PR review, merge strategy |
+| `security-review` | OWASP, auth audit, input validation, data exposure |
+| `database` | schema design, migrations, query optimization, indexing |
 
 ## Install
 
@@ -70,7 +74,7 @@ See [INSTALL.md](INSTALL.md) for full config reference, MCP setup, and per-proje
 
 Run `/init` inside OpenCode to auto-generate a project-level `AGENTS.md`.
 
-Or create it manually — fill in only the Project Context section:
+Or create it manually at the project root:
 
 ```markdown
 # AGENTS.md
@@ -93,9 +97,9 @@ agent-skills/
 ├── README.md
 ├── INSTALL.md
 ├── SPEC.md
-├── AGENTS.md                    ← global agent rules
-├── install-skills.sh            ← installer for Linux / Mac / WSL
-├── install-skills.ps1           ← installer for Windows
+├── AGENTS.md
+├── install-skills.sh
+├── install-skills.ps1
 └── skills/
     ├── task-decomposition/
     ├── code-style/
@@ -104,7 +108,20 @@ agent-skills/
     ├── documentation/
     ├── planning/
     ├── debugging/
-    └── ai-integration/
+    ├── ai-integration/
+    ├── sdlc-documentation/
+    ├── git-workflow/
+    ├── security-review/
+    └── database/
+```
+
+Each skill follows the [agentskills.io](https://agentskills.io/specification) spec:
+
+```text
+[skill-name]/
+├── SKILL.md        ← lean metadata + rules + checklist
+├── references/     ← detailed guides loaded on-demand
+└── assets/         ← templates ready to copy
 ```
 
 ## Updating
@@ -116,4 +133,3 @@ powershell -ExecutionPolicy Bypass -File .\install-skills.ps1 -SkillsOnly  # Win
 ```
 
 If you use **Option A (remote)**, AGENTS.md updates automatically — only re-run when new skills are added.
-If you use **Option B (full local)**, re-run the full installer to get AGENTS.md updates and new skills.

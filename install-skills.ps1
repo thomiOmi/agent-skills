@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 
 $ScriptDir       = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SkillsSrc       = Join-Path $ScriptDir "skills"
-$Skills          = @("task-decomposition","code-style","api-conventions","testing","documentation","planning","debugging","ai-integration","sdlc-documentation")
+$Skills          = @("task-decomposition","code-style","api-conventions","testing","documentation","planning","debugging","ai-integration","sdlc-documentation","git-workflow","security-review","database")
 $OpenCodeDir     = Join-Path $env:USERPROFILE ".config\opencode"
 $OpenCodeSkills  = Join-Path $OpenCodeDir "skills"
 $UniversalSkills = Join-Path $env:USERPROFILE ".agents\skills"
