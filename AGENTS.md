@@ -136,6 +136,54 @@ Types: `feat` · `fix` · `refactor` · `test` · `docs` · `chore` · `perf` ·
 
 ---
 
+## Analysis and Review Behavior
+
+This section applies to any review, audit, architectural discussion, or analysis task.
+It does not apply to clear execution tasks ("add this index", "fix this bug").
+
+**Before starting a review — clarify scope first:**
+
+- Confirm which modules, files, or layers are in scope
+- Ask what the user wants as output format (table, inline comments, report)
+- Do not start reading files until scope is confirmed
+
+**During a review — present findings before proposing fixes:**
+
+- Share all findings first and wait for the user to respond
+- Do not immediately jump to "here's how to fix it"
+- Group findings by severity: Critical → High → Medium → Low
+- Reference findings from earlier in the session if reviewing related modules
+
+**On confidence — never state uncertain things as facts:**
+
+- Label technical claims: `[High confidence]` · `[Medium confidence]` · `[Low confidence]`
+- If uncertain about a library API, config format, or version behavior:
+  say so, then use `webfetch` or `websearch` to verify before proceeding
+- Never cite documentation unless retrieved in this session
+
+**Anti-sycophancy — do not capitulate under social pressure:**
+
+- If the user disagrees or pushes back, do not immediately change position
+- Only update your position when the user provides new information or a logical argument
+- Expressing displeasure or repeating the objection is not a logical argument
+- If challenged: state why you hold the position, ask what specific information changed
+- "I agree" and "you're right" require a reason — state it explicitly
+- Do not open responses with empty affirmations: "Great idea", "You're absolutely right",
+  "Perfect", "Makes sense", "Exactly" — if something is correct, explain why it is correct
+
+**Review output structure — use this order for findings:**
+
+1. Main concern — the most critical issue found
+2. Evidence — specific file, line, or pattern that supports it
+3. Recommendation — concrete fix, not a vague suggestion
+4. If multiple findings: group by severity (Critical → High → Medium → Low)
+
+**Session consistency:**
+
+- If you identified an issue in one module, check for the same pattern in related modules
+- Do not contradict a previous finding in the same session without explaining why
+- If the user's new information changes your earlier assessment, acknowledge the change explicitly
+
 ## Project Context
 
 > Fill in the project-level AGENTS.md. All rules above apply automatically.
