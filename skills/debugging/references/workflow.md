@@ -1,121 +1,130 @@
 # Debugging Workflow
 
-## STEP 1 — Reproduce
+## Overview
 
-Before touching any code, confirm the bug exists and understand the exact conditions that trigger it.
+```mermaid
+flowchart TD
+    Start([Bug reported or discovered])
+    S1[STEP 1: Reproduce]
+    S2[STEP 2: Read the error]
+    S3[STEP 3: Locate failure point]
+    S4[STEP 4: Trace root cause]
+    S5[STEP 5: Fix]
+    S6[STEP 6: Verify]
+    S7[STEP 7: Prevent recurrence]
+    Reproduced{Reproducible?}
+    Fixed{Bug gone?}
+    End([Done])
 
-Questions to answer:
+    Start --> S1
+    S1 --> Reproduced
+    Reproduced -- No --> S1
+    Reproduced -- Yes --> S2
+    S2 --> S3
+    S3 --> S4
+    S4 --> S5
+    S5 --> S6
+    S6 --> Fixed
+    Fixed -- No --> S3
+    Fixed -- Yes --> S7
+    S7 --> End
+```
 
-- What exact input, action, or state triggers the bug?
-- Does it happen every time, or only under certain conditions?
-- What environment does it occur in? (operating system, runtime version, browser, deployment target)
-- When did it first appear? What changed around that time? (recent deploy, config change, dependency update)
-
-**Do not attempt to fix a bug that cannot be reproduced.**
-Write a failing test that reproduces the bug before making any changes.
-This ensures the fix is verifiable and prevents regression.
+**Never skip to STEP 5 without completing STEP 4.**
+Root cause first — fix second.
 
 ---
+
+## STEP 1 — Reproduce
+
+Confirm the bug exists and understand exact conditions.
+
+Questions:
+
+- What exact input or action triggers it?
+- Does it happen every time, or only sometimes?
+- What environment? (OS, runtime version, browser)
+- When did it start? What changed recently?
+
+```text
+❌ Do not fix an unreproduced bug
+✅ Write a failing test that reproduces the bug before fixing it
+```
 
 ## STEP 2 — Read the Error
 
-Extract maximum information before looking at any code.
-
-- Read the full error message — not just the first line.
-- Read the full stack trace — identify which line in your codebase triggered it (skip framework internals).
-- Note the error type or error code.
-- Check the application logs for events that occurred immediately before the error.
-- Check recent deployment logs or changelogs if the error appeared after a deploy.
-
----
+- Read the **full** error message — not just the first line
+- Read the **full** stack trace — find which line in your code triggered it
+- Note the error type and any error codes
+- Check logs for events that happened before the error
 
 ## STEP 3 — Locate the Failure Point
 
-Find the exact location in the code where the incorrect behavior originates.
+**Binary search:**
+Does the bug happen before or after line 50?
+→ Before: look at lines 1–50
+→ After: look at lines 50–100
+Repeat until you find the exact line.
 
-**Bisection approach:**
-Divide the execution path in half. Determine whether the error occurs in the first half or the second half.
-Continue halving until the failure point is identified.
-This works for both code paths and data pipelines.
+**Add temporary logging:**
 
-**Temporary logging:**
-Insert log statements at key points to observe the actual state of the system at runtime.
-Log the value of variables before and after suspicious transformations.
-Remove all temporary log statements before committing the fix.
+```python
+print(f"[DEBUG] value before transform: {value}")
+result = transform(value)
+print(f"[DEBUG] value after transform: {result}")
+```
 
-**Commenting out sections:**
-Temporarily disable blocks of code to isolate which section is responsible.
-Re-enable sections one by one until the bug reappears.
-
----
+Remove all debug logs after fixing.
 
 ## STEP 4 — Trace the Root Cause
 
-Understand **why** the failure happens — not just where.
-
-Apply the "five whys" technique. Start with the symptom and ask why it occurred.
-Continue asking why for each answer until you reach a cause that cannot be traced further back.
-
-Example chain:
+Ask "why" at each level until you reach the root:
 
 ```text
-Symptom: the API returned a 500 error
-Why?    The query returned no results
-Why?    The user ID in the query was null
-Why?    The JWT was decoded with the wrong signing key
-Why?    The key rotation was applied to production but not to the auth service config
-Root cause: missing config update during key rotation
+Why did this value become null?
+  → Because the caller passed null.
+Why did the caller pass null?
+  → Because the DB query returned no results.
+Why did the DB query return no results?
+  → Because the user_id was wrong.
+Root cause: JWT decoded with wrong key.
 ```
-
-Stop at the root cause — not at a symptom.
-
-**Common root cause patterns:**
-
-| Symptom | Likely root cause |
-| --------- | ----------------- |
-| Wrong value stored in database | Bug in the write path — creation or update logic |
-| Intermittent failure | Race condition, timeout, or flaky external dependency |
-| Works locally, fails in production | Environment difference — env vars, runtime version, seed data |
-| Fails for one user, works for another | Permission, tenancy, or data isolation bug |
-| Fails after a recent deploy | Regression — review the diff |
-| Fails after a dependency update | Breaking change in the upstream package |
-
----
 
 ## STEP 5 — Fix
 
-State the fix clearly before writing any code:
+State the fix clearly before writing it:
 
 ```text
-Root cause:   [what was actually wrong and why it happened]
-Fix:          [what will change and why this addresses the root cause]
-Side effects: [what else might be affected by this change]
+Root cause: [what was wrong and why]
+Fix: [what exactly will change]
+Side effects: [what else might be affected]
 ```
 
 Rules:
 
-- Fix the root cause — not a symptom.
-- Make the smallest change that corrects the behavior.
-- Do not refactor surrounding code in the same commit as a bug fix.
-- Do not add null checks or exception catches to hide a bug without understanding why it occurs.
-- Do not change multiple things at once — you will not know which change fixed the bug.
-
----
+```text
+✅ Fix the root cause — not the symptom
+✅ Make the smallest change that fixes the bug
+✅ Keep the fix isolated from refactoring
+❌ Do not add null checks to hide a bug without understanding why it's null
+❌ Do not catch and swallow exceptions without logging
+❌ Do not change multiple things at once
+```
 
 ## STEP 6 — Verify
 
-- Confirm that the original reproduction case no longer triggers the bug.
-- Confirm that the failing test now passes.
-- Run the full test suite to confirm no regressions were introduced.
-- Test manually in the environment where the bug was observed.
-- Test boundary conditions around the fix — values just above and below the affected range.
-
----
+```markdown
+- [ ] Original reproduction case no longer triggers the bug
+- [ ] Failing test now passes
+- [ ] Full test suite passes
+- [ ] Tested in the same environment where the bug occurred
+```
 
 ## STEP 7 — Prevent Recurrence
 
-- Write a regression test that would have caught this bug before it reached production.
-- Add an explanatory comment if the fix is non-obvious and future developers might revert it.
-- Search the codebase for the same pattern in other locations and fix them proactively.
-- If the bug was caused by unexpected input, add input validation at the boundary.
-- If the bug was caught late, consider what monitoring or alerting would have surfaced it earlier.
+```markdown
+- [ ] Write a regression test that would have caught this bug
+- [ ] Add a comment explaining why the fix works (if non-obvious)
+- [ ] Check if the same pattern exists elsewhere in the codebase
+- [ ] Add input validation if root cause was unexpected input
+```

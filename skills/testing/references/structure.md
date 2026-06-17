@@ -4,16 +4,22 @@
 
 Every test follows three steps in this exact order:
 
-```
-ARRANGE   Set up the inputs, state, and dependencies needed for the test.
-          Keep this minimal — only what the scenario requires.
+```mermaid
+flowchart LR
+    A["ARRANGE
+Set up inputs,
+state, dependencies"]
+    B["ACT
+Perform the
+single action"]
+    C["ASSERT
+Verify the
+observable result"]
 
-ACT       Perform the single action being tested.
-          One action per test. If you need two actions, write two tests.
-
-ASSERT    Verify the outcome.
-          Assert the observable result — return value, state change, or side effect.
-          Multiple assertions are acceptable if they all verify one scenario.
+    A --> B --> C
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
 ```
 
 Label each section with a comment (`# Arrange`, `// Act`, etc.) when the separation is not obvious.
@@ -36,6 +42,7 @@ Label each section with a comment (`# Arrange`, `// Act`, etc.) when the separat
 Error paths are as important as happy paths. Every function that can fail must have tests for each failure mode.
 
 **What counts as an error path:**
+
 - Invalid input that should be rejected (wrong type, out of range, missing required field)
 - Missing or null values where the code expects a value
 - Dependency failure (database unreachable, external API returns error, file not found)
@@ -44,13 +51,46 @@ Error paths are as important as happy paths. Every function that can fail must h
 - Concurrent modification — optimistic locking failure, race condition
 
 **For each function, ask:**
+
 1. What inputs are invalid? → test each category of invalid input separately
 2. What can fail externally? → test each failure mode of each dependency
 3. What business rules can be violated? → test each rule with a case that breaks it
 4. What happens at the boundaries? → test zero, one, max, and max+1
 
-**Error path test checklist:**
+**Error path decision flow:**
+
+```mermaid
+flowchart TD
+    Q1{Invalid input
+possible?}
+    Q2{External dependency
+can fail?}
+    Q3{Business rule
+can be violated?}
+    Q4{Permission
+check exists?}
+    T1[Test each invalid
+input category]
+    T2[Test each
+dependency failure]
+    T3[Test each
+rule violation]
+    T4[Test unauthorized
+access]
+
+    Q1 -- Yes --> T1
+    Q2 -- Yes --> T2
+    Q3 -- Yes --> T3
+    Q4 -- Yes --> T4
+    style T1 fill:#e74c3c,color:#fff
+    style T2 fill:#e74c3c,color:#fff
+    style T3 fill:#e74c3c,color:#fff
+    style T4 fill:#e74c3c,color:#fff
 ```
+
+**Error path test checklist:**
+
+```markdown
 - [ ] Invalid input types tested
 - [ ] Missing required fields tested
 - [ ] Out-of-range values tested (below min, above max)
@@ -65,7 +105,7 @@ Error paths are as important as happy paths. Every function that can fail must h
 
 **Common mistake:** testing only that an error occurs, without asserting the specific error type, message, or status code.
 
-```
+```text
 Wrong:  assert an error was raised
 Right:  assert a ValidationError was raised with field "email"
 
@@ -100,7 +140,7 @@ Rules specific to tests that cross system boundaries (database, file system, net
 Place test files adjacent to the source files they test, or in a parallel directory that mirrors the source structure.
 Follow the convention already established in the project.
 
-```
+```text
 Option A — co-located:
   src/users/service.[ext]
   src/users/service.test.[ext]

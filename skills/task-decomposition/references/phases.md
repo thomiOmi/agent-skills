@@ -1,5 +1,66 @@
 # Task Decomposition — Phase Reference
 
+## Phase Flow
+
+```mermaid
+flowchart TD
+    P0["PHASE 0
+Clarify & Scope"]
+    P1["PHASE 1
+Plan & Decompose"]
+    P2["PHASE 2
+Scaffold & Setup"]
+    P3["PHASE 3
+Implement"]
+    P4["PHASE 4
+Test & Validate"]
+    P5["PHASE 5
+Review & Integrate"]
+    P6["PHASE 6
+Document & Hand-off"]
+
+    Gate0{No blocking
+questions?}
+    Gate1{M/L tasks
+approved?}
+    Gate2{Baseline
+passing?}
+    Gate3{Subtask
+checklist done?}
+    Gate4{All tests
+passing?}
+    Gate5{Self-review
+clean?}
+
+    P0 --> Gate0
+    Gate0 -- No --> P0
+    Gate0 -- Yes --> P1
+    P1 --> Gate1
+    Gate1 -- No --> P1
+    Gate1 -- Yes --> P2
+    P2 --> Gate2
+    Gate2 -- No --> P2
+    Gate2 -- Yes --> P3
+    P3 --> Gate3
+    Gate3 -- No --> P3
+    Gate3 -- Yes --> P4
+    P4 --> Gate4
+    Gate4 -- No --> P3
+    Gate4 -- Yes --> P5
+    P5 --> Gate5
+    Gate5 -- No --> P3
+    Gate5 -- Yes --> P6
+
+    style P0 fill:#3498db,color:#fff
+    style P4 fill:#2ecc71,color:#fff
+```
+
+Skip PHASE 2 if the environment already runs.
+Skip PHASE 6 if no public interface changed.
+Minimum for any task: PHASE 0 → 1 → 3 → 4.
+
+---
+
 ## PHASE 0 — Clarify & Scope
 
 **Goal:** Fully understand the task before doing anything.
@@ -23,9 +84,24 @@ Required output:
 
 Sub-task sizes:
 
-- **S** — < 30 min, single file or function
-- **M** — 30 min–2 hr, multiple files
-- **L** — > 2 hr → must be split into S/M before starting
+```mermaid
+flowchart LR
+    S["S — Small
+< 30 min
+Single file or function"]
+    M["M — Medium
+30 min – 2 hr
+Multiple files"]
+    L["L — Large
+> 2 hr
+Must be split before starting"]
+
+    L -->|Split into| S
+    L -->|Split into| M
+    style L fill:#e74c3c,color:#fff
+    style M fill:#f39c12,color:#fff
+    style S fill:#2ecc71,color:#fff
+```
 
 Task tree format:
 
@@ -158,7 +234,7 @@ Required output:
 
 ## Progress Report Format
 
-```markdown
+```text
 ## Progress
 
 Task: [name]
