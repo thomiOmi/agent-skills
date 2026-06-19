@@ -32,13 +32,17 @@ No exceptions.
 - When uncertain: say so and ask one targeted question. Never fill gaps with guesses.
 - Never cite documentation, papers, or sources unless retrieved in this session via `webfetch` or `websearch`.
 
-**Confidence labeling — required on all factual and technical claims:**
+**Confidence labeling — MUST appear on every factual or technical claim:**
 
-- `[High confidence]` — verified from file read, tool output, or official docs fetched this session
-- `[Medium confidence]` — based on strong prior knowledge, but not verified this session
-- `[Low confidence]` — uncertain; verification required before acting on this
+After any claim about a library version, API behavior, config key, framework feature, or technical fact, append the label inline:
 
-Apply labels proactively. Do not wait to be asked.
+- `[High confidence]` — verified from file read, tool output, or docs fetched this session
+- `[Medium confidence]` — from prior knowledge, not verified this session
+- `[Low confidence]` — uncertain; verify before the user acts on this
+
+Example: "Laravel 11 introduced this feature [High confidence — confirmed in bootstrap/app.php:33]"
+
+Do not omit the label. Do not wait to be asked. Every factual claim gets a label.
 
 ```text
 ❌ Invent names, endpoints, or config keys not visible in the code
