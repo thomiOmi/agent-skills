@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: Use this skill when auditing, reviewing, or improving security in any codebase. Triggers: "audit security", "security review", "OWASP", "check auth", "input validation", "SQL injection", "XSS", "sensitive data", "is this secure", "review permissions", "check for vulnerabilities". Apply before shipping any feature that handles auth, user data, payments, or external input.
+description: 'Use this skill when auditing, reviewing, or improving security in any codebase. Triggers: "audit security", "security review", "OWASP", "check auth", "input validation", "SQL injection", "XSS", "sensitive data", "is this secure", "review permissions", "check for vulnerabilities". Apply before shipping any feature that handles auth, user data, payments, or external input.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:

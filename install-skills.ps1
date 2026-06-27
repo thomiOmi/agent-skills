@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 
 $ScriptDir       = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SkillsSrc       = Join-Path $ScriptDir "skills"
-$Skills          = @("task-decomposition","code-style","api-conventions","testing","documentation","planning","debugging","ai-integration","sdlc-documentation","git-workflow","security-review","database")
+$Skills          = @("task-decomposition","code-style","api-conventions","testing","documentation","planning","debugging","ai-integration","sdlc-documentation","git-workflow","security-review","database","knowledge-management")
 $OpenCodeDir     = Join-Path $env:USERPROFILE ".config\opencode"
 $OpenCodeSkills  = Join-Path $OpenCodeDir "skills"
 $UniversalSkills = Join-Path $env:USERPROFILE ".agents\skills"
@@ -102,6 +102,50 @@ Write-Host ""
 # Universal path
 Write-Host "-> Installing to universal path..." -ForegroundColor Yellow
 Install-Skills -TargetDir $UniversalSkills
+Write-Host ""
+
+# Knowledge file setup
+Write-Host "-> Setting up knowledge files..." -ForegroundColor Yellow
+$GlobalKnowledge = Join-Path $env:USERPROFILE ".agents\knowledge.md"
+$KnowledgeTemplate = Join-Path $UniversalSkills "knowledge-management" "assets" "knowledge.md.template"
+
+if (-not (Test-Path $GlobalKnowledge)) {
+    if (Test-Path $KnowledgeTemplate) {
+        Copy-Item $KnowledgeTemplate $GlobalKnowledge -Force
+        Write-Host ("  OK Created ~/.agents/knowledge.md from template")
+    } else {
+        Write-Host "  SKIP knowledge.md template not found" -ForegroundColor DarkYellow
+    }
+} else {
+    Write-Host "  SKIP ~/.agents/knowledge.md already exists - not overwritten" -ForegroundColor DarkGray
+}
+
+# Add global knowledge to opencode.jsonc instructions if not present
+$ConfigJsoncPath = Join-Path $OpenCodeDir "opencode.jsonc"
+$ConfigJsonPath  = Join-Path $OpenCodeDir "opencode.json"
+$globalKnowledgePath = ($env:USERPROFILE -replace '\', '/') + "/.agents/knowledge.md"
+
+function Add-KnowledgeToConfig {
+    param([string]$ConfigPath)
+    $cfg = Get-Content $ConfigPath -Raw
+    if ($cfg -match [regex]::Escape($globalKnowledgePath)) {
+        Write-Host "  SKIP opencode.jsonc already includes knowledge.md" -ForegroundColor DarkGray
+    } elseif ($cfg -match '"instructions"') {
+        # Add knowledge.md to existing instructions array
+        $cfg = $cfg -replace '("instructions"\s*:\s*\[)', ('"instructions": ["' + $globalKnowledgePath + '", ')
+        Set-Content -Path $ConfigPath -Value $cfg -Encoding UTF8 -NoNewline
+        Write-Host ("  OK Added knowledge.md to instructions in " + (Split-Path $ConfigPath -Leaf))
+    } else {
+        Write-Host "  WARN No instructions field found - add manually" -ForegroundColor DarkYellow
+    }
+}
+
+if (Test-Path $ConfigJsoncPath) {
+    Add-KnowledgeToConfig -ConfigPath $ConfigJsoncPath
+} elseif (Test-Path $ConfigJsonPath) {
+    Add-KnowledgeToConfig -ConfigPath $ConfigJsonPath
+}
+
 Write-Host ""
 
 # Summary

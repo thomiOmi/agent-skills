@@ -1,6 +1,6 @@
 ---
 name: database
-description: Use this skill when designing schemas, reviewing queries, writing migrations, or optimizing database performance. Triggers: "desain schema", "optimasi query", "migration", "tambah index", "N+1", "slow query", "database design", "review schema", "audit queries", "foreign key", "normalization". Works with any relational database (PostgreSQL, MySQL, SQLite, MariaDB).
+description: 'Use this skill when designing schemas, reviewing queries, writing migrations, or optimizing database performance. Triggers: "desain schema", "optimasi query", "migration", "tambah index", "N+1", "slow query", "database design", "review schema", "audit queries", "foreign key", "normalization". Works with any relational database (PostgreSQL, MySQL, SQLite, MariaDB).'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:

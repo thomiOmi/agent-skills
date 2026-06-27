@@ -191,6 +191,37 @@ It does not apply to clear execution tasks ("add this index", "fix this bug").
 - Do not contradict a previous finding in the same session without explaining why
 - If the user's new information changes your earlier assessment, acknowledge the change explicitly
 
+## Session Memory
+
+File-based persistent knowledge across sessions.
+
+**At session start — MUST do both:**
+
+1. If `~/.agents/knowledge.md` exists: read it using the `read` tool
+2. If `KNOWLEDGE.md` exists in the project root: read it using the `read` tool
+3. Apply any preferences or patterns found — do not ask the user to repeat them
+
+**At session end — only when asked or when significant decisions were made:**
+
+1. Append new architectural decisions to `KNOWLEDGE.md` under `## Architectural Decisions`
+2. Append session summary under `## Session History`
+3. Update `~/.agents/knowledge.md` for cross-project patterns or preferences
+4. Never overwrite existing entries — only append
+5. Never fabricate entries — only record decisions actually made this session
+
+**What counts as a significant decision:**
+
+- Choosing one approach over alternatives (e.g. JWT vs Sanctum)
+- Establishing a new pattern for the codebase
+- Identifying tech debt or a known issue
+- Changing an existing convention
+
+**What does not need to be recorded:**
+
+- Routine bug fixes
+- Minor refactors
+- Test additions without architectural impact
+
 ## Project Context
 
 > Fill in the project-level AGENTS.md. All rules above apply automatically.

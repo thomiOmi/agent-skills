@@ -1,6 +1,6 @@
 ---
 name: testing
-description: Use this skill when writing, reviewing, auditing, or fixing any tests. Triggers: "write tests", "add tests", "check test coverage", "what tests are missing", "audit test quality", "review tests", "improve coverage", "tests are failing", "mock", "stub". Works for all languages and frameworks.
+description: 'Use this skill when writing, reviewing, auditing, or fixing any tests. Triggers: "write tests", "add tests", "check test coverage", "what tests are missing", "audit test quality", "review tests", "improve coverage", "tests are failing", "mock", "stub". Works for all languages and frameworks.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:

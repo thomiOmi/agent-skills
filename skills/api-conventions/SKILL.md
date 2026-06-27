@@ -1,6 +1,6 @@
 ---
 name: api-conventions
-description: Use this skill when designing, reviewing, or auditing any API — REST, GraphQL, or WebSocket. Triggers: "add an endpoint", "design the API", "review all routes", "audit API consistency", "check response format", "are the endpoints consistent", "review the API surface". Read the existing API surface before designing anything new.
+description: 'Use this skill when designing, reviewing, or auditing any API — REST, GraphQL, or WebSocket. Triggers: "add an endpoint", "design the API", "review all routes", "audit API consistency", "check response format", "are the endpoints consistent", "review the API surface". Read the existing API surface before designing anything new.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:

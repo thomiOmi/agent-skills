@@ -1,0 +1,57 @@
+# knowledge.md
+
+Global personal knowledge base. Auto-loaded at the start of every OpenCode session.
+Apply these preferences in all projects without being asked.
+
+**Setup:** Add this file path to `opencode.jsonc` instructions field:
+
+```jsonc
+{
+  "instructions": [
+    "~/.agents/knowledge.md"
+  ]
+}
+```
+
+---
+<!-- Created: [YYYY-MM-DD] -->
+
+## Personal Preferences
+
+<!-- How you like to work. Agent applies these automatically.
+     
+     Example:
+     ## Preference: Run tests after changes — YYYY-MM-DD
+     **Rule:** Always run the full test suite after any change, even if not asked
+     **Context:** All projects
+-->
+
+---
+
+## Cross-Project Patterns
+
+<!-- Patterns or decisions that apply across all your projects.
+     
+     Example:
+     ## Pattern: Use ULID for IDs — YYYY-MM-DD
+     **Rule:** Prefer ULID over UUID for new tables
+     **Reason:** Sortable, URL-safe, already used in starter kit
+-->
+
+---
+
+## Pitfalls to Avoid
+
+<!-- Things that have caused problems before. Agent should avoid these.
+
+     Format: - [What to avoid] — [Why] — [Discovered YYYY-MM-DD]
+-->
+
+---
+
+## Update Log
+
+<!-- Track when significant preferences were added or changed.
+
+     Format: - YYYY-MM-DD: [what changed]
+-->

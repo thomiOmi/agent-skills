@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Use this skill when creating or reviewing technical design artifacts. Triggers: "design the database", "ERD", "system architecture", "flowchart", "review the system design", "audit the data model", "sequence diagram", "component diagram", "user flow". Domain-agnostic. For PRD, SDD, or requirements use sdlc-documentation instead.
+description: 'Use this skill when creating or reviewing technical design artifacts. Triggers: "design the database", "ERD", "system architecture", "flowchart", "review the system design", "audit the data model", "sequence diagram", "component diagram", "user flow". Domain-agnostic. For PRD, SDD, or requirements use sdlc-documentation instead.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:

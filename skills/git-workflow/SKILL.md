@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Use this skill when working with Git — branching, committing, reviewing PRs, resolving conflicts, or auditing Git conventions. Triggers: "branch strategy", "create a branch", "PR template", "commit convention", "merge conflict", "rebase", "squash", "review the PR", "audit commit history", "git workflow". Apply before creating branches or opening PRs.
+description: 'Use this skill when working with Git — branching, committing, reviewing PRs, resolving conflicts, or auditing Git conventions. Triggers: "branch strategy", "create a branch", "PR template", "commit convention", "merge conflict", "rebase", "squash", "review the PR", "audit commit history", "git workflow". Apply before creating branches or opening PRs.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:

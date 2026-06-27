@@ -12,7 +12,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$SCRIPT_DIR/skills"
-SKILLS="task-decomposition code-style api-conventions testing documentation planning debugging ai-integration sdlc-documentation git-workflow security-review database"
+SKILLS="task-decomposition code-style api-conventions testing documentation planning debugging ai-integration sdlc-documentation git-workflow security-review database knowledge-management"
 SKILLS_ONLY=false
 
 for arg in "$@"; do
@@ -23,7 +23,8 @@ done
 
 OPENCODE_DIR="$HOME/.config/opencode"
 OPENCODE_SKILLS="$OPENCODE_DIR/skills"
-UNIVERSAL_SKILLS="$HOME/.agents/skills"   # universal: OpenCode v1.0.190+, Claude Code, GitHub Copilot
+UNIVERSAL_SKILLS="$HOME/.agents/skills"
+GLOBAL_KNOWLEDGE="$HOME/.agents/knowledge.md"
 
 echo "=== Agent Skills Installer ==="
 [ "$SKILLS_ONLY" = true ] && echo "Mode: skills only (AGENTS.md skipped)"
@@ -53,6 +54,25 @@ install_skills() {
   echo "  → $target_dir"
 }
 
+# Helper: add value to instructions array in config file
+add_to_instructions() {
+  local config_file="$1"
+  local value="$2"
+
+  if grep -q "$value" "$config_file" 2>/dev/null; then
+    echo "  ↓ SKIP $(basename $config_file) already includes $(basename $value)"
+    return
+  fi
+
+  if grep -q '"instructions"' "$config_file"; then
+    # Add to existing instructions array
+    sed -i "s|\"instructions\": \[|\"instructions\": [\"$value\", |" "$config_file"
+    echo "  ✓ Added $(basename $value) to instructions in $(basename $config_file)"
+  else
+    echo "  ⚠ No instructions field in $(basename $config_file) — add manually"
+  fi
+}
+
 # ── 1. OpenCode CLI ──────────────────────────────────────────────────────────
 echo "→ Installing for OpenCode CLI..."
 mkdir -p "$OPENCODE_SKILLS"
@@ -70,6 +90,7 @@ install_skills "$OPENCODE_SKILLS"
 if [ "$SKILLS_ONLY" = false ]; then
   CONFIG_JSONC="$OPENCODE_DIR/opencode.jsonc"
   CONFIG_JSON="$OPENCODE_DIR/opencode.json"
+  AGENTS_PATH="$HOME/.config/opencode/AGENTS.md"
 
   if [ -f "$CONFIG_JSONC" ]; then
     if grep -q '"instructions"' "$CONFIG_JSONC"; then
@@ -104,20 +125,53 @@ fi
 echo ""
 
 # ── 2. Universal path ~/.agents/skills ──────────────────────────────────────
-# Supported by: OpenCode v1.0.190+, Claude Code, GitHub Copilot (~/.agents/skills)
 echo "→ Installing to universal path (~/.agents/skills)..."
 install_skills "$UNIVERSAL_SKILLS"
+echo ""
+
+# ── 3. Knowledge file setup ──────────────────────────────────────────────────
+echo "→ Setting up knowledge files..."
+
+# Create global knowledge file from template if not exists
+KNOWLEDGE_TEMPLATE="$UNIVERSAL_SKILLS/knowledge-management/assets/knowledge.md.template"
+
+if [ ! -f "$GLOBAL_KNOWLEDGE" ]; then
+  if [ -f "$KNOWLEDGE_TEMPLATE" ]; then
+    cp "$KNOWLEDGE_TEMPLATE" "$GLOBAL_KNOWLEDGE"
+    echo "  ✓ Created ~/.agents/knowledge.md from template"
+  else
+    echo "  ⚠ SKIP knowledge template not found"
+  fi
+else
+  echo "  ↓ SKIP ~/.agents/knowledge.md already exists — not overwritten"
+fi
+
+# Add global knowledge to opencode config instructions
+CONFIG_JSONC="$OPENCODE_DIR/opencode.jsonc"
+CONFIG_JSON="$OPENCODE_DIR/opencode.json"
+
+if [ -f "$CONFIG_JSONC" ]; then
+  add_to_instructions "$CONFIG_JSONC" "$GLOBAL_KNOWLEDGE"
+elif [ -f "$CONFIG_JSON" ]; then
+  add_to_instructions "$CONFIG_JSON" "$GLOBAL_KNOWLEDGE"
+fi
+
 echo ""
 
 # ── Summary ──────────────────────────────────────────────────────────────────
 echo "=== Done ==="
 echo ""
-echo "Skills installed:"
+echo "Skills installed ($(echo $SKILLS | wc -w | tr -d ' ')):"
 for skill in $SKILLS; do echo "  • $skill"; done
 echo ""
 echo "Install locations:"
 echo "  OpenCode CLI  : $OPENCODE_SKILLS"
-echo "  Universal     : $UNIVERSAL_SKILLS  (OpenCode, Claude Code, GitHub Copilot)"
+echo "  Universal     : $UNIVERSAL_SKILLS"
+echo ""
+echo "Knowledge files:"
+echo "  Global        : $GLOBAL_KNOWLEDGE"
+echo "  Per-project   : KNOWLEDGE.md at project root"
+echo "                  (copy from templates/KNOWLEDGE.md.template)"
 echo ""
 echo "Next steps:"
 if [ "$SKILLS_ONLY" = true ]; then
@@ -126,4 +180,5 @@ else
   echo "  1. Verify: cat ~/.config/opencode/opencode.jsonc"
 fi
 echo "  2. Set provider: opencode providers"
-echo "  3. Per-project: run /init inside OpenCode to generate AGENTS.md"
+echo "  3. Per-project: copy templates/KNOWLEDGE.md.template to project root as KNOWLEDGE.md"
+echo "  4. Per-project: run /init inside OpenCode to generate AGENTS.md"

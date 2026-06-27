@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: Use this skill when diagnosing bugs, errors, slow performance, or incorrect behavior. Triggers: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "why is this slow", "performance issue", "N+1 query". Never guess — diagnose systematically before fixing.
+description: 'Use this skill when diagnosing bugs, errors, slow performance, or incorrect behavior. Triggers: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "why is this slow", "performance issue", "N+1 query". Never guess — diagnose systematically before fixing.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:

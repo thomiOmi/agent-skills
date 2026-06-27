@@ -1,6 +1,6 @@
 ---
 name: code-style
-description: Use this skill when writing, reviewing, refactoring, or auditing any code. Triggers: "write a function", "refactor this", "review my code", "audit code quality", "check docstrings", "review the Auth module", "identify code issues", "what needs cleaning", "add comments". Apply whenever producing, modifying, or reviewing source code.
+description: 'Use this skill when writing, reviewing, refactoring, or auditing any code. Triggers: "write a function", "refactor this", "review my code", "audit code quality", "check docstrings", "review the Auth module", "identify code issues", "what needs cleaning", "add comments". Apply whenever producing, modifying, or reviewing source code.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:

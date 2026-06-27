@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: Use this skill when writing, updating, or auditing any developer documentation. Triggers: "update the README", "write docs", "document this", "changelog entry", "write an ADR", "check what is documented", "audit the docs", "OpenAPI spec". Also apply when a code change clearly requires a documentation update.
+description: 'Use this skill when writing, updating, or auditing any developer documentation. Triggers: "update the README", "write docs", "document this", "changelog entry", "write an ADR", "check what is documented", "audit the docs", "OpenAPI spec". Also apply when a code change clearly requires a documentation update.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
