@@ -197,7 +197,7 @@ File-based persistent knowledge across sessions.
 
 **At session start — MUST do both:**
 
-1. If `~/.agents/knowledge.md` exists: read it using the `read` tool
+1. If `~/.agents/KNOWLEDGE.md` exists: read it using the `read` tool
 2. If `KNOWLEDGE.md` exists in the project root: read it using the `read` tool
 3. Apply any preferences or patterns found — do not ask the user to repeat them
 
@@ -205,7 +205,7 @@ File-based persistent knowledge across sessions.
 
 1. Append new architectural decisions to `KNOWLEDGE.md` under `## Architectural Decisions`
 2. Append session summary under `## Session History`
-3. Update `~/.agents/knowledge.md` for cross-project patterns or preferences
+3. Update `~/.agents/KNOWLEDGE.md` for cross-project patterns or preferences
 4. Never overwrite existing entries — only append
 5. Never fabricate entries — only record decisions actually made this session
 
