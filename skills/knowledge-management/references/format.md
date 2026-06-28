@@ -56,18 +56,24 @@ Example:
 
 ## Session History Entry
 
+Session History is a **summary of what happened** — not a copy of individual decisions.
+Decisions already recorded in `## Decisions` should appear here only as a one-line reference.
+
 ```markdown
-## [YYYY-MM-DD] — [topic or feature worked on]
+### [YYYY-MM-DD] — [topic or feature worked on]
 **Done:**
-- [completed item 1]
-- [completed item 2]
+- [completed item — brief]
+- [completed item — brief]
 
 **Decisions made:**
-- [decision 1 — brief]
+- Sanctum over JWT — see ## Decisions for full reasoning
 
 **Remaining:**
 - [item not finished, if any]
 ```
+
+**Do NOT copy the full decision text into Session History.**
+One-line reference is enough — the full detail lives in `## Decisions`.
 
 ---
 
