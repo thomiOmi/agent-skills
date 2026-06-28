@@ -1,57 +1,91 @@
 # knowledge.md
 
-Global personal knowledge base. Auto-loaded at the start of every OpenCode session.
-Apply these preferences in all projects without being asked.
+Global personal knowledge base. Auto-loaded at the start of every session.
+Apply preferences and patterns found here without being asked.
 
-**Setup:** Add this file path to `opencode.jsonc` instructions field:
+**Setup:** Add this file to opencode.jsonc instructions:
 
 ```jsonc
 {
-  "instructions": [
-    "~/.agents/knowledge.md"
-  ]
+  "instructions": ["~/.agents/knowledge.md"]
 }
 ```
 
+**Agent instructions:**
+
+- This file is auto-loaded — no need to read manually
+- Append new entries when cross-project preferences or patterns are identified
+- Never overwrite existing entries
+- Keep entries concise — 3 to 5 lines maximum per entry
+
 ---
-<!-- Created: [YYYY-MM-DD] -->
 
-## Personal Preferences
+**Created:** [YYYY-MM-DD]
 
-<!-- How you like to work. Agent applies these automatically.
-     
-     Example:
-     ## Preference: Run tests after changes — YYYY-MM-DD
-     **Rule:** Always run the full test suite after any change, even if not asked
-     **Context:** All projects
+---
+
+## Preferences
+
+<!-- Personal working preferences applied across all projects.
+     Things you want the agent to do without being asked every time.
+
+     Format:
+     ### [Preference name] — [YYYY-MM-DD]
+     **Rule:** [What to always do or never do]
+     **Context:** [When this applies — all projects, or specific conditions]
 -->
 
 ---
 
-## Cross-Project Patterns
+## Decisions
 
-<!-- Patterns or decisions that apply across all your projects.
-     
-     Example:
-     ## Pattern: Use ULID for IDs — YYYY-MM-DD
-     **Rule:** Prefer ULID over UUID for new tables
-     **Reason:** Sortable, URL-safe, already used in starter kit
+<!-- Cross-project decisions and patterns worth remembering.
+
+     Format:
+     ### [Title] — [YYYY-MM-DD]
+     **Decision:** [What was decided — one sentence]
+     **Reason:** [Why this choice]
+     **Applies to:** [Which projects or conditions]
 -->
 
 ---
 
-## Pitfalls to Avoid
+## Conventions
 
-<!-- Things that have caused problems before. Agent should avoid these.
+<!-- Cross-project conventions you want applied consistently.
 
-     Format: - [What to avoid] — [Why] — [Discovered YYYY-MM-DD]
+     Format:
+     ### [Convention name]
+     **Rule:** [What to do]
+     **Exception:** [Any exceptions, or "none"]
+-->
+
+---
+
+## Known Issues
+
+<!-- Cross-project pitfalls or recurring problems to watch out for. -->
+
+| Issue | Context | Added |
+|-------|---------|-------|
+|  |  |  |
+
+---
+
+## Session History
+
+<!-- Notable cross-project sessions or discoveries.
+
+     Format:
+     ### [YYYY-MM-DD] — [Topic]
+     **Project:** [Which project]
+     **Key finding:** [What was discovered or decided]
 -->
 
 ---
 
 ## Update Log
 
-<!-- Track when significant preferences were added or changed.
-
-     Format: - YYYY-MM-DD: [what changed]
+<!-- Track when significant entries were added or changed.
+     Format: - [YYYY-MM-DD]: [What changed]
 -->
