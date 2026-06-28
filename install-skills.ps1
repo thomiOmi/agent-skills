@@ -131,8 +131,8 @@ else {
 # Add global knowledge to opencode.jsonc instructions if not present
 $ConfigJsoncPath = Join-Path $OpenCodeDir "opencode.jsonc"
 $ConfigJsonPath = Join-Path $OpenCodeDir "opencode.json"
-$globalKnowledgePath = "~/.agents/KNOWLEDGE.md"
-$agentsPath = "~/.config/opencode/AGENTS.md"
+$globalKnowledgePath = ($env:USERPROFILE -replace '\\', '/') + '/.agents/KNOWLEDGE.md'
+$agentsPath = ($env:USERPROFILE -replace '\\', '/') + '/.config/opencode/AGENTS.md'
 
 function Add-KnowledgeToConfig {
     param([string]$ConfigPath)
