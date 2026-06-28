@@ -3,6 +3,7 @@
 Project knowledge base. Read by agent at the start of every session.
 
 **Agent instructions:**
+
 - Read this file with the `read` tool at session start
 - Append new entries when significant decisions are made — do not overwrite existing entries
 - Do NOT add a Preferences section here — Preferences belong in ~/.agents/knowledge.md only
@@ -30,7 +31,6 @@ Project knowledge base. Read by agent at the start of every session.
      **Impact:** [What this affects going forward]
 -->
 
-
 ---
 
 ## Conventions
@@ -45,7 +45,6 @@ Project knowledge base. Read by agent at the start of every session.
      **Exception:** [Any exceptions, or "none"]
 -->
 
-
 ---
 
 ## Known Issues
@@ -54,9 +53,8 @@ Project knowledge base. Read by agent at the start of every session.
      Agent must NOT fix these without explicit instruction from the user.
 -->
 
-| Issue | Location | Priority | Added |
-|-------|---------|----------|-------|
-|  |  |  |  |
+| Issue   | Location | Priority | Added |
+| --------|----------|----------|-------|
 
 ---
 
@@ -74,7 +72,6 @@ Project knowledge base. Read by agent at the start of every session.
      **Remaining:**
      - [Item not finished, if any]
 -->
-
 
 ---
 
