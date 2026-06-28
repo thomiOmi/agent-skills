@@ -1,6 +1,6 @@
 ---
 name: knowledge-management
-description: 'Use this skill when reading, writing, or updating knowledge files — KNOWLEDGE.md (project) or knowledge.md (global). Triggers: "update knowledge", "remember this", "save this decision", "what do we know about", "summarize this session", "create knowledge file", "add to knowledge base". Apply at the start of every session and when significant decisions are made.'
+description: 'Use this skill when reading, writing, or updating knowledge files — KNOWLEDGE.md (project) or KNOWLEDGE.md (global). Triggers: "update knowledge", "remember this", "save this decision", "what do we know about", "summarize this session", "create knowledge file", "add to knowledge base". Apply at the start of every session and when significant decisions are made.'
 license: MIT
 compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
@@ -19,7 +19,7 @@ No external dependencies — knowledge lives as plain Markdown files in the proj
 
 | File | Location | Purpose | Loaded |
 |------|---------|---------|--------|
-| `knowledge.md` | `~/.agents/knowledge.md` | Personal preferences, cross-project patterns | Auto (via opencode.jsonc instructions) |
+| `KNOWLEDGE.md` | `~/.agents/KNOWLEDGE.md` | Personal preferences, cross-project patterns | Auto (via opencode.jsonc instructions) |
 | `KNOWLEDGE.md` | Project root | Project-specific decisions, patterns, tech debt | On-demand at session start |
 
 ---
@@ -27,7 +27,7 @@ No external dependencies — knowledge lives as plain Markdown files in the proj
 ## Session Rules
 
 **At session start:**
-1. `~/.agents/knowledge.md` is auto-loaded if configured in `opencode.jsonc`
+1. `~/.agents/KNOWLEDGE.md` is auto-loaded if configured in `opencode.jsonc`
 2. Use `read` tool to read `KNOWLEDGE.md` from project root if it exists
 3. Apply preferences and patterns found — do not ask the user to repeat known context
 
@@ -39,8 +39,7 @@ No external dependencies — knowledge lives as plain Markdown files in the proj
 
 See `references/what-to-record.md` for what qualifies as a significant decision.
 See `references/format.md` for entry format and examples.
-See `assets/KNOWLEDGE.md.template` for the project template.
-See `assets/knowledge.md.template` for the global template.
+See `assets/KNOWLEDGE.md.template` for the project or global template.
 
 ---
 
@@ -62,14 +61,14 @@ When user says any of these, act immediately:
 
 ```
 Session start:
-- [ ] ~/.agents/knowledge.md read (if exists)
+- [ ] ~/.agents/KNOWLEDGE.md read (if exists)
 - [ ] KNOWLEDGE.md read via `read` tool (if exists in project root)
 - [ ] Preferences and known patterns applied
 
 Session end (when significant decisions were made):
 - [ ] Architectural decisions appended to KNOWLEDGE.md
 - [ ] Session summary appended to ## Session History
-- [ ] Cross-project patterns added to ~/.agents/knowledge.md
+- [ ] Cross-project patterns added to ~/.agents/KNOWLEDGE.md
 - [ ] No existing entries overwritten
 - [ ] No fabricated entries added
 ```
