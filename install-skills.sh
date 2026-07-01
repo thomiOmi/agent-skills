@@ -96,14 +96,14 @@ if [ "$SKILLS_ONLY" = false ]; then
     if grep -q '"instructions"' "$CONFIG_JSONC"; then
       echo "  ⚠ opencode.jsonc already has 'instructions' — verify it includes AGENTS.md"
     else
-      sed -i 's/}[[:space:]]*$/,\n  "instructions": ["~\/.config\/opencode\/AGENTS.md"],\n  "permission": { "skill": { "*": "allow" } }\n}/' "$CONFIG_JSONC"
+      sed -i 's/}[[:space:]]*$/,/\n  "instructions": ["~\/\.config\/opencode\/AGENTS.md"],\n  "permission": { "skill": { "*": "allow" } }\n}/' "$CONFIG_JSONC"
       echo "  ✓ Updated opencode.jsonc"
     fi
   elif [ -f "$CONFIG_JSON" ]; then
     if grep -q '"instructions"' "$CONFIG_JSON"; then
       echo "  ⚠ opencode.json already has 'instructions' — verify it includes AGENTS.md"
     else
-      sed -i 's/}[[:space:]]*$/,\n  "instructions": ["~\/.config\/opencode\/AGENTS.md"],\n  "permission": { "skill": { "*": "allow" } }\n}/' "$CONFIG_JSON"
+      sed -i 's/}[[:space:]]*$/,/\n  "instructions": ["~\/\.config\/opencode\/AGENTS.md"],\n  "permission": { "skill": { "*": "allow" } }\n}/' "$CONFIG_JSON"
       echo "  ✓ Updated opencode.json"
     fi
   else
