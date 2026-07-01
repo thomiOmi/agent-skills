@@ -69,7 +69,7 @@ powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
 
 After running the install script:
 
-```
+```text
 ~/.config/opencode/              # Linux / Mac / WSL
 %USERPROFILE%\.config\opencode\  # Windows
 ├── AGENTS.md                    ← global agent rules
@@ -158,7 +158,7 @@ Full reference template — add only what you need:
 
 ### Option 1 — Run `/init` inside OpenCode
 
-```
+```shell
 /init
 ```
 
@@ -229,7 +229,7 @@ Control which skills are available per-agent in `opencode.jsonc`:
 ```
 
 | Permission | Behavior |
-|------------|----------|
+| ------------ | ---------- |
 | `allow` | Skill loads immediately |
 | `deny` | Skill hidden from agent, access rejected |
 | `ask` | User prompted before loading |
@@ -242,7 +242,7 @@ AGENTS.md follows a standard format and can be used with other tools manually.
 Since this repo is focused on OpenCode CLI, other tools are not installed automatically.
 
 | Tool | How to use AGENTS.md |
-|------|---------------------|
+| ------ | --------------------- |
 | Cursor | Copy or symlink `AGENTS.md` to `.cursorrules` |
 | GitHub Copilot | Copy or symlink to `.github/copilot-instructions.md` |
 | Gemini CLI | Copy or symlink to `GEMINI.md` |
@@ -254,7 +254,7 @@ Since this repo is focused on OpenCode CLI, other tools are not installed automa
 ## Finding More Skills
 
 | Source | Best for |
-|--------|----------|
+| -------- | ---------- |
 | [opencode.ai/docs/skills](https://opencode.ai/docs/skills/) | Official skill format reference |
 | [skills.sh](https://skills.sh) | Browse community skill collections |
 | [officialskills.sh](https://officialskills.sh) | Official skills from vendor dev teams |
