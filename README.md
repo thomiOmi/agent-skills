@@ -14,6 +14,7 @@ Global AGENTS.md and SKILL.md collection for [OpenCode CLI](https://opencode.ai)
 | `planning` | ERD, system architecture, flowchart, sequence diagram |
 | `debugging` | bug diagnosis, slow queries, root cause analysis |
 | `ai-integration` | LLM API, prompt design, RAG, agents, embeddings |
+| `xquik-api-integration` | Xquik REST API, MCP, webhooks, X data dashboards |
 | `sdlc-documentation` | PRD, SDD, user stories, test plan, release notes |
 | `git-workflow` | branching, commits, PR review, merge strategy |
 | `security-review` | OWASP, auth audit, input validation, data exposure |
@@ -109,6 +110,7 @@ agent-skills/
     ├── planning/
     ├── debugging/
     ├── ai-integration/
+    ├── xquik-api-integration/
     ├── sdlc-documentation/
     ├── git-workflow/
     ├── security-review/
