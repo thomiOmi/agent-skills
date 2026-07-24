@@ -119,10 +119,16 @@ Each skill follows the [agentskills.io](https://agentskills.io/specification) sp
 
 ## Linting & Formatting
 
-This project uses [Oxc](https://oxc.rs/) for linting and formatting:
+This project uses [Oxc](https://oxc.rs/) for linting and formatting.
 
-- `oxlint` — fast Rust-based TypeScript linter
-- `oxfmt` — Rust-based TypeScript formatter
+| Command | Description |
+| ------- | ----------- |
+| `bun run lint` | Run oxlint to check for errors |
+| `bun run lint:fix` | Run oxlint and auto-fix fixable issues |
+| `bun run fmt` | Run oxfmt to format all TypeScript files |
+| `bun run fmt:check` | Check if all files are properly formatted |
+
+To format all files: `bun run fmt`
 
 ## Updating
 

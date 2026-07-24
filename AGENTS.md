@@ -206,11 +206,11 @@ It does not apply to clear execution tasks ("add this index", "fix this bug").
 **Stack:** TypeScript, Bun, @opencode-ai/plugin, UNJS.io (pathe, defu, consola, ofetch, ohash, unconfig, destr, ufo)
 **Package manager:** bun
 **Test runner:** Bun built-in test (`bun test`)
-**Linter / formatter:** eslint + prettier
+**Linter / formatter:** oxlint + oxfmt
 **Main branch:** main
-**CI:** GitHub Actions (validate-skills.yml with typecheck, lint, test)
+**CI:** GitHub Actions (validate-skills.yml with typecheck, lint, format, test)
 **Key directories:** skills/ · src/ · plugin/ · tests/ · .github/
 **Do NOT touch:** generated/ · node_modules/ · dist/
-**Plugin install:** `"plugin": ["@thomio/agent-skills"]` in opencode.jsonc
+**Plugin install:** `"plugins": ["@thomiOmi/agent-skills"]` in opencode.jsonc
 **API conventions:** JSONC for config, JSON for exports
 **Plugin docs:** <https://opencode.ai/docs/plugins>

@@ -176,7 +176,7 @@ jobs:
         run: bun run typecheck
 
   lint:
-    name: Lint
+    name: Lint (oxlint)
     runs-on: ubuntu-latest
 
     steps:
@@ -193,6 +193,25 @@ jobs:
 
       - name: Lint (oxlint)
         run: bun run lint
+
+  format:
+    name: Format (oxfmt)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Check format (oxfmt)
+        run: bun run fmt:check
 
   test:
     name: Unit tests
