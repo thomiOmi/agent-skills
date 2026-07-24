@@ -1,0 +1,88 @@
+{
+  "name": "@thomio/agent-skills",
+  "version": "0.1.0",
+  "description": "OpenCode plugin for agent-skills — cross-platform TypeScript installer for agent skills, MCP servers, and AGENTS.md configuration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/types.d.ts",
+  "bin": {
+    "agent-skills": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./plugin": {
+      "types": "./dist/plugin/agent-skills.d.ts",
+      "import": "./dist/plugin/agent-skills.js"
+    }
+  },
+  "files": [
+    "dist",
+    "skills",
+    "plugin",
+    "AGENTS.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/ plugin/ tests/ --ext .ts",
+    "lint:fix": "eslint src/ plugin/ tests/ --ext .ts --fix",
+    "format": "prettier --write src/ plugin/ tests/ PRD.md README.md",
+    "test": "bun test tests/",
+    "test:coverage": "bun test --coverage tests/",
+    "prepublishOnly": "npm run build",
+    "version": "bun run src/scripts/version.ts"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "latest",
+    "@opencode-ai/sdk": "latest",
+    "consola": "^3.2.3",
+    "defu": "^6.1.4",
+    "destr": "^2.0.4",
+    "ofetch": "^1.8.1",
+    "ohash": "^1.1.4",
+    "pathe": "^1.1.4",
+    "unconfig": "^0.3.2",
+    "ufo": "^1.5.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@typescript-eslint/js": "^8.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.4.0",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "bun": ">=1.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.1.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thomiOmi/agent-skills.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "opencode",
+    "agent-skills",
+    "plugin",
+    "ai",
+    "agents",
+    "cross-platform"
+  ],
+  "author": "thomiOmi",
+  "bugs": {
+    "url": "https://github.com/thomiOmi/agent-skills/issues"
+  },
+  "homepage": "https://github.com/thomiOmi/agent-skills#readme"
+}

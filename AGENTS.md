@@ -32,25 +32,31 @@ No exceptions.
 - When uncertain: say so and ask one targeted question. Never fill gaps with guesses.
 - Never cite documentation, papers, or sources unless retrieved in this session via `webfetch` or `websearch`.
 
-**Confidence labeling — MUST appear on every factual or technical claim:**
+Must do (constraints that must be followed):
 
-After any claim about a library version, API behavior, config key, framework feature, or technical fact, append the label inline:
+- Read relevant files before proposing changes — never assume structure or content.
+- Do not reference any function, class, endpoint, or config key unless seen in the codebase or confirmed by the user.
+- Do not suggest a library unless it is in the project manifest (`package.json`, `composer.json`, `go.mod`, etc.).
+- When uncertain: say so and ask one targeted question. Never fill gaps with guesses.
+- Never cite documentation, papers, or sources unless retrieved in this session via `webfetch` or `websearch`.
+
+Must not do (constraints that must never be violated):
+
+- Do not invent names, endpoints, or config keys not visible in the codebase.
+- Do not write "I'll assume X" and continue without confirmation.
+- Do not cite a library version without checking the manifest.
+- Do not proceed past a blocking ambiguity without surfacing it.
+- Do not state version-specific facts without verification.
+- Do not omit the confidence labeling on any factual or technical claim.
+- Do not wait to be asked for the confidence label — append it to every claim.
+
+**Confidence labeling format:**
 
 - `[High confidence]` — verified from file read, tool output, or docs fetched this session
 - `[Medium confidence]` — from prior knowledge, not verified this session
 - `[Low confidence]` — uncertain; verify before the user acts on this
 
 Example: "Laravel 11 introduced this feature [High confidence — confirmed in bootstrap/app.php:33]"
-
-Do not omit the label. Do not wait to be asked. Every factual claim gets a label.
-
-```text
-❌ Invent names, endpoints, or config keys not visible in the code
-❌ Write "I'll assume X" and continue without confirmation
-❌ Cite a library version without checking the manifest
-❌ Proceed past a blocking ambiguity without surfacing it
-❌ State version-specific facts without verification
-```
 
 ---
 
@@ -191,48 +197,20 @@ It does not apply to clear execution tasks ("add this index", "fix this bug").
 - Do not contradict a previous finding in the same session without explaining why
 - If the user's new information changes your earlier assessment, acknowledge the change explicitly
 
-## Session Memory
-
-File-based persistent knowledge across sessions.
-
-**At session start — MUST do both:**
-
-1. If `~/.agents/KNOWLEDGE.md` exists: read it using the `read` tool
-2. If `KNOWLEDGE.md` exists in the project root: read it using the `read` tool
-3. Apply any preferences or patterns found — do not ask the user to repeat them
-
-**At session end — only when asked or when significant decisions were made:**
-
-1. Append new architectural decisions to `KNOWLEDGE.md` under `## Architectural Decisions`
-2. Append session summary under `## Session History`
-3. Update `~/.agents/KNOWLEDGE.md` for cross-project patterns or preferences
-4. Never overwrite existing entries — only append
-5. Never fabricate entries — only record decisions actually made this session
-
-**What counts as a significant decision:**
-
-- Choosing one approach over alternatives (e.g. JWT vs Sanctum)
-- Establishing a new pattern for the codebase
-- Identifying tech debt or a known issue
-- Changing an existing convention
-
-**What does not need to be recorded:**
-
-- Routine bug fixes
-- Minor refactors
-- Test additions without architectural impact
-
 ## Project Context
 
 > Fill in the project-level AGENTS.md. All rules above apply automatically.
 
-**Project:** [name]
-**Stack:** [e.g. Laravel 13 · PHP 8.4 · PostgreSQL · Nuxt 4]
-**Package manager:** [e.g. composer · pnpm · bun]
-**Test runner:** [e.g. Pest · vitest · pytest]
-**Linter / formatter:** [e.g. Pint · eslint + prettier]
-**Main branch:** [e.g. main]
-**CI:** [e.g. GitHub Actions]
-**Key directories:** [e.g. modules/ · tests/ · docs/]
-**Do NOT touch:** [e.g. legacy/ · generated/]
-**API conventions:** [success format · error format · date format · key naming]
+**Project:** agent-skills
+**Type:** OpenCode CLI plugin (TypeScript + Bun)
+**Stack:** TypeScript, Bun, @opencode-ai/plugin, UNJS.io (pathe, defu, consola, ofetch, ohash, unconfig, destr, ufo)
+**Package manager:** bun
+**Test runner:** Bun built-in test (`bun test`)
+**Linter / formatter:** eslint + prettier
+**Main branch:** main
+**CI:** GitHub Actions (validate-skills.yml with typecheck, lint, test)
+**Key directories:** skills/ · src/ · plugin/ · tests/ · .github/
+**Do NOT touch:** generated/ · node_modules/ · dist/
+**Plugin install:** `"plugin": ["@thomio/agent-skills"]` in opencode.jsonc
+**API conventions:** JSONC for config, JSON for exports
+**Plugin docs:** https://opencode.ai/docs/plugins

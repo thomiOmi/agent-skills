@@ -1,4 +1,7 @@
+node_modules
+dist
+.cache
+*.log
 .DS_Store
-__pycache__/
-.idea/
-.vscode/
+.agentskills.local
+opencode.jsonc

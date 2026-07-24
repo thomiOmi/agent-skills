@@ -65,6 +65,23 @@ powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
 
 ---
 
+### Option C — Plugin (recommended for agentskills v0.1.0+)
+
+Install as an OpenCode plugin — automatic skill sync, MCP config, and cross-platform support.
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["@thomio/agent-skills"]
+}
+```
+
+That is it. The plugin automatically syncs all 12 skills, configures remote AGENTS.md instructions, sets skill permissions to `"allow"`, and auto-configures recommended MCP servers (github, context7, grep). Works the same on Windows, Linux, and macOS.
+
+See [OpenCode Plugins docs](https://opencode.ai/docs/plugins) for details.
+
+---
+
 ## Global Install Layout
 
 After running the install script:
@@ -271,6 +288,16 @@ Since this repo is focused on OpenCode CLI, other tools are not installed automa
 
 ## Updating
 
+### Plugin (Option C)
+
+```bash
+git pull
+```
+
+If using **Option C (plugin)**, AGENTS.md and skills update automatically on your next OpenCode session after a new npm version is published. Re-run the plugin sync by restarting OpenCode.
+
+### Shell installer (Options A, B)
+
 ```bash
 # Pull latest
 git pull
@@ -280,7 +307,7 @@ git pull
 powershell -ExecutionPolicy Bypass -File .\install-skills.ps1  # Windows
 ```
 
-If you use **Option A (remote)**, AGENTS.md updates automatically — only re-run the installer when new skills are added.
+If you use **Option A (remote)**, AGENTS.md updates automatically — only re-run when new skills are added.
 
 If you use **Option B (local)**, you must re-run the installer after pulling to update AGENTS.md and install any new skills.
 
