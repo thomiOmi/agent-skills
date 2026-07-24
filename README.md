@@ -21,73 +21,36 @@ Global AGENTS.md and SKILL.md collection for [OpenCode CLI](https://opencode.ai)
 
 ## Install
 
-### Option A — Remote (recommended)
-
-AGENTS.md is fetched from GitHub automatically — always up-to-date.
-
-Add to `~/.config/opencode/opencode.jsonc`:
-
-```jsonc
-{
-  "$schema": "https://opencode.ai/config.json",
-  "instructions": [
-    "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"
-  ],
-  "permission": {
-    "skill": { "*": "allow" }
-  }
-}
-```
-
-Then install skills locally:
-
-```bash
-# Linux / Mac / WSL
-git clone https://github.com/thomiOmi/agent-skills.git
-cd agent-skills
-chmod +x install-skills.sh
-./install-skills.sh --skills-only
-```
-
-```powershell
-# Windows
-git clone https://github.com/thomiOmi/agent-skills.git
-cd agent-skills
-powershell -ExecutionPolicy Bypass -File .\install-skills.ps1 -SkillsOnly
-```
-
-### Option B — Full local install
-
-```bash
-# Linux / Mac / WSL
-./install-skills.sh
-```
-
-```powershell
-# Windows
-powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
-```
-
-### Option C — Plugin (recommended for agentskills v0.1.0+)
+### Plugin (recommended)
 
 Install as an OpenCode plugin — automatic skill sync, MCP config, and cross-platform support.
 
-Add to `~/.config/opencode/opencode.jsonc`:
+Edit `~/.config/opencode/opencode.jsonc`:
 
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@thomio/agent-skills"]
+  "plugins": ["@thomiOmi/agent-skills"]
 }
 ```
 
 That is it. The plugin automatically:
-- Syncs all 12 skills to `~/.config/opencode/skills/`
-- Configures remote AGENTS.md instructions
-- Sets skill permissions to `"allow"`
-- Auto-configures recommended MCP servers (github, context7, grep)
 
-See [INSTALL.md](INSTALL.md) for full config reference, MCP setup, and per-project instructions.
+- Syncs all skills to `~/.config/opencode/skills/`
+- Configures remote AGENTS.md instructions
+- Allows all skills by default
+- Auto-configures recommended MCP servers (github, context7, grep)
+- Works identically on Windows, Linux, and macOS
+
+See [INSTALL.md](INSTALL.md) for full v2 config reference, MCP setup, and per-project instructions.
+
+## Updating
+
+```bash
+git pull
+```
+
+Skills and AGENTS.md update automatically on your next OpenCode session after a new npm version is published. Restart OpenCode to trigger the plugin sync.
 
 ## Per-Project Setup
 
@@ -100,12 +63,12 @@ Or create it manually at the project root:
 
 **Project:** my-app
 **Stack:** Node.js 22 · TypeScript · PostgreSQL · Next.js 15
-**Package manager:** pnpm
-**Test runner:** vitest
-**Linter / formatter:** eslint + prettier
+**Package manager:** bun
+**Test runner:** bun test
+**Linter / formatter:** oxlint + oxfmt
 **Main branch:** main
 **CI:** GitHub Actions
-**Key directories:** src/ · tests/ · docs/
+**Key directories:** src/ · tests/ · skills/
 **Do NOT touch:** generated/
 ```
 
@@ -115,10 +78,21 @@ Or create it manually at the project root:
 agent-skills/
 ├── README.md
 ├── INSTALL.md
+├── PRD.md
 ├── SPEC.md
 ├── AGENTS.md
-├── install-skills.sh
-├── install-skills.ps1
+├── package.json
+├── tsconfig.json
+├── plugin/
+│   └── agent-skills.ts
+├── src/
+│   ├── index.ts
+│   ├── types.ts
+│   ├── config.ts
+│   ├── install.ts
+│   └── paths.ts
+├── tests/
+│   └── validate-skills.test.ts
 └── skills/
     ├── task-decomposition/
     ├── code-style/
@@ -143,25 +117,19 @@ Each skill follows the [agentskills.io](https://agentskills.io/specification) sp
 └── assets/         ← templates ready to copy
 ```
 
+## Linting & Formatting
+
+This project uses [Oxc](https://oxc.rs/) for linting and formatting:
+
+- `oxlint` — fast Rust-based TypeScript linter
+- `oxfmt` — Rust-based TypeScript formatter
+
 ## Updating
 
-### Plugin (Option C)
+### Plugin
 
 ```bash
 git pull
 ```
 
-If using **Option C (plugin)**, AGENTS.md and skills update automatically on your next OpenCode session after a new npm version is published. Re-run the plugin sync by restarting OpenCode.
-
-### Shell installer (Options A, B)
-
-```bash
-# Pull latest
-git pull
-
-# Re-run installer
-./install-skills.sh --skills-only     # Linux / Mac / WSL
-powershell -ExecutionPolicy Bypass -File .\install-skills.ps1 -SkillsOnly  # Windows
-```
-
-If you use **Option A (remote)**, AGENTS.md updates automatically — only re-run when new skills are added.
+If using the plugin approach, skills update automatically on your next OpenCode session after a new npm version is published. Restart OpenCode to trigger the plugin sync.

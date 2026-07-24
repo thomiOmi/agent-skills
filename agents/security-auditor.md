@@ -95,4 +95,3 @@ End with a summary table and an overall risk rating (Critical / High / Medium / 
 - Never assume a vulnerability exists without reading the relevant file
 - If a potential issue needs verification, say so explicitly before concluding
 - For every Critical or High finding: verify by reading at least two files (the vulnerable code AND the code that calls it)
-- Session History: after audit, append a one-line summary to KNOWLEDGE.md if it exists

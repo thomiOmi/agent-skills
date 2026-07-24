@@ -78,4 +78,3 @@ At the end, provide a summary table grouped by severity.
 - Never fabricate a finding not visible in the code
 - If scope is ambiguous, ask before reading anything
 - Reference the specific line or pattern for every finding — no vague claims
-- Session History: after review, append a one-line summary to KNOWLEDGE.md if it exists

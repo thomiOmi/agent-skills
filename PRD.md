@@ -38,7 +38,7 @@ The agent-skills repository currently relies on shell scripts (`install-skills.s
 ## 5. Functional Requirements
 
 | ID | Requirement | Detail | UNJS Library |
-|----|-------------|--------|--------------|
+| ---- | ------------- | -------- | -------------- |
 | FR-1 | **Plugin TypeScript package** | Npm package published as `@thomio/agent-skills`. TypeScript strict mode. Bun runtime. | — |
 | FR-2 | **Plugin hook: `installation.updated`** | On OpenCode installation update, sync skills from npm package to user's `~/.config/opencode/skills/`. | `pathe`, `fs` |
 | FR-3 | **Plugin hook: `session.created`** | On new session, ensure skills are present and up-to-date. Skip if already synced. | `ohash`, `pathe` |
@@ -69,6 +69,7 @@ The agent-skills repository currently relies on shell scripts (`install-skills.s
 ## 7. Scope
 
 ### In Scope
+
 - TypeScript plugin package with OpenCode hook integration
 - Cross-platform skill synchronization (copy from npm package to user config dir)
 - `opencode.jsonc` auto-configuration (instructions, permissions, MCP servers)
@@ -79,6 +80,7 @@ The agent-skills repository currently relies on shell scripts (`install-skills.s
 - AGENTS.md cleanup (remove emoji, clean list format)
 
 ### Out of Scope
+
 - Custom agents creation (separate feature)
 - Custom shortcuts/commands (`/review`, `/plan-feature`)
 - Custom plugins (knowledge persistence, notifications, chat export)
@@ -92,7 +94,7 @@ The agent-skills repository currently relies on shell scripts (`install-skills.s
 The following UNJS.io libraries are used for third-party functionality:
 
 | Package | Purpose |
-|---------|---------|
+| --------- | --------- |
 | `pathe` | Cross-platform path joining, resolution, and normalization |
 | `defu` | Deep merge of default and user configuration objects |
 | `consola` | Structured logging with levels and prefixes |
@@ -105,5 +107,5 @@ The following UNJS.io libraries are used for third-party functionality:
 ## 9. Changelog
 
 | Version | Date | Changes |
-|---------|------|---------|
+| --------- | ------ | --------- |
 | 0.1.0 | TBD | MVP: TypeScript plugin with skill sync, config automation, MCP auto-config |

@@ -13,7 +13,7 @@ const RECOMMENDED_MCP_SERVERS = [
     name: "github",
     command: "npx",
     args: ["@modelcontextprotocol/server-github"],
-    env: { GITHUB_TOKEN: "your_token_here" },
+    environment: { GITHUB_TOKEN: "your_token_here" },
   },
   {
     name: "context7",
@@ -69,28 +69,38 @@ async function configureConfig(configPath: string): Promise<void> {
       consola.info(`[${SERVICE_NAME}] Added instructions to config`)
     }
 
-    const permission = (config.permission ?? {}) as Record<string, unknown>
-    const skill = (permission.skill ?? {}) as Record<string, string>
-    if (skill["*"] !== "allow") {
-      skill["*"] = "allow"
+    const permissions = (config.permissions ?? []) as Array<{
+      action?: string
+      resource?: string
+      effect?: string
+    }>
+    const hasSkillAllow = permissions.some(
+      (p) => p.action === "skill" && p.resource === "*" && p.effect === "allow"
+    )
+    if (!hasSkillAllow) {
+      permissions.push({ action: "skill", resource: "*", effect: "allow" })
       consola.info(`[${SERVICE_NAME}] Added skill permissions to config`)
     }
 
-    const mcp = (config.mcp ?? {}) as Record<string, unknown>
+    const mcpTop = (config.mcp ?? {}) as Record<string, unknown>
+    const servers =
+      (mcpTop.servers ?? {}) as Record<string, Record<string, unknown>>
     for (const server of RECOMMENDED_MCP_SERVERS) {
-      if (!mcp[server.name]) {
-        mcp[server.name] = {
+      if (!servers[server.name]) {
+        servers[server.name] = {
           type: "local",
           command: server.command,
           args: server.args,
-          env: server.env,
+        }
+        if (server.environment) {
+          servers[server.name].environment = server.environment
         }
         consola.info(`[${SERVICE_NAME}] Added MCP server: ${server.name}`)
       }
     }
 
     const output = JSON.stringify(
-      { ...config, instructions, permission, mcp },
+      { ...config, instructions, permissions, mcp: { servers } },
       null,
       2
     )

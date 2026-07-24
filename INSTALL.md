@@ -6,168 +6,77 @@ Setup guide for humans. Not read by AI agents.
 
 ## Quick Install
 
-### Option A — Remote (no install needed)
+### Plugin (recommended)
 
-The simplest setup. OpenCode fetches AGENTS.md directly from GitHub every session — always up-to-date automatically.
+Install as an OpenCode plugin — automatic skill sync, MCP config, and cross-platform support.
 
 Edit `~/.config/opencode/opencode.jsonc` (or `opencode.json`):
 
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": [
-    "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"
-  ]
+  "plugins": ["@thomiOmi/agent-skills"]
 }
 ```
 
-Then install skills locally (skills must be local — they are loaded on-demand):
-
-**Linux / Mac / WSL:**
-
-```bash
-git clone https://github.com/thomiOmi/agent-skills.git
-cd agent-skills
-chmod +x install-skills.sh
-./install-skills.sh --skills-only   # skip AGENTS.md, only install skills
-```
-
-**Windows (PowerShell):**
-
-```powershell
-git clone https://github.com/thomiOmi/agent-skills.git
-cd agent-skills
-powershell -ExecutionPolicy Bypass -File .\install-skills.ps1 -SkillsOnly
-```
-
----
-
-### Option B — Full local install
-
-Install everything locally. AGENTS.md is served from disk, not GitHub.
-
-**Linux / Mac / WSL:**
-
-```bash
-git clone https://github.com/thomiOmi/agent-skills.git
-cd agent-skills
-chmod +x install-skills.sh
-./install-skills.sh
-```
-
-**Windows (PowerShell):**
-
-```powershell
-git clone https://github.com/thomiOmi/agent-skills.git
-cd agent-skills
-powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
-```
-
----
-
-### Option C — Plugin (recommended for agentskills v0.1.0+)
-
-Install as an OpenCode plugin — automatic skill sync, MCP config, and cross-platform support.
-
-```jsonc
-{
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@thomio/agent-skills"]
-}
-```
-
-That is it. The plugin automatically syncs all 12 skills, configures remote AGENTS.md instructions, sets skill permissions to `"allow"`, and auto-configures recommended MCP servers (github, context7, grep). Works the same on Windows, Linux, and macOS.
+That is it. The plugin automatically syncs all 12 skills, configures remote AGENTS.md instructions, sets skill permissions, and auto-configures recommended MCP servers (github, context7, grep). Works the same on Windows, Linux, and macOS.
 
 See [OpenCode Plugins docs](https://opencode.ai/docs/plugins) for details.
 
 ---
 
-## Global Install Layout
-
-After running the install script:
-
-```text
-~/.config/opencode/              # Linux / Mac / WSL
-%USERPROFILE%\.config\opencode\  # Windows
-├── AGENTS.md                    ← global agent rules
-├── INSTALL.md                   ← this file
-├── opencode.jsonc               ← config (model, permissions, MCP, instructions)
-└── skills/
-    ├── task-decomposition/      ← multi-step task planning & execution
-    │   └── SKILL.md
-    ├── code-style/              ← naming, docstrings, inline comments
-    │   └── SKILL.md
-    ├── api-conventions/         ← REST, GraphQL, WebSocket design
-    │   └── SKILL.md
-    ├── testing/                 ← unit, integration, snapshot, contract
-    │   └── SKILL.md
-    ├── documentation/           ← README, changelog, ADR, OpenAPI
-    │   └── SKILL.md
-    ├── planning/                ← ERD, MVP doc, timeline, flowchart
-    │   └── SKILL.md
-    ├── debugging/               ← systematic bug diagnosis workflow
-    │   └── SKILL.md
-    └── ai-integration/          ← LLM API, prompt design, RAG, agents
-        └── SKILL.md
-```
-
----
-
-## opencode.jsonc Template
+## opencode.jsonc Template (v2)
 
 Full reference template — add only what you need:
 
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "shell": "pwsh",  // or "bash", "zsh", "fish"
+  "shell": "pwsh",
 
-  // Option A: load AGENTS.md from GitHub (always up-to-date)
   "instructions": [
     "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"
   ],
 
-  // Option B: load AGENTS.md from disk (local install)
-  // "instructions": ["~/.config/opencode/AGENTS.md"],
+  "permissions": [
+    { "action": "skill", "resource": "*", "effect": "allow" }
+  ],
 
-  // Load additional project-specific instruction files
-  // "instructions": ["CONTRIBUTING.md", "docs/guidelines.md"],
+  "plugins": ["@thomiOmi/agent-skills"],
 
-  // Skill permissions — control which skills agents can access
-  "permission": {
-    "skill": {
-      "*": "allow"          // allow all skills by default
-      // "experimental-*": "ask",   // prompt before loading experimental skills
-      // "internal-*": "deny"       // hide internal skills from agent
-    }
-  },
-
-  // MCP servers — add only what your project needs
   "mcp": {
-    "github": {
-      "type": "local",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-github"],
-      "env": { "GITHUB_TOKEN": "your_token_here" }
-    },
-    "filesystem": {
-      "type": "local",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-filesystem", "/path/to/project"]
-    },
-    "postgres": {
-      "type": "local",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-postgres", "postgresql://user:pass@localhost/db"]
-    },
-    "browser": {
-      "type": "local",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-puppeteer"]
+    "servers": {
+      "github": {
+        "type": "local",
+        "command": "npx",
+        "args": ["@modelcontextprotocol/server-github"],
+        "environment": { "GITHUB_TOKEN": "your_token_here" }
+      },
+      "filesystem": {
+        "type": "local",
+        "command": "npx",
+        "args": ["@modelcontextprotocol/server-filesystem", "/path/to/project"]
+      },
+      "postgres": {
+        "type": "local",
+        "command": "npx",
+        "args": ["@modelcontextprotocol/server-postgres", "postgresql://user:pass@localhost/db"]
+      },
+      "browser": {
+        "type": "local",
+        "command": "npx",
+        "args": ["@modelcontextprotocol/server-puppeteer"]
+      }
     }
   }
 }
 ```
+
+Key changes from v1:
+- `"plugins"` — array of plugin package names (was `"plugin"` string)
+- `"mcp.servers"` — MCP servers nested under `mcp.servers` (was flat `"mcp"` top-level key)
+- `"environment"` — for MCP env vars (was `"env"`)
+- `"permissions"` — array of `{action, resource, effect}` objects (was `"permission.skill.*"` map)
 
 ---
 
@@ -190,12 +99,12 @@ Create `AGENTS.md` at the project root — fill in only the Project Context sect
 
 **Project:** my-app
 **Stack:** Node.js 22 · TypeScript · PostgreSQL · Next.js 15
-**Package manager:** pnpm
-**Test runner:** vitest
-**Linter / formatter:** eslint + prettier
+**Package manager:** bun
+**Test runner:** bun test
+**Linter / formatter:** oxlint + oxfmt
 **Main branch:** main
 **CI:** GitHub Actions — see .github/workflows/
-**Key directories:** src/ · tests/ · docs/
+**Key directories:** src/ · tests/ · skills/
 **Do NOT touch:** legacy/ · generated/
 ```
 
@@ -218,98 +127,13 @@ For monorepos, use `opencode.json` with glob patterns instead of duplicating AGE
 
 ---
 
-## Skill Permissions
-
-Control which skills are available per-agent in `opencode.jsonc`:
-
-```jsonc
-{
-  "permission": {
-    "skill": {
-      "*": "allow",           // allow all by default
-      "experimental-*": "ask" // prompt user before loading
-    }
-  },
-
-  // Override permissions for a specific built-in agent
-  "agent": {
-    "plan": {
-      "permission": {
-        "skill": {
-          "planning": "allow",
-          "*": "deny"
-        }
-      }
-    }
-  }
-}
-```
-
-| Permission | Behavior |
-| ------------ | ---------- |
-| `allow` | Skill loads immediately |
-| `deny` | Skill hidden from agent, access rejected |
-| `ask` | User prompted before loading |
-
----
-
-## Other AI Tools
-
-AGENTS.md follows a standard format and can be used with other tools manually.
-Since this repo is focused on OpenCode CLI, other tools are not installed automatically.
-
-| Tool | How to use AGENTS.md |
-| ------ | --------------------- |
-| Cursor | Copy or symlink `AGENTS.md` to `.cursorrules` |
-| GitHub Copilot | Copy or symlink to `.github/copilot-instructions.md` |
-| Gemini CLI | Copy or symlink to `GEMINI.md` |
-| Aider | `aider --read AGENTS.md` |
-| Claude Code | Place at `~/.claude/AGENTS.md` (global) or project root |
-
----
-
-## Finding More Skills
-
-| Source | Best for |
-| -------- | ---------- |
-| [opencode.ai/docs/skills](https://opencode.ai/docs/skills/) | Official skill format reference |
-| [skills.sh](https://skills.sh) | Browse community skill collections |
-| [officialskills.sh](https://officialskills.sh) | Official skills from vendor dev teams |
-| [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) | Curated community list |
-
-⚠️ **Before installing any community skill:**
-
-- Always read the SKILL.md content before installing
-- Prefer skills from official vendor accounts
-- Verify the `name` field matches the directory name
-- Check that description is specific — vague descriptions trigger incorrectly
-
----
-
 ## Updating
 
-### Plugin (Option C)
-
 ```bash
 git pull
 ```
 
-If using **Option C (plugin)**, AGENTS.md and skills update automatically on your next OpenCode session after a new npm version is published. Re-run the plugin sync by restarting OpenCode.
-
-### Shell installer (Options A, B)
-
-```bash
-# Pull latest
-git pull
-
-# Re-run installer
-./install-skills.sh        # Linux / Mac / WSL
-powershell -ExecutionPolicy Bypass -File .\install-skills.ps1  # Windows
-```
-
-If you use **Option A (remote)**, AGENTS.md updates automatically — only re-run when new skills are added.
-
-If you use **Option B (local)**, you must re-run the installer after pulling to update AGENTS.md and install any new skills.
+Skills and AGENTS.md update automatically on your next OpenCode session after a new npm version is published. Restart OpenCode to trigger the plugin sync.
 
 ---
 
@@ -330,6 +154,8 @@ If you use **Option B (local)**, you must re-run the installer after pulling to 
 
 **Windows execution policy error:**
 
+PowerShell execution policy can block script execution. Set it with:
+
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\install-skills.ps1
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```

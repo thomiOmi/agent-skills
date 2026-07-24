@@ -213,4 +213,4 @@ It does not apply to clear execution tasks ("add this index", "fix this bug").
 **Do NOT touch:** generated/ · node_modules/ · dist/
 **Plugin install:** `"plugin": ["@thomio/agent-skills"]` in opencode.jsonc
 **API conventions:** JSONC for config, JSON for exports
-**Plugin docs:** https://opencode.ai/docs/plugins
+**Plugin docs:** <https://opencode.ai/docs/plugins>

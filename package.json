@@ -1,5 +1,5 @@
 {
-  "name": "@thomio/agent-skills",
+  "name": "@thomiOmi/agent-skills",
   "version": "0.1.0",
   "description": "OpenCode plugin for agent-skills — cross-platform TypeScript installer for agent skills, MCP servers, and AGENTS.md configuration",
   "type": "module",
@@ -29,9 +29,10 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src/ plugin/ tests/ --ext .ts",
-    "lint:fix": "eslint src/ plugin/ tests/ --ext .ts --fix",
-    "format": "prettier --write src/ plugin/ tests/ PRD.md README.md",
+    "lint": "oxlint src/ plugin/ tests/ --ext .ts",
+    "lint:fix": "oxlint src/ plugin/ tests/ --ext .ts --fix",
+    "format": "oxfmt src/ plugin/ tests/ PRD.md README.md",
+    "format:check": "oxfmt --check src/ plugin/ tests/ PRD.md README.md",
     "test": "bun test tests/",
     "test:coverage": "bun test --coverage tests/",
     "prepublishOnly": "npm run build",
@@ -51,9 +52,8 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@typescript-eslint/js": "^8.0.0",
-    "eslint": "^9.0.0",
-    "prettier": "^3.4.0",
+    "oxlint": "latest",
+    "oxfmt": "latest",
     "typescript": "^5.7.0"
   },
   "peerDependencies": {
@@ -78,7 +78,8 @@
     "plugin",
     "ai",
     "agents",
-    "cross-platform"
+    "cross-platform",
+    "oxc"
   ],
   "author": "thomiOmi",
   "bugs": {

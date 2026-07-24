@@ -191,7 +191,7 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Lint
+      - name: Lint (oxlint)
         run: bun run lint
 
   test:
