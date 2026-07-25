@@ -49,23 +49,23 @@ If a project-level AGENTS.md defines these, use those definitions without asking
 
 These apply regardless of the chosen format:
 
-| Field type | Rule |
-|-----------|------|
-| Monetary values | Integer cents — `"amount": 1999` for $19.99 |
-| Boolean flags | Explicit `true`/`false` — not `1`/`0` or `"yes"`/`"no"` |
-| Nullable fields | Explicit `null` — do not omit the field |
-| Arrays | Empty array `[]` — not `null` when empty |
+| Field type      | Rule                                                    |
+| --------------- | ------------------------------------------------------- |
+| Monetary values | Integer cents — `"amount": 1999` for $19.99             |
+| Boolean flags   | Explicit `true`/`false` — not `1`/`0` or `"yes"`/`"no"` |
+| Nullable fields | Explicit `null` — do not omit the field                 |
+| Arrays          | Empty array `[]` — not `null` when empty                |
 
 ---
 
 ## Common Date Format Reference
 
-| Format | Example | Use when |
-|--------|---------|----------|
-| ISO 8601 UTC | `"2026-01-15T10:00:00Z"` | APIs consumed by multiple clients or timezones |
-| MySQL | `"2026-01-15 10:00:00"` | Backends storing directly to MySQL/MariaDB |
-| Unix timestamp | `1736935200` | High-frequency APIs, logging, mobile |
-| Date only | `"2026-01-15"` | Dates without time (birthdays, deadlines) |
+| Format         | Example                  | Use when                                       |
+| -------------- | ------------------------ | ---------------------------------------------- |
+| ISO 8601 UTC   | `"2026-01-15T10:00:00Z"` | APIs consumed by multiple clients or timezones |
+| MySQL          | `"2026-01-15 10:00:00"`  | Backends storing directly to MySQL/MariaDB     |
+| Unix timestamp | `1736935200`             | High-frequency APIs, logging, mobile           |
+| Date only      | `"2026-01-15"`           | Dates without time (birthdays, deadlines)      |
 
 ---
 
@@ -80,19 +80,17 @@ When the project uses RFC 7807 for error responses:
   "status": 422,
   "detail": "The email field must be a valid email address.",
   "instance": "/api/v1/users",
-  "errors": [
-    { "field": "email", "message": "Must be a valid email address." }
-  ]
+  "errors": [{ "field": "email", "message": "Must be a valid email address." }]
 }
 ```
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `type` | Yes | URI identifying the error type |
-| `title` | Yes | Short human-readable summary |
-| `status` | Yes | HTTP status code |
-| `detail` | No | Human-readable explanation |
-| `instance` | No | URI of the specific occurrence |
+| Field      | Required | Description                    |
+| ---------- | -------- | ------------------------------ |
+| `type`     | Yes      | URI identifying the error type |
+| `title`    | Yes      | Short human-readable summary   |
+| `status`   | Yes      | HTTP status code               |
+| `detail`   | No       | Human-readable explanation     |
+| `instance` | No       | URI of the specific occurrence |
 
 ---
 

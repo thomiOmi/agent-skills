@@ -4,20 +4,20 @@ Global AGENTS.md and SKILL.md collection for [OpenCode CLI](https://opencode.ai)
 
 ## Skills
 
-| Skill | Triggers on |
-| ------- | ------------ |
-| `task-decomposition` | multi-file tasks, module reviews, unclear scope |
-| `code-style` | writing, reviewing, refactoring, auditing any code |
-| `api-conventions` | REST, GraphQL, WebSocket design and review |
-| `testing` | unit, integration, snapshot, contract tests, coverage audit |
-| `documentation` | README, changelog, ADR, OpenAPI spec |
-| `planning` | ERD, system architecture, flowchart, sequence diagram |
-| `debugging` | bug diagnosis, slow queries, root cause analysis |
-| `ai-integration` | LLM API, prompt design, RAG, agents, embeddings |
-| `sdlc-documentation` | PRD, SDD, user stories, test plan, release notes |
-| `git-workflow` | branching, commits, PR review, merge strategy |
-| `security-review` | OWASP, auth audit, input validation, data exposure |
-| `database` | schema design, migrations, query optimization, indexing |
+| Skill                | Triggers on                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| `task-decomposition` | multi-file tasks, module reviews, unclear scope             |
+| `code-style`         | writing, reviewing, refactoring, auditing any code          |
+| `api-conventions`    | REST, GraphQL, WebSocket design and review                  |
+| `testing`            | unit, integration, snapshot, contract tests, coverage audit |
+| `documentation`      | README, changelog, ADR, OpenAPI spec                        |
+| `planning`           | ERD, system architecture, flowchart, sequence diagram       |
+| `debugging`          | bug diagnosis, slow queries, root cause analysis            |
+| `ai-integration`     | LLM API, prompt design, RAG, agents, embeddings             |
+| `sdlc-documentation` | PRD, SDD, user stories, test plan, release notes            |
+| `git-workflow`       | branching, commits, PR review, merge strategy               |
+| `security-review`    | OWASP, auth audit, input validation, data exposure          |
+| `database`           | schema design, migrations, query optimization, indexing     |
 
 ## Install
 
@@ -30,7 +30,7 @@ Edit `~/.config/opencode/opencode.jsonc`:
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["@thomiOmi/agent-skills"]
+  "plugins": ["@thomiOmi/agent-skills"],
 }
 ```
 
@@ -121,11 +121,11 @@ Each skill follows the [agentskills.io](https://agentskills.io/specification) sp
 
 This project uses [Oxc](https://oxc.rs/) for linting and formatting.
 
-| Command | Description |
-| ------- | ----------- |
-| `bun run lint` | Run oxlint to check for errors |
-| `bun run lint:fix` | Run oxlint and auto-fix fixable issues |
-| `bun run fmt` | Run oxfmt to format all TypeScript files |
+| Command             | Description                               |
+| ------------------- | ----------------------------------------- |
+| `bun run lint`      | Run oxlint to check for errors            |
+| `bun run lint:fix`  | Run oxlint and auto-fix fixable issues    |
+| `bun run fmt`       | Run oxfmt to format all TypeScript files  |
 | `bun run fmt:check` | Check if all files are properly formatted |
 
 To format all files: `bun run fmt`

@@ -23,6 +23,7 @@ Provider-agnostic and language-agnostic — applies to any LLM API and any langu
 4. What is the cost estimate? (tokens × price × requests per day)
 
 **Clarify before building:**
+
 - Which LLM provider is used in this project? (check project AGENTS.md or environment config)
 - Which model is configured? (check config files — do not hardcode a model name)
 - Is there a budget or token limit per request?
@@ -31,14 +32,14 @@ Provider-agnostic and language-agnostic — applies to any LLM API and any langu
 
 ## Approach by Task Type
 
-| Task | Recommended approach |
-|------|---------------------|
-| Simple classification | Zero-shot with small model |
-| Structured data extraction | Prompt with explicit JSON schema |
-| Q&A over your own documents | RAG |
-| Multi-step tasks with external data | Agent with tools |
-| Real-time chat | Streaming API |
-| Batch processing | Batch API (lower cost, higher latency) |
+| Task                                | Recommended approach                   |
+| ----------------------------------- | -------------------------------------- |
+| Simple classification               | Zero-shot with small model             |
+| Structured data extraction          | Prompt with explicit JSON schema       |
+| Q&A over your own documents         | RAG                                    |
+| Multi-step tasks with external data | Agent with tools                       |
+| Real-time chat                      | Streaming API                          |
+| Batch processing                    | Batch API (lower cost, higher latency) |
 
 ---
 

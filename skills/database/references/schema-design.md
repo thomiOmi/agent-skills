@@ -2,40 +2,40 @@
 
 ## Naming Conventions
 
-| Object | Convention | Example |
-| -------- | ----------- | --------- |
-| Tables | lowercase, snake_case, plural | `users`, `order_items`, `payment_methods` |
-| Columns | lowercase, snake_case | `created_at`, `user_id`, `total_cents` |
-| Primary keys | `id` | `id` |
-| Foreign keys | `{table_singular}_id` | `user_id`, `order_id` |
-| Junction tables | both table names, alphabetical | `permission_role`, `product_tag` |
-| Indexes | `idx_{table}_{columns}` | `idx_orders_user_id` |
-| Unique constraints | `uq_{table}_{column}` | `uq_users_email` |
+| Object             | Convention                     | Example                                   |
+| ------------------ | ------------------------------ | ----------------------------------------- |
+| Tables             | lowercase, snake_case, plural  | `users`, `order_items`, `payment_methods` |
+| Columns            | lowercase, snake_case          | `created_at`, `user_id`, `total_cents`    |
+| Primary keys       | `id`                           | `id`                                      |
+| Foreign keys       | `{table_singular}_id`          | `user_id`, `order_id`                     |
+| Junction tables    | both table names, alphabetical | `permission_role`, `product_tag`          |
+| Indexes            | `idx_{table}_{columns}`        | `idx_orders_user_id`                      |
+| Unique constraints | `uq_{table}_{column}`          | `uq_users_email`                          |
 
 ---
 
 ## Key Types
 
-| Type | Symbol | Rule |
-| ------ | -------- | ------ |
-| Primary Key | PK | One per table. Unique, not null. |
-| Unique Key | UK | Multiple allowed. Unique. May be nullable. |
-| Foreign Key | FK | References PK of another table. Always indexed. |
-| Index | IDX | For query performance. Not a constraint. |
+| Type        | Symbol | Rule                                            |
+| ----------- | ------ | ----------------------------------------------- |
+| Primary Key | PK     | One per table. Unique, not null.                |
+| Unique Key  | UK     | Multiple allowed. Unique. May be nullable.      |
+| Foreign Key | FK     | References PK of another table. Always indexed. |
+| Index       | IDX    | For query performance. Not a constraint.        |
 
 ---
 
 ## Data Types
 
-| Data | Use | Avoid |
-| ------ | ----- | ------- |
-| Monetary values | Integer cents (`total_cents INT`) | Float, decimal (precision issues) |
-| Dates with time | `TIMESTAMPTZ` (PostgreSQL) or `DATETIME` with UTC | `TIMESTAMP` without timezone |
-| Dates only | `DATE` | `VARCHAR`, `DATETIME` |
-| IDs | UUID or integer auto-increment | Storing as string if using integer |
-| Boolean | `BOOLEAN` | `TINYINT(1)`, `CHAR(1)` |
-| Enums | Database ENUM or a lookup table | Open VARCHAR with no constraint |
-| JSON | `JSONB` (PostgreSQL) or `JSON` | `TEXT` for structured data |
+| Data            | Use                                               | Avoid                              |
+| --------------- | ------------------------------------------------- | ---------------------------------- |
+| Monetary values | Integer cents (`total_cents INT`)                 | Float, decimal (precision issues)  |
+| Dates with time | `TIMESTAMPTZ` (PostgreSQL) or `DATETIME` with UTC | `TIMESTAMP` without timezone       |
+| Dates only      | `DATE`                                            | `VARCHAR`, `DATETIME`              |
+| IDs             | UUID or integer auto-increment                    | Storing as string if using integer |
+| Boolean         | `BOOLEAN`                                         | `TINYINT(1)`, `CHAR(1)`            |
+| Enums           | Database ENUM or a lookup table                   | Open VARCHAR with no constraint    |
+| JSON            | `JSONB` (PostgreSQL) or `JSON`                    | `TEXT` for structured data         |
 
 ---
 

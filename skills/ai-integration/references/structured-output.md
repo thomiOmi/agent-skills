@@ -29,6 +29,7 @@ Always parse model output inside error handling.
 Never assume the output will be perfectly formatted.
 
 Steps:
+
 1. Trim whitespace from the response.
 2. Strip any markdown code fences if present.
 3. Parse the cleaned string as JSON.
@@ -44,12 +45,12 @@ This is more reliable than prompting alone.
 
 Common approaches by provider:
 
-| Provider | Mechanism | Notes |
-|----------|-----------|-------|
-| Anthropic | Tool use / function calling | Define a schema; response is guaranteed to match |
-| OpenAI | `response_format: { type: "json_schema" }` | Enforces a specific JSON schema |
-| Google | `responseMimeType: "application/json"` | Returns valid JSON |
-| Most providers | JSON mode | Returns valid JSON, does not enforce a specific schema |
+| Provider       | Mechanism                                  | Notes                                                  |
+| -------------- | ------------------------------------------ | ------------------------------------------------------ |
+| Anthropic      | Tool use / function calling                | Define a schema; response is guaranteed to match       |
+| OpenAI         | `response_format: { type: "json_schema" }` | Enforces a specific JSON schema                        |
+| Google         | `responseMimeType: "application/json"`     | Returns valid JSON                                     |
+| Most providers | JSON mode                                  | Returns valid JSON, does not enforce a specific schema |
 
 **Prefer tool use / function calling over prompt-only JSON** when the output structure is critical.
 Check the documentation for the provider configured in your project.

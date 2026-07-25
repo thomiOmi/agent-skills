@@ -4,17 +4,21 @@
 
 ```markdown
 ## What
+
 [1–3 sentences: what does this PR do?]
 
 ## Why
+
 [Why is this change needed? Link to the issue, ticket, or context.]
 
 Resolves: #[issue-number]
 
 ## How
+
 [Brief explanation of the approach taken, if non-obvious.]
 
 ## Type of change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Refactor (no behavior change)
@@ -22,6 +26,7 @@ Resolves: #[issue-number]
 - [ ] Documentation
 
 ## Testing
+
 [How was this tested? What scenarios were covered?]
 
 - [ ] Unit tests added / updated
@@ -29,9 +34,11 @@ Resolves: #[issue-number]
 - [ ] Manually tested: [describe steps]
 
 ## Screenshots / output (if applicable)
+
 [Paste relevant output, API responses, or UI screenshots]
 
 ## Checklist
+
 - [ ] Self-review completed
 - [ ] No debug statements or temporary code
 - [ ] No hardcoded secrets
@@ -76,11 +83,11 @@ Resolves: #[issue-number]
 
 ## PR Size Guidelines
 
-| Size | Lines changed | Risk |
-| ------ | -------------- | ------ |
-| Small | < 100 lines | Easy to review thoroughly |
-| Medium | 100–400 lines | Reviewable with focus |
-| Large | > 400 lines | Consider splitting |
+| Size   | Lines changed | Risk                      |
+| ------ | ------------- | ------------------------- |
+| Small  | < 100 lines   | Easy to review thoroughly |
+| Medium | 100–400 lines | Reviewable with focus     |
+| Large  | > 400 lines   | Consider splitting        |
 
 Large PRs slow down review and increase risk.
 If a PR is large, add a description of how to review it in sections.

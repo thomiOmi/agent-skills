@@ -8,9 +8,11 @@ I want to [perform an action],
 So that [I achieve a goal / get a benefit].
 
 Acceptance criteria:
+
 - [ ] Given [context], when [action], then [expected result]
 
 Definition of Done:
+
 - [ ] Unit tests written and passing
 - [ ] Code reviewed
 - [ ] Deployed to staging
@@ -25,12 +27,14 @@ I want to reset my password via email,
 So that I can regain access without contacting support.
 
 Acceptance criteria:
+
 - [ ] Given valid email, when reset requested, then email sent within 30s
 - [ ] Given reset link clicked within 1h, then password change form shown
 - [ ] Given expired link, then user sees error with re-request option
 - [ ] Given new password submitted, then all other sessions are invalidated
 
 Definition of Done:
+
 - [ ] Unit tests: token generation, expiry, invalidation
 - [ ] Integration test: full reset flow
 - [ ] Email template reviewed

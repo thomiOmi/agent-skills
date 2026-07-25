@@ -41,13 +41,13 @@ Run EXPLAIN (or EXPLAIN ANALYZE) on any slow query before optimizing.
 
 **What to look for:**
 
-| Term | Meaning | Action |
-| ------ | --------- | -------- |
-| Sequential scan (Seq Scan) | Reading the entire table | Add an index |
-| Index scan | Using an index efficiently | Good |
-| Nested loop with high rows | N+1 or missing join index | Add index or restructure |
-| Sort with high cost | ORDER BY on unindexed column | Add index on sort column |
-| High actual rows vs estimated rows | Statistics out of date | Run ANALYZE |
+| Term                               | Meaning                      | Action                   |
+| ---------------------------------- | ---------------------------- | ------------------------ |
+| Sequential scan (Seq Scan)         | Reading the entire table     | Add an index             |
+| Index scan                         | Using an index efficiently   | Good                     |
+| Nested loop with high rows         | N+1 or missing join index    | Add index or restructure |
+| Sort with high cost                | ORDER BY on unindexed column | Add index on sort column |
+| High actual rows vs estimated rows | Statistics out of date       | Run ANALYZE              |
 
 ---
 

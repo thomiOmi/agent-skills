@@ -15,7 +15,7 @@ Edit `~/.config/opencode/opencode.jsonc` (or `opencode.json`):
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["@thomiOmi/agent-skills"]
+  "plugins": ["@thomiOmi/agent-skills"],
 }
 ```
 
@@ -34,13 +34,9 @@ Full reference template — add only what you need:
   "$schema": "https://opencode.ai/config.json",
   "shell": "pwsh",
 
-  "instructions": [
-    "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"
-  ],
+  "instructions": ["https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"],
 
-  "permissions": [
-    { "action": "skill", "resource": "*", "effect": "allow" }
-  ],
+  "permissions": [{ "action": "skill", "resource": "*", "effect": "allow" }],
 
   "plugins": ["@thomiOmi/agent-skills"],
 
@@ -50,29 +46,30 @@ Full reference template — add only what you need:
         "type": "local",
         "command": "npx",
         "args": ["@modelcontextprotocol/server-github"],
-        "environment": { "GITHUB_TOKEN": "your_token_here" }
+        "environment": { "GITHUB_TOKEN": "your_token_here" },
       },
       "filesystem": {
         "type": "local",
         "command": "npx",
-        "args": ["@modelcontextprotocol/server-filesystem", "/path/to/project"]
+        "args": ["@modelcontextprotocol/server-filesystem", "/path/to/project"],
       },
       "postgres": {
         "type": "local",
         "command": "npx",
-        "args": ["@modelcontextprotocol/server-postgres", "postgresql://user:pass@localhost/db"]
+        "args": ["@modelcontextprotocol/server-postgres", "postgresql://user:pass@localhost/db"],
       },
       "browser": {
         "type": "local",
         "command": "npx",
-        "args": ["@modelcontextprotocol/server-puppeteer"]
-      }
-    }
-  }
+        "args": ["@modelcontextprotocol/server-puppeteer"],
+      },
+    },
+  },
 }
 ```
 
 Key changes from v1:
+
 - `"plugins"` — array of plugin package names (was `"plugin"` string)
 - `"mcp.servers"` — MCP servers nested under `mcp.servers` (was flat `"mcp"` top-level key)
 - `"environment"` — for MCP env vars (was `"env"`)
@@ -120,8 +117,8 @@ For monorepos, use `opencode.json` with glob patterns instead of duplicating AGE
   "instructions": [
     "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md",
     "packages/*/AGENTS.md",
-    "CONTRIBUTING.md"
-  ]
+    "CONTRIBUTING.md",
+  ],
 }
 ```
 

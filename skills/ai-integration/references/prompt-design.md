@@ -70,6 +70,7 @@ This allows the operator to switch models or providers without changing code.
 ## Clarify Before Writing Prompts
 
 Before writing any prompt, answer:
+
 1. What task must the model perform?
 2. What information does the model need?
 3. What is the exact output format the calling code expects?

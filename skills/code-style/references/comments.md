@@ -32,11 +32,11 @@ Describe the rule, not the condition syntax.
 
 Do not add a comment that restates what the code already says.
 
-| Wrong — restates the code | Right — explains the reasoning |
-| -------------------------- | ------------------------------- |
-| "increment counter by 1" | "skip the header row, which is not part of the dataset" |
+| Wrong — restates the code | Right — explains the reasoning                               |
+| ------------------------- | ------------------------------------------------------------ |
+| "increment counter by 1"  | "skip the header row, which is not part of the dataset"      |
 | "check if user is active" | "inactive users retain their data but cannot perform writes" |
-| "return null" | "null signals the caller to use the default configuration" |
+| "return null"             | "null signals the caller to use the default configuration"   |
 
 ---
 
@@ -45,11 +45,11 @@ Do not add a comment that restates what the code already says.
 Well-named variables reduce the need for comments.
 Prefer a descriptive name over a comment that explains a vague one.
 
-| Avoid | Prefer |
-| ------- | -------- |
-| Single-letter names: `e`, `x`, `n`, `i` (except in mathematical loops) | Full names: `processing_error`, `active_users`, `retry_attempt` |
-| Abbreviated names: `usr`, `cfg`, `tmp` | Full names: `current_user`, `server_config`, `temp_file` |
-| Generic names: `data`, `result`, `value`, `obj` | Descriptive names: `invoice_payload`, `parsed_response`, `product_id` |
+| Avoid                                                                  | Prefer                                                                |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Single-letter names: `e`, `x`, `n`, `i` (except in mathematical loops) | Full names: `processing_error`, `active_users`, `retry_attempt`       |
+| Abbreviated names: `usr`, `cfg`, `tmp`                                 | Full names: `current_user`, `server_config`, `temp_file`              |
+| Generic names: `data`, `result`, `value`, `obj`                        | Descriptive names: `invoice_payload`, `parsed_response`, `product_id` |
 
 A comment should never be required to explain what a variable holds.
 If it is, rename the variable first.

@@ -64,18 +64,18 @@ Example: "Laravel 11 introduced this feature [High confidence — confirmed in b
 
 Use the right tool. Never manually replicate what a built-in tool does.
 
-| Tool | When to use |
-| ------ | ------------ |
-| `todowrite` | Every multi-step task — create list first, update after each step |
-| `question` | Before any review, destructive op, or ambiguous scope — ask, don't assume |
-| `read` | Before editing any file |
-| `grep` | Finding patterns, functions, or text across the codebase |
-| `glob` | Finding files by pattern before reading them |
-| `webfetch` | Reading official docs from a known URL |
-| `websearch` | Finding docs when you don't have the URL |
-| `bash` | Tests, linters, formatters, git commands |
-| `lsp` | Go-to-definition, find-references (set `OPENCODE_EXPERIMENTAL_LSP_TOOL=true`) |
-| `skill` | Loading a SKILL.md on demand |
+| Tool        | When to use                                                                   |
+| ----------- | ----------------------------------------------------------------------------- |
+| `todowrite` | Every multi-step task — create list first, update after each step             |
+| `question`  | Before any review, destructive op, or ambiguous scope — ask, don't assume     |
+| `read`      | Before editing any file                                                       |
+| `grep`      | Finding patterns, functions, or text across the codebase                      |
+| `glob`      | Finding files by pattern before reading them                                  |
+| `webfetch`  | Reading official docs from a known URL                                        |
+| `websearch` | Finding docs when you don't have the URL                                      |
+| `bash`      | Tests, linters, formatters, git commands                                      |
+| `lsp`       | Go-to-definition, find-references (set `OPENCODE_EXPERIMENTAL_LSP_TOOL=true`) |
+| `skill`     | Loading a SKILL.md on demand                                                  |
 
 **`todowrite` rules:**
 

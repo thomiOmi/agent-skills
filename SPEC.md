@@ -10,14 +10,14 @@ Full specification: <https://agentskills.io/specification>
 
 ### SKILL.md Frontmatter
 
-| Field | Required | Notes |
-| --- | --- | --- |
-| `name` | ✅ | Max 64 chars. Lowercase, numbers, hyphens only. Must match directory name. |
-| `description` | ✅ | Max 1024 chars. What it does + when to use it. |
-| `license` | No | License name or reference to LICENSE file. |
-| `compatibility` | No | Max 500 chars. Environment requirements. |
-| `metadata` | No | Key-value map for additional info (e.g. `version`, `author`). |
-| `allowed-tools` | No | Space-separated pre-approved tools. Experimental. |
+| Field           | Required | Notes                                                                      |
+| --------------- | -------- | -------------------------------------------------------------------------- |
+| `name`          | ✅       | Max 64 chars. Lowercase, numbers, hyphens only. Must match directory name. |
+| `description`   | ✅       | Max 1024 chars. What it does + when to use it.                             |
+| `license`       | No       | License name or reference to LICENSE file.                                 |
+| `compatibility` | No       | Max 500 chars. Environment requirements.                                   |
+| `metadata`      | No       | Key-value map for additional info (e.g. `version`, `author`).              |
+| `allowed-tools` | No       | Space-separated pre-approved tools. Experimental.                          |
 
 ### Directory Structure
 

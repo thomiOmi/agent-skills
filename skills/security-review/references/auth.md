@@ -6,12 +6,14 @@
 
 ```markdown
 Passwords:
+
 - [ ] Passwords hashed with bcrypt, argon2, or scrypt (not MD5 or SHA-1)
 - [ ] Minimum password requirements enforced
 - [ ] Password confirmation required on change
 - [ ] Old password verified before changing to new one
 
 Tokens:
+
 - [ ] Session tokens are cryptographically random and unpredictable
 - [ ] Tokens have an expiry time
 - [ ] Tokens are invalidated on logout
@@ -19,11 +21,13 @@ Tokens:
 - [ ] Refresh tokens have a longer but still finite expiry
 
 Brute-force protection:
+
 - [ ] Rate limiting on login endpoint
 - [ ] Account lockout after N failed attempts (or progressive delay)
 - [ ] CAPTCHA or similar challenge after repeated failures
 
 Multi-factor authentication:
+
 - [ ] MFA codes expire after one use
 - [ ] MFA codes expire after a short time window (30–60 seconds)
 - [ ] Backup codes are one-time use
@@ -36,18 +40,21 @@ Multi-factor authentication:
 
 ```markdown
 Endpoint protection:
+
 - [ ] Every protected endpoint checks authentication
 - [ ] Every protected endpoint checks authorization (not just identity)
 - [ ] Authorization is checked on the server — not trusted from the client
 - [ ] Object-level authorization: user can only access their own resources
 
 Role-based access:
+
 - [ ] Roles are defined and enforced consistently
 - [ ] Role assignments are auditable
 - [ ] Privilege escalation requires explicit admin action
 - [ ] Default role for new users is the least-privileged role
 
 Common failures to check:
+
 - [ ] Changing an ID in the URL does not expose another user's data
 - [ ] Changing a role parameter in the request body has no effect
 - [ ] Deleting a resource requires ownership or admin permission

@@ -58,6 +58,7 @@ See `assets/templates.md` for migration and query review templates.
 
 ```markdown
 Schema design:
+
 - [ ] Every table has a primary key
 - [ ] Foreign key constraints defined and enforced
 - [ ] Indexes added on all foreign key columns
@@ -66,12 +67,14 @@ Schema design:
 - [ ] Unique constraints applied for business uniqueness requirements
 
 Migrations:
+
 - [ ] Migration is reversible (down/rollback method exists)
 - [ ] No data loss in migration without explicit confirmation
 - [ ] Large table migrations are zero-downtime safe
 - [ ] Migration tested in staging before production
 
 Queries:
+
 - [ ] No N+1 queries (eager load relationships)
 - [ ] Queries use indexed columns in WHERE and JOIN conditions
 - [ ] No SELECT * in production queries

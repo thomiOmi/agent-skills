@@ -20,13 +20,13 @@ flowchart TD
 
 ## Node Types
 
-| Syntax | Shape | Use for |
-| -------- | ------- | --------- |
-| `[Text]` | Rectangle | Action or step |
-| `{Text}` | Diamond | Decision or condition |
-| `(Text)` | Rounded | Start or end |
-| `([Text])` | Stadium | Terminal event |
-| `[[Text]]` | Subroutine | Sub-process |
+| Syntax     | Shape      | Use for               |
+| ---------- | ---------- | --------------------- |
+| `[Text]`   | Rectangle  | Action or step        |
+| `{Text}`   | Diamond    | Decision or condition |
+| `(Text)`   | Rounded    | Start or end          |
+| `([Text])` | Stadium    | Terminal event        |
+| `[[Text]]` | Subroutine | Sub-process           |
 
 ---
 

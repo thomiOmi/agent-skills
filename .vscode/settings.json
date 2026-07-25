@@ -1,12 +1,9 @@
 {
-  "oxc.enable": true,
-  "oxc.lint.enable": true,
-  "oxc.fmt.enable": true,
   "oxc.fmt.configPath": "oxfmt.config.ts",
-  "oxc.lint.configPath": "oxlint.config.ts",
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
+    "source.format.oxc": "always",
     "source.fixAll.oxc": "always"
   }
 }

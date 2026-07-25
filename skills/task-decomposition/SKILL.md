@@ -34,16 +34,16 @@ See `assets/templates.md` for scope document, task tree, progress report, and mi
 
 ## Cross-Skill Delegation
 
-| When you encounter... | Read this skill |
-|-----------------------|----------------|
-| Writing or reviewing any code | `code-style` |
-| Writing or reviewing tests | `testing` |
-| Designing or modifying an API | `api-conventions` |
-| Writing or updating docs | `documentation` |
-| Designing schema, ERD, or system plan | `planning` |
+| When you encounter...                           | Read this skill      |
+| ----------------------------------------------- | -------------------- |
+| Writing or reviewing any code                   | `code-style`         |
+| Writing or reviewing tests                      | `testing`            |
+| Designing or modifying an API                   | `api-conventions`    |
+| Writing or updating docs                        | `documentation`      |
+| Designing schema, ERD, or system plan           | `planning`           |
 | Writing PRD, SDD, user stories, or requirements | `sdlc-documentation` |
-| A bug or unexpected failure | `debugging` |
-| Integrating an LLM or AI service | `ai-integration` |
+| A bug or unexpected failure                     | `debugging`          |
+| Integrating an LLM or AI service                | `ai-integration`     |
 
 ---
 

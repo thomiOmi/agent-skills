@@ -13,10 +13,12 @@
 
 ```markdown
 Before writing:
+
 - [ ] Migration is for one logical change only
 - [ ] Rollback (down) method is planned before writing the up method
 
 Before committing:
+
 - [ ] Up method tested locally
 - [ ] Down method tested locally — confirm it actually reverses the change
 - [ ] No application code in the migration file
@@ -24,6 +26,7 @@ Before committing:
 - [ ] Large table changes are zero-downtime safe (see below)
 
 Before running in production:
+
 - [ ] Migration tested on a recent copy of production data
 - [ ] Rollback plan documented and tested
 - [ ] Estimated duration verified — long migrations need a maintenance window or online migration strategy
@@ -75,14 +78,14 @@ to avoid locking the table during index creation.
 
 Every migration must have a documented rollback approach:
 
-| Migration type | Rollback approach |
-| --------------- | ------------------ |
-| Add column | Drop column |
-| Drop column | Cannot restore data — require confirmation before proceeding |
-| Add table | Drop table |
-| Drop table | Cannot restore data — require confirmation |
-| Add index | Drop index |
-| Modify column type | Revert to original type (may require data conversion) |
-| Backfill data | Document how to reverse if needed |
+| Migration type     | Rollback approach                                            |
+| ------------------ | ------------------------------------------------------------ |
+| Add column         | Drop column                                                  |
+| Drop column        | Cannot restore data — require confirmation before proceeding |
+| Add table          | Drop table                                                   |
+| Drop table         | Cannot restore data — require confirmation                   |
+| Add index          | Drop index                                                   |
+| Modify column type | Revert to original type (may require data conversion)        |
+| Backfill data      | Document how to reverse if needed                            |
 
 For irreversible migrations, add a comment explaining why and what manual steps are needed to recover.

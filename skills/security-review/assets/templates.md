@@ -33,11 +33,11 @@
 ## Summary
 
 | Severity | Count |
-|----------|-------|
-| Critical | 0 |
-| High | 0 |
-| Medium | 0 |
-| Low | 0 |
+| -------- | ----- |
+| Critical | 0     |
+| High     | 0     |
+| Medium   | 0     |
+| Low      | 0     |
 
 ## Checklist Results
 
@@ -55,25 +55,30 @@
 
 ```markdown
 Authentication:
+
 - [ ] Passwords hashed with strong algorithm
 - [ ] Brute-force protection in place
 - [ ] Tokens expire and are invalidated on logout
 
 Authorization:
+
 - [ ] Every endpoint checks permissions
 - [ ] Object-level access control enforced
 
 Input:
+
 - [ ] Parameterized queries used everywhere
 - [ ] User input validated before use
 - [ ] File uploads validated
 
 Data:
+
 - [ ] No sensitive data in logs
 - [ ] Secrets in environment variables
 - [ ] HTTPS enforced
 
 Errors:
+
 - [ ] No stack traces exposed to clients
 - [ ] Consistent error responses for auth failures
 ```

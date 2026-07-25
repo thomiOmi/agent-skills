@@ -26,13 +26,13 @@ Before naming something new, search the codebase for similar patterns.
 
 The name must answer: what does this variable hold?
 
-| Avoid | Use instead |
-|-------|------------|
-| `data`, `info`, `result`, `obj`, `val` | The actual concept: `invoice`, `parsed_response`, `user_id` |
-| `temp`, `tmp`, `foo`, `bar` | What it actually holds: `retry_count`, `filtered_orders` |
-| `x`, `n`, `e`, `s`, `v` | Full name: `retry_attempt`, `error_count`, `user_email` |
-| `flag`, `check`, `status` | Specific state: `is_authenticated`, `has_permission`, `can_export` |
-| `list`, `array`, `items` | Named collection: `active_users`, `pending_orders`, `uploaded_files` |
+| Avoid                                  | Use instead                                                          |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| `data`, `info`, `result`, `obj`, `val` | The actual concept: `invoice`, `parsed_response`, `user_id`          |
+| `temp`, `tmp`, `foo`, `bar`            | What it actually holds: `retry_count`, `filtered_orders`             |
+| `x`, `n`, `e`, `s`, `v`                | Full name: `retry_attempt`, `error_count`, `user_email`              |
+| `flag`, `check`, `status`              | Specific state: `is_authenticated`, `has_permission`, `can_export`   |
+| `list`, `array`, `items`               | Named collection: `active_users`, `pending_orders`, `uploaded_files` |
 
 ---
 
@@ -40,12 +40,12 @@ The name must answer: what does this variable hold?
 
 Use a verb or verb phrase that describes the action and its subject.
 
-| Avoid | Use instead |
-|-------|------------|
-| `doStuff()`, `process()`, `handle()` | Specific action: `calculate_retry_delay()`, `send_invoice_email()` |
-| `get()`, `fetch()` without subject | Named subject: `fetch_active_orders()`, `get_user_by_email()` |
-| `check()`, `validate()` without subject | Specific: `validate_email_format()`, `check_quota_limit()` |
-| `update()`, `save()` without subject | Specific: `update_user_profile()`, `save_payment_record()` |
+| Avoid                                   | Use instead                                                        |
+| --------------------------------------- | ------------------------------------------------------------------ |
+| `doStuff()`, `process()`, `handle()`    | Specific action: `calculate_retry_delay()`, `send_invoice_email()` |
+| `get()`, `fetch()` without subject      | Named subject: `fetch_active_orders()`, `get_user_by_email()`      |
+| `check()`, `validate()` without subject | Specific: `validate_email_format()`, `check_quota_limit()`         |
+| `update()`, `save()` without subject    | Specific: `update_user_profile()`, `save_payment_record()`         |
 
 ---
 
@@ -53,11 +53,11 @@ Use a verb or verb phrase that describes the action and its subject.
 
 Use a question form that reads as true or false.
 
-| Avoid | Use instead |
-|-------|------------|
-| `active`, `enabled`, `valid` | `is_active`, `is_enabled`, `is_valid` |
+| Avoid                          | Use instead                                        |
+| ------------------------------ | -------------------------------------------------- |
+| `active`, `enabled`, `valid`   | `is_active`, `is_enabled`, `is_valid`              |
 | `permission`, `access`, `auth` | `has_permission`, `has_access`, `is_authenticated` |
-| `done`, `complete`, `finish` | `is_complete`, `has_finished`, `is_done` |
+| `done`, `complete`, `finish`   | `is_complete`, `has_finished`, `is_done`           |
 
 ---
 
@@ -65,10 +65,10 @@ Use a question form that reads as true or false.
 
 Use the prefix `handle` followed by the specific event.
 
-| Avoid | Use instead |
-|-------|------------|
+| Avoid                           | Use instead                                         |
+| ------------------------------- | --------------------------------------------------- |
 | `onClick()`, `onFail()`, `cb()` | `handle_button_click()`, `handle_payment_failure()` |
-| `trigger()`, `fire()`, `run()` | Specific: `trigger_invoice_generation()` |
+| `trigger()`, `fire()`, `run()`  | Specific: `trigger_invoice_generation()`            |
 
 ---
 
@@ -76,11 +76,11 @@ Use the prefix `handle` followed by the specific event.
 
 Use a singular noun representing one instance of the concept.
 
-| Avoid | Use instead |
-|-------|------------|
-| `UserManager`, `DataHandler` | `UserSession`, `PaymentGateway` |
+| Avoid                                 | Use instead                                               |
+| ------------------------------------- | --------------------------------------------------------- |
+| `UserManager`, `DataHandler`          | `UserSession`, `PaymentGateway`                           |
 | `Util`, `Helper`, `Service` (generic) | Named responsibility: `EmailDispatcher`, `TokenValidator` |
-| `UserData`, `OrderInfo` | `UserProfile`, `OrderSummary` |
+| `UserData`, `OrderInfo`               | `UserProfile`, `OrderSummary`                             |
 
 ---
 
@@ -88,10 +88,10 @@ Use a singular noun representing one instance of the concept.
 
 Use a noun or noun phrase describing what the value represents.
 
-| Avoid | Use instead |
-|-------|------------|
+| Avoid                     | Use instead                                         |
+| ------------------------- | --------------------------------------------------- |
 | `LIMIT`, `TIMEOUT`, `URL` | `MAX_RETRIES`, `REQUEST_TIMEOUT_MS`, `BASE_API_URL` |
-| `NUM`, `COUNT`, `VAL` | `MAX_EXPORT_COUNT`, `DEFAULT_PAGE_SIZE` |
+| `NUM`, `COUNT`, `VAL`     | `MAX_EXPORT_COUNT`, `DEFAULT_PAGE_SIZE`             |
 
 ---
 
@@ -111,10 +111,10 @@ Exception: pure mathematical index loops where `i`, `j`, `k` are conventional.
 
 ## Anti-Pattern Summary
 
-| Pattern | Problem |
-|---------|---------|
-| Single letters: `e`, `x`, `n`, `s` | Requires context to understand |
-| Abbreviations: `usr`, `cfg`, `tmp` | Not self-explanatory |
-| Generic: `data`, `info`, `result` | Says nothing about content |
-| Vague verbs: `doStuff()`, `process()` | No indication of what is done |
-| Wrong boolean form: `active`, `valid` | Does not read as true/false |
+| Pattern                               | Problem                        |
+| ------------------------------------- | ------------------------------ |
+| Single letters: `e`, `x`, `n`, `s`    | Requires context to understand |
+| Abbreviations: `usr`, `cfg`, `tmp`    | Not self-explanatory           |
+| Generic: `data`, `info`, `result`     | Says nothing about content     |
+| Vague verbs: `doStuff()`, `process()` | No indication of what is done  |
+| Wrong boolean form: `active`, `valid` | Does not read as true/false    |

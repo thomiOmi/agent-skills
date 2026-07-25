@@ -21,15 +21,15 @@ If the worst-case cost is not acceptable, use a smaller model or add caching.
 
 ## Cost Optimization
 
-| Technique | When to use |
-|-----------|-------------|
-| Cache responses | Repeated identical prompts — FAQ, static content |
-| Use a smaller model | Simple classification, short extraction, tasks without complex reasoning |
-| Reduce prompt length | Remove few-shot examples if zero-shot produces acceptable quality |
-| Batch API | Non-real-time tasks — background jobs, reports, data enrichment |
-| Stream responses | Chat interfaces — first token appears immediately, improving perceived speed |
-| Summarize conversation history | Long sessions — replace old messages with a summary |
-| Filter before calling the model | Use rules or a cheaper classifier to skip model calls for clear cases |
+| Technique                       | When to use                                                                  |
+| ------------------------------- | ---------------------------------------------------------------------------- |
+| Cache responses                 | Repeated identical prompts — FAQ, static content                             |
+| Use a smaller model             | Simple classification, short extraction, tasks without complex reasoning     |
+| Reduce prompt length            | Remove few-shot examples if zero-shot produces acceptable quality            |
+| Batch API                       | Non-real-time tasks — background jobs, reports, data enrichment              |
+| Stream responses                | Chat interfaces — first token appears immediately, improving perceived speed |
+| Summarize conversation history  | Long sessions — replace old messages with a summary                          |
+| Filter before calling the model | Use rules or a cheaper classifier to skip model calls for clear cases        |
 
 ---
 
@@ -58,6 +58,7 @@ NEVER DO:
 Prompt injection occurs when a user crafts input that overrides or leaks your system prompt.
 
 Defense strategy:
+
 1. Wrap all user-supplied content in explicit boundary markers in the prompt.
 2. Instruct the model to ignore any instructions found inside the user input section.
 3. Validate the model's response — reject responses that appear to repeat system prompt content.

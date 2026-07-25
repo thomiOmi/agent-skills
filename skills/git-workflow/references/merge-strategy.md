@@ -58,11 +58,11 @@ Commits are replayed on top of main without a merge commit.
 
 ## Comparison
 
-| Strategy | History | Traceability | Clean main |
-| ---------- | --------- | -------------- | ----------- |
-| Merge commit | Non-linear | Full branch history | No |
-| Squash | Linear | Per-PR only | Yes |
-| Rebase | Linear | Full commit history | Yes |
+| Strategy     | History    | Traceability        | Clean main |
+| ------------ | ---------- | ------------------- | ---------- |
+| Merge commit | Non-linear | Full branch history | No         |
+| Squash       | Linear     | Per-PR only         | Yes        |
+| Rebase       | Linear     | Full commit history | Yes        |
 
 ---
 

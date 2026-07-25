@@ -17,15 +17,15 @@ Always produce documentation before implementation — not after.
 
 ## Document Types
 
-| Document | Abbrev | Use when |
-|----------|--------|----------|
-| Product Requirements Document | PRD | Defining what to build and why |
-| Software Design Document | SDD | Defining how to build it |
-| Business Requirements Document | BRD | Capturing business needs |
-| Functional Requirements Document | FRD | Detailed feature specifications |
-| User Stories | — | Agile tasks ready for development |
-| Test Plan | — | Test strategy before QA begins |
-| Release Notes | — | Communicating changes to stakeholders |
+| Document                         | Abbrev | Use when                              |
+| -------------------------------- | ------ | ------------------------------------- |
+| Product Requirements Document    | PRD    | Defining what to build and why        |
+| Software Design Document         | SDD    | Defining how to build it              |
+| Business Requirements Document   | BRD    | Capturing business needs              |
+| Functional Requirements Document | FRD    | Detailed feature specifications       |
+| User Stories                     | —      | Agile tasks ready for development     |
+| Test Plan                        | —      | Test strategy before QA begins        |
+| Release Notes                    | —      | Communicating changes to stakeholders |
 
 ---
 

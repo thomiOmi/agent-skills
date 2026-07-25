@@ -7,12 +7,12 @@ that cannot all be anticipated in a single prompt.
 
 ## Agent vs Single Prompt
 
-|Use a single prompt when|Use an agent when|
-|--------------------------|-------------------|
-|One clear input produces one clear output|The task requires multiple steps with branching decisions|
-|All context fits in one message|The task needs to call external APIs, databases, or tools|
-|The output format is deterministic|The model needs to observe a result and decide the next step|
-|No external data is needed|The task involves iteration or self-correction|
+| Use a single prompt when                  | Use an agent when                                            |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| One clear input produces one clear output | The task requires multiple steps with branching decisions    |
+| All context fits in one message           | The task needs to call external APIs, databases, or tools    |
+| The output format is deterministic        | The model needs to observe a result and decide the next step |
+| No external data is needed                | The task involves iteration or self-correction               |
 
 When in doubt, start with a single prompt. Add agent complexity only when it is necessary.
 

@@ -6,12 +6,12 @@ Use Mermaid.js `erDiagram` syntax. Renders in GitHub, GitLab, Notion, and most d
 
 ## Key Types
 
-| Symbol | Type | Meaning |
-| -------- | ------ | --------- |
-| PK | Primary Key | One per entity. Unique, not null. |
-| UK | Unique Key | Multiple allowed. Unique. May be nullable. |
-| FK | Foreign Key | References PK of another entity. |
-| IDX | Index | Not a constraint. For query performance only. |
+| Symbol | Type        | Meaning                                       |
+| ------ | ----------- | --------------------------------------------- |
+| PK     | Primary Key | One per entity. Unique, not null.             |
+| UK     | Unique Key  | Multiple allowed. Unique. May be nullable.    |
+| FK     | Foreign Key | References PK of another entity.              |
+| IDX    | Index       | Not a constraint. For query performance only. |
 
 ---
 
@@ -60,12 +60,12 @@ erDiagram
 
 ## Relationship Cardinality
 
-| Notation | Meaning |
-| ---------- | --------- |
-| \|\|--\|\| | One to one |
-| \|\|--o{ | One to many |
-| }o--o{ | Many to many |
-| \|\|--o\| | One to zero or one |
+| Notation   | Meaning            |
+| ---------- | ------------------ |
+| \|\|--\|\| | One to one         |
+| \|\|--o{   | One to many        |
+| }o--o{     | Many to many       |
+| \|\|--o\|  | One to zero or one |
 
 ---
 

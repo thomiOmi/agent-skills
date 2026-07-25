@@ -20,14 +20,14 @@ Do not add an index when:
 
 ## Index Types
 
-| Type | Use for |
-| ------ | --------- |
+| Type             | Use for                                                             |
+| ---------------- | ------------------------------------------------------------------- |
 | B-tree (default) | Equality (`=`), range (`<`, `>`, `BETWEEN`), ORDER BY, most queries |
-| Hash | Equality only — faster for exact match, no range support |
-| GIN | Full-text search, array columns, JSONB containment |
-| GiST | Geometric data, full-text search (PostgreSQL) |
-| Partial | Indexes a subset of rows — use with a WHERE condition |
-| Composite | Multiple columns — column order matters |
+| Hash             | Equality only — faster for exact match, no range support            |
+| GIN              | Full-text search, array columns, JSONB containment                  |
+| GiST             | Geometric data, full-text search (PostgreSQL)                       |
+| Partial          | Indexes a subset of rows — use with a WHERE condition               |
+| Composite        | Multiple columns — column order matters                             |
 
 ---
 

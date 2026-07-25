@@ -6,14 +6,14 @@
 [type]/[optional-ticket-id]-[short-description]
 
 Examples:
-  feature/user-password-reset
-  feature/AUTH-123-two-factor-auth
-  fix/session-expiry-calculation
-  fix/USER-456-duplicate-email-validation
-  hotfix/payment-gateway-timeout
-  refactor/extract-auth-middleware
-  chore/upgrade-dependencies
-  docs/update-api-readme
+feature/user-password-reset
+feature/AUTH-123-two-factor-auth
+fix/session-expiry-calculation
+fix/USER-456-duplicate-email-validation
+hotfix/payment-gateway-timeout
+refactor/extract-auth-middleware
+chore/upgrade-dependencies
+docs/update-api-readme
 ```
 
 ---
@@ -56,15 +56,19 @@ Resolves: #112
 
 ```markdown
 ## What
+
 [What does this PR do?]
 
 ## Why
+
 Resolves: #[issue]
 
 ## How
+
 [Approach taken, if non-obvious]
 
 ## Type of change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Refactor
@@ -72,10 +76,12 @@ Resolves: #[issue]
 - [ ] Documentation
 
 ## Testing
+
 - [ ] Unit tests added / updated
 - [ ] Manually tested: [steps]
 
 ## Checklist
+
 - [ ] Self-review completed
 - [ ] No debug statements
 - [ ] No hardcoded secrets

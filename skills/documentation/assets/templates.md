@@ -2,7 +2,7 @@
 
 ## README Skeleton
 
-```markdown
+````markdown
 # [Project Name]
 
 [One paragraph: what it does and who it is for.]
@@ -17,9 +17,9 @@ cp .env.example .env
 
 ## Configuration
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `KEY` | Yes | — | [Description] |
+| Variable | Required | Default | Description   |
+| -------- | -------- | ------- | ------------- |
+| `KEY`    | Yes      | —       | [Description] |
 
 ## Development
 
@@ -27,7 +27,7 @@ cp .env.example .env
 [test-command]
 [lint-command]
 \```
-```
+````
 
 ## ADR Skeleton
 
@@ -38,17 +38,22 @@ cp .env.example .env
 **Status:** Proposed | Accepted | Deprecated
 
 ## Context
+
 [What situation prompted this decision?]
 
 ## Decision
+
 [What did we decide?]
 
 ## Rationale
+
 [Why this option? What tradeoffs?]
 
 ## Consequences
+
 [What becomes easier or harder?]
 
 ## Alternatives Considered
+
 - [Option A] — rejected because [reason]
 ```

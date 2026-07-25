@@ -39,15 +39,15 @@ WHY     Only when the behavior is non-obvious:
 
 Use the **idiomatic format for your language**:
 
-| Language | Format |
-| ---------- | -------- |
-| Python | Google-style or NumPy-style docstrings |
-| TypeScript / JavaScript | JSDoc (`/** ... */`) |
-| Go | Plain comment above the function (`// FunctionName ...`) |
-| Rust | `///` doc comments with `# Examples`, `# Panics` sections |
-| PHP | PHPDoc (`/** @param @return @throws */`) |
-| Java / Kotlin | Javadoc (`/** @param @return @throws */`) |
-| C# | XML doc comments (`/// <summary>`) |
+| Language                | Format                                                    |
+| ----------------------- | --------------------------------------------------------- |
+| Python                  | Google-style or NumPy-style docstrings                    |
+| TypeScript / JavaScript | JSDoc (`/** ... */`)                                      |
+| Go                      | Plain comment above the function (`// FunctionName ...`)  |
+| Rust                    | `///` doc comments with `# Examples`, `# Panics` sections |
+| PHP                     | PHPDoc (`/** @param @return @throws */`)                  |
+| Java / Kotlin           | Javadoc (`/** @param @return @throws */`)                 |
+| C#                      | XML doc comments (`/// <summary>`)                        |
 
 ---
 

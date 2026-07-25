@@ -6,6 +6,7 @@
 type(scope): short description
 
 [optional body]
+
 - detail 1
 - detail 2
 
@@ -18,17 +19,17 @@ Breaking change: [description]
 
 ## Types
 
-| Type | When to use |
-| ------ | ------------ |
-| `feat` | New feature or behavior |
-| `fix` | Bug fix |
+| Type       | When to use                                |
+| ---------- | ------------------------------------------ |
+| `feat`     | New feature or behavior                    |
+| `fix`      | Bug fix                                    |
 | `refactor` | Code restructuring without behavior change |
-| `test` | Adding or updating tests |
-| `docs` | Documentation only |
-| `chore` | Build, config, dependency changes |
-| `perf` | Performance improvement |
-| `ci` | CI/CD configuration changes |
-| `revert` | Reverting a previous commit |
+| `test`     | Adding or updating tests                   |
+| `docs`     | Documentation only                         |
+| `chore`    | Build, config, dependency changes          |
+| `perf`     | Performance improvement                    |
+| `ci`       | CI/CD configuration changes                |
+| `revert`   | Reverting a previous commit                |
 
 ---
 
@@ -53,9 +54,9 @@ refactor(db): extract query builder into separate class
 - Describe **what** the commit does, not how
 
 ```markdown
-Wrong:  feat: I added the ability for users to reset their password
-Wrong:  feat: Password reset feature
-Right:  feat(auth): add password reset via email verification
+Wrong: feat: I added the ability for users to reset their password
+Wrong: feat: Password reset feature
+Right: feat(auth): add password reset via email verification
 ```
 
 ---

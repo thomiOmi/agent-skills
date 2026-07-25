@@ -7,15 +7,15 @@ Always implement retry logic and handle each failure type explicitly.
 
 ## Failure Types
 
-| Failure | Cause | Action |
-| --------- | ------- | -------- |
-| Rate limit error | Too many requests | Retry with exponential backoff |
-| Server error (5xx) | Provider outage or overload | Retry with exponential backoff |
-| Client error (4xx) | Bad request, invalid API key, quota exceeded | Do not retry — fix the request |
-| Timeout | Response took too long | Retry once, then fail gracefully |
-| Empty response | Model returned nothing | Validate before using, retry if critical |
-| Malformed output | Model did not follow the format | Re-prompt or parse defensively |
-| Context window exceeded | Input is too long | Chunk the input or summarize history |
+| Failure                 | Cause                                        | Action                                   |
+| ----------------------- | -------------------------------------------- | ---------------------------------------- |
+| Rate limit error        | Too many requests                            | Retry with exponential backoff           |
+| Server error (5xx)      | Provider outage or overload                  | Retry with exponential backoff           |
+| Client error (4xx)      | Bad request, invalid API key, quota exceeded | Do not retry — fix the request           |
+| Timeout                 | Response took too long                       | Retry once, then fail gracefully         |
+| Empty response          | Model returned nothing                       | Validate before using, retry if critical |
+| Malformed output        | Model did not follow the format              | Re-prompt or parse defensively           |
+| Context window exceeded | Input is too long                            | Chunk the input or summarize history     |
 
 ---
 

@@ -11,6 +11,7 @@ A test name should make the failure message self-explanatory — without reading
 ```
 
 Or in sentence form:
+
 ```
 [scenario] should [expected result]
 ```
@@ -37,23 +38,23 @@ Be observable: `returnsEmptyList` not `works` · `throwsValidationError` not `fa
 
 ## Examples by Pattern
 
-| Subject | Scenario | Expected result | Full name |
-|---------|----------|----------------|-----------|
-| `calculateRetryDelay` | zero-indexed first attempt | returns base delay | `calculateRetryDelay_firstAttempt_returnsBaseDelay` |
-| `calculateRetryDelay` | attempt count is negative | raises error | `calculateRetryDelay_negativeAttempt_raisesError` |
-| `calculateRetryDelay` | very high attempt count | caps at maximum | `calculateRetryDelay_highAttempt_capsAtMaximum` |
-| `mergePermissions` | deny in base, allow in overrides | deny wins | `mergePermissions_denyInBase_denyWinsOverAllow` |
+| Subject               | Scenario                         | Expected result    | Full name                                           |
+| --------------------- | -------------------------------- | ------------------ | --------------------------------------------------- |
+| `calculateRetryDelay` | zero-indexed first attempt       | returns base delay | `calculateRetryDelay_firstAttempt_returnsBaseDelay` |
+| `calculateRetryDelay` | attempt count is negative        | raises error       | `calculateRetryDelay_negativeAttempt_raisesError`   |
+| `calculateRetryDelay` | very high attempt count          | caps at maximum    | `calculateRetryDelay_highAttempt_capsAtMaximum`     |
+| `mergePermissions`    | deny in base, allow in overrides | deny wins          | `mergePermissions_denyInBase_denyWinsOverAllow`     |
 
 ---
 
 ## Anti-Patterns
 
-| Bad | Why | Better |
-|-----|-----|--------|
-| `test_1`, `test_2` | No information about what is tested | Use the full pattern |
-| `testWorks`, `testOk` | No information about the scenario | Specify what "works" means |
-| `testError` | Does not say which error or when | `createUser_duplicateEmail_throwsConflictError` |
-| `testLogin` | Does not say which login scenario | `login_expiredToken_returnsUnauthorized` |
+| Bad                                             | Why                                    | Better                                               |
+| ----------------------------------------------- | -------------------------------------- | ---------------------------------------------------- |
+| `test_1`, `test_2`                              | No information about what is tested    | Use the full pattern                                 |
+| `testWorks`, `testOk`                           | No information about the scenario      | Specify what "works" means                           |
+| `testError`                                     | Does not say which error or when       | `createUser_duplicateEmail_throwsConflictError`      |
+| `testLogin`                                     | Does not say which login scenario      | `login_expiredToken_returnsUnauthorized`             |
 | `testCalculateRetryDelayUsesExponentialFormula` | Describes implementation, not behavior | `calculateRetryDelay_secondAttempt_doublesBaseDelay` |
 
 ---

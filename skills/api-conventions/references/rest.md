@@ -21,13 +21,13 @@ No trailing slashes. Lowercase, kebab-case: `/payment-methods`.
 
 ## HTTP Methods
 
-| Method | Purpose | Idempotent |
-| -------- | --------- | ----------- |
-| GET | Read | ✅ |
-| POST | Create or trigger | ❌ |
-| PUT | Replace entirely | ✅ |
-| PATCH | Partial update | ✅ |
-| DELETE | Remove | ✅ |
+| Method | Purpose           | Idempotent |
+| ------ | ----------------- | ---------- |
+| GET    | Read              | ✅         |
+| POST   | Create or trigger | ❌         |
+| PUT    | Replace entirely  | ✅         |
+| PATCH  | Partial update    | ✅         |
+| DELETE | Remove            | ✅         |
 
 ## Response Shapes
 
@@ -57,19 +57,19 @@ Error (consistent across all endpoints):
 
 ## Status Codes
 
-| Code | When |
-| ------ | ------ |
-| 200 | Successful GET, PATCH, PUT |
-| 201 | Successful POST (resource created) |
-| 204 | Successful DELETE (no body) |
-| 400 | Invalid input |
-| 401 | Missing or invalid auth |
-| 403 | Authenticated but not authorized |
-| 404 | Not found |
-| 409 | Conflict (duplicate unique field) |
-| 422 | Validation failed |
-| 429 | Rate limit exceeded |
-| 500 | Unexpected server error |
+| Code | When                               |
+| ---- | ---------------------------------- |
+| 200  | Successful GET, PATCH, PUT         |
+| 201  | Successful POST (resource created) |
+| 204  | Successful DELETE (no body)        |
+| 400  | Invalid input                      |
+| 401  | Missing or invalid auth            |
+| 403  | Authenticated but not authorized   |
+| 404  | Not found                          |
+| 409  | Conflict (duplicate unique field)  |
+| 422  | Validation failed                  |
+| 429  | Rate limit exceeded                |
+| 500  | Unexpected server error            |
 
 ```text
 ❌ Never return 200 for an error

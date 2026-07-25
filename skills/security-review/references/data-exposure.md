@@ -6,13 +6,13 @@
 
 Before reviewing, identify what data the feature handles:
 
-| Category | Examples | Protection level |
-| ---------- | --------- | ----------------- |
-| Credentials | Passwords, API keys, tokens | Never store plain text; hash or encrypt |
-| Payment data | Card numbers, CVV, bank accounts | PCI-DSS compliance; never log |
-| PII | Name, email, phone, address, national ID | Minimize collection; encrypt at rest |
-| Health data | Medical records, diagnoses | HIPAA compliance; strict access control |
-| Session data | Session tokens, auth cookies | Expire; invalidate on logout |
+| Category     | Examples                                 | Protection level                        |
+| ------------ | ---------------------------------------- | --------------------------------------- |
+| Credentials  | Passwords, API keys, tokens              | Never store plain text; hash or encrypt |
+| Payment data | Card numbers, CVV, bank accounts         | PCI-DSS compliance; never log           |
+| PII          | Name, email, phone, address, national ID | Minimize collection; encrypt at rest    |
+| Health data  | Medical records, diagnoses               | HIPAA compliance; strict access control |
+| Session data | Session tokens, auth cookies             | Expire; invalidate on logout            |
 
 ---
 

@@ -15,9 +15,11 @@ Use when: engineers are about to implement something non-trivial.
 ---
 
 ## 1. Overview
+
 [2–3 sentences: what is being built and why this design approach]
 
 ### Scope
+
 [What is covered — and what is explicitly not covered]
 
 ---
@@ -25,12 +27,13 @@ Use when: engineers are about to implement something non-trivial.
 ## 2. Architecture
 
 ### High-Level Design
+
 CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 
 ### Component Breakdown
 
-| Component | Responsibility | Technology |
-| ----------- | --------------- | ------------ |
+| Component   | Responsibility               | Technology  |
+| ----------- | ---------------------------- | ----------- |
 | API Gateway | Auth, rate limiting, routing | [framework] |
 
 ---
@@ -38,9 +41,11 @@ CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 ## 3. Data Design
 
 ### Database Schema
+
 [ERD or table definitions — use planning skill for ERD format]
 
 ### Data Flow
+
 [Input → processing → output → storage]
 
 ---
@@ -48,19 +53,21 @@ CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 ## 4. API Design
 
 ### Endpoints
+
 [New or modified endpoints — use api-conventions skill]
 
 ---
 
 ## 5. Key Design Decisions
 
-| Decision | Options | Chosen | Reason |
-| ---------- | --------- | -------- | -------- |
-| Auth method | JWT vs Session | JWT | Stateless, works for mobile + web |
+| Decision    | Options        | Chosen | Reason                            |
+| ----------- | -------------- | ------ | --------------------------------- |
+| Auth method | JWT vs Session | JWT    | Stateless, works for mobile + web |
 
 ---
 
 ## 6. Security Considerations
+
 - [Auth and authorization approach]
 - [Input validation strategy]
 - [Sensitive data handling]
@@ -68,6 +75,7 @@ CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 ---
 
 ## 7. Performance Considerations
+
 - [Expected load and scale]
 - [Caching strategy]
 - [Async/queue strategy for heavy operations]
@@ -76,24 +84,25 @@ CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 
 ## 8. Testing Strategy
 
-| Type | Target | Tool |
-|------|--------|------|
-| Unit | 80%+ critical paths | [framework] |
-| Integration | All API endpoints | [framework] |
+| Type        | Target              | Tool        |
+| ----------- | ------------------- | ----------- |
+| Unit        | 80%+ critical paths | [framework] |
+| Integration | All API endpoints   | [framework] |
 
 ---
 
 ## 9. Rollout Plan
 
-| Phase | Scope | Criteria |
-| ------- | ------- | ---------- |
-| Internal | Dev team | All tests passing |
-| Beta | 10% users | Error rate < 0.1% |
-| GA | 100% | Beta stable 48h |
+| Phase    | Scope     | Criteria          |
+| -------- | --------- | ----------------- |
+| Internal | Dev team  | All tests passing |
+| Beta     | 10% users | Error rate < 0.1% |
+| GA       | 100%      | Beta stable 48h   |
 
 ---
 
 ## 10. Open Questions
+
 - [ ] [Technical decision that needs resolution]
 ```
 

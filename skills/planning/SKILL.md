@@ -17,13 +17,13 @@ Always design before you build — a 30-minute design session prevents hours of 
 
 ## When to Use This Skill
 
-| Request | Artifact | Format |
-|---------|---------|--------|
-| "Design the database" | ERD | Mermaid `erDiagram` |
-| "How should this flow?" | Flowchart or user flow | Mermaid `flowchart TD` |
-| "Design the system" | Architecture diagram | Mermaid `graph TD` |
-| "Map out the sequence" | Sequence diagram | Mermaid `sequenceDiagram` |
-| "Show component relationships" | Component diagram | Mermaid `graph LR` |
+| Request                        | Artifact               | Format                    |
+| ------------------------------ | ---------------------- | ------------------------- |
+| "Design the database"          | ERD                    | Mermaid `erDiagram`       |
+| "How should this flow?"        | Flowchart or user flow | Mermaid `flowchart TD`    |
+| "Design the system"            | Architecture diagram   | Mermaid `graph TD`        |
+| "Map out the sequence"         | Sequence diagram       | Mermaid `sequenceDiagram` |
+| "Show component relationships" | Component diagram      | Mermaid `graph LR`        |
 
 All diagrams use **Mermaid.js** syntax — renders in GitHub, GitLab, Notion, and most documentation tools.
 
