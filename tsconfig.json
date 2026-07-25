@@ -7,12 +7,7 @@
     "lib": ["ES2022"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "noEmit": false,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": ".",
+    "noEmit": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -21,6 +16,6 @@
     "verbatimModuleSyntax": true,
     "types": ["bun-types"]
   },
-  "include": ["src/**/*.ts", "plugin/**/*.ts", "tests/**/*.ts", "src/index.ts", "plugin/agent-skills.ts"],
+  "include": ["plugin/**/*.ts", "tests/**/*.ts", ".opencode/tools/**/*.ts"],
   "exclude": ["node_modules", "dist", ".git"]
 }

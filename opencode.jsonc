@@ -1,0 +1,99 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugins": ["@thomiOmi/agent-skills"],
+  "agent": {
+    "primary": {
+      "description": "Main agent with verification loop. Decomposes tasks, delegates to subagents, verifies results.",
+      "mode": "all",
+      "temperature": 0.2,
+      "color": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "task": {
+          "*": "allow",
+          "primary": "deny",
+        },
+      },
+    },
+    "senior-developer": {
+      "description": "Senior software engineer — architecture, coding, refactoring, code review.",
+      "mode": "subagent",
+      "temperature": 0.2,
+      "color": "accent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+      },
+    },
+    "ui-ux": {
+      "description": "UI/UX designer — design systems, frontend, accessibility.",
+      "mode": "subagent",
+      "temperature": 0.4,
+      "color": "info",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "ask",
+          "npm run dev*": "allow",
+          "bun run dev*": "allow",
+        },
+      },
+    },
+    "marketing": {
+      "description": "Marketing specialist — content strategy, SEO, copywriting.",
+      "mode": "subagent",
+      "temperature": 0.6,
+      "color": "success",
+      "permission": {
+        "edit": "allow",
+        "bash": "deny",
+      },
+    },
+    "qa-engineer": {
+      "description": "QA engineer — test strategy, coverage, quality gates.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "color": "warning",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "ask",
+          "bun test*": "allow",
+          "npm test*": "allow",
+          "pytest*": "allow",
+        },
+      },
+    },
+    "devops": {
+      "description": "DevOps engineer — CI/CD, deployment, infrastructure.",
+      "mode": "subagent",
+      "temperature": 0.2,
+      "color": "secondary",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+      },
+    },
+    "security-auditor": {
+      "description": "Security auditor — auth review, OWASP Top 10, vulnerability assessment.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "color": "error",
+      "permission": {
+        "read": "allow",
+        "edit": "deny",
+        "bash": "deny",
+      },
+    },
+  },
+  "permission": {
+    "skill": "allow",
+  },
+  "references": {
+    "skills": {
+      "path": "skills",
+      "description": "Agent skills for code style, testing, debugging, security, design, devops, and more",
+    },
+  },
+}

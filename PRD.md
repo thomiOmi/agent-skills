@@ -1,212 +1,211 @@
-# PRD: agent-skills TypeScript Plugin
+# PRD: agent-skills — Agent Orchestra for OpenCode
 
 ## 1. Problem Statement
 
-The agent-skills repository previously relied on shell scripts (`install-skills.sh` for Linux/Mac/WSL and `install-skills.ps1` for Windows) to install skills, agents, and configuration into the user's OpenCode CLI setup. This approach has several limitations:
+The agent-skills project previously focused on a TypeScript plugin that syncs skills and agents to the user's OpenCode config directory. This approach duplicated OpenCode's built-in discovery mechanisms (`.opencode/agents/`, `.opencode/tools/`, `~/.config/opencode/skills/`) and required complex installer logic (`src/`) that is better handled by OpenCode itself.
 
-- Cross-platform support requires maintaining two separate installer scripts with different logic and edge cases.
-- Users must manually clone the repository and execute an installer script.
-- There is no auto-sync mechanism — if a new skill is added to the repository, the user must re-run the installer manually.
-- MCP server configuration must be done manually after install.
-- There is no integration with the OpenCode plugin ecosystem (`"plugins"` field in `opencode.jsonc`).
+The new direction: **Agent Orchestra** — a curated collection of specialized agents, skills, and custom tools that turn OpenCode into a multi-role development team. The primary agent delegates to sub-agents via verification loops, mimicking real-world engineering orgs.
 
 ## 2. Goals
 
-- Replace the shell/PowerShell installer with a TypeScript-based OpenCode plugin.
-- Enable installation with a single config line in `opencode.jsonc`:
-  `"plugins": ["@thomiOmi/agent-skills"]`.
-- Achieve native cross-platform support (Windows, Linux, macOS) without platform-specific scripts.
-- Auto-sync skills from the npm package to the user's config directory on session start.
-- Auto-configure MCP servers (github, context7, grep) and permissions in `opencode.jsonc`.
-- Keep AGENTS.md content always up-to-date via remote URL or npm package.
+- Provide a **primary agent** with a verification loop: decompose → delegate → collect → verify → iterate.
+- Ship **real-world agency roles**: senior-developer, ui-ux, marketing, qa-engineer, devops, security-auditor.
+- Provide **skills** that support each agent role with deep, role-specific guidance.
+- Provide **custom tools** under `.opencode/tools/` that agents can use.
+- Eliminate `src/` — no installer, no config manipulator, no MCP auto-config.
+- Keep plugin minimal: only register agents/skills/tools, no file sync logic.
+- Full OpenCode v2 compliance: agents as markdown, skills as SKILL.md, custom tools as TypeScript.
+- PRD.md is the single source of truth for architecture decisions.
 
 ## 3. Target Users
 
-- OpenCode CLI users who want productivity agent skills available in their sessions.
-- Developers who work across multiple platforms (Windows, Linux, Mac) and want a uniform setup experience.
-- Users already familiar with OpenCode's plugin system (`opencode.jsonc` `"plugins"` field).
+- OpenCode users who want a multi-agent development workflow.
+- Developers who want specialized agents (senior developer, UI/UX, QA, DevOps, marketing, security) at their fingertips.
+- Teams that practice verification loops and quality gates before shipping.
 
-## 4. User Stories
+## 4. Architecture
 
-- **US-1**: As a user, I want to add `"plugins": ["@thomiOmi/agent-skills"]` to my `opencode.jsonc` so that all skills are installed automatically without running a shell script.
-- **US-2**: As a user, I want skills to be automatically synced on each OpenCode session so that newly added skills are available without manual re-installation.
-- **US-3**: As a Windows user, I want the installation experience to be identical to Linux/Mac — no different terminal commands, no execution policy issues, no platform-specific scripts.
-- **US-4**: As a user, I want MCP servers (github, context7, grep) to be auto-configured when the plugin is activated.
-- **US-5**: As a maintainer, I want to update skills by publishing a new npm version so that users get the update automatically on their next session.
-- **US-6**: As a user, I want the plugin to gracefully handle errors (e.g., missing config directory, permission issues) without crashing OpenCode.
+```mermaid
+flowchart TD
+    User[User Input] --> Primary[Primary Agent<br/>verification loop]
+    Primary --> Decompose[Decompose task<br/>task-decomposer tool]
 
-## 5. Functional Requirements
+    Decompose --> SD[senior-developer<br/>code-style, testing, debugging]
+    Decompose --> UX[ui-ux<br/>ui-design]
+    Decompose --> MKT[marketing<br/>content-strategy]
+    Decompose --> QA[qa-engineer<br/>testing, debugging]
+    Decompose --> DO[devops<br/>devops-deployment]
+    Decompose --> SA[security-auditor<br/>security-review]
 
-| ID    | Requirement                             | Detail                                                                                                                                                                                                              | UNJS Library       |
-| ----- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| FR-1  | **Plugin TypeScript package**           | Npm package published as `@thomiOmi/agent-skills`. TypeScript strict mode. Bun runtime.                                                                                                                             | —                  |
-| FR-2  | **Plugin hook: `installation.updated`** | On OpenCode installation update, sync skills from npm package to user's `~/.config/opencode/skills/`.                                                                                                               | `pathe`, `fs`      |
-| FR-3  | **Plugin hook: `session.created`**      | On new session, ensure skills are present and up-to-date. Skip if already synced.                                                                                                                                   | `ohash`, `pathe`   |
-| FR-4  | **Config auto-write: instructions**     | Auto-add or update `"instructions"` in `opencode.jsonc` pointing to the remote AGENTS.md URL.                                                                                                                       | `defu`, `unconfig` |
-| FR-5  | **Config auto-write: permissions**      | Auto-add or update `"permissions"` array in `opencode.jsonc` with `{action: "skill", resource: "*", effect: "allow"}`.                                                                                              | `defu`, `unconfig` |
-| FR-6  | **MCP auto-config**                     | Auto-add recommended MCP servers (github, context7, grep) to `opencode.jsonc` under `"mcp": { "servers": {...} }` format using v2 config keys.                                                                      | `defu`, `unconfig` |
-| FR-7  | **Cross-platform path resolution**      | `pathe` (UNJS) handles path operations: `~/.config/opencode/` on Unix, `%USERPROFILE%\.config\opencode\` on Windows.                                                                                                | `pathe`            |
-| FR-8  | **Config merging**                      | `defu` (UNJS) deep-merges plugin defaults with existing user config without overwriting user customizations.                                                                                                        | `defu`             |
-| FR-9  | **HTTP fetching**                       | `ofetch` (UNJS) fetches remote AGENTS.md, queries npm registry for latest version, checks MCP health.                                                                                                               | `ofetch`           |
-| FR-10 | **Content hashing**                     | `ohash` (UNJS) hashes skill directory contents to detect changes and skip unnecessary file copies.                                                                                                                  | `ohash`            |
-| FR-11 | **Structured logging**                  | `consola` (UNJS) provides log levels (`info`, `warn`, `error`) with plugin prefix. Replaces `console.log`.                                                                                                          | `consola`          |
-| FR-12 | **Config file resolution**              | `unconfig` (UNJS) resolves and parses `opencode.jsonc` robustly (JSONC syntax, file discovery).                                                                                                                     | `unconfig`         |
-| FR-13 | **Type coercion**                       | `destr` (UNJS) converts string config values to correct types (boolean, number, etc.).                                                                                                                              | `destr`            |
-| FR-14 | **Graceful error handling**             | Plugin errors are caught and logged via `consola.error`. OpenCode session continues even if plugin install fails.                                                                                                   | `consola`          |
-| FR-15 | **v2 Config format compliance**         | All config examples, docs, and code must use OpenCode v2 keys: `"plugins"` (not `"plugin"`), `"permissions"` array (not `"permission.skill.*"`), `"mcp.servers"` (not flat `"mcp"`), `"environment"` (not `"env"`). | —                  |
+    SD --> Verify{Verification Loop<br/>quality-verifier tool}
+    UX --> Verify
+    MKT --> Verify
+    QA --> Verify
+    DO --> Verify
+    SA --> Verify
 
-## 6. Non-Functional Requirements
+    Verify -- PASS --> Synthesize[Synthesize results]
+    Verify -- FAIL < 3 retries --> SD
+    Verify -- FAIL < 3 retries --> UX
+    Verify -- FAIL < 3 retries --> MKT
+    Verify -- FAIL < 3 retries --> QA
+    Verify -- FAIL < 3 retries --> DO
+    Verify -- FAIL < 3 retries --> SA
+    Verify -- FAIL exhausted --> Escalate[Escalate to user]
 
-- **NFR-1**: TypeScript strict mode enabled (`"strict": true` in `tsconfig.json`).
-- **NFR-2**: Bun runtime — plugin uses Bun APIs and is bundled with Bun.
-- **NFR-3**: All UNJS dependencies installed via `bun add` (matching OpenCode's Bun-based architecture).
-- **NFR-4**: Plugin package size < 5 MB (suitable for npm publish).
-- **NFR-5**: CI pipeline runs TypeScript typecheck (`tsc --noEmit`), oxlint linting, and oxfmt format check.
-- **NFR-6**: Unit tests for core install and config functions.
-- **NFR-7**: All `AGENTS.md` constraints applied: no emoji in checkmarks, clean markdown list format for "Must do" and "Must not do" sections.
-- **NFR-8**: Follow `agentskills.io` specification for SKILL.md frontmatter and directory structure (no changes to existing skills).
-- **NFR-9**: Linting via `oxlint` (not eslint); formatting via `oxfmt` (not prettier). Config files: `oxlint.config.ts` and `oxfmt.config.ts`.
-- **NFR-10**: VSCode integration via `oxc-vscode` extension with auto-format on save and auto-fix on save.
-
-## 7. Scope
-
-### In Scope
-
-- TypeScript plugin package with OpenCode hook integration
-- Cross-platform skill synchronization (copy from npm package to user config dir)
-- `opencode.jsonc` auto-configuration (`plugins`, `instructions`, `permissions`, `mcp.servers` — v2 format)
-- Content hashing to avoid unnecessary file copies
-- Structured error handling and logging
-- CI workflow with typecheck, oxlint, and oxfmt format check
-- Local validation tests
-- AGENTS.md cleanup (remove emoji, clean list format)
-- VSCode settings for oxc (lint + format on save)
-- `.editorconfig` for consistent editor formatting
-
-### Out of Scope
-
-- Custom agents creation (separate feature)
-- Custom shortcuts/commands (`/review`, `/plan-feature`)
-- Custom plugins (knowledge persistence, notifications, chat export)
-- Skill versioning and auto-update mechanism beyond npm publish
-- DESIGN.md support
-- Skillspector integration
-- `opencode.jsonc` schema references to other agentskills.io
-- Shell installer scripts (`install-skills.sh`, `install-skills.ps1`) — removed in favor of plugin-only install
-
-## 8. Tech Stack
-
-| Tool                    | Purpose                                                                 |
-| ----------------------- | ----------------------------------------------------------------------- |
-| **TypeScript**          | Primary language, strict mode                                           |
-| **Bun**                 | Runtime, test runner, package manager                                   |
-| **OpenCode**            | Target CLI plugin framework (`@opencode-ai/plugin`, `@opencode-ai/sdk`) |
-| **oxlint**              | Fast Rust-based TypeScript linter (replaces eslint)                     |
-| **oxfmt**               | Rust-based TypeScript formatter (replaces prettier)                     |
-| **oxc-vscode**          | VSCode extension for oxlint + oxfmt integration                         |
-| **oxlint.config.ts**    | Lint configuration (TypeScript-aware)                                   |
-| **oxfmt.config.ts**     | Format configuration (printWidth: 120)                                  |
-| **Pathe**               | Cross-platform path joining, resolution, and normalization              |
-| **Consola**             | Structured logging with levels and prefixes                             |
-| **Defu**                | Deep merge of default and user configuration objects                    |
-| **Ofetch**              | HTTP fetch client with retry and error handling                         |
-| **Ohash**               | Object/content hashing for change detection                             |
-| **Unconfig**            | Robust config file discovery and parsing                                |
-| **Destr**               | Safe type coercion from string to typed values                          |
-| **Node.js fs/promises** | Native file system operations (read, write, mkdir, copy, delete)        |
-| **Node.js os**          | OS-level operations (`homedir()`)                                       |
-| **Node.js path**        | Native path operations (supplementary)                                  |
-
-## 9. OpenCode Config Format Reference (v2)
-
-```jsonc
-{
-  "$schema": "https://opencode.ai/config.json",
-  "plugins": ["@thomiOmi/agent-skills"],
-  "instructions": ["https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"],
-  "permissions": [{ "action": "skill", "resource": "*", "effect": "allow" }],
-  "mcp": {
-    "servers": {
-      "github": {
-        "type": "local",
-        "command": "npx",
-        "args": ["@modelcontextprotocol/server-github"],
-        "environment": { "GITHUB_TOKEN": "your_token_here" },
-      },
-    },
-  },
-}
+    Synthesize --> Return[Return to user]
 ```
 
-**Key differences from v1 format:**
+## 5. Agent Roster
 
-- `"plugins"` — array of plugin package names (was `"plugin"` string)
-- `"permissions"` — array of `{action, resource, effect}` objects (was `"permission.skill.*"` map)
-- `"mcp.servers"` — MCP servers nested under `mcp.servers` (was flat `"mcp"` top-level key)
-- `"environment"` — for MCP env vars (was `"env"`)
+| Agent                | Mode       | Role                                  | Delegates To                   | Key Skills                                                              |
+| -------------------- | ---------- | ------------------------------------- | ------------------------------ | ----------------------------------------------------------------------- |
+| **primary**          | `all`      | Main interface with verification loop | All sub-agents via `task` tool | task-decomposition, quality-verifier                                    |
+| **senior-developer** | `subagent` | Architecture, coding, refactoring     | —                              | code-style, debugging, testing, api-conventions, database, git-workflow |
+| **ui-ux**            | `subagent` | Design system, frontend, a11y         | —                              | ui-design                                                               |
+| **marketing**        | `subagent` | Content, SEO, copy, strategy          | —                              | content-strategy                                                        |
+| **qa-engineer**      | `subagent` | Test strategy, coverage, quality      | —                              | testing, debugging                                                      |
+| **devops**           | `subagent` | CI/CD, deployment, infra              | —                              | devops-deployment                                                       |
+| **security-auditor** | `subagent` | Security review, auth, vulns          | —                              | security-review                                                         |
 
-## 10. Project Structure
+## 6. Directory Structure
 
 ```text
 agent-skills/
-├── PRD.md
-├── AGENTS.md
-├── README.md
-├── INSTALL.md
-├── SPEC.md
-├── LICENSE
-├── .editorconfig
-├── .gitignore
-├── oxlint.config.ts
-├── oxfmt.config.ts
+├── PRD.md                              # Source of truth
+├── AGENTS.md                           # Project-level instructions
+├── opencode.jsonc                      # Config with agent block
 ├── package.json
 ├── tsconfig.json
-├── bun.lock
+├── .gitignore
+├── .opencode/
+│   ├── agents/                         # Auto-discovered by OpenCode
+│   │   ├── primary.md
+│   │   ├── senior-developer.md
+│   │   ├── ui-ux.md
+│   │   ├── marketing.md
+│   │   ├── qa-engineer.md
+│   │   ├── devops.md
+│   │   └── security-auditor.md
+│   └── tools/                          # Custom tools (auto-discovered)
+│       ├── task-decomposer.ts
+│       └── quality-verifier.ts
+├── agents/                             # Source of truth (copied to .opencode/agents/)
+│   ├── primary.md
+│   ├── senior-developer.md
+│   ├── ui-ux.md
+│   ├── marketing.md
+│   ├── qa-engineer.md
+│   ├── devops.md
+│   └── security-auditor.md
+├── skills/
+│   ├── code-style/SKILL.md
+│   ├── testing/SKILL.md
+│   ├── debugging/SKILL.md
+│   ├── api-conventions/SKILL.md
+│   ├── database/SKILL.md
+│   ├── git-workflow/SKILL.md
+│   ├── documentation/SKILL.md
+│   ├── planning/SKILL.md
+│   ├── sdlc-documentation/SKILL.md
+│   ├── security-review/SKILL.md
+│   ├── ai-integration/SKILL.md
+│   ├── task-decomposition/SKILL.md
+│   ├── ui-design/SKILL.md
+│   ├── content-strategy/SKILL.md
+│   └── devops-deployment/SKILL.md
 ├── plugin/
-│   └── agent-skills.ts
-├── src/
-│   ├── index.ts
-│   ├── types.ts
-│   ├── config.ts
-│   ├── install.ts
-│   └── paths.ts
-├── tests/
-│   └── validate-skills.test.ts
-├── .github/
-│   └── workflows/
-│       └── validate-skills.yml
-└── skills/
-    ├── task-decomposition/
-    ├── code-style/
-    ├── api-conventions/
-    ├── testing/
-    ├── documentation/
-    ├── planning/
-    ├── debugging/
-    ├── ai-integration/
-    ├── sdlc-documentation/
-    ├── git-workflow/
-    ├── security-review/
-    └── database/
+│   └── agent-skills.ts                 # Minimal — only registers agents/skills/tools
+└── tests/
+    └── validate-skills.test.ts
 ```
 
-## 11. Dependencies (UNJS.io Ecosystem)
+## 7. Verification Loop
 
-The following UNJS.io libraries are used for third-party functionality:
+The primary agent implements a verification loop for every delegation:
 
-| Package    | Purpose                                                    | Status in Codebase              |
-| ---------- | ---------------------------------------------------------- | ------------------------------- |
-| `pathe`    | Cross-platform path joining, resolution, and normalization | ✅ actively used                |
-| `defu`     | Deep merge of default and user configuration objects       | ✅ in package.json, check usage |
-| `consola`  | Structured logging with levels and prefixes                | ✅ actively used                |
-| `ofetch`   | HTTP fetch client with retry and error handling            | ✅ in package.json, check usage |
-| `ohash`    | Object/content hashing for change detection                | ✅ in package.json, check usage |
-| `unconfig` | Robust config file discovery and parsing                   | ✅ in package.json, check usage |
-| `destr`    | Safe type coercion from string to typed values             | ✅ in package.json, check usage |
-| `ufo`      | URL parsing, joining, and manipulation                     | ✅ in package.json, check usage |
+```text
+1. RECEIVE task from user
+2. DECOMPOSE into subtasks (uses task-decomposer custom tool)
+3. For each subtask:
+   a. DELEGATE to appropriate subagent via `task` tool
+   b. COLLECT result
+   c. VERIFY quality (uses quality-verifier custom tool)
+      - If PASS: proceed
+      - If FAIL (max 3 retries): send back to subagent with feedback
+      - If FAIL (exhausted): escalate to user
+4. SYNTHESIZE all results into final response
+5. RETURN to user
+```
+
+## 8. Skills → Agent Mapping
+
+| Skill              | Used By                       | Purpose                       |
+| ------------------ | ----------------------------- | ----------------------------- |
+| task-decomposition | primary                       | Breaking down complex tasks   |
+| code-style         | senior-developer              | Code quality conventions      |
+| testing            | senior-developer, qa-engineer | Test writing conventions      |
+| debugging          | senior-developer, qa-engineer | Bug diagnosis workflow        |
+| api-conventions    | senior-developer              | API design consistency        |
+| database           | senior-developer              | Schema, queries, optimization |
+| git-workflow       | senior-developer              | Git conventions               |
+| ui-design          | ui-ux                         | Design system, frontend, a11y |
+| content-strategy   | marketing                     | Content, SEO, copy, strategy  |
+| devops-deployment  | devops                        | CI/CD, deployment, infra      |
+| security-review    | security-auditor              | Security audit checklist      |
+| documentation      | all                           | Writing docs                  |
+| planning           | all                           | System design, ERD, flows     |
+| sdlc-documentation | all                           | PRD, SDD, requirements        |
+| ai-integration     | senior-developer              | LLM/API integration           |
+
+## 9. Relationship with OpenCode Built-in Agents
+
+| OpenCode Built-in    | Our Addition          | Relation                                    |
+| -------------------- | --------------------- | ------------------------------------------- |
+| `build` (primary)    | —                     | Default dev agent, keep as-is               |
+| `plan` (primary)     | —                     | Analysis agent, keep as-is                  |
+| `general` (subagent) | —                     | Generic helper, keep as-is                  |
+| `explore` (subagent) | —                     | Codebase explorer, keep as-is               |
+| `scout` (subagent)   | —                     | External research, keep as-is               |
+| —                    | `primary` (mode: all) | Verification loop agent, selectable via Tab |
+| —                    | `senior-developer`    | Architecture & coding specialist            |
+| —                    | `ui-ux`               | Design & frontend specialist                |
+| —                    | `marketing`           | Content & SEO specialist                    |
+| —                    | `qa-engineer`         | Testing & quality specialist                |
+| —                    | `devops`              | CI/CD & deployment specialist               |
+| —                    | `security-auditor`    | Security review specialist                  |
+
+Our agents **complement** built-in agents. Users can Tab between `build`, `plan`, and `primary`.
+
+## 10. Custom Tools
+
+Tools in `.opencode/tools/` are auto-discovered by OpenCode v2.
+
+### task-decomposer.ts
+
+- **Purpose**: Break a complex task description into structured subtasks
+- **Input**: Task description string
+- **Output**: Array of subtask objects with {id, description, suggestedAgent, dependencies}
+- **Used by**: primary agent
+
+### quality-verifier.ts
+
+- **Purpose**: Verify code quality against defined criteria
+- **Input**: File paths, criteria (lint pass, tests pass, typecheck pass)
+- **Output**: Pass/fail with details on what failed
+- **Used by**: primary agent
+
+## 11. Out of Scope
+
+- MCP server auto-configuration
+- opencode.jsonc permissions auto-write
+- Instructions URL auto-write
+- GitHub Actions CI changes (kept as-is)
+- Any installer or sync logic beyond plugin registration
+- Shell installer scripts
 
 ## 12. Changelog
 
-| Version | Date | Changes                                                                                |
-| ------- | ---- | -------------------------------------------------------------------------------------- |
-| 0.1.0   | TBD  | MVP: TypeScript plugin with skill sync, config automation (v2 format), MCP auto-config |
+| Version | Date | Changes                                                                          |
+| ------- | ---- | -------------------------------------------------------------------------------- |
+| 0.2.0   | TBD  | Rewrite: Agent Orchestra with verification loop, new agents/skills, removed src/ |

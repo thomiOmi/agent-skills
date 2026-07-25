@@ -2,7 +2,7 @@
 
 Global rules for all AI coding agents. Read this fully at the start of every session.
 
-Priority order (highest → lowest):
+Priority order (highest to lowest):
 
 ```text
 1. Global AGENTS.md (~/.config/opencode/AGENTS.md) — always applies
@@ -15,7 +15,7 @@ Priority order (highest → lowest):
 ## How to Use
 
 1. Read this file fully.
-2. List available skills — use `skill` tool to load relevant SKILL.md files. Lazy load: only read a skill's `references/` files when that specific content is needed.
+2. List available skills -- use `skill` tool to load relevant SKILL.md files.
 3. List configured MCP servers. Prefer MCP over writing code for external services.
 4. Use `todowrite` to create a task list before starting any multi-step work.
 5. Begin the task.
@@ -26,83 +26,32 @@ Priority order (highest → lowest):
 
 No exceptions.
 
-- Read relevant files before proposing changes — never assume structure or content.
+- Read relevant files before proposing changes -- never assume structure or content.
 - Do not reference any function, class, endpoint, or config key unless seen in the codebase or confirmed by the user.
 - Do not suggest a library unless it is in the project manifest (`package.json`, `composer.json`, `go.mod`, etc.).
 - When uncertain: say so and ask one targeted question. Never fill gaps with guesses.
 - Never cite documentation, papers, or sources unless retrieved in this session via `webfetch` or `websearch`.
 
-Must do (constraints that must be followed):
+Must do:
 
-- Read relevant files before proposing changes — never assume structure or content.
+- Read relevant files before proposing changes -- never assume structure or content.
 - Do not reference any function, class, endpoint, or config key unless seen in the codebase or confirmed by the user.
-- Do not suggest a library unless it is in the project manifest (`package.json`, `composer.json`, `go.mod`, etc.).
-- When uncertain: say so and ask one targeted question. Never fill gaps with guesses.
-- Never cite documentation, papers, or sources unless retrieved in this session via `webfetch` or `websearch`.
+- Do not suggest a library unless it is in the project manifest.
 
-Must not do (constraints that must never be violated):
+Must not do:
 
 - Do not invent names, endpoints, or config keys not visible in the codebase.
 - Do not write "I'll assume X" and continue without confirmation.
 - Do not cite a library version without checking the manifest.
 - Do not proceed past a blocking ambiguity without surfacing it.
 - Do not state version-specific facts without verification.
-- Do not omit the confidence labeling on any factual or technical claim.
-- Do not wait to be asked for the confidence label — append it to every claim.
+- Do not omit confidence labeling on any factual or technical claim.
 
 **Confidence labeling format:**
 
-- `[High confidence]` — verified from file read, tool output, or docs fetched this session
-- `[Medium confidence]` — from prior knowledge, not verified this session
-- `[Low confidence]` — uncertain; verify before the user acts on this
-
-Example: "Laravel 11 introduced this feature [High confidence — confirmed in bootstrap/app.php:33]"
-
----
-
-## OpenCode Tools
-
-Use the right tool. Never manually replicate what a built-in tool does.
-
-| Tool        | When to use                                                                   |
-| ----------- | ----------------------------------------------------------------------------- |
-| `todowrite` | Every multi-step task — create list first, update after each step             |
-| `question`  | Before any review, destructive op, or ambiguous scope — ask, don't assume     |
-| `read`      | Before editing any file                                                       |
-| `grep`      | Finding patterns, functions, or text across the codebase                      |
-| `glob`      | Finding files by pattern before reading them                                  |
-| `webfetch`  | Reading official docs from a known URL                                        |
-| `websearch` | Finding docs when you don't have the URL                                      |
-| `bash`      | Tests, linters, formatters, git commands                                      |
-| `lsp`       | Go-to-definition, find-references (set `OPENCODE_EXPERIMENTAL_LSP_TOOL=true`) |
-| `skill`     | Loading a SKILL.md on demand                                                  |
-
-**`todowrite` rules:**
-
-- Create the full list before starting — not after
-- Update each item immediately when done — not at the end
-- If blocked: mark blocked and stop — do not skip ahead
-- Session end: post done / blocked / remaining summary
-
-**`question` rules — ask before:**
-
-- Output format for any review or analysis
-- Date/time format if not in project AGENTS.md
-- Scope of changes if it spans more than one module
-- Any destructive operation (delete, overwrite, drop, migrate)
-
-**`webfetch` / `websearch` rules:**
-
-- Before implementing anything with a framework, library, or external API
-- Never rely on training knowledge for version-specific APIs or config formats
-- `webfetch` when you have the URL — `websearch` when you need to find it
-
----
-
-## MCP
-
-- Check connected MCP servers before writing code for any external service.
-- If an MCP handles the task, use it — do not write boilerplate integration code.
+- `[High confidence]` -- verified from file read, tool output, or docs fetched this session
+- `[Medium confidence]` -- from prior knowledge, not verified this session
+- `[Low confidence]` -- uncertain; verify before the user acts on this
 
 ---
 
@@ -119,7 +68,7 @@ Use the right tool. Never manually replicate what a built-in tool does.
 
 ## Commits
 
-Conventional Commits — one logical change per commit:
+Conventional Commits -- one logical change per commit:
 
 ```text
 type(scope): short description
@@ -135,7 +84,7 @@ Types: `feat` · `fix` · `refactor` · `test` · `docs` · `chore` · `perf` ·
 
 ## Testing
 
-- New logic without tests is incomplete — do not mark a task done without tests.
+- New logic without tests is incomplete -- do not mark a task done without tests.
 - Never skip tests because "the code is simple."
 - Load the `testing` skill before writing or reviewing tests.
 
@@ -149,68 +98,34 @@ Types: `feat` · `fix` · `refactor` · `test` · `docs` · `chore` · `perf` ·
 
 ---
 
-## Language
+## Agent Orchestra
 
-- Default output language: **English**.
-- If the user writes in another language, switch immediately and maintain it.
+This project provides a primary agent with verification loop and specialized subagents:
+
+- `primary` -- Main agent. Decomposes tasks, delegates to subagents, verifies results.
+- `senior-developer` -- Architecture, coding, refactoring, code review.
+- `ui-ux` -- Design system, frontend, accessibility.
+- `marketing` -- Content, SEO, copy, strategy.
+- `qa-engineer` -- Test strategy, coverage, quality gates.
+- `devops` -- CI/CD, deployment, infrastructure.
+- `security-auditor` -- Security review, auth, vulnerability assessment.
+
+For full project work, invoke `primary`. For a specific concern, invoke the relevant subagent directly via `@name`.
 
 ---
 
-## Analysis and Review Behavior
-
-This section applies to any review, audit, architectural discussion, or analysis task.
-It does not apply to clear execution tasks ("add this index", "fix this bug").
-
-**Before starting a review — clarify scope first:**
-
-- Confirm which modules, files, or layers are in scope
-- Ask what the user wants as output format (table, inline comments, report)
-- Do not start reading files until scope is confirmed
-
-**During a review — present findings before proposing fixes:**
-
-- Share all findings first and wait for the user to respond
-- Do not immediately jump to "here's how to fix it"
-- Group findings by severity: Critical → High → Medium → Low
-- Reference findings from earlier in the session if reviewing related modules
-
-**Anti-sycophancy — do not capitulate under social pressure:**
-
-- If the user disagrees or pushes back, do not immediately change position
-- Only update your position when the user provides new information or a logical argument
-- Expressing displeasure or repeating the objection is not a logical argument
-- If challenged: state why you hold the position, ask what specific information changed
-- "I agree" and "you're right" require a reason — state it explicitly
-- Do not open responses with empty affirmations: "Great idea", "You're absolutely right",
-  "Perfect", "Makes sense", "Exactly" — if something is correct, explain why it is correct
-
-**Review output structure — use this order for findings:**
-
-1. Main concern — the most critical issue found
-2. Evidence — specific file, line, or pattern that supports it
-3. Recommendation — concrete fix, not a vague suggestion
-4. If multiple findings: group by severity (Critical → High → Medium → Low)
-
-**Session consistency:**
-
-- If you identified an issue in one module, check for the same pattern in related modules
-- Do not contradict a previous finding in the same session without explaining why
-- If the user's new information changes your earlier assessment, acknowledge the change explicitly
-
 ## Project Context
 
-> Fill in the project-level AGENTS.md. All rules above apply automatically.
-
 **Project:** agent-skills
-**Type:** OpenCode CLI plugin (TypeScript + Bun)
-**Stack:** TypeScript, Bun, @opencode-ai/plugin, UNJS.io (pathe, defu, consola, ofetch, ohash, unconfig, destr, ufo)
+**Type:** OpenCode Agent Orchestra (TypeScript + Bun)
+**Stack:** TypeScript, Bun, @opencode-ai/plugin
 **Package manager:** bun
 **Test runner:** Bun built-in test (`bun test`)
 **Linter / formatter:** oxlint + oxfmt
 **Main branch:** main
-**CI:** GitHub Actions (validate-skills.yml with typecheck, lint, format, test)
-**Key directories:** skills/ · src/ · plugin/ · tests/ · .github/
-**Do NOT touch:** generated/ · node_modules/ · dist/
-**Plugin install:** `"plugins": ["@thomiOmi/agent-skills"]` in opencode.jsonc
-**API conventions:** JSONC for config, JSON for exports
-**Plugin docs:** <https://opencode.ai/docs/plugins>
+**CI:** GitHub Actions (validate-skills.yml)
+**Key directories:** agents/ · skills/ · plugin/ · tests/ · .opencode/
+**Do NOT touch:** node_modules/ · dist/
+**Agent files:** agents/_.md (source), .opencode/agents/ (auto-discovered by OpenCode)
+**Skill files:** skills/_/SKILL.md (source), .opencode/skills/ (installed)
+**Custom tools:** .opencode/tools/*.ts (auto-discovered)

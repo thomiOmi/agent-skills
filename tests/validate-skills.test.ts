@@ -1,11 +1,40 @@
 import { describe, it, expect } from "bun:test";
 import { existsSync, readdirSync, readFileSync } from "fs";
-import { join, dirname } from "pathe";
-import { fileURLToPath } from "url";
+import { join } from "pathe";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, "..");
+const REPO_ROOT = join(import.meta.dir, "..");
 const SKILLS_DIR = join(REPO_ROOT, "skills");
+const AGENTS_DIR = join(REPO_ROOT, "agents");
+const OPENCODE_AGENTS_DIR = join(REPO_ROOT, ".opencode", "agents");
+const TOOLS_DIR = join(REPO_ROOT, ".opencode", "tools");
+
+const EXPECTED_SKILLS = [
+  "task-decomposition",
+  "code-style",
+  "api-conventions",
+  "testing",
+  "documentation",
+  "planning",
+  "debugging",
+  "ai-integration",
+  "sdlc-documentation",
+  "git-workflow",
+  "security-review",
+  "database",
+  "ui-design",
+  "content-strategy",
+  "devops-deployment",
+];
+
+const EXPECTED_AGENTS = [
+  "primary",
+  "senior-developer",
+  "ui-ux",
+  "marketing",
+  "qa-engineer",
+  "devops",
+  "security-auditor",
+];
 
 describe("SKILL.md validation", () => {
   it("all skill directories contain a SKILL.md", () => {
@@ -33,7 +62,7 @@ describe("SKILL.md validation", () => {
     }
   });
 
-  it("each SKILL.md description field is non-empty and under 1024 chars", () => {
+  it("each SKILL.md description is non-empty and under 1024 chars", () => {
     const entries = readdirSync(SKILLS_DIR, { withFileTypes: true });
     const dirs = entries.filter((e) => e.isDirectory()).map((e) => e.name);
 
@@ -49,26 +78,75 @@ describe("SKILL.md validation", () => {
     }
   });
 
-  it("all 12 skills are present", () => {
-    const expected = [
-      "task-decomposition",
-      "code-style",
-      "api-conventions",
-      "testing",
-      "documentation",
-      "planning",
-      "debugging",
-      "ai-integration",
-      "sdlc-documentation",
-      "git-workflow",
-      "security-review",
-      "database",
-    ];
+  it(`all ${EXPECTED_SKILLS.length} skills are present`, () => {
     const entries = readdirSync(SKILLS_DIR, { withFileTypes: true });
     const dirs = entries.filter((e) => e.isDirectory()).map((e) => e.name);
 
-    for (const skill of expected) {
+    for (const skill of EXPECTED_SKILLS) {
       expect(dirs).toContain(skill);
+    }
+  });
+});
+
+describe("Agent file validation", () => {
+  it(`all ${EXPECTED_AGENTS.length} agent files exist in agents/`, () => {
+    const files = readdirSync(AGENTS_DIR).filter((f) => f.endsWith(".md"));
+    const names = files.map((f) => f.replace(/\.md$/, ""));
+
+    for (const agent of EXPECTED_AGENTS) {
+      expect(names).toContain(agent);
+    }
+  });
+
+  it("each agent file has required OpenCode v2 frontmatter", () => {
+    const files = readdirSync(AGENTS_DIR).filter((f) => f.endsWith(".md"));
+
+    for (const file of files) {
+      const content = readFileSync(join(AGENTS_DIR, file), "utf-8");
+      expect(content).toMatch(/^---/);
+      expect(content).toContain("description:");
+      expect(content).toContain("mode:");
+    }
+  });
+
+  it("no legacy agent files remain", () => {
+    const files = readdirSync(AGENTS_DIR);
+    expect(files).not.toContain("code-reviewer.md");
+    expect(files).not.toContain("laravel-simplifier.md");
+    expect(files).not.toContain("orchestrator.md");
+  });
+
+  it("agent markdown files are copied to .opencode/agents/", () => {
+    if (!existsSync(OPENCODE_AGENTS_DIR)) return;
+
+    const sourceFiles = readdirSync(AGENTS_DIR).filter((f) => f.endsWith(".md"));
+    const destFiles = readdirSync(OPENCODE_AGENTS_DIR).filter((f) => f.endsWith(".md"));
+
+    for (const file of sourceFiles) {
+      expect(destFiles).toContain(file);
+    }
+  });
+});
+
+describe("Custom tools validation", () => {
+  it("custom tools directory exists", () => {
+    expect(existsSync(TOOLS_DIR)).toBe(true);
+  });
+
+  it("task-decomposer tool exists", () => {
+    expect(existsSync(join(TOOLS_DIR, "task-decomposer.ts"))).toBe(true);
+  });
+
+  it("quality-verifier tool exists", () => {
+    expect(existsSync(join(TOOLS_DIR, "quality-verifier.ts"))).toBe(true);
+  });
+
+  it("each tool imports from @opencode-ai/plugin", () => {
+    const files = readdirSync(TOOLS_DIR).filter((f) => f.endsWith(".ts"));
+
+    for (const file of files) {
+      const content = readFileSync(join(TOOLS_DIR, file), "utf-8");
+      expect(content).toContain("@opencode-ai/plugin");
     }
   });
 });
@@ -99,5 +177,32 @@ describe("AGENTS.md validation", () => {
     const agentsPath = join(REPO_ROOT, "AGENTS.md");
     const content = readFileSync(agentsPath, "utf-8");
     expect(content).toContain("Must not do");
+  });
+
+  it("AGENTS.md references all 6 agents", () => {
+    const agentsPath = join(REPO_ROOT, "AGENTS.md");
+    const content = readFileSync(agentsPath, "utf-8");
+    for (const agent of EXPECTED_AGENTS) {
+      expect(content).toContain(agent);
+    }
+  });
+});
+
+describe("Config validation", () => {
+  it("opencode.jsonc exists", () => {
+    expect(existsSync(join(REPO_ROOT, "opencode.jsonc"))).toBe(true);
+  });
+
+  it("opencode.jsonc contains agent definitions for all expected agents", () => {
+    const config = readFileSync(join(REPO_ROOT, "opencode.jsonc"), "utf-8");
+    for (const agent of EXPECTED_AGENTS) {
+      expect(config).toContain(`"${agent}"`);
+    }
+  });
+});
+
+describe("src/ removal", () => {
+  it("src/ directory no longer exists", () => {
+    expect(existsSync(join(REPO_ROOT, "src"))).toBe(false);
   });
 });
