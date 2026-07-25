@@ -5,8 +5,7 @@ import { join } from "pathe";
 const REPO_ROOT = join(import.meta.dir, "..");
 const SKILLS_DIR = join(REPO_ROOT, "skills");
 const AGENTS_DIR = join(REPO_ROOT, "agents");
-const OPENCODE_AGENTS_DIR = join(REPO_ROOT, ".opencode", "agents");
-const TOOLS_DIR = join(REPO_ROOT, ".opencode", "tools");
+const TOOLS_DIR = join(REPO_ROOT, "tools");
 
 const EXPECTED_SKILLS = [
   "task-decomposition",
@@ -116,16 +115,6 @@ describe("Agent file validation", () => {
     expect(files).not.toContain("orchestrator.md");
   });
 
-  it("agent markdown files are copied to .opencode/agents/", () => {
-    if (!existsSync(OPENCODE_AGENTS_DIR)) return;
-
-    const sourceFiles = readdirSync(AGENTS_DIR).filter((f) => f.endsWith(".md"));
-    const destFiles = readdirSync(OPENCODE_AGENTS_DIR).filter((f) => f.endsWith(".md"));
-
-    for (const file of sourceFiles) {
-      expect(destFiles).toContain(file);
-    }
-  });
 });
 
 describe("Custom tools validation", () => {

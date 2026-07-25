@@ -16,6 +16,6 @@
     "verbatimModuleSyntax": true,
     "types": ["bun-types"]
   },
-  "include": ["plugin/**/*.ts", "tests/**/*.ts", ".opencode/tools/**/*.ts"],
+  "include": ["plugin/**/*.ts", "tests/**/*.ts", "tools/**/*.ts"],
   "exclude": ["node_modules", "dist", ".git"]
 }

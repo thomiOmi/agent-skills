@@ -22,9 +22,8 @@
   "files": [
     "agents",
     "skills",
+    "tools",
     "plugin",
-    ".opencode/tools",
-    ".opencode/agents",
     "AGENTS.md"
   ],
   "type": "module",

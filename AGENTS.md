@@ -124,8 +124,8 @@ For full project work, invoke `primary`. For a specific concern, invoke the rele
 **Linter / formatter:** oxlint + oxfmt
 **Main branch:** main
 **CI:** GitHub Actions (validate-skills.yml)
-**Key directories:** agents/ · skills/ · plugin/ · tests/ · .opencode/
+**Key directories:** agents/ · skills/ · tools/ · plugin/ · tests/
 **Do NOT touch:** node_modules/ · dist/
-**Agent files:** agents/_.md (source), .opencode/agents/ (auto-discovered by OpenCode)
-**Skill files:** skills/_/SKILL.md (source), .opencode/skills/ (installed)
-**Custom tools:** .opencode/tools/*.ts (auto-discovered)
+**Agent files:** agents/*.md (source — installed to `~/.config/opencode/agents/`)
+**Skill files:** skills/*/SKILL.md (source — installed to `~/.config/opencode/skills/`)
+**Custom tools:** tools/*.ts (source — installed to `~/.config/opencode/tools/`)

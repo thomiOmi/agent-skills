@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["@thomiOmi/agent-skills"],
+
   "agent": {
     "primary": {
       "description": "Main agent with verification loop. Decomposes tasks, delegates to subagents, verifies results.",
