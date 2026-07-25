@@ -1,8 +1,7 @@
 ---
 name: testing
-description: 'Use this skill when writing, reviewing, auditing, or fixing any tests. Triggers: "write tests", "add tests", "check test coverage", "what tests are missing", "audit test quality", "review tests", "improve coverage", "tests are failing", "mock", "stub". Works for all languages and frameworks.'
+description: 'Use this skill whenever tests are involved — writing, reviewing, auditing, debugging, or improving them. This includes unit tests, integration tests, e2e tests, contract tests, snapshot tests, and test coverage analysis. Load this skill proactively any time the user mentions tests, test files, coverage, mocking, assertions, or test frameworks like Jest, Vitest, Bun test, PyTest, PHPUnit, RSpec, or Go test. Triggers include: "write tests", "add tests", "check test coverage", "what tests are missing", "audit test quality", "review tests", "improve coverage", "tests are failing", "mock", "stub", "test this function", "add more test cases", "is this test correct", "test coverage is low". Works for all languages and frameworks.'
 license: MIT
-compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
   version: "2.2.0"
   author: thomiOmi
@@ -22,6 +21,34 @@ Framework-agnostic — adapt syntax to your language and test runner.
 3. One scenario per test — multiple assertions are fine if they all verify one scenario.
 4. Deterministic — no random data, no uncontrolled time, no real network calls in unit tests.
 5. **Error paths are as important as happy paths** — every failure mode must be tested explicitly.
+
+---
+
+## Examples
+
+**Good test** (one scenario, behavior-focused):
+
+```ts
+// Input: Processing an invoice with a valid discount code
+// Output: Total should reflect the discounted amount
+
+it('applies a 10% discount when code SAVE10 is used', async () => {
+  const invoice = await createInvoice({ amount: 10000, discountCode: 'SAVE10' });
+  expect(invoice.total).toBe(9000);
+  expect(invoice.discountApplied).toBe(1000);
+});
+```
+
+**Bad test** (implementation-coupled, fragile):
+
+```ts
+// ❌ Tests that internal setDiscount method was called — not the behavior
+it('calls setDiscount with SAVE10', () => {
+  const spy = vi.spyOn(invoice, 'setDiscount');
+  invoice.applyDiscount('SAVE10');
+  expect(spy).toHaveBeenCalledWith('SAVE10');
+});
+```
 
 ---
 

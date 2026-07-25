@@ -1,8 +1,7 @@
 ---
 name: api-conventions
-description: 'Use this skill when designing, reviewing, or auditing any API — REST, GraphQL, or WebSocket. Triggers: "add an endpoint", "design the API", "review all routes", "audit API consistency", "check response format", "are the endpoints consistent", "review the API surface". Read the existing API surface before designing anything new.'
+description: 'Use this skill when designing, reviewing, or auditing any API — REST, GraphQL, or WebSocket. Load it before adding new endpoints, modifying existing routes, or reviewing the API surface. Do not write route handlers, controllers, resolvers, or API tests without this skill loaded. Triggers include: "add an endpoint", "design the API", "review all routes", "audit API consistency", "check response format", "are the endpoints consistent", "review the API surface", "new API route", "controller", "resource", "CRUD", "GraphQL resolver", "WebSocket handler", "rate limit", "versioning", "error response", "status code", "request validation", "serialization", "RESTful", "HATEOAS", "API design". Read the existing API surface before designing anything new.'
 license: MIT
-compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
   version: "2.2.0"
   author: thomiOmi
@@ -28,6 +27,27 @@ Before writing any endpoint, schema, or response shape, confirm:
 
 For questions 4–7: if not defined in project AGENTS.md, ask before proceeding.
 See `references/field-conventions.md` for full clarification checklist and format options.
+
+---
+
+## Examples
+
+**Inconsistent vs consistent error response:**
+
+```json
+// ❌ Inconsistent — mixing error shapes across endpoints
+POST /orders → { "error": "insufficient_balance" }
+GET  /orders → { "errors": [{ "code": "NOT_FOUND", "message": "Order not found" }] }
+
+// ✅ Consistent — single error format everywhere
+{
+  "error": {
+    "code": "INSUFFICIENT_BALANCE",
+    "message": "Account balance 500 is less than order total 1000",
+    "details": { "balance": 500, "required": 1000 }
+  }
+}
+```
 
 ---
 

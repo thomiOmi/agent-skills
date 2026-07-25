@@ -1,8 +1,7 @@
 ---
 name: documentation
-description: 'Use this skill when writing, updating, or auditing any developer documentation. Triggers: "update the README", "write docs", "document this", "changelog entry", "write an ADR", "check what is documented", "audit the docs", "OpenAPI spec". Also apply when a code change clearly requires a documentation update.'
+description: 'Use this skill whenever documentation needs to be written, updated, reviewed, or audited. This includes README files, CHANGELOGs, ADRs, OpenAPI specs, API documentation, setup guides, and inline code documentation. Load this skill proactively whenever code changes affect public interfaces, configuration, or setup procedures — do not wait for the user to explicitly ask for docs. Triggers include: "update the README", "write docs", "document this", "changelog entry", "write an ADR", "check what is documented", "audit the docs", "OpenAPI spec", "how to install", "how to configure", "how to use", "API docs", "user guide", "setup instructions", "tutorial", "readme". Also use when a code change clearly requires a documentation update — adding parameters, changing config, modifying public API.'
 license: MIT
-compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
   version: "2.2.0"
   author: thomiOmi
@@ -12,6 +11,28 @@ metadata:
 
 Write for the reader who has zero context from this conversation.
 If it only makes sense to you right now, it will confuse someone else later.
+
+---
+
+## Examples
+
+**Before (unhelpful docstring):**
+
+```ts
+// Gets the user
+function getUser(id: string) { ... }
+```
+
+**After (helpful docstring):**
+
+```ts
+/** Fetches a user by ID.
+ * @param id - UUID of the user (not email or username)
+ * @returns User object with profile and preferences joined
+ * @throws NotFoundError if no user with that ID exists
+ */
+function getUser(id: string) { ... }
+```
 
 ---
 

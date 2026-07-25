@@ -42,8 +42,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "concurrently \"bun run lint:ts\" \"bun run lint:md\"",
     "lint:ts": "oxlint",
-    "lint:ts:fix": "oxlint --fix",
     "lint:md": "markdownlint \"**/*.md\" --ignore node_modules --ignore .github",
+    "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "test": "bun test tests/"

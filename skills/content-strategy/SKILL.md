@@ -1,8 +1,7 @@
 ---
 name: content-strategy
-description: Use this skill when writing content, planning campaigns, optimizing for SEO, or developing copy. Triggers: "write a blog post", "optimize SEO", "create content strategy", "write copy", "landing page content", "email marketing", "social media post", "brand voice", "editorial calendar". Use before writing any public-facing content.
+description: Use this skill when creating, reviewing, or auditing any public-facing content — landing page copy, email campaigns, blog posts, technical documentation, SEO content, social media, or brand voice. Load this skill proactively before writing any public-facing content to ensure tone, clarity, SEO, and call-to-action alignment. Triggers include: "write a blog post", "optimize SEO", "create content strategy", "write copy", "landing page content", "email marketing", "social media post", "brand voice", "editorial calendar", "content audit", "CTA optimization", "copywriting", "UX writing", "microcopy", "error message copy", "empty state copy", "hero section", "pricing page", "about page", "newsletter", "subject line", "meta description", "title tag", "heading structure", "keyword research", "content calendar". Applies to web copy, emails, docs, social media, and in-app messaging.
 license: MIT
-compatibility: OpenCode and similar AI coding agents.
 metadata:
   version: "1.0.0"
   author: thomiOmi
@@ -11,6 +10,18 @@ metadata:
 # Content Strategy
 
 Guidelines for creating effective, audience-focused content.
+
+---
+
+## Examples
+
+**Before (vague, no audience):**
+
+> "Our platform helps businesses streamline their workflow."
+
+**After (specific, audience-focused, value-driven):**
+
+> "Stop chasing receipts. AutoCat logs every mileage, categorizes every expense, and generates your tax report in one click. Built for freelancers who bill by the mile."
 
 ---
 
@@ -41,6 +52,17 @@ Guidelines for creating effective, audience-focused content.
 
 ---
 
+## References
+
+- `references/seo.md` — advanced SEO techniques, keyword research, technical SEO
+- `references/copywriting.md` — copywriting formulas, tone adjustment, audience analysis
+- `references/email.md` — email marketing structure, subject line formulas, A/B testing
+- `references/social.md` — social media content calendar, platform-specific patterns, engagement metrics
+
+See `assets/templates.md` for blog post, landing page, and email campaign templates.
+
+---
+
 ## Content Types
 
 **Blog post:** Problem → context → solution → key takeaways → CTA
@@ -63,7 +85,12 @@ Guidelines for creating effective, audience-focused content.
 ## Hard Rules
 
 - No false or unverifiable claims
+  - Why: False claims destroy trust instantly and can lead to legal liability (false advertising, defamation). If you cannot cite a source, rewrite the claim.
 - No jargon without explanation (unless writing for technical audience)
+  - Why: Unexplained jargon excludes readers who are not domain experts. For sales and marketing content, every unexplained term is a lost conversion.
 - No clickbait headlines — headline must deliver what it promises
+  - Why: Clickbait drives short-term clicks but destroys long-term trust. Readers who feel misled will not return and may actively warn others.
 - No plagiarism — always attribute and link to sources
+  - Why: Plagiarism violates copyright law, damages brand reputation, and penalizes SEO (Google demotes duplicate content). Attribution builds authority.
 - Every content piece has a clear target audience and goal
+  - Why: Content written for "everyone" resonates with no one. Without a specific audience and measurable goal, you cannot evaluate whether the content succeeded.

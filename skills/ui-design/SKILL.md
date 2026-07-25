@@ -1,8 +1,7 @@
 ---
 name: ui-design
-description: Use this skill when designing or implementing UI components, design systems, frontend code, or accessibility. Triggers: "design a component", "implement the UI", "make this accessible", "add a design system", "create a layout", "responsive design", "WCAG", "color palette", "typography system". Use before writing any frontend code or markup.
+description: Use this skill when creating, reviewing, or auditing UI components, design systems, and frontend architecture. Load this skill proactively before writing any frontend code — components, layouts, styles, design tokens, or accessibility improvements. Do not write UI code without this skill loaded. Triggers include: "design a component", "implement the UI", "make this accessible", "add a design system", "create a layout", "responsive design", "WCAG", "color palette", "typography system", "frontend", "CSS", "Tailwind", "component library", "button component", "form", "input", "modal", "dropdown", "sidebar", "navbar", "grid", "flexbox", "breakpoint", "dark mode", "theme", "motion", "animation", "loading state", "empty state", "error state", "a11y", "ARIA", "keyboard navigation", "focus management", "screen reader". Covers React, Vue, Svelte, Angular, and vanilla HTML/CSS/JS.
 license: MIT
-compatibility: OpenCode and similar AI coding agents.
 metadata:
   version: "1.0.0"
   author: thomiOmi
@@ -11,6 +10,24 @@ metadata:
 # UI Design
 
 Guidelines for building accessible, consistent, and maintainable user interfaces.
+
+---
+
+## Examples
+
+### Component design: Button with all states
+
+```
+Input:  "Create a primary action button for the checkout form"
+Output:
+  default   → Solid brand color, pointer cursor
+  hover     → Slightly darker background, subtle scale(1.02)
+  focus     → Outline ring (not outline: none!)
+  active    → Pressed effect (scale(0.98))
+  disabled  → 50% opacity, no pointer events, aria-disabled
+  loading   → Spinner replaces text, button disabled
+  error     → Red pulse border, error message below button
+```
 
 ---
 
@@ -38,6 +55,17 @@ Guidelines for building accessible, consistent, and maintainable user interfaces
 - [ ] Motion respects prefers-reduced-motion
 - [ ] Color is not the only differentiator (use icons, text, patterns)
 ```
+
+---
+
+## References
+
+- `references/components.md` — component anatomy patterns (button, input, modal, dropdown)
+- `references/responsive.md` — breakpoint system, grid, mobile-first patterns
+- `references/accessibility.md` — WCAG compliance details, ARIA patterns, testing tools
+- `references/design-tokens.md` — token naming conventions, dark mode, theme structure
+
+See `assets/templates.md` for component and design token templates.
 
 ---
 
@@ -74,7 +102,12 @@ loading (skeleton or spinner), empty (no data message), error (retry option), po
 ## Hard Rules
 
 - No hardcoded colors, sizes, or spacing — use design tokens
+  - Why: Hardcoded values create inconsistencies and make theming or dark mode impossible without hunting down every literal value. Design tokens give you a single source of truth.
 - No inline styles in production code
+  - Why: Inline styles cannot be overridden by theme changes, break media queries and pseudo-classes, and bloat the DOM. CSS classes are more performant and maintainable.
 - No layout-breaking content (text overflow handled)
+  - Why: One unhandled long word or image can break an entire layout. Always use `overflow-wrap`, `text-overflow`, and `max-width` to contain content.
 - No accessibility violations — run aXe or similar before shipping
+  - Why: Accessibility violations exclude real users and can create legal liability. Automated tools catch 30-50% of issues immediately; manual testing catches the rest.
 - Every component has a loading, empty, error state where applicable
+  - Why: Users experience network latency, empty results, and failures. Components that only handle the "happy path" leave users staring at blank or broken screens.

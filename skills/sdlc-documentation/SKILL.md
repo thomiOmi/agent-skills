@@ -1,8 +1,7 @@
 ---
 name: sdlc-documentation
-description: 'Use this skill when creating or reviewing any SDLC artifact — PRD, SDD, BRD, FRD, user stories, acceptance criteria, test plans, or release notes. Triggers: "write a PRD", "create SDD", "document requirements", "user stories", "acceptance criteria", "review the PRD", "audit requirements". Use before starting any feature requiring formal documentation.'
+description: 'Use this skill when creating or reviewing any SDLC artifact — PRD, SDD, BRD, FRD, user stories, acceptance criteria, test plans, or release notes. Load this skill proactively before starting any feature that requires formal documentation or requirements gathering. For technical design diagrams (architecture, data model, flows), use planning instead. Triggers include: "write a PRD", "create SDD", "document requirements", "user stories", "acceptance criteria", "review the PRD", "audit requirements", "business requirements", "functional specification", "technical specification", "requirements gathering", "stakeholder review", "feature request", "scope definition", "release notes", "change log", "project charter", "vision document", "executive summary". Use before starting any feature requiring formal documentation.'
 license: MIT
-compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
   version: "2.2.0"
   author: thomiOmi

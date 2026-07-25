@@ -1,8 +1,7 @@
 ---
 name: debugging
-description: 'Use this skill when diagnosing bugs, errors, slow performance, or incorrect behavior. Triggers: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "why is this slow", "performance issue", "N+1 query". Never guess — diagnose systematically before fixing.'
+description: 'Use this skill whenever something is wrong — bugs, errors, crashes, slow performance, incorrect output, or unexpected behavior. Do NOT guess the cause — this skill enforces a systematic diagnosis-before-fix workflow. Load this skill proactively whenever the user reports a problem, even if they phrase it casually or in a non-English language. Triggers include: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "why is this slow", "performance issue", "N+1 query", "this is broken", "this doesnt work", "debug this", "trace this error", "root cause", "regression", "flaky test". Also use when the user reports a problem in any informal way — "error", "bug", "broken", "not working", "slow", "crash", "fail".'
 license: MIT
-compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
   version: "2.2.0"
   author: thomiOmi
@@ -12,6 +11,25 @@ metadata:
 
 Systematic approach to diagnosing and fixing bugs.
 **Never guess the cause. Diagnose first, fix second.**
+
+## Examples
+
+### Bug: Login fails for users with accented characters in their name
+
+```
+Input:  User "José" tries to log in with correct password
+Output: Login fails with "invalid credentials"
+
+STEP 1 — Reproduce: Successfully reproduced with accented name, works without accent
+STEP 2 — Read the error: The auth API returns 401 for "José" but 200 for "Jose"
+STEP 3 — Locate: The normalization function at src/auth/normalize.ts strips diacritics but the password hash was computed BEFORE normalization
+STEP 4 — Trace root cause: Hash is computed on raw input, then normalized for lookup → mismatch
+STEP 5 — Fix: Normalize input before hashing
+STEP 6 — Verify: "José" now logs in, existing users unaffected
+STEP 7 — Prevent: Add test for diacritic inputs in the auth test suite
+```
+
+---
 
 ## Core Rule
 

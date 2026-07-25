@@ -1,8 +1,7 @@
 ---
 name: devops-deployment
-description: Use this skill when designing or managing CI/CD pipelines, deployment, infrastructure, Docker, Kubernetes, or cloud services. Triggers: "set up CI/CD", "deploy to production", "write a Dockerfile", "Kubernetes config", "infrastructure review", "monitoring setup", "rollback plan", "cloud architecture". Use before writing any infrastructure or pipeline code.
+description: Use this skill when setting up, configuring, or managing CI/CD pipelines, deployment infrastructure, containers, cloud services, or monitoring. Load this skill proactively before writing any deployment config, Dockerfile, CI workflow, or infrastructure code. Do not write deployment or infrastructure code without this skill loaded. Triggers include: "set up CI/CD", "deploy to production", "write a Dockerfile", "Kubernetes config", "infrastructure review", "monitoring setup", "rollback plan", "cloud architecture", "deployment", "pipeline", "continuous integration", "continuous deployment", "staging", "production", "environment", "secrets management", "Docker", "container", "orchestration", "K8s", "helm", "Terraform", "Pulumi", "AWS", "GCP", "Azure", "Vercel", "Netlify", "nginx config", "reverse proxy", "load balancer", "auto-scaling", "blue-green", "canary", "health endpoint", "readiness probe", "liveness probe", "SRE", "observability", "metrics", "alerts". Covers major cloud providers and PaaS platforms.
 license: MIT
-compatibility: OpenCode and similar AI coding agents.
 metadata:
   version: "1.0.0"
   author: thomiOmi
@@ -11,6 +10,50 @@ metadata:
 # DevOps & Deployment
 
 Guidelines for reliable, secure, and maintainable infrastructure and deployment pipelines.
+
+---
+
+## References
+
+- `references/cicd.md` — CI/CD pipeline patterns, caching, parallel stages, self-hosted runners
+- `references/docker.md` — multi-stage builds, security scanning, registry management
+- `references/kubernetes.md` — deployment manifests, service mesh, auto-scaling, rolling updates
+- `references/cloud.md` — major cloud provider comparisons, networking, IAM
+- `references/monitoring.md` — observability stack, alert rules, on-call runbooks
+
+See `assets/templates.md` for Dockerfile, pipeline, and deployment workflow templates.
+
+---
+
+## Examples
+
+**Dockerfile before (single stage, :latest, root user):**
+
+```dockerfile
+FROM node:latest
+WORKDIR /app
+COPY . .
+RUN npm install
+CMD ["npm", "start"]
+```
+
+**Dockerfile after (multi-stage, pinned, non-root):**
+
+```dockerfile
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+
+FROM node:20-alpine
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+WORKDIR /app
+COPY --from=builder /app ./
+USER appuser
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:3000/health || exit 1
+CMD ["node", "dist/server.js"]
+```
 
 ---
 
@@ -91,7 +134,12 @@ Each stage gates the next. If any stage fails, the pipeline stops.
 ## Hard Rules
 
 - Never hardcode secrets — use environment variables or secret managers
+  - Why: Secrets in source code end up in Git history, CI logs, and artifact storage — all of which lack access controls and rotation policies. A single leaked secret can compromise production.
 - Never use :latest tag in production — always pin versions
+  - Why: `:latest` changes without notice. A deployment that works today may pull a subtly different image tomorrow. Pinning to a specific digest or version ensures deterministic builds.
 - Never deploy without a rollback plan
+  - Why: Deployments fail — schema mismatches, config errors, traffic spikes. Without a tested rollback plan, a bad deployment becomes a production incident measured in hours, not minutes.
 - Never make manual changes to production infrastructure
+  - Why: Manual changes are unreproducible, undocumented, and lost when the instance is replaced. They create "snowflake" infrastructure that drifts from IaC and breaks automation.
 - Always test rollback procedure before depending on it
+  - Why: An untested rollback is worse than no rollback — you discover during an incident that the migration is irreversible, the old artifact is gone, or the data format has changed.

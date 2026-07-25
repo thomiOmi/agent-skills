@@ -1,8 +1,7 @@
 ---
 name: planning
-description: 'Use this skill when creating or reviewing technical design artifacts. Triggers: "design the database", "ERD", "system architecture", "flowchart", "review the system design", "audit the data model", "sequence diagram", "component diagram", "user flow". Domain-agnostic. For PRD, SDD, or requirements use sdlc-documentation instead.'
+description: 'Use this skill when creating or reviewing technical design artifacts — system architecture, data models, component diagrams, sequence diagrams, ERDs, flowcharts, and user flows. Load this skill proactively any time the user asks about architecture, design, or structure before writing code. Domain-agnostic — works for any project type. For formal PRD, SDD, or requirements documents, use sdlc-documentation instead. Triggers include: "design the database", "ERD", "system architecture", "flowchart", "review the system design", "audit the data model", "sequence diagram", "component diagram", "user flow", "architecture review", "data flow", "state machine", "dependency graph", "system design interview", "how does this work", "visualize this", "draw a diagram". Use Mermaid.js syntax for all diagrams so they render natively in markdown.'
 license: MIT
-compatibility: OpenCode, Claude Code, Cursor, and similar AI coding agents.
 metadata:
   version: "2.2.0"
   author: thomiOmi
@@ -12,6 +11,28 @@ metadata:
 
 Structured approach for creating technical design artifacts before building.
 Always design before you build — a 30-minute design session prevents hours of rework.
+
+---
+
+## Examples
+
+### Input: "Design the order checkout flow"
+
+Mermaid `flowchart TD`:
+
+```mermaid
+flowchart TD
+    A[Cart Page] --> B{User clicks Checkout}
+    B --> C[Validate Cart]
+    C -->|Cart valid| D[Collect Shipping]
+    C -->|Cart empty| E[Show Error: empty cart]
+    D --> F[Collect Payment]
+    F --> G{Payment Success?}
+    G -->|Yes| H[Create Order]
+    G -->|No| I[Show Error: payment failed]
+    H --> J[Send Confirmation Email]
+    J --> K[Redirect to Order Confirmation]
+```
 
 ---
 
