@@ -6,20 +6,62 @@ Setup guide for humans. Not read by AI agents.
 
 ## Quick Install
 
-### Plugin (recommended)
+### Full global deploy (recommended)
 
-Install as an OpenCode plugin — automatic skill sync, MCP config, and cross-platform support.
+Backup your current global OpenCode config, then **overwrite** it from this repo:
 
-Edit `~/.config/opencode/opencode.jsonc` (or `opencode.json`):
+```powershell
+pwsh ./scripts/deploy-global.ps1
+```
+
+Dry run:
+
+```powershell
+pwsh ./scripts/deploy-global.ps1 -DryRun
+```
+
+What it does:
+
+1. Full backup → `~/.config/opencode-backups/<timestamp>/` (excludes `node_modules`)
+2. Overwrites `agents/`, `skills/`, `commands/`, `AGENTS.md` from this repo
+3. Writes `opencode.jsonc` with `default_agent: primary` and **merges MCP + LSP** from the previous config (tokens keep working)
+4. Leaves `tui.json` in place
+
+Source layout:
+
+```text
+global/
+  AGENTS.md          → ~/.config/opencode/AGENTS.md
+  opencode.jsonc     → template (MCP merged at deploy time)
+  commands/*.md      → ~/.config/opencode/commands/
+agents/*.md          → ~/.config/opencode/agents/
+skills/*/            → ~/.config/opencode/skills/
+```
+
+Restore a backup:
+
+```powershell
+robocopy "$env:USERPROFILE\.config\opencode-backups\<timestamp>" "$env:USERPROFILE\.config\opencode" /E
+```
+
+### Incremental sync (agents + skills only)
+
+```powershell
+pwsh ./scripts/sync-global.ps1
+```
+
+Does not wipe third-party skills or rewrite `opencode.jsonc`.
+
+### Plugin (npm package)
+
+Install as an OpenCode plugin when the package is published:
 
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["@thomiOmi/agent-skills"],
+  "plugin": ["@thomiOmi/agent-skills"]
 }
 ```
-
-That is it. The plugin automatically syncs all 12 skills, configures remote AGENTS.md instructions, sets skill permissions, and auto-configures recommended MCP servers (github, context7, grep). Works the same on Windows, Linux, and macOS.
 
 See [OpenCode Plugins docs](https://opencode.ai/docs/plugins) for details.
 

@@ -1,14 +1,18 @@
 # AGENTS.md
 
-Global rules for all AI coding agents. Read this fully at the start of every session.
+Project-level agent instructions for the agent-skills project.
+Read this fully at the start of every session.
 
 Priority order (highest to lowest):
 
 ```text
 1. Global AGENTS.md (~/.config/opencode/AGENTS.md) — always applies
-2. Project AGENTS.md (project root) — adds project context and overrides
+2. Project AGENTS.md (this file) — project context and overrides
 3. Subdir AGENTS.md — scoped overrides for a subtree
 ```
+
+This file configures agent behavior **within this project only**.
+When agents are installed to `~/.config/opencode/agents/`, the global AGENTS.md handles cross-project rules. See [OpenCode docs](https://opencode.ai/docs/rules) for details.
 
 ---
 
@@ -98,17 +102,27 @@ Types: `feat` · `fix` · `refactor` · `test` · `docs` · `chore` · `perf` ·
 
 ---
 
+## Project Knowledge
+
+Read `KNOWLEDGE.md` from the project root at the start of every session — it contains active decisions, conventions, and checkpoint state.
+
+---
+
 ## Agent Orchestra
 
 This project provides a primary agent with verification loop and specialized subagents:
 
-- `primary` -- Main agent. Decomposes tasks, delegates to subagents, verifies results.
+- `primary` -- Orchestrator. Decomposes tasks, delegates, verifies results.
 - `senior-developer` -- Architecture, coding, refactoring, code review.
 - `ui-ux` -- Design system, frontend, accessibility.
 - `marketing` -- Content, SEO, copy, strategy.
 - `qa-engineer` -- Test strategy, coverage, quality gates.
 - `devops` -- CI/CD, deployment, infrastructure.
 - `security-auditor` -- Security review, auth, vulnerability assessment.
+- `brainstormer` -- Creative ideation, solution exploration.
+- `deep-thinker` -- Complex reasoning, root cause analysis.
+- `docs-writer` -- Technical writing, documentation.
+- `refactor-planner` -- Safe refactoring, migration planning.
 
 For full project work, invoke `primary`. For a specific concern, invoke the relevant subagent directly via `@name`.
 

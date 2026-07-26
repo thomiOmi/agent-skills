@@ -1,0 +1,30 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Default orchestrator for daily multi-step work
+  "default_agent": "primary",
+  // TODO: auto detect on script installer
+  "shell": "pwsh",
+  "subagent_depth": 1,
+
+  // Lightweight model for titles / small tasks (override if desired)
+  // TODO: add selection on installer
+  "small_model": "opencode/deepseek-v4-flash-free",
+
+  "permission": {
+    "skill": "allow",
+    "lsp": "allow",
+    "question": "allow",
+    "todowrite": "allow",
+    "doom_loop": "allow"
+  },
+
+  "instructions": [
+    // TODO: Resolved to the real home path on installer
+    "AGENTS.md"
+  ],
+
+  // MCP servers are merged from your previous global config on deploy
+  // so existing tokens keep working. Prefer {env:VAR} for new secrets.
+  "mcp": {}
+}
