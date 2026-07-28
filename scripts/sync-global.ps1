@@ -25,8 +25,12 @@ $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $globalRoot = Join-Path $env:USERPROFILE ".config\opencode"
 $agentsSrc = Join-Path $repoRoot "agents"
 $skillsSrc = Join-Path $repoRoot "skills"
+$toolsSrc = Join-Path $repoRoot "tools"
+$commandsSrc = Join-Path $repoRoot "commands"
 $agentsDst = Join-Path $globalRoot "agents"
 $skillsDst = Join-Path $globalRoot "skills"
+$toolsDst = Join-Path $globalRoot "tools"
+$commandsDst = Join-Path $globalRoot "commands"
 
 if (-not (Test-Path $globalRoot)) {
   throw "Global OpenCode directory not found: $globalRoot"
@@ -34,6 +38,8 @@ if (-not (Test-Path $globalRoot)) {
 
 New-Item -ItemType Directory -Path $agentsDst -Force | Out-Null
 New-Item -ItemType Directory -Path $skillsDst -Force | Out-Null
+New-Item -ItemType Directory -Path $toolsDst -Force | Out-Null
+New-Item -ItemType Directory -Path $commandsDst -Force | Out-Null
 
 Write-Host "Repo:   $repoRoot"
 Write-Host "Global: $globalRoot"
@@ -71,11 +77,41 @@ foreach ($dir in $skillDirs) {
   }
 }
 
+# --- Tools ---
+$toolFiles = Get-ChildItem -Path $toolsSrc -Filter "*.ts" -File
+Write-Host ""
+Write-Host "Syncing $($toolFiles.Count) tools..."
+foreach ($file in $toolFiles) {
+  $dest = Join-Path $toolsDst $file.Name
+  if ($DryRun) {
+    Write-Host "  [dry-run] tool $($file.Name)"
+  }
+  else {
+    Copy-Item -Path $file.FullName -Destination $dest -Force
+    Write-Host "  ok  tool $($file.Name)"
+  }
+}
+
+# --- Commands ---
+$commandFiles = Get-ChildItem -Path $commandsSrc -Filter "*.md" -File
+Write-Host ""
+Write-Host "Syncing $($commandFiles.Count) commands..."
+foreach ($file in $commandFiles) {
+  $dest = Join-Path $commandsDst $file.Name
+  if ($DryRun) {
+    Write-Host "  [dry-run] command $($file.Name)"
+  }
+  else {
+    Copy-Item -Path $file.FullName -Destination $dest -Force
+    Write-Host "  ok  command $($file.Name)"
+  }
+}
+
 Write-Host ""
 if ($DryRun) {
   Write-Host "Dry run complete. Re-run without -DryRun to apply."
 }
 else {
   Write-Host "Sync complete. Restart OpenCode (or start a new session) to pick up changes."
-  Write-Host "Preserved global-only items outside this repo (e.g. graphify, obsidian-skills, custom agents)."
+  Write-Host "Preserved global-only items outside this repo (e.g. custom agents, third-party skills, tools, commands)."
 }

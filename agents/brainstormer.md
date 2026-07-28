@@ -3,7 +3,7 @@ name: brainstormer
 description: Creative ideation specialist — explores solution space, generates alternatives, challenges assumptions.
 mode: subagent
 temperature: 0.8
-color: magenta
+color: "#FF00FF"
 permission:
   read: allow
   edit: deny

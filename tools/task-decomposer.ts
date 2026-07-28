@@ -7,7 +7,7 @@ export default tool({
     context: tool.schema.string().optional().describe("Optional context about the project or requirements"),
   },
   async execute(args) {
-    const subtasks: { id: string; description: string; suggestedAgent: string; dependencies: string[] }[] = [];
+    const subtasks: { id: string, description: string, suggestedAgent: string, dependencies: string[] }[] = [];
     const lines = args.task.split("\n").filter((l: string) => l.trim());
 
     let currentId = "step-1";
@@ -34,28 +34,28 @@ function inferAgent(description: string): string {
   const lower = description.toLowerCase();
   if (lower.includes("test") || lower.includes("qa") || lower.includes("coverage")) return "qa-engineer";
   if (
-    lower.includes("deploy") ||
-    lower.includes("ci") ||
-    lower.includes("cd") ||
-    lower.includes("docker") ||
-    lower.includes("infra")
+    lower.includes("deploy")
+    || lower.includes("ci")
+    || lower.includes("cd")
+    || lower.includes("docker")
+    || lower.includes("infra")
   )
     return "devops";
   if (lower.includes("seo") || lower.includes("content") || lower.includes("copy") || lower.includes("marketing"))
     return "marketing";
   if (
-    lower.includes("ui") ||
-    lower.includes("ux") ||
-    lower.includes("design") ||
-    lower.includes("frontend") ||
-    lower.includes("accessibility")
+    lower.includes("ui")
+    || lower.includes("ux")
+    || lower.includes("design")
+    || lower.includes("frontend")
+    || lower.includes("accessibility")
   )
     return "ui-ux";
   if (
-    lower.includes("security") ||
-    lower.includes("auth") ||
-    lower.includes("vulnerability") ||
-    lower.includes("owasp")
+    lower.includes("security")
+    || lower.includes("auth")
+    || lower.includes("vulnerability")
+    || lower.includes("owasp")
   )
     return "security-auditor";
   return "senior-developer";

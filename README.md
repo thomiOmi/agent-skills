@@ -65,7 +65,7 @@ Or create it manually at the project root:
 **Stack:** Node.js 22 · TypeScript · PostgreSQL · Next.js 15
 **Package manager:** bun
 **Test runner:** bun test
-**Linter / formatter:** oxlint + oxfmt
+**Linter / formatter:** ESLint + typescript-eslint + @stylistic
 **Main branch:** main
 **CI:** GitHub Actions
 **Key directories:** src/ · tests/ · skills/
@@ -119,23 +119,13 @@ Each skill follows the [agentskills.io](https://agentskills.io/specification) sp
 
 ## Linting & Formatting
 
-This project uses [Oxc](https://oxc.rs/) for linting and formatting.
+This project uses [ESLint](https://eslint.org/) with `typescript-eslint` and `@stylistic/eslint-plugin` for linting and formatting.
 
-| Command             | Description                               |
-| ------------------- | ----------------------------------------- |
-| `bun run lint`      | Run oxlint to check for errors            |
-| `bun run lint:fix`  | Run oxlint and auto-fix fixable issues    |
-| `bun run fmt`       | Run oxfmt to format all TypeScript files  |
-| `bun run fmt:check` | Check if all files are properly formatted |
+| Command             | Description                                       |
+| ------------------- | ------------------------------------------------- |
+| `bun run lint`      | Run ESLint to check for errors and warnings       |
+| `bun run lint:fix`  | Run ESLint and auto-fix fixable issues            |
+| `bun run fmt`       | Run ESLint to format (via stylistic rules + --fix)|
+| `bun run fmt:check` | Run ESLint without auto-fix (fails on any error)  |
 
 To format all files: `bun run fmt`
-
-## Updating
-
-### Plugin
-
-```bash
-git pull
-```
-
-If using the plugin approach, skills update automatically on your next OpenCode session after a new npm version is published. Restart OpenCode to trigger the plugin sync.

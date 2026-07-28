@@ -6,7 +6,36 @@ Setup guide for humans. Not read by AI agents.
 
 ## Quick Install
 
-### Full global deploy (recommended)
+### Option A — Symlink link (recommended)
+
+Create symbolic links from the repo into your global OpenCode config.
+Changes in the repo are instantly reflected — no re-deploy needed.
+
+```powershell
+pwsh ./scripts/setup-symlinks.ps1
+```
+
+Dry run:
+
+```powershell
+pwsh ./scripts/setup-symlinks.ps1 -DryRun
+```
+
+What it does:
+
+1. Backs up `~/.config/opencode` → `~/.config/opencode-backups/<timestamp>/`
+2. Creates symlinks for `agents/`, `skills/`, `tools/`, `commands/`, `AGENTS.md`
+3. Writes `opencode.jsonc` with `default_agent: primary` and merges MCP + LSP from your previous config
+4. Preserves `tui.json`
+
+**Requirements:**
+
+- Windows: Developer Mode enabled or run as Administrator (for symlink creation)
+- macOS / Linux: standard symlinks — no special permissions needed
+
+Fallback: if symlinks can't be created, the script copies files instead.
+
+### Option B — Full global deploy (copy-based)
 
 Backup your current global OpenCode config, then **overwrite** it from this repo:
 
@@ -140,7 +169,7 @@ Create `AGENTS.md` at the project root — fill in only the Project Context sect
 **Stack:** Node.js 22 · TypeScript · PostgreSQL · Next.js 15
 **Package manager:** bun
 **Test runner:** bun test
-**Linter / formatter:** oxlint + oxfmt
+**Linter / formatter:** ESLint + typescript-eslint + @stylistic
 **Main branch:** main
 **CI:** GitHub Actions — see .github/workflows/
 **Key directories:** src/ · tests/ · skills/

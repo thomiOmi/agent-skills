@@ -15,7 +15,7 @@ export default tool({
     checkDocstrings: tool.schema.boolean().optional().describe("Check that all functions/classes have docstrings"),
   },
   async execute(args) {
-    const details: { criterion: string; passed: boolean; message: string }[] = [];
+    const details: { criterion: string, passed: boolean, message: string }[] = [];
 
     if (args.checkNoDebug) {
       details.push({
@@ -58,7 +58,7 @@ export default tool({
       });
     }
 
-    const allPassed = details.every((d) => d.passed);
+    const allPassed = details.every(d => d.passed);
     return JSON.stringify({ pass: allPassed, details }, null, 2);
   },
 });

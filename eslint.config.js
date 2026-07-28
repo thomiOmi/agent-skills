@@ -1,0 +1,148 @@
+// @ts-check
+
+import { defineConfig, globalIgnores } from "eslint/config";
+import js from "@eslint/js";
+import markdown from "@eslint/markdown";
+import stylistic from "@stylistic/eslint-plugin";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+import json from "@eslint/json";
+
+export default defineConfig([
+  globalIgnores([
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.cache/**",
+    "**/bun.lock",
+    "**/package-lock.json",
+    "**/*.min.js",
+  ]),
+
+  {
+    name: "agent-skills/typescript",
+    files: ["**/*.{ts,mts,cts}"],
+    extends: [js.configs.recommended, tseslint.configs.strict,
+      tseslint.configs.stylistic, stylistic.configs.recommended],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        ...globals.node,
+      },
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      "@stylistic/max-len": [
+        "warn",
+        {
+          code: 120,
+          ignoreUrls: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
+          ignoreComments: true,
+        },
+      ],
+      "@stylistic/quotes": ["error", "double", { avoidEscape: true }],
+      "@stylistic/semi": ["error", "always"],
+      "@stylistic/comma-dangle": ["error", "always-multiline"],
+
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", fixStyle: "inline-type-imports" },
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/require-await": "off",
+    },
+  },
+
+  {
+    name: "agent-skills/javascript",
+    files: ["**/*.{js,mjs,cjs}"],
+    extends: [js.configs.recommended, stylistic.configs.recommended],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      "@stylistic/max-len": [
+        "warn",
+        {
+          code: 120,
+          ignoreUrls: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
+          ignoreComments: true,
+        },
+      ],
+      "@stylistic/quotes": ["error", "double", { avoidEscape: true }],
+      "@stylistic/semi": ["error", "always"],
+      "@stylistic/comma-dangle": ["error", "always-multiline"],
+    },
+  },
+
+  {
+    name: "agent-skills/json",
+    files: ["**/*.json"],
+    ignores: ["package-lock.json", "bun.lock", "**/tsconfig*.json"],
+    plugins: { json },
+    language: "json/json",
+    extends: ["json/recommended"],
+  },
+
+  {
+    name: "agent-skills/jsonc",
+    files: ["**/*.jsonc"],
+    plugins: { json },
+    language: "json/jsonc",
+    languageOptions: {
+      allowTrailingCommas: true,
+    },
+    extends: ["json/recommended"],
+  },
+
+  {
+    name: "agent-skills/json5",
+    files: ["**/*.json5"],
+    plugins: { json },
+    language: "json/json5",
+    extends: ["json/recommended"],
+  },
+
+  {
+    name: "agent-skills/markdown",
+    files: ["**/*.md"],
+    plugins: {
+      markdown,
+    },
+    language: "markdown/gfm",
+    languageOptions: {
+      frontmatter: "yaml",
+      math: true,
+    },
+    extends: ["markdown/recommended"],
+    rules: {
+      "markdown/fenced-code-language": "warn", // MD040 — warn only; many pre-existing bare fences in skill refs
+      "markdown/heading-increment": "warn",
+      "markdown/no-duplicate-headings": "warn", // MD024 (all headings; no siblings_only)
+      "markdown/no-html": "off", // allow occasional HTML in docs
+      "markdown/no-multiple-h1": "off", // MD041 was disabled
+      "markdown/no-missing-label-refs": "off", // noisy on template/placeholder content
+      "markdown/no-missing-link-fragments": "warn", // many internal anchors in long docs
+    },
+  },
+]);

@@ -135,7 +135,7 @@ For full project work, invoke `primary`. For a specific concern, invoke the rele
 **Stack:** TypeScript, Bun, @opencode-ai/plugin
 **Package manager:** bun
 **Test runner:** Bun built-in test (`bun test`)
-**Linter / formatter:** oxlint + oxfmt
+**Linter / formatter:** ESLint + typescript-eslint + @stylistic
 **Main branch:** main
 **CI:** GitHub Actions (validate-skills.yml)
 **Key directories:** agents/ · skills/ · tools/ · plugin/ · tests/

@@ -36,6 +36,7 @@ $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $globalSrc = Join-Path $repoRoot "global"
 $agentsSrc = Join-Path $repoRoot "agents"
 $skillsSrc = Join-Path $repoRoot "skills"
+$toolsSrc = Join-Path $repoRoot "tools"
 $commandsSrc = Join-Path $globalSrc "commands"
 $agentsMdSrc = Join-Path $globalSrc "AGENTS.md"
 $templateCfg = Join-Path $globalSrc "opencode.jsonc"
@@ -174,6 +175,18 @@ Get-ChildItem $commandsSrc -Filter "*.md" | ForEach-Object {
   Write-Host "  command /$($_.BaseName)"
 }
 
+# --- 4b. Overwrite tools ---
+Write-Step "Overwriting tools"
+$toolsDst = Join-Path $dstRoot "tools"
+if (-not $DryRun) {
+  if (Test-Path $toolsDst) { Remove-Item $toolsDst -Recurse -Force }
+  Ensure-Dir $toolsDst
+  Copy-Item (Join-Path $toolsSrc "*.ts") $toolsDst -Force
+}
+Get-ChildItem $toolsSrc -Filter "*.ts" | ForEach-Object {
+  Write-Host "  tool $($_.Name)"
+}
+
 # --- 5. Overwrite AGENTS.md ---
 Write-Step "Overwriting AGENTS.md"
 $agentsMdDst = Join-Path $dstRoot "AGENTS.md"
@@ -267,7 +280,7 @@ Write-Step "Done"
 if ($activeBackup) {
   Write-Host "Backup:  $activeBackup"
 }
-Write-Host "Deployed agents / skills / commands / AGENTS.md / opencode.jsonc"
+Write-Host "Deployed agents / skills / tools / commands / AGENTS.md / opencode.jsonc"
 Write-Host "Restart OpenCode (or open a new session) to load the new global setup."
 Write-Host ""
 Write-Host "Restore previous global config:" -ForegroundColor Yellow

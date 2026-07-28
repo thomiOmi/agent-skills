@@ -18,7 +18,7 @@ Provider-agnostic and language-agnostic — applies to any LLM API and any langu
 
 **Prompting with vs without structured output:**
 
-```
+```text
 // ❌ Vague prompt — output format unspecified
 "Extract the invoice total from this email."
 
@@ -75,7 +75,7 @@ See `assets/templates.md` for prompt, retry handler, RAG, and tool definition te
 
 ## Rules
 
-```
+```text
 ❌ Never hardcode a model name — read it from config or environment variable
    Why: Model names change with provider updates, deprecations, and tier migrations. A hardcoded name requires a code deploy to switch models.
 
@@ -105,7 +105,7 @@ See `assets/templates.md` for prompt, retry handler, RAG, and tool definition te
 
 ## Checklist
 
-```
+```markdown
 - [ ] Task is appropriate for an LLM — not solvable with simpler logic
 - [ ] Model and provider read from config — not hardcoded
 - [ ] Cost estimated before building

@@ -1,3 +1,7 @@
 {
-  "recommendations": ["oxc.oxc-vscode"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "MermaidChart.vscode-mermaid-chart",
+    "oven.bun-vscode"
+  ]
 }
