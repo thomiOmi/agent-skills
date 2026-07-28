@@ -7,6 +7,7 @@ import stylistic from "@stylistic/eslint-plugin";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import json from "@eslint/json";
+import opencodeFrontmatter from "./scripts/opencode-frontmatter.js";
 
 export default defineConfig([
   globalIgnores([
@@ -128,6 +129,7 @@ export default defineConfig([
     files: ["**/*.md"],
     plugins: {
       markdown,
+      opencode: opencodeFrontmatter,
     },
     language: "markdown/gfm",
     languageOptions: {
@@ -143,6 +145,9 @@ export default defineConfig([
       "markdown/no-multiple-h1": "off", // MD041 was disabled
       "markdown/no-missing-label-refs": "off", // noisy on template/placeholder content
       "markdown/no-missing-link-fragments": "warn", // many internal anchors in long docs
+      "opencode/valid-skill-frontmatter": "error",
+      "opencode/valid-agent-frontmatter": "error",
+      "opencode/description-length": "warn",
     },
   },
 ]);

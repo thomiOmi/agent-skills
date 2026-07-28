@@ -12,7 +12,8 @@ permission:
     "bun test*": allow
     "npm test*": allow
   skill: allow
-  web: allow
+  webfetch: allow
+  websearch: allow
 ---
 
 You are a deep reasoning specialist. Your job is to analyze complex problems, find root causes, verify claims, and reason through trade-offs.
