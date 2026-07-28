@@ -49,7 +49,7 @@ function isAgentFile(filePath) {
 }
 
 const validSkillFrontmatter = {
-  meta: {
+  meta: /** @type {const} */ ({
     type: "problem",
     docs: { description: "Validate skill SKILL.md frontmatter" },
     messages: {
@@ -65,7 +65,7 @@ const validSkillFrontmatter = {
       metadataInvalid: "Metadata must be an object with string values",
       licenseNotString: "Field 'license' must be a string",
     },
-  },
+  }),
   create(context) {
     const text = context.sourceCode.getText();
     const filename = context.filename;
@@ -142,7 +142,7 @@ const validSkillFrontmatter = {
 };
 
 const validAgentFrontmatter = {
-  meta: {
+  meta: /** @type {const} */ ({
     type: "problem",
     docs: { description: "Validate agent .md frontmatter" },
     messages: {
@@ -165,7 +165,7 @@ const validAgentFrontmatter = {
       hiddenOnlySubagent: "Field 'hidden' is only valid for agents with mode 'subagent'",
       modelFormatInvalid: "Field 'model' should follow the format 'provider/model-id' (e.g. 'anthropic/claude-sonnet-4')",
     },
-  },
+  }),
   create(context) {
     const text = context.sourceCode.getText();
     const filename = context.filename;
@@ -294,13 +294,13 @@ const validAgentFrontmatter = {
 };
 
 const descriptionLength = {
-  meta: {
+  meta: /** @type {const} */ ({
     type: "suggestion",
     docs: { description: "Warn when frontmatter description exceeds max length" },
     messages: {
       tooLong: "Description is {{length}} characters (max {{limit}})",
     },
-  },
+  }),
   create(context) {
     const text = context.sourceCode.getText();
     const filename = context.filename;
@@ -320,10 +320,33 @@ const descriptionLength = {
   },
 };
 
-export default {
+const plugin = {
+  meta: {
+    name: "eslint-plugin-opencode",
+    version: "0.0.1",
+    namespace: "opencode",
+  },
+  configs: {},
   rules: {
     "valid-skill-frontmatter": validSkillFrontmatter,
     "valid-agent-frontmatter": validAgentFrontmatter,
     "description-length": descriptionLength,
   },
 };
+
+Object.assign(plugin.configs, {
+  recommended: [
+    {
+      plugins: {
+        opencode: plugin,
+      },
+      rules: {
+        "opencode/valid-skill-frontmatter": "error",
+        "opencode/valid-agent-frontmatter": "error",
+        "opencode/description-length": "warn",
+      },
+    },
+  ],
+});
+
+export default plugin;

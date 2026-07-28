@@ -1,5 +1,5 @@
 import { homedir } from "os";
-import { join, resolve, dirname } from "path";
+import { join, resolve, dirname } from "pathe";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

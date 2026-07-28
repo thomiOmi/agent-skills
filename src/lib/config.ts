@@ -1,8 +1,20 @@
-import { existsSync, readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { readFile, writeFile, stat } from "fs/promises";
+import { join } from "pathe";
 import { homedir } from "os";
 import { parseJSONC, stringifyJSONC } from "confbox";
+import { defu } from "defu";
+import { consola } from "consola";
 import { getGlobalRoot } from "./paths";
+
+async function exists(path: string): Promise<boolean> {
+  try {
+    await stat(path);
+    return true;
+  }
+  catch {
+    return false;
+  }
+}
 
 export interface MergeConfigOptions {
   dryRun?: boolean
@@ -22,7 +34,7 @@ export interface OpenCodeConfig {
   model?: string
 }
 
-export function buildConfig(opts: MergeConfigOptions): OpenCodeConfig {
+export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeConfig> {
   const globalRoot = getGlobalRoot();
   const homePosix = homedir().replace(/\\/g, "/");
   const instructionsPath = `${homePosix}/.config/opencode/AGENTS.md`;
@@ -44,49 +56,47 @@ export function buildConfig(opts: MergeConfigOptions): OpenCodeConfig {
   };
 
   let mergePath = join(globalRoot, "opencode.jsonc");
-  if (!existsSync(mergePath) && opts.backupPath) {
+  if (!(await exists(mergePath)) && opts.backupPath) {
     const candidate = join(opts.backupPath, "opencode.jsonc");
-    if (existsSync(candidate)) {
+    if (await exists(candidate)) {
       mergePath = candidate;
     }
   }
 
-  if (existsSync(mergePath)) {
+  if (await exists(mergePath)) {
     try {
-      const raw = readFileSync(mergePath, "utf-8");
+      const raw = await readFile(mergePath, "utf-8");
       const old = parseJSONC(raw) as Record<string, unknown>;
-      if (typeof old.small_model === "string") {
-        newCfg.small_model = old.small_model;
-      }
-      if (old.lsp !== undefined) {
-        newCfg.lsp = old.lsp;
-      }
+
+      const oldSelected: Record<string, unknown> = {};
+      if (typeof old.small_model === "string") oldSelected.small_model = old.small_model;
+      if (old.lsp !== undefined) oldSelected.lsp = old.lsp;
       if (old.mcp !== undefined && typeof old.mcp === "object" && old.mcp !== null) {
-        newCfg.mcp = old.mcp as Record<string, unknown>;
+        oldSelected.mcp = old.mcp;
         const names = Object.keys(old.mcp).join(", ");
-        console.log(`  merged MCP servers: ${names}`);
+        consola.log(`  merged MCP servers: ${names}`);
       }
-      if (typeof old.model === "string") {
-        newCfg.model = old.model;
-      }
-      console.log(`  merge source: ${mergePath}`);
+      if (typeof old.model === "string") oldSelected.model = old.model;
+
+      Object.assign(newCfg, defu(oldSelected, newCfg));
+      consola.log(`  merge source: ${mergePath}`);
     }
     catch (err) {
-      console.log(`  warning: could not parse previous config for merge: ${err}`);
+      consola.warn(`could not parse previous config for merge: ${err}`);
     }
   }
   else {
-    console.log("  no previous config to merge — clean template only");
+    consola.log("  no previous config to merge — clean template only");
     newCfg.mcp = {};
   }
 
   return newCfg;
 }
 
-export function writeConfig(cfg: OpenCodeConfig, opts: MergeConfigOptions): void {
+export async function writeConfig(cfg: OpenCodeConfig, opts: MergeConfigOptions): Promise<void> {
   const dst = join(getGlobalRoot(), "opencode.jsonc");
   if (opts.dryRun) {
-    console.log(`  [dry-run] would write ${dst}`);
+    consola.log(`  [dry-run] would write ${dst}`);
     return;
   }
   const json = stringifyJSONC(cfg, { space: 2 } as never);
@@ -97,6 +107,6 @@ export function writeConfig(cfg: OpenCodeConfig, opts: MergeConfigOptions): void
     "// MCP/LSP merged from previous config when available.",
     "",
   ].join("\n");
-  writeFileSync(dst, banner + json, "utf-8");
-  console.log("  ok  opencode.jsonc");
+  await writeFile(dst, banner + json, "utf-8");
+  consola.success("ok  opencode.jsonc");
 }

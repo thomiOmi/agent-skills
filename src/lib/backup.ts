@@ -1,6 +1,17 @@
-import { existsSync, mkdirSync, cpSync, readdirSync, statSync, writeFileSync } from "fs";
-import { join } from "path";
+import { mkdir, readdir, stat, cp, writeFile } from "fs/promises";
+import { join } from "pathe";
+import { consola } from "consola";
 import { getGlobalRoot, getBackupRoot, getTimestamp } from "./paths";
+
+async function exists(path: string): Promise<boolean> {
+  try {
+    await stat(path);
+    return true;
+  }
+  catch {
+    return false;
+  }
+}
 
 export interface BackupOptions {
   dryRun?: boolean
@@ -8,7 +19,7 @@ export interface BackupOptions {
   backupPath?: string
 }
 
-export function backupGlobal(opts: BackupOptions = {}): string | null {
+export async function backupGlobal(opts: BackupOptions = {}): Promise<string | null> {
   if (opts.skip && !opts.backupPath) {
     return null;
   }
@@ -16,7 +27,7 @@ export function backupGlobal(opts: BackupOptions = {}): string | null {
   const globalRoot = getGlobalRoot();
 
   if (opts.backupPath) {
-    if (!existsSync(opts.backupPath)) {
+    if (!(await exists(opts.backupPath))) {
       throw new Error(`Backup path not found: ${opts.backupPath}`);
     }
     return opts.backupPath;
@@ -26,25 +37,27 @@ export function backupGlobal(opts: BackupOptions = {}): string | null {
   const backupDir = join(getBackupRoot(), stamp);
 
   if (opts.dryRun) {
-    console.log(`  [dry-run] backup → ${backupDir}`);
+    consola.log(`  [dry-run] backup → ${backupDir}`);
     return backupDir;
   }
 
-  mkdirSync(backupDir, { recursive: true });
+  await mkdir(backupDir, { recursive: true });
 
-  if (existsSync(globalRoot)) {
-    const items = readdirSync(globalRoot);
-    for (const item of items) {
-      if (item === "node_modules") continue;
-      const src = join(globalRoot, item);
-      const dst = join(backupDir, item);
-      if (statSync(src).isDirectory()) {
-        cpSync(src, dst, { recursive: true });
-      }
-      else {
-        cpSync(src, dst);
-      }
-    }
+  if (await exists(globalRoot)) {
+    const items = await readdir(globalRoot);
+    const copies = items
+      .filter(item => item !== "node_modules")
+      .map(async (item) => {
+        const src = join(globalRoot, item);
+        const dst = join(backupDir, item);
+        if ((await stat(src)).isDirectory()) {
+          await cp(src, dst, { recursive: true });
+        }
+        else {
+          await cp(src, dst);
+        }
+      });
+    await Promise.all(copies);
   }
 
   const now = new Date().toISOString().replace("T", " ").slice(0, 19);
@@ -61,8 +74,8 @@ export function backupGlobal(opts: BackupOptions = {}): string | null {
     "```",
     "",
   ].join("\n");
-  writeFileSync(join(backupDir, "BACKUP.md"), manifest, "utf-8");
+  await writeFile(join(backupDir, "BACKUP.md"), manifest, "utf-8");
 
-  console.log(`  Backup saved: ${backupDir}`);
+  consola.success(`Backup saved: ${backupDir}`);
   return backupDir;
 }

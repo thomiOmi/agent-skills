@@ -1,15 +1,26 @@
-import { existsSync, mkdirSync, cpSync, readdirSync, statSync } from "fs";
-import { join } from "path";
+import { mkdir, readdir, cp, stat } from "fs/promises";
+import { join } from "pathe";
+import { consola } from "consola";
 import { getGlobalRoot, repoSubdir } from "../lib/paths";
+
+async function exists(path: string): Promise<boolean> {
+  try {
+    await stat(path);
+    return true;
+  }
+  catch {
+    return false;
+  }
+}
 
 export interface SyncOptions {
   dryRun?: boolean
 }
 
-export function syncCommand(opts: SyncOptions): void {
+export async function syncCommand(opts: SyncOptions): Promise<void> {
   const globalRoot = getGlobalRoot();
 
-  if (!existsSync(globalRoot)) {
+  if (!(await exists(globalRoot))) {
     throw new Error(`Global OpenCode directory not found: ${globalRoot}`);
   }
 
@@ -20,65 +31,60 @@ export function syncCommand(opts: SyncOptions): void {
     { name: "commands", src: repoSubdir("commands"), dst: join(globalRoot, "commands"), type: "file" as const },
   ];
 
-  console.log(`Repo:   ${repoSubdir(".")}`);
-  console.log(`Global: ${globalRoot}`);
-  console.log("");
+  consola.info(`Repo:   ${repoSubdir(".")}`);
+  consola.info(`Global: ${globalRoot}`);
+  consola.log("");
 
   for (const section of sections) {
-    mkdirSync(section.dst, { recursive: true });
+    await mkdir(section.dst, { recursive: true });
 
-    if (!existsSync(section.src)) {
-      console.log(`  warning: source not found: ${section.src}`);
+    if (!(await exists(section.src))) {
+      consola.warn(`source not found: ${section.src}`);
       continue;
     }
 
+    const entries = await readdir(section.src, { withFileTypes: true });
+
     if (section.type === "dir") {
-      const dirs = readdirSync(section.src).filter(name =>
-        statSync(join(section.src, name)).isDirectory(),
-      );
-      console.log(`Syncing ${dirs.length} ${section.name}...`);
-      for (const name of dirs) {
+      const dirs = entries.filter(e => e.isDirectory()).map(e => e.name);
+      consola.log(`Syncing ${dirs.length} ${section.name}...`);
+      const tasks = dirs.map(async (name) => {
         const src = join(section.src, name);
         const dst = join(section.dst, name);
         if (opts.dryRun) {
-          console.log(`  [dry-run] ${section.name.slice(0, -1)} ${name}`);
+          consola.log(`  [dry-run] ${section.name.slice(0, -1)} ${name}`);
         }
         else {
-          if (existsSync(dst)) {
-            cpSync(src, dst, { recursive: true, force: true });
-          }
-          else {
-            cpSync(src, dst, { recursive: true });
-          }
-          console.log(`  ok  ${section.name.slice(0, -1)} ${name}`);
+          await cp(src, dst, { recursive: true, force: true });
+          consola.log(`  ok  ${section.name.slice(0, -1)} ${name}`);
         }
-      }
+      });
+      await Promise.all(tasks);
     }
     else {
-      const files = readdirSync(section.src).filter(name =>
-        statSync(join(section.src, name)).isFile(),
-      );
-      console.log(`Syncing ${files.length} ${section.name}...`);
-      for (const name of files) {
+      const files = entries.filter(e => e.isFile()).map(e => e.name);
+      consola.log(`Syncing ${files.length} ${section.name}...`);
+      const tasks = files.map(async (name) => {
         const src = join(section.src, name);
         const dst = join(section.dst, name);
         if (opts.dryRun) {
-          console.log(`  [dry-run] ${section.name.slice(0, -1)} ${name}`);
+          consola.log(`  [dry-run] ${section.name.slice(0, -1)} ${name}`);
         }
         else {
-          cpSync(src, dst);
-          console.log(`  ok  ${section.name.slice(0, -1)} ${name}`);
+          await cp(src, dst);
+          consola.log(`  ok  ${section.name.slice(0, -1)} ${name}`);
         }
-      }
+      });
+      await Promise.all(tasks);
     }
-    console.log("");
+    consola.log("");
   }
 
   if (opts.dryRun) {
-    console.log("Dry run complete. Re-run without --dry-run to apply.");
+    consola.log("Dry run complete. Re-run without --dry-run to apply.");
   }
   else {
-    console.log("Sync complete. Restart OpenCode (or start a new session) to pick up changes.");
-    console.log("Preserved global-only items outside this repo (e.g. custom agents, third-party skills, tools, commands).");
+    consola.log("Sync complete. Restart OpenCode (or start a new session) to pick up changes.");
+    consola.log("Preserved global-only items outside this repo (e.g. custom agents, third-party skills, tools, commands).");
   }
 }

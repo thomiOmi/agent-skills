@@ -1,20 +1,14 @@
-import { existsSync, mkdirSync, symlinkSync, cpSync, readdirSync, statSync, rmSync } from "fs";
-import { join } from "path";
+import { mkdir, cp, readdir, stat, symlink, rm } from "fs/promises";
+import { join } from "pathe";
 import { tmpdir } from "os";
+import { consola } from "consola";
 import { getGlobalRoot, repoSubdir } from "../lib/paths";
 import { backupGlobal } from "../lib/backup";
 import { buildConfig, writeConfig } from "../lib/config";
 
-export interface SymlinkOptions {
-  dryRun?: boolean
-}
-
-function canCreateSymlinks(): boolean {
-  if (process.platform !== "win32") return true;
-  const testDir = join(tmpdir(), "opencode-symlink-test");
+async function exists(path: string): Promise<boolean> {
   try {
-    symlinkSync(tmpdir(), testDir, "junction");
-    rmSync(testDir);
+    await stat(path);
     return true;
   }
   catch {
@@ -22,42 +16,95 @@ function canCreateSymlinks(): boolean {
   }
 }
 
-function ensureDir(path: string, dryRun: boolean): void {
-  if (existsSync(path)) return;
-  if (dryRun) {
-    console.log(`  [dry-run] mkdir ${path}`);
-  }
-  else {
-    mkdirSync(path, { recursive: true });
-  }
+export interface SymlinkOptions {
+  dryRun?: boolean
 }
 
-function safeLink(path: string, target: string, label: string, dryRun: boolean): void {
-  if (dryRun) {
-    console.log(`  [dry-run] symlink ${label} → ${target}`);
-    return;
-  }
-  if (existsSync(path)) {
-    rmSync(path, { recursive: true, force: true });
-  }
+async function canCreateSymlinks(): Promise<boolean> {
+  if (process.platform !== "win32") return true;
+  const testDir = join(tmpdir(), "opencode-symlink-test");
   try {
-    const isDir = statSync(target).isDirectory();
-    symlinkSync(target, path, isDir ? "dir" : "file");
-    console.log(`  symlink ${label}`);
+    await symlink(tmpdir(), testDir, "junction");
+    await rm(testDir, { force: true });
+    return true;
   }
   catch {
-    console.log(`  symlink failed for ${label} — copying instead`);
-    if (statSync(target).isDirectory()) {
-      cpSync(target, path, { recursive: true });
-    }
-    else {
-      cpSync(target, path);
-    }
-    console.log(`  copy ${label}`);
+    return false;
   }
 }
 
-export function symlinkCommand(opts: SymlinkOptions): void {
+async function ensureDir(path: string, dry: boolean): Promise<void> {
+  if (await exists(path)) return;
+  if (dry) {
+    consola.log(`  [dry-run] mkdir ${path}`);
+  }
+  else {
+    await mkdir(path, { recursive: true });
+  }
+}
+
+async function safeLink(path: string, target: string, label: string, dry: boolean): Promise<void> {
+  if (dry) {
+    consola.log(`  [dry-run] symlink ${label} → ${target}`);
+    return;
+  }
+  if (await exists(path)) {
+    await rm(path, { recursive: true, force: true });
+  }
+  try {
+    const isDir = (await stat(target)).isDirectory();
+    await symlink(target, path, isDir ? "dir" : "file");
+    consola.log(`  symlink ${label}`);
+  }
+  catch {
+    consola.log(`  symlink fail for ${label} — copying instead`);
+    if ((await stat(target)).isDirectory()) {
+      await cp(target, path, { recursive: true });
+    }
+    else {
+      await cp(target, path);
+    }
+    consola.log(`  copy ${label}`);
+  }
+}
+
+async function linkItems(
+  srcDir: string, dstDir: string, name: string,
+  useSymlinks: boolean, dry: boolean,
+): Promise<void> {
+  consola.log(`\n==> Linking ${name}`);
+  await ensureDir(dstDir, dry);
+  if (!(await exists(srcDir))) return;
+
+  const items = await readdir(srcDir);
+  const tasks = items.map(async (item) => {
+    const itemPath = join(srcDir, item);
+    const linkPath = join(dstDir, item);
+    if (useSymlinks) {
+      await safeLink(linkPath, itemPath, `${name.slice(0, -1)}/${item}`, dry);
+    }
+    else {
+      if (dry) {
+        consola.log(`  [dry-run] copy ${name.slice(0, -1)} ${item}`);
+      }
+      else {
+        if ((await stat(itemPath)).isDirectory()) {
+          if (await exists(linkPath)) {
+            await rm(linkPath, { recursive: true, force: true });
+          }
+          await cp(itemPath, linkPath, { recursive: true });
+        }
+        else {
+          await cp(itemPath, linkPath);
+        }
+        consola.log(`  copy ${name.slice(0, -1)} ${item}`);
+      }
+    }
+  });
+  await Promise.all(tasks);
+}
+
+export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   const repoRoot = repoSubdir(".");
   const dstRoot = getGlobalRoot();
   const repoAgents = repoSubdir("agents");
@@ -66,88 +113,58 @@ export function symlinkCommand(opts: SymlinkOptions): void {
   const repoCommands = repoSubdir("commands");
   const repoAgentsMd = join(repoRoot, "AGENTS.md");
 
-  const useSymlinks = canCreateSymlinks();
+  const useSymlinks = await canCreateSymlinks();
   const symLabel = useSymlinks ? "available" : "NOT available — falling back to copy";
 
-  console.log(`Repo:       ${repoRoot}`);
-  console.log(`Global:     ${dstRoot}`);
-  console.log(`Symlinks:   ${symLabel}`);
-  if (opts.dryRun) console.log("Mode:       DRY RUN");
+  consola.info(`Repo:       ${repoRoot}`);
+  consola.info(`Global:     ${dstRoot}`);
+  consola.info(`Symlinks:   ${symLabel}`);
+  if (opts.dryRun) consola.info("Mode:       DRY RUN");
 
-  if (!existsSync(repoAgents)) throw new Error(`Missing source: ${repoAgents}`);
-  if (!existsSync(repoSkills)) throw new Error(`Missing source: ${repoSkills}`);
-  if (!existsSync(repoAgentsMd)) throw new Error(`Missing source: ${repoAgentsMd}`);
+  if (!(await exists(repoAgents))) throw new Error(`Missing source: ${repoAgents}`);
+  if (!(await exists(repoSkills))) throw new Error(`Missing source: ${repoSkills}`);
+  if (!(await exists(repoAgentsMd))) throw new Error(`Missing source: ${repoAgentsMd}`);
 
-  // Backup
-  const backupPath = backupGlobal({ dryRun: opts.dryRun ?? false });
+  // Backup (sequential)
+  const backupPath = await backupGlobal({ dryRun: opts.dryRun ?? false });
 
-  // Link subdirs
-  const dirs: { name: string, src: string, dst: string }[] = [
-    { name: "agents", src: repoAgents, dst: join(dstRoot, "agents") },
-    { name: "skills", src: repoSkills, dst: join(dstRoot, "skills") },
-    { name: "tools", src: repoTools, dst: join(dstRoot, "tools") },
-    { name: "commands", src: repoCommands, dst: join(dstRoot, "commands") },
-  ];
-
-  for (const d of dirs) {
-    console.log(`\n==> Linking ${d.name}`);
-    ensureDir(d.dst, opts.dryRun ?? false);
-    if (existsSync(d.src)) {
-      const items = readdirSync(d.src);
-      for (const name of items) {
-        const itemPath = join(d.src, name);
-        const linkPath = join(d.dst, name);
-        if (useSymlinks) {
-          safeLink(linkPath, itemPath, `${d.name.slice(0, -1)}/${name}`, opts.dryRun ?? false);
-        }
-        else {
-          if (opts.dryRun) {
-            console.log(`  [dry-run] copy ${d.name.slice(0, -1)} ${name}`);
-          }
-          else {
-            if (statSync(itemPath).isDirectory()) {
-              if (existsSync(linkPath)) rmSync(linkPath, { recursive: true, force: true });
-              cpSync(itemPath, linkPath, { recursive: true });
-            }
-            else {
-              cpSync(itemPath, linkPath);
-            }
-            console.log(`  copy ${d.name.slice(0, -1)} ${name}`);
-          }
-        }
-      }
-    }
-  }
+  // Link all sections in parallel
+  await Promise.all([
+    linkItems(repoAgents, join(dstRoot, "agents"), "agents", useSymlinks, opts.dryRun ?? false),
+    linkItems(repoSkills, join(dstRoot, "skills"), "skills", useSymlinks, opts.dryRun ?? false),
+    linkItems(repoTools, join(dstRoot, "tools"), "tools", useSymlinks, opts.dryRun ?? false),
+    linkItems(repoCommands, join(dstRoot, "commands"), "commands", useSymlinks, opts.dryRun ?? false),
+  ]);
 
   // Link AGENTS.md
-  console.log("\n==> Linking AGENTS.md");
+  consola.log("\n==> Linking AGENTS.md");
   const agentsMdDst = join(dstRoot, "AGENTS.md");
   if (useSymlinks) {
-    safeLink(agentsMdDst, repoAgentsMd, "AGENTS.md", opts.dryRun ?? false);
+    await safeLink(agentsMdDst, repoAgentsMd, "AGENTS.md", opts.dryRun ?? false);
   }
   else {
     if (opts.dryRun) {
-      console.log("  [dry-run] copy AGENTS.md");
+      consola.log("  [dry-run] copy AGENTS.md");
     }
     else {
-      cpSync(repoAgentsMd, agentsMdDst);
-      console.log("  copy AGENTS.md");
+      await cp(repoAgentsMd, agentsMdDst);
+      consola.log("  copy AGENTS.md");
     }
   }
 
   // Write opencode.jsonc
-  console.log("\n==> Writing opencode.jsonc (merge MCP/LSP from previous config)");
-  const cfg = buildConfig({ dryRun: opts.dryRun, backupPath });
-  writeConfig(cfg, { dryRun: opts.dryRun, backupPath });
+  consola.log("\n==> Writing opencode.jsonc (merge MCP/LSP from previous config)");
+  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath });
+  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath });
 
   // Summary
-  console.log("\n==> Done");
-  if (backupPath) console.log(`Backup:  ${backupPath}`);
+  consola.log("\n==> Done");
+  if (backupPath) consola.info(`Backup:  ${backupPath}`);
   if (useSymlinks) {
-    console.log("Symlinks created — edit files in repo and changes are live.");
+    consola.log("Symlinks created — edit files in repo and changes are live.");
   }
   else {
-    console.log("Files copied — run this script again after pulling changes.");
+    consola.log("Files copied — run this script again after pulling changes.");
   }
-  console.log("Restart OpenCode (or open a new session) to load the new global setup.");
+  consola.log("Restart OpenCode (or open a new session) to load the new global setup.");
 }

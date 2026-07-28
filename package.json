@@ -51,7 +51,11 @@
   },
   "dependencies": {
     "@opencode-ai/plugin": "^1.18.4",
-    "confbox": "^0.2.4"
+    "citty": "^0.2.2",
+    "confbox": "^0.2.4",
+    "consola": "^3.4.2",
+    "defu": "^6.1.7",
+    "pathe": "^2.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

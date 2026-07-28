@@ -136,7 +136,7 @@ export default defineConfig([
       frontmatter: "yaml",
       math: true,
     },
-    extends: ["markdown/recommended"],
+    extends: ["markdown/recommended", "opencode/recommended"],
     rules: {
       "markdown/fenced-code-language": "warn", // MD040 — warn only; many pre-existing bare fences in skill refs
       "markdown/heading-increment": "warn",
@@ -145,9 +145,6 @@ export default defineConfig([
       "markdown/no-multiple-h1": "off", // MD041 was disabled
       "markdown/no-missing-label-refs": "off", // noisy on template/placeholder content
       "markdown/no-missing-link-fragments": "warn", // many internal anchors in long docs
-      "opencode/valid-skill-frontmatter": "error",
-      "opencode/valid-agent-frontmatter": "error",
-      "opencode/description-length": "warn",
     },
   },
 ]);
