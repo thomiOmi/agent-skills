@@ -1,7 +1,6 @@
 # DECISIONS.md
 
 Architectural decisions, conventions, and known issues for the agent-skills project.
-Loaded automatically alongside AGENTS.md.
 
 ---
 
@@ -9,17 +8,17 @@ Loaded automatically alongside AGENTS.md.
 
 Key architectural decisions. Review before making changes that touch these areas.
 
-### Primary sebagai orchestrator, not flat agents - 2026-07-25
+### Orchestrator as subagent, built-in plan/build as primary - 2026-07-29
 
-Primary agent acts as a centralized orchestrator with verification loop. Subagents do not have `task` permission to prevent circular delegation. Verification is handled by qa-engineer + prompt instructions.
+OpenCode built-in `plan` and `build` agents serve as the primary user interface. The `orchestrator` subagent handles task decomposition, delegation, and verification. Orchestrator has `task` permission (except self-delegation) to coordinate specialized subagents.
 
-### Agent selection: hardcoded routing in primary prompt - 2026-07-25
+### Agent selection: hardcoded routing in orchestrator prompt - 2026-07-25
 
-Task to agent mapping is hardcoded in the primary prompt, not a custom tool. Provides full control and reliability. Can switch to dynamic selector if agent count exceeds 15.
+Task to agent mapping is hardcoded in the orchestrator prompt, not a custom tool. Provides full control and reliability. Can switch to dynamic selector if agent count exceeds 15.
 
-### Quality verification: prompt + qa-engineer subagent - 2026-07-25
+### Quality verification: dual-layer (skill-level + centralized) - 2026-07-29
 
-Verification loop uses the qa-engineer subagent (not a custom tool). qa-engineer has access to run tests, typecheck, lint.
+Verification has two layers: (1) domain-specific checklist in each SKILL.md executed by the subagent, (2) centralized quality-verifier tool executed by qa-engineer. qa-engineer has access to run tests, typecheck, lint.
 
 ### Checkpoint: MCP Memory server - 2026-07-25
 
@@ -44,12 +43,5 @@ Focus on stabilizing the 11 existing agents before adding new ones (researcher, 
 - Every agent must have explicit `read: allow`
 - `edit: deny` and `bash: deny` as safe defaults for read-only agents
 - Only agents that need to run tests get bash access
-- primary and senior-developer - full bash access
+- orchestrator and senior-developer - full bash access
 
----
-
-## Known Issues
-
-| Issue | Location | Status |
-|---|---|---|
-| `quality-verifier` tool referenced but doesn't exist | agents/primary.md:37 | Fixed |

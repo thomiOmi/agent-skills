@@ -1,6 +1,6 @@
 ---
 description: Diagnose and fix a bug systematically
-agent: primary
+agent: orchestrator
 ---
 
 Fix this issue: $ARGUMENTS

@@ -25,7 +25,7 @@ What it does:
 
 1. Backs up `~/.config/opencode` to `~/.config/opencode-backups/<timestamp>/`
 2. Creates symlinks for `agents/`, `skills/`, `tools/`, `commands/`, `AGENTS.md`
-3. Writes `opencode.jsonc` with `default_agent: primary` and merges MCP + LSP from your previous config
+3. Writes `opencode.jsonc` with `default_agent: orchestrator` and merges MCP + LSP from your previous config
 4. Writes `tui.jsonc` with theme and notification settings
 
 **Requirements:**
@@ -53,7 +53,7 @@ What it does:
 
 1. Full backup to `~/.config/opencode-backups/<timestamp>/` (excludes `node_modules`)
 2. Overwrites `agents/`, `skills/`, `tools/`, `commands/`, `AGENTS.md` from this repo
-3. Writes `opencode.jsonc` with `default_agent: primary` and **merges MCP + LSP** from the previous config (tokens keep working)
+3. Writes `opencode.jsonc` with `default_agent: orchestrator` and **merges MCP + LSP** from the previous config (tokens keep working)
 4. Writes `tui.jsonc` (merged with existing)
 
 Restore a backup:
@@ -153,7 +153,7 @@ to `~/.config/opencode/`. This table shows the mapping:
 | `instructions/AGENTS.md` | `AGENTS.md` | **Global agent rules** - read by the agent every session. Source of truth for the global AGENTS.md. |
 | `config/opencode.jsonc` | `opencode.jsonc` | **Global config** - default_agent, shell, permissions, MCP servers. MCP/LSP are merged from previous config so tokens keep working. |
 | `config/tui.jsonc` | `tui.jsonc` | **TUI config** - theme, diff_style, attention notifications. Merged with existing. |
-| `agents/*.md` | `agents/*.md` | **11 agent definitions** - invoked via `@agent-name` (primary, senior-developer, etc.). |
+| `agents/*.md` | `agents/*.md` | **11 agent definitions** - invoked via `@agent-name` (orchestrator, senior-developer, etc.). |
 | `skills/*/` | `skills/*/` | **15 skill directories** - each contains SKILL.md + references/. Auto-loaded per task. |
 | `tools/*.ts` | `tools/*.ts` | **2 custom tools** - task-decomposer.ts, quality-verifier.ts. Used by agents for specific tasks. |
 | `commands/*.md` | `commands/*.md` | **10 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, `/commit`, `/docs`, `/explain`, `/brainstorm`, `/security`. |

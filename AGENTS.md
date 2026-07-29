@@ -95,7 +95,7 @@ Use @agent-name for specific concerns:
 - `ui-ux` - Design system, frontend implementation, accessibility
 - `marketing` - Content strategy, SEO, copywriting
 
-For multi-step work, invoke `primary` - it decomposes tasks, delegates to subagents, and verifies results.
+For multi-step work, invoke `orchestrator` - it decomposes tasks, delegates to subagents, and verifies results.
 
 ---
 

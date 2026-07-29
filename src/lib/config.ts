@@ -41,7 +41,7 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
 
   const newCfg: OpenCodeConfig = {
     $schema: "https://opencode.ai/config.json",
-    default_agent: "primary",
+    default_agent: "orchestrator",
     shell: "pwsh",
     subagent_depth: 1,
     small_model: "opencode/deepseek-v4-flash-free",

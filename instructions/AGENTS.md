@@ -24,11 +24,11 @@ Priority order (highest to lowest):
 
 ## Agent Orchestra (Global)
 
-Default primary agent: **primary** (orchestrator with verification loop).
+Default primary agents: built-in `plan` (analysis) and `build` (implementation). The `orchestrator` subagent handles multi-step coordination.
 
 | Agent | Use for |
 | --- | --- |
-| `primary` | Multi-step work, coordination, verification |
+| `orchestrator` | Multi-step work, coordination, verification |
 | `senior-developer` | Architecture, coding, refactoring, code review |
 | `qa-engineer` | Tests, coverage, quality gates |
 | `security-auditor` | Auth, OWASP, vulnerability review |

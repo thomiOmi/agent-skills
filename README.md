@@ -87,7 +87,7 @@ agent-skills/
 ├── package.json
 ├── tsconfig.json
 ├── agents/
-│   ├── primary.md
+│   ├── orchestrator.md
 │   ├── senior-developer.md
 │   ├── ui-ux.md
 │   ├── marketing.md

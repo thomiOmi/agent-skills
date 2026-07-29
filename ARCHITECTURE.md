@@ -6,11 +6,11 @@ System architecture for the agent-skills Agent Orchestra.
 
 ## Overview
 
-Agent Orchestra turns OpenCode into a multi-role development team. A primary agent orchestrates work across specialized subagents using a verification loop, mimicking real-world engineering orgs.
+Agent Orchestra turns OpenCode into a multi-role development team. The orchestrator subagent coordinates work across specialized subagents using a verification loop, mimicking real-world engineering orgs.
 
 **Key principles:**
 
-- **Primary as orchestrator** — delegates, does not do domain work directly
+- **Orchestrator as coordinator** — delegates, does not do domain work directly
 - **Subagents are focused** — each owns a domain (coding, QA, security, design, etc.)
 - **Verification before delivery** — every result is verified before returning to the user
 - **Progressive disclosure** — skills are loaded on-demand, not all at once
@@ -21,33 +21,31 @@ Agent Orchestra turns OpenCode into a multi-role development team. A primary age
 
 ```mermaid
 flowchart TD
-    User[User Input] --> Primary[Primary Agent<br/>verification loop]
-    Primary --> Decompose[Decompose task<br/>task-decomposer tool]
+    User[User Input] --> Plan[plan agent (built-in)]
+    Plan --> Orchestrator[orchestrator subagent<br/>task decomposition]
 
-    Decompose --> SD[senior-developer<br/>code-style, testing, debugging]
-    Decompose --> UX[ui-ux<br/>ui-design]
-    Decompose --> MKT[marketing<br/>content-strategy]
-    Decompose --> QA[qa-engineer<br/>testing, debugging]
-    Decompose --> DO[devops<br/>devops-deployment]
-    Decompose --> SA[security-auditor<br/>security-review]
+    Orchestrator --> SD[senior-developer<br/>code-style, testing, debugging]
+    Orchestrator --> UX[ui-ux<br/>ui-design]
+    Orchestrator --> MKT[marketing<br/>content-strategy]
+    Orchestrator --> QA[qa-engineer<br/>testing, debugging]
+    Orchestrator --> DO[devops<br/>devops-deployment]
+    Orchestrator --> SA[security-auditor<br/>security-review]
 
-    SD --> Verify{Verification Loop<br/>quality-verifier tool}
-    UX --> Verify
-    MKT --> Verify
-    QA --> Verify
-    DO --> Verify
-    SA --> Verify
+    SD --> SkillCheck{Skill-level<br/>verification}
+    UX --> SkillCheck
+    MKT --> SkillCheck
+    QA --> SkillCheck
+    DO --> SkillCheck
+    SA --> SkillCheck
 
-    Verify -- PASS --> Synthesize[Synthesize results]
-    Verify -- FAIL < 3 retries --> SD
-    Verify -- FAIL < 3 retries --> UX
-    Verify -- FAIL < 3 retries --> MKT
-    Verify -- FAIL < 3 retries --> QA
-    Verify -- FAIL < 3 retries --> DO
-    Verify -- FAIL < 3 retries --> SA
-    Verify -- FAIL exhausted --> Escalate[Escalate to user]
+    SkillCheck -- PASS --> CentralCheck{Centralized<br/>quality-verifier}
+    SkillCheck -- FAIL --> SD
 
-    Synthesize --> Return[Return to user]
+    CentralCheck -- PASS --> Remember[MCP Memory<br/>checkpoint]
+    CentralCheck -- FAIL < 3 retries --> SD
+    CentralCheck -- FAIL exhausted --> Escalate[Escalate to user]
+
+    Remember --> Return[Return to user]
 ```
 
 ---
@@ -56,7 +54,7 @@ flowchart TD
 
 | Agent | Mode | Role | Delegates To | Key Skills |
 |---|---|---|---|---|
-| **primary** | primary | Orchestrator with verification loop | All subagents via `task` tool | task-decomposition, quality-verifier |
+| **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, quality-verifier |
 | **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, ai-integration |
 | **ui-ux** | subagent | Design system, frontend, accessibility | - | ui-design |
 | **marketing** | subagent | Content, SEO, copy, strategy | - | content-strategy |
@@ -68,7 +66,7 @@ flowchart TD
 | **docs-writer** | subagent | Technical writing, documentation | - | documentation, sdlc-documentation |
 | **refactor-planner** | subagent | Safe refactoring, migration planning | - | planning |
 
-Primary also delegates to OpenCode built-in subagents when the task fits better: `build` (clear implementation), `plan` (analysis only), `explore` (codebase search), `scout` (external research), `general` (generic multi-step).
+Orchestrator also delegates to OpenCode built-in subagents when the task fits better: `build` (clear implementation), `plan` (analysis only), `explore` (codebase search), `scout` (external research), `general` (generic multi-step).
 
 ---
 
@@ -78,14 +76,15 @@ Primary also delegates to OpenCode built-in subagents when the task fits better:
 2. **Decompose** into subtasks using `todowrite` + `task-decomposer` tool
 3. **Delegate** each subtask to the appropriate subagent via `task` tool
 4. **Collect** results from all subagents
-5. **Verify** by delegating to `qa-engineer`:
-   - PASS: proceed to synthesis
+5. **Verify** with dual-layer quality gates:
+   - **Layer 1 - Skill-level:** each subagent runs its domain-specific checklist from the SKILL.md
+   - **Layer 2 - Centralized:** qa-engineer executes the quality-verifier tool (tests, typecheck, lint, debug statements, docstrings)
+   - PASS: proceed to memory and synthesis
    - FAIL (max 3 retries): send back to subagent with specific feedback
    - FAIL (exhausted): escalate to user with details
-6. **Synthesize** verified results into final response
-7. **Return** to user
-
-Quality criteria verified: tests pass, typecheck passes, lint passes, no debug statements, all functions/classes have docstrings, error paths handled.
+6. **Remember** - save key decisions and learnings to MCP Memory for cross-session persistence
+7. **Synthesize** verified results into final response
+8. **Return** to user
 
 ---
 
@@ -93,7 +92,7 @@ Quality criteria verified: tests pass, typecheck passes, lint passes, no debug s
 
 | Skill | Used By | Purpose |
 |---|---|---|
-| task-decomposition | primary | Breaking down complex tasks |
+| task-decomposition | orchestrator | Breaking down complex tasks |
 | code-style | senior-developer | Code quality conventions |
 | testing | senior-developer, qa-engineer | Test writing conventions |
 | debugging | senior-developer, qa-engineer | Bug diagnosis workflow |
@@ -122,7 +121,7 @@ Breaks a complex task description into structured subtasks.
 - **Input:** `task` (string), optional `context` (string)
 - **Output:** Array of `{id, description, suggestedAgent, dependencies}`
 - **Agent inference:** keyword matching on description (test/qa, deploy/ci/cd, seo/content, ui/ux/design, security/auth, default senior-developer)
-- **Used by:** primary agent
+- **Used by:** orchestrator agent
 
 ### quality-verifier.ts
 
@@ -130,7 +129,7 @@ Verifies code quality against defined criteria.
 
 - **Input:** `files` (string[]), optional boolean flags: `checkLint`, `checkTypecheck`, `checkTests`, `checkNoDebug`, `checkDocstrings`
 - **Output:** `{pass: boolean, details: {criterion, passed, message}[]}`
-- **Used by:** primary agent (via qa-engineer subagent)
+- **Used by:** orchestrator agent (via qa-engineer subagent)
 
 ---
 
@@ -152,7 +151,7 @@ agent-skills/
 ├── .gitignore
 ├── eslint.config.js
 ├── agents/                          # 11 agent definitions (source)
-│   ├── primary.md
+│   ├── orchestrator.md
 │   ├── senior-developer.md
 │   ├── ui-ux.md
 │   ├── marketing.md
@@ -238,3 +237,4 @@ Instructions are loaded in order and merged:
 5. **TASKS.md** — roadmap and backlog
 
 Priority: Global > Project > Decisions > Architecture > Tasks.
+

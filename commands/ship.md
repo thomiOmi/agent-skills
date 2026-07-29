@@ -1,6 +1,6 @@
 ---
 description: End-to-end: implement, verify, and prepare for commit/PR
-agent: primary
+agent: orchestrator
 ---
 
 Ship this work: $ARGUMENTS

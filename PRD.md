@@ -2,128 +2,168 @@
 
 ## 1. Problem Statement
 
-The agent-skills project previously focused on a TypeScript plugin that syncs skills and agents to the user's OpenCode config directory. This approach duplicated OpenCode's built-in discovery mechanisms (`.opencode/agents/`, `.opencode/tools/`, `~/.config/opencode/skills/`) and required complex installer logic (`src/`) that is better handled by OpenCode itself.
+The agent-skills project enables OpenCode users to work with a curated collection of specialized agents, skills, and custom tools. The current implementation uses a custom primary agent that replaces OpenCode's built-in primary agents.
 
-The new direction: **Agent Orchestra** - a curated collection of specialized agents, skills, and custom tools that turn OpenCode into a multi-role development team. The primary agent delegates to sub-agents via verification loops, mimicking real-world engineering orgs.
+Key problem: the custom primary agent duplicates OpenCode's built-in orchestration capabilities. The system needs to leverage OpenCode's built-in `plan` and `build` agents as the primary interface, with a dedicated `orchestrator` subagent that handles task decomposition, delegation, and verification.
 
 ## 2. Goals
 
-- Provide a **primary agent** with a verification loop: decompose to delegate to collect to verify to iterate.
-- Ship **real-world agency roles**: senior-developer, ui-ux, marketing, qa-engineer, devops, security-auditor.
-- Provide **skills** that support each agent role with deep, role-specific guidance.
-- Provide **custom tools** under `tools/` that agents can use.
-- Eliminate `src/` - no installer, no config manipulator, no MCP auto-config.
-- Keep plugin minimal: only register agents/skills/tools, no file sync logic.
-- Full OpenCode v2 compliance: agents as markdown, skills as SKILL.md, custom tools as TypeScript.
-- Architecture is documented in `ARCHITECTURE.md`. This PRD covers product requirements only.
+- Use OpenCode built-in `plan` and `build` agents as the primary user interface
+- Provide an `orchestrator` subagent that coordinates multi-step workflows
+- Ship specialized agents for coding, testing, security, design, content, DevOps, documentation, brainstorming, planning, and refactoring
+- Provide skills that support each agent role with domain-specific guidance
+- Provide custom tools for task decomposition and quality verification
+- Follow OpenCode v2 conventions: agents as markdown, skills as SKILL.md, custom tools as TypeScript or Python
+- Enable non-developer users (vibe coders, sales, marketing, designers) to use the system effectively
 
 ## 3. Target Users
 
-- OpenCode users who want a multi-agent development workflow.
-- Developers who want specialized agents (senior developer, UI/UX, QA, DevOps, marketing, security) at their fingertips.
-- Teams that practice verification loops and quality gates before shipping.
+### Persona A - Developer End User
 
-## 4. Product Requirements
+A software developer who writes code daily. Uses the agent orchestra to automate routine tasks, debug issues, and get expert-level help for specific concerns (security, testing, design).
 
-### 4.1 Agents
+### Persona B - Non-Developer End User
 
-The product ships 11 specialized agents plus integrates with OpenCode built-in agents. See `ARCHITECTURE.md` for the full agent roster and routing.
+A vibe coder, sales person, marketer, or designer who uses AI agents for non-coding tasks. Describes features in plain language. Needs the orchestrator to handle decomposition and execution without managing details.
 
-| Requirement | Priority |
-|---|---|
-| Primary agent orchestrates via verification loop | P0 |
-| Subagents cover coding, design, QA, DevOps, security, content, docs, planning | P0 |
-| Built-in agents (build, plan, explore, scout, general) remain usable | P0 |
-| Max 3 retry iterations per subtask before escalating to user | P1 |
+### Persona C - Tech Lead / Reviewer
 
-### 4.2 Skills
+A senior engineer who reviews agent output before it reaches production. Needs visibility into what each subagent did, quality verification results, and clear audit trails.
 
-15 skills covering code, testing, security, design, DevOps, AI, planning, documentation. See `ARCHITECTURE.md` for the full skills-to-agent mapping.
+### Persona D - Contributor
 
-| Requirement | Priority |
-|---|---|
-| Skills follow progressive disclosure (name + description at startup, full body on activation) | P0 |
-| Skills stay under 5000 tokens for the main SKILL.md body | P1 |
+A developer who wants to add new agents, skills, or tools to this repository. Needs documented conventions, consistent formats, and clear contribution guidelines.
 
-### 4.3 Custom Tools
+## 4. User Stories
 
-Two tools: `task-decomposer.ts` and `quality-verifier.ts`. See `ARCHITECTURE.md` for input/output specs.
+### Stories: Persona A - Developer End User
 
-| Requirement | Priority |
-|---|---|
-| task-decomposer infers agent from keyword matching on description | P0 |
-| quality-verifier checks lint, typecheck, tests, debug statements, docstrings | P0 |
+- As a developer, I want an orchestrator agent that decomposes complex tasks into subtasks so I don't have to manually coordinate multiple agents.
+- As a developer, I want specialized agents for coding, testing, security, and design so I get expert-level help for each concern.
+- As a developer, I want every result verified before delivery so I don't ship broken code.
+- As a developer, I want progressive skill loading so agent response stays fast.
 
-## 5. Verification Loop
+### Stories: Persona B - Non-Developer End User
 
-The primary agent follows a 7-step verification loop for every delegation. See `ARCHITECTURE.md` for the detailed flow diagram and retry logic.
+- As a vibe coder, I want to describe features in plain language so the orchestrator handles decomposition and execution without me managing details.
+- As a sales person, I want a marketing agent that drafts outreach copy so I can focus on closing deals.
+- As a marketer, I want the content-strategy skill for SEO and copywriting so I can publish optimized content without hiring an agency.
+- As a designer, I want the ui-ux agent to review my design system so accessibility and consistency are checked automatically.
 
-| Requirement | Priority |
-|---|---|
-| Verify every delegation before synthesis | P0 |
-| Max 3 retries before escalating to user | P0 |
+### Stories: Persona C - Tech Lead / Reviewer
 
-## 6. Directory Structure
+- As a tech lead, I want the orchestrator to log what each subagent did so I can review and approve the implementation without reading every file.
+- As a reviewer, I want quality verification (lint, typecheck, tests) before output so I don't waste time on code that fails basic checks.
+- As a tech lead, I want max retry limits on subagent iterations so the system doesn't run indefinitely on failing tasks.
 
-See `ARCHITECTURE.md` for the full directory tree.
+### Stories: Persona D - Contributor
 
-Root documentation files and their roles:
+- As a contributor, I want SKILL.md and agent definition formats documented so I can add new skills and agents consistently.
+- As a contributor, I want documented conventions (permissions, checkpoint) so my additions follow the same patterns.
 
-| File | Role |
-|---|---|
-| `PRD.md` | Product requirements (this file) |
-| `ARCHITECTURE.md` | System architecture |
-| `DECISIONS.md` | Architectural decisions, conventions, known issues |
-| `AGENTS.md` | Project-level agent instructions (read by OpenCode) |
-| `TASKS.md` | Roadmap and backlog |
-| `SPEC.md` | Agent Skills format specification |
-| `README.md` | Overview and quick start |
-| `INSTALL.md` | Setup guide |
+## 5. Functional Requirements
 
-## 7. Relationship with OpenCode Built-in Agents
+### FR-1: Workflow
 
-| OpenCode Built-in    | Our Addition          | Relation                                    |
-| -------------------- | --------------------- | ------------------------------------------- |
-| `build` (primary)    | -                     | Default dev agent, keep as-is               |
-| `plan` (primary)     | -                     | Analysis agent, keep as-is                  |
-| `general` (subagent) | -                     | Generic helper, keep as-is                  |
-| `explore` (subagent) | -                     | Codebase explorer, keep as-is               |
-| `scout` (subagent)   | -                     | External research, keep as-is               |
-| -                    | `primary` (mode: all) | Verification loop agent, selectable via Tab |
-| -                    | `senior-developer`    | Architecture and coding specialist          |
-| -                    | `ui-ux`               | Design and frontend specialist              |
-| -                    | `marketing`           | Content and SEO specialist                  |
-| -                    | `qa-engineer`         | Testing and quality specialist              |
-| -                    | `devops`              | CI/CD and deployment specialist             |
-| -                    | `security-auditor`    | Security review specialist                  |
+The system follows this workflow for every task:
 
-Our agents **complement** built-in agents. Users can Tab between `build`, `plan`, and `primary`.
+```text
+plan -> orchestrator -> test -> implement -> review -> verify -> remember -> improve
+```
 
-## 8. Custom Tools
+1. **Plan** — built-in `plan` agent analyzes the request and creates a plan
+2. **Orchestrator** — `orchestrator` subagent decomposes the plan into subtasks and delegates to specialized subagents
+3. **Test** — tests are written first (TDD approach)
+4. **Implement** — code is implemented to pass the tests
+5. **Review** — implementation is reviewed against requirements
+6. **Verify** — quality verification runs (lint, typecheck, tests, debug statements, docstrings)
+7. **Remember** — key decisions and learnings saved to MCP Memory for cross-session persistence
+8. **Improve** — final polish and optimization after verification passes
 
-Two custom tools — `task-decomposer.ts` and `quality-verifier.ts`. See `ARCHITECTURE.md` for input/output specs.
+If verification fails, the system retries from the implement step (max 3 retries before escalation).
+
+### FR-2: Agent Roster
+
+The system provides the following agents:
+
+| Agent | Mode | Role |
+|---|---|---|
+| orchestrator | subagent | Task decomposition, delegation, verification, memory |
+| senior-developer | subagent | Architecture, coding, refactoring |
+| ui-ux | subagent | Design system, frontend, accessibility |
+| marketing | subagent | Content, SEO, copy, strategy |
+| qa-engineer | subagent | Test strategy, coverage, quality gates |
+| devops | subagent | CI/CD, deployment, infrastructure |
+| security-auditor | subagent | Security review, auth, vulnerability assessment |
+| brainstormer | subagent | Creative ideation, solution exploration |
+| deep-thinker | subagent | Complex reasoning, root cause analysis |
+| docs-writer | subagent | Technical writing, documentation |
+| refactor-planner | subagent | Safe refactoring, migration planning |
+
+The orchestrator subagent has permission to delegate to all other subagents via the `task` tool. Self-delegation is denied to prevent circular loops.
+
+### FR-3: Skills
+
+The system provides 15 skills covering code quality, testing, security, design, DevOps, AI integration, planning, and documentation.
+
+- Skills follow SKILL.md format with frontmatter (name, description)
+- Skills load progressively: frontmatter at startup (~100 tokens), full body on activation (< 5000 tokens)
+- Skills end with a domain-specific verification checklist
+
+### FR-4: Custom Tools
 
 | Tool | Purpose | Used By |
 |---|---|---|
-| task-decomposer | Break complex tasks into structured subtasks with agent inference | primary |
-| quality-verifier | Verify code quality: lint, typecheck, tests, debug statements, docstrings | primary (via qa-engineer) |
+| task-decomposer | Break complex tasks into structured subtasks with agent inference | orchestrator |
+| quality-verifier | Verify code quality: lint, typecheck, tests, debug statements, docstrings | orchestrator (via qa-engineer) |
 
-## 9. Out of Scope
+### FR-5: Verification
+
+Every skill includes a domain-specific verification checklist at the end of its SKILL.md. The orchestrator runs the skill-level checklist before the centralized quality-verifier tool.
+
+Dual-layer verification:
+1. **Skill-level** — domain-specific checks (e.g., security checks for auth, coverage checks for tests)
+2. **Centralized** — cross-cutting checks (typecheck, lint, tests, debug statements, docstrings)
+
+### FR-6: Checkpoint and Resume
+
+The system uses MCP Memory server (`@modelcontextprotocol/server-memory`) for cross-session persistence. Key decisions, task progress, and learnings are saved as knowledge graph entities and restored when a session resumes.
+
+### FR-7: Plugin
+
+The plugin registers agents, skills, and tools via the OpenCode plugin API. It does not contain installer logic or file sync logic.
+
+## 6. Non-Functional Requirements
+
+| Requirement | Description |
+|---|---|
+| NFR-1: Skill body size | Full SKILL.md body under 5000 tokens |
+| NFR-2: Startup overhead | Frontmatter loading under 100 tokens per skill |
+| NFR-3: Retry limit | Max 3 retry iterations per subtask before escalation |
+| NFR-4: Cross-platform | Works on Windows, Linux, and macOS |
+| NFR-5: Progressive disclosure | Skills load full body on activation only, not at startup |
+
+## 7. Scope
+
+### In Scope
+
+- 11 specialized subagents with documented roles
+- 15 skills with progressive disclosure and verification checklists
+- 2 custom tools: task-decomposer, quality-verifier
+- 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security
+- Plugin registration via OpenCode plugin API
+- MCP Memory for checkpoint and resume
+- Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md, TASKS.md
+
+### Out of Scope
 
 - MCP server auto-configuration
 - opencode.jsonc permissions auto-write
 - Instructions URL auto-write
-- GitHub Actions CI changes (kept as-is)
-- Any installer or sync logic beyond plugin registration
+- GitHub Actions CI changes
+- Installer or sync logic beyond plugin registration
 - Shell installer scripts
-
-## 10. Related Documents
-
-| Document | Role |
-|---|---|
-| `ARCHITECTURE.md` | System architecture, agent roster, verification loop, skills mapping, directory structure, deployment |
-| `DECISIONS.md` | Architectural decisions, conventions, known issues |
-| `AGENTS.md` | Project-level agent instructions (read by OpenCode each session) |
-| `TASKS.md` | Roadmap, backlog, project progress |
-| `SPEC.md` | Agent Skills format specification |
-| `INSTALL.md` | Setup guide for humans |
+- Branch chat feature (handled by existing OpenCode fork/session management)
+- Custom notification plugins
+- Custom chat export plugins
+- DESIGN.md support

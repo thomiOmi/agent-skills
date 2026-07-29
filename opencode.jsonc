@@ -8,7 +8,7 @@
   "default_agent": "primary",
   "shell": "pwsh",
 
-  "instructions": ["AGENTS.md", "DECISIONS.md", "ARCHITECTURE.md", "TASKS.md"],
+  "instructions": ["AGENTS.md", "DECISIONS.md"],
 
   // Fill in your locally installed MCP servers
   "mcp": {}
