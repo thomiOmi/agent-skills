@@ -4,12 +4,25 @@
   // Local dev config for the agent-skills repo.
   // Read by OpenCode when opened in this directory.
   // Not the global template - that's at config/opencode.jsonc.
+  // Settings here deep-merge with the global template.
 
-  "default_agent": "orchestrator",
+  "default_agent": "plan",
   "shell": "pwsh",
 
   "instructions": ["instructions/AGENTS.md", "AGENTS.md", "DECISIONS.md"],
 
-  // Fill in your locally installed MCP servers
-  "mcp": {}
+  "mcp": {
+    // Override memory path to stay inside .opencode/ (not pollute repo root)
+    "memory": {
+      "environment": {
+        "MEMORY_FILE_PATH": "./.opencode/memory.jsonl"
+      }
+    },
+    "eslint": {
+      // Lint files directly via MCP during development.
+      "type": "local",
+      "command": ["npx", "-y", "@eslint/mcp@latest"],
+      "enabled": true
+    }
+  }
 }
