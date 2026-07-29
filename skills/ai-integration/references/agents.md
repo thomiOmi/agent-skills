@@ -49,8 +49,8 @@ LOOP (max iterations: [set a limit]):
 
   1. Provide the model with the task, context, and available tool definitions.
   2. Model returns either:
-     a. A tool call — execute the tool, capture the result.
-     b. A final answer — return the answer and exit the loop.
+     a. A tool call -  execute the tool, capture the result.
+     b. A final answer -  return the answer and exit the loop.
   3. Append the tool call and its result to the conversation.
   4. Return to step 1 with the updated conversation.
 
@@ -63,8 +63,8 @@ IF max iterations reached WITHOUT a final answer:
 ## Rules
 
 - Write tool descriptions as if explaining to a new colleague when to use the tool.
-- Set a maximum iteration limit on every agent loop — prevent infinite loops.
+- Set a maximum iteration limit on every agent loop -  prevent infinite loops.
 - Log every tool call and its result for debugging.
-- Validate tool call inputs before executing them — treat them as untrusted input.
+- Validate tool call inputs before executing them -  treat them as untrusted input.
 - Do not give agents access to destructive operations (delete, send, publish) without a confirmation step.
-- Do not use agents for tasks a single prompt can handle — agents add latency and cost.
+- Do not use agents for tasks a single prompt can handle -  agents add latency and cost.

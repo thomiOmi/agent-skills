@@ -5,16 +5,16 @@
 Resources are **nouns, plural**. HTTP verbs express the action.
 
 ```text
-✅  GET    /users
-✅  GET    /users/{id}
-✅  POST   /users
-✅  PATCH  /users/{id}
-✅  DELETE /users/{id}
-✅  GET    /users/{id}/orders
+ GET    /users
+ GET    /users/{id}
+ POST   /users
+ PATCH  /users/{id}
+ DELETE /users/{id}
+ GET    /users/{id}/orders
 
-❌  GET    /getUser
-❌  POST   /createUser
-❌  GET    /users/delete/{id}
+ GET    /getUser
+ POST   /createUser
+ GET    /users/delete/{id}
 ```
 
 No trailing slashes. Lowercase, kebab-case: `/payment-methods`.
@@ -23,11 +23,11 @@ No trailing slashes. Lowercase, kebab-case: `/payment-methods`.
 
 | Method | Purpose           | Idempotent |
 | ------ | ----------------- | ---------- |
-| GET    | Read              | ✅         |
-| POST   | Create or trigger | ❌         |
-| PUT    | Replace entirely  | ✅         |
-| PATCH  | Partial update    | ✅         |
-| DELETE | Remove            | ✅         |
+| GET    | Read              | OK         |
+| POST   | Create or trigger | X         |
+| PUT    | Replace entirely  | OK         |
+| PATCH  | Partial update    | OK         |
+| DELETE | Remove            | OK         |
 
 ## Response Shapes
 
@@ -72,8 +72,8 @@ Error (consistent across all endpoints):
 | 500  | Unexpected server error            |
 
 ```text
-❌ Never return 200 for an error
-❌ Never return 500 for a client mistake
+Never return 200 for an error
+Never return 500 for a client mistake
 ```
 
 ## Versioning

@@ -1,4 +1,4 @@
-# Task Decomposition — Phase Reference
+# Task Decomposition -  Phase Reference
 
 ## Phase Flow
 
@@ -57,18 +57,18 @@ clean?}
 
 Skip PHASE 2 if the environment already runs.
 Skip PHASE 6 if no public interface changed.
-Minimum for any task: PHASE 0 → 1 → 3 → 4.
+Minimum for any task: PHASE 0 to 1 to 3 to 4.
 
 ---
 
-## PHASE 0 — Clarify & Scope
+## PHASE 0 -  Clarify & Scope
 
 **Goal:** Fully understand the task before doing anything.
 
 Required output:
 
 ```markdown
-- [ ] Problem statement in 1–2 sentences
+- [ ] Problem statement in 1-2 sentences
 - [ ] Confirmed assumptions
 - [ ] Out-of-scope items
 - [ ] Blocking questions (must be resolved before proceeding)
@@ -78,7 +78,7 @@ Required output:
 
 ---
 
-## PHASE 1 — Plan & Decompose
+## PHASE 1 -  Plan & Decompose
 
 **Goal:** Break the task into ordered, actionable sub-tasks.
 
@@ -86,13 +86,13 @@ Sub-task sizes:
 
 ```mermaid
 flowchart LR
-    S["S — Small
+    S["S -  Small
 < 30 min
 Single file or function"]
-    M["M — Medium
-30 min – 2 hr
+    M["M -  Medium
+30 min - 2 hr
 Multiple files"]
-    L["L — Large
+    L["L -  Large
 > 2 hr
 Must be split before starting"]
 
@@ -108,8 +108,8 @@ Task tree format:
 ```text
 TASK: [main task name]
 ├── SUB-TASK 1: [description] [S]
-├── SUB-TASK 2: [description] [M] — depends on 1
-└── SUB-TASK 3: [description] [S] — parallel with 2
+├── SUB-TASK 2: [description] [M] -  depends on 1
+└── SUB-TASK 3: [description] [S] -  parallel with 2
 ```
 
 Required output:
@@ -125,7 +125,7 @@ Required output:
 
 ---
 
-## PHASE 2 — Scaffold & Setup
+## PHASE 2 -  Scaffold & Setup
 
 **Goal:** Foundation before core implementation.
 
@@ -141,7 +141,7 @@ Required output:
 
 ---
 
-## PHASE 3 — Implement
+## PHASE 3 -  Implement
 
 **Goal:** Execute sub-tasks one by one.
 
@@ -180,7 +180,7 @@ Resolves: SUB-TASK-X
 
 ---
 
-## PHASE 4 — Test & Validate
+## PHASE 4 -  Test & Validate
 
 **Goal:** Confirm correctness; no regressions.
 
@@ -194,11 +194,11 @@ Required output:
 - [ ] All acceptance criteria from Phase 1 met
 ```
 
-**Gate:** Zero failing tests. If bugs found → read `debugging` skill, return to Phase 3.
+**Gate:** Zero failing tests. If bugs found to read `debugging` skill, return to Phase 3.
 
 ---
 
-## PHASE 5 — Review & Integrate
+## PHASE 5 -  Review & Integrate
 
 **Goal:** Code is clean and ready to merge.
 
@@ -216,7 +216,7 @@ Checklist:
 
 ---
 
-## PHASE 6 — Document & Hand-off
+## PHASE 6 -  Document & Hand-off
 
 **Goal:** Work can be continued by another person or agent.
 
@@ -238,19 +238,19 @@ Required output:
 ## Progress
 
 Task: [name]
-Phase: PHASE X — [name]
-Status: 🟡 In Progress | ✅ Done | 🔴 Blocked
+Phase: PHASE X -  [name]
+Status: In Progress In Progress | OK Done | Blocked Blocked
 
 Completed:
-- ✅ PHASE 0: Scope confirmed
-- ✅ PHASE 1: 4 sub-tasks planned
+- OK PHASE 0: Scope confirmed
+- OK PHASE 1: 4 sub-tasks planned
 
 In Progress:
-- 🟡 PHASE 3: Sub-task 2/4 — [description]
+- In Progress PHASE 3: Sub-task 2/4 -  [description]
 
 Waiting:
 - ⏳ PHASE 3: Sub-tasks 3, 4
 
 Blockers:
-- 🔴 [description] — needs: [what is required]
+- Blocked [description] -  needs: [what is required]
 ```

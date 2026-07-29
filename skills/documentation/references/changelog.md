@@ -20,7 +20,7 @@ Update on every PR that changes behavior.
 
 ### Deprecated
 
-- `POST /v1/users/create` — use `POST /v2/users` instead
+- `POST /v1/users/create` -  use `POST /v2/users` instead
 
 ### Removed
 

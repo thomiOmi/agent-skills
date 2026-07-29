@@ -2,7 +2,7 @@ import { tool } from "@opencode-ai/plugin";
 
 export default tool({
   description:
-    "Verify code quality against defined criteria — lint, typecheck, test pass, no debug statements, docstrings",
+    "Verify code quality against defined criteria - lint, typecheck, test pass, no debug statements, docstrings",
   args: {
     files: tool.schema.array(tool.schema.string()).describe("Array of file paths to verify"),
     checkLint: tool.schema.boolean().optional().describe("Check if lint passes"),
@@ -21,7 +21,7 @@ export default tool({
       details.push({
         criterion: "no-debug-statements",
         passed: true,
-        message: "Scanning for debug statements — run a grep for console.log, print(, debugger to confirm",
+        message: "Scanning for debug statements - run a grep for console.log, print(, debugger to confirm",
       });
     }
 
@@ -30,7 +30,7 @@ export default tool({
         criterion: "has-docstrings",
         passed: true,
         message:
-          "Docstring verification requires manual file review — check that exported functions/classes have docstrings",
+          "Docstring verification requires manual file review - check that exported functions/classes have docstrings",
       });
     }
 

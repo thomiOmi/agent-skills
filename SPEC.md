@@ -12,8 +12,8 @@ Full specification: <https://agentskills.io/specification>
 
 | Field           | Required | Notes                                                                      |
 | --------------- | -------- | -------------------------------------------------------------------------- |
-| `name`          | ✅       | Max 64 chars. Lowercase, numbers, hyphens only. Must match directory name. |
-| `description`   | ✅       | Max 1024 chars. What it does + when to use it.                             |
+| `name`          | Yes | Max 64 chars. Lowercase, numbers, hyphens only. Must match directory name. |
+| `description`   | Yes | Max 1024 chars. What it does + when to use it.                             |
 | `license`       | No       | License name or reference to LICENSE file.                                 |
 | `compatibility` | No       | Max 500 chars. Environment requirements.                                   |
 | `metadata`      | No       | Key-value map for additional info (e.g. `version`, `author`).              |
@@ -31,11 +31,11 @@ skill-name/
 
 ### Progressive Disclosure
 
-Skills are loaded progressively — keep this in mind when writing:
+Skills are loaded progressively - keep this in mind when writing:
 
-1. `name` + `description` → loaded at startup for all skills (~100 tokens)
-2. Full `SKILL.md` body → loaded when skill is activated (keep under 5000 tokens / 500 lines)
-3. `references/`, `scripts/`, `assets/` → loaded on-demand only
+1. `name` + `description` to loaded at startup for all skills (~100 tokens)
+2. Full `SKILL.md` body to loaded when skill is activated (keep under 5000 tokens / 500 lines)
+3. `references/`, `scripts/`, `assets/` to loaded on-demand only
 
 Move detailed reference material to `references/` to keep `SKILL.md` lean.
 

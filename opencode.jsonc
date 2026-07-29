@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Local dev config for the agent-skills repo.
+  // Read by OpenCode when opened in this directory.
+  // Not the global template - that's at config/opencode.jsonc.
+
+  "default_agent": "primary",
+  "shell": "pwsh",
+
+  "instructions": ["AGENTS.md", "DECISIONS.md", "ARCHITECTURE.md", "TASKS.md"],
+
+  // Fill in your locally installed MCP servers
+  "mcp": {}
+}

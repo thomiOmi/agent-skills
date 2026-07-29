@@ -5,7 +5,7 @@
 ```markdown
 ## What
 
-[1–3 sentences: what does this PR do?]
+[1-3 sentences: what does this PR do?]
 
 ## Why
 
@@ -52,7 +52,7 @@ Resolves: #[issue-number]
 ## Self-Review Checklist (before requesting review)
 
 ```markdown
-- [ ] Read every line of the diff — not just what you changed
+- [ ] Read every line of the diff -  not just what you changed
 - [ ] No unintended files included
 - [ ] No debug statements left in
 - [ ] No hardcoded values that belong in config
@@ -69,15 +69,15 @@ Resolves: #[issue-number]
 **For the reviewer:**
 
 - Review the intent, not just the implementation
-- Suggest, do not demand — use "consider" and "what if" language for non-blocking comments
+- Suggest, do not demand -  use "consider" and "what if" language for non-blocking comments
 - Distinguish blocking issues from suggestions: prefix with `[blocking]` or `[nit]`
 - Approve only when you would be comfortable maintaining this code
 
 **Response labels:**
 
-- `[blocking]` — must be addressed before merge
-- `[nit]` — minor style or preference, author's discretion
-- `[question]` — seeking understanding, not requesting a change
+- `[blocking]` -  must be addressed before merge
+- `[nit]` -  minor style or preference, author's discretion
+- `[question]` -  seeking understanding, not requesting a change
 
 ---
 
@@ -86,7 +86,7 @@ Resolves: #[issue-number]
 | Size   | Lines changed | Risk                      |
 | ------ | ------------- | ------------------------- |
 | Small  | < 100 lines   | Easy to review thoroughly |
-| Medium | 100–400 lines | Reviewable with focus     |
+| Medium | 100-400 lines | Reviewable with focus     |
 | Large  | > 400 lines   | Consider splitting        |
 
 Large PRs slow down review and increase risk.

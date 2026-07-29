@@ -69,9 +69,9 @@ Commits are replayed on top of main without a merge commit.
 ## Rules
 
 ```text
-✅ Choose one strategy and enforce it via repository settings
-✅ Use squash for feature branches with messy commit history
-✅ Use merge commit when branch history is meaningful
-❌ Never force-push to main, develop, or any shared branch
-❌ Never rebase a branch that others are working on
+Choose one strategy and enforce it via repository settings
+Use squash for feature branches with messy commit history
+Use merge commit when branch history is meaningful
+Never force-push to main, develop, or any shared branch
+Never rebase a branch that others are working on
 ```

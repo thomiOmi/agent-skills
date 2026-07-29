@@ -1,4 +1,4 @@
-# ERD — Entity Relationship Diagram
+# ERD -  Entity Relationship Diagram
 
 Use Mermaid.js `erDiagram` syntax. Renders in GitHub, GitLab, Notion, and most documentation tools.
 
@@ -72,12 +72,12 @@ erDiagram
 ## Rules
 
 ```text
-✅ Every entity must have exactly one PK (prefer uuid over integer)
-✅ Use timestamptz for datetime fields — not timestamp
-✅ Monetary values in integer cents — not float or decimal
-✅ Add UK for every field with a business uniqueness constraint
-✅ Document nullable vs NOT NULL on every field
-✅ Add IDX on all FK columns (for join performance)
-❌ Do not use generic field names: data, info, record, value
-❌ Do not store multiple values in one field — normalize instead
+Every entity must have exactly one PK (prefer uuid over integer)
+Use timestamptz for datetime fields -  not timestamp
+Monetary values in integer cents -  not float or decimal
+Add UK for every field with a business uniqueness constraint
+Document nullable vs NOT NULL on every field
+Add IDX on all FK columns (for join performance)
+Do not use generic field names: data, info, record, value
+Do not store multiple values in one field -  normalize instead
 ```

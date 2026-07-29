@@ -37,7 +37,7 @@ For full templates see references/prd.md, references/sdd.md, etc.
 
 ## Open Questions
 
-- [ ] [question — needs answer before development starts]
+- [ ] [question -  needs answer before development starts]
 ```
 
 ## SDD Skeleton

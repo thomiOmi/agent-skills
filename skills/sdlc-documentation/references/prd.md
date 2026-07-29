@@ -1,4 +1,4 @@
-# PRD — Product Requirements Document
+# PRD -  Product Requirements Document
 
 Audience: product managers, designers, engineers, stakeholders.
 Use when: starting a new feature, product, or significant change.
@@ -18,7 +18,7 @@ Use when: starting a new feature, product, or significant change.
 
 ### Problem Statement
 
-[2–3 sentences: what problem exists, who has it, and why it matters now]
+[2-3 sentences: what problem exists, who has it, and why it matters now]
 
 ### Goal
 
@@ -26,7 +26,7 @@ Use when: starting a new feature, product, or significant change.
 
 ### Non-Goals
 
-[What this explicitly will NOT do — prevents scope creep]
+[What this explicitly will NOT do -  prevents scope creep]
 
 ---
 
@@ -104,10 +104,10 @@ Use when: starting a new feature, product, or significant change.
 ## PRD Rules
 
 ```text
-✅ Every FR must have testable acceptance criteria
-✅ Non-goals must be explicit
-✅ Success metrics must be measurable
-✅ Open questions must be resolved before development starts
-❌ Do not write PRD and SDD in the same document
-❌ Do not list features without explaining why they are needed
+Every FR must have testable acceptance criteria
+Non-goals must be explicit
+Success metrics must be measurable
+Open questions must be resolved before development starts
+Do not write PRD and SDD in the same document
+Do not list features without explaining why they are needed
 ```

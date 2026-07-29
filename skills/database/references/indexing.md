@@ -12,7 +12,7 @@ Add an index when:
 Do not add an index when:
 
 - The table is small (full scan is fast enough)
-- The column has very low cardinality (boolean, status with 2-3 values — the index may not be used)
+- The column has very low cardinality (boolean, status with 2-3 values -  the index may not be used)
 - The column is rarely queried
 - The table has very high write volume (every index slows down INSERT, UPDATE, DELETE)
 
@@ -23,11 +23,11 @@ Do not add an index when:
 | Type             | Use for                                                             |
 | ---------------- | ------------------------------------------------------------------- |
 | B-tree (default) | Equality (`=`), range (`<`, `>`, `BETWEEN`), ORDER BY, most queries |
-| Hash             | Equality only — faster for exact match, no range support            |
+| Hash             | Equality only -  faster for exact match, no range support            |
 | GIN              | Full-text search, array columns, JSONB containment                  |
 | GiST             | Geometric data, full-text search (PostgreSQL)                       |
-| Partial          | Indexes a subset of rows — use with a WHERE condition               |
-| Composite        | Multiple columns — column order matters                             |
+| Partial          | Indexes a subset of rows -  use with a WHERE condition               |
+| Composite        | Multiple columns -  column order matters                             |
 
 ---
 
@@ -81,5 +81,5 @@ Example use cases:
 - [ ] Partial indexes used where only a subset of rows is queried
 - [ ] Duplicate or unused indexes identified and removed
 - [ ] Index creation on large tables done concurrently (no table lock)
-- [ ] Index size reviewed — overly large indexes may indicate wrong approach
+- [ ] Index size reviewed -  overly large indexes may indicate wrong approach
 ```

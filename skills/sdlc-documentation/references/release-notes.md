@@ -1,11 +1,11 @@
 # Release Notes
 
 ```markdown
-# Release Notes — v[X.Y.Z] ([YYYY-MM-DD])
+# Release Notes -  v[X.Y.Z] ([YYYY-MM-DD])
 
 ## What's New
 
-- **[Feature name]:** [1–2 sentence user-facing description]
+- **[Feature name]:** [1-2 sentence user-facing description]
 
 ## Improvements
 
@@ -13,7 +13,7 @@
 
 ## Bug Fixes
 
-- [Symptom that was fixed — not the implementation]
+- [Symptom that was fixed -  not the implementation]
 
 ## Breaking Changes
 
@@ -21,15 +21,15 @@
 
 ## Known Issues
 
-- [Issue] — workaround: [workaround if available]
+- [Issue] -  workaround: [workaround if available]
 ```
 
 ## Rules
 
 ```text
-✅ Write for end users — avoid technical jargon
-✅ Breaking changes must have migration instructions
-✅ Link to documentation for complex changes
-❌ Do not include internal implementation details
-❌ Do not publish without stakeholder review for breaking changes
+Write for end users -  avoid technical jargon
+Breaking changes must have migration instructions
+Link to documentation for complex changes
+Do not include internal implementation details
+Do not publish without stakeholder review for breaking changes
 ```

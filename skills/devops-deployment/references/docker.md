@@ -7,7 +7,7 @@ Best practices for building secure, efficient, and reproducible container images
 ## Image Structure
 
 ```dockerfile
-# 1. Pin base image to exact version — never :latest
+# 1. Pin base image to exact version -  never :latest
 FROM node:20.18.0-alpine@sha256:abc123 AS builder
 
 # 2. Install dependencies first (leverage cache)
@@ -21,7 +21,7 @@ COPY . .
 # 4. Build in builder stage
 RUN npm run build
 
-# 5. Final stage — minimal runtime image
+# 5. Final stage -  minimal runtime image
 FROM node:20.18.0-alpine@sha256:abc123
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 WORKDIR /app
@@ -46,15 +46,15 @@ CMD ["node", "dist/server.js"]
 
 ### Layering
 
-- Order layers by frequency of change (least → most)
-  - OS packages → runtime → dependencies → code
+- Order layers by frequency of change (least to most)
+  - OS packages to runtime to dependencies to code
 - Combine `RUN` commands when they produce related files
 - Use `.dockerignore` to exclude unnecessary files
 
 ### Security
 
-- Never run as root — create a non-root user
-- Never bake secrets into images — use build args or secrets mounts
+- Never run as root -  create a non-root user
+- Never bake secrets into images -  use build args or secrets mounts
 - Scan images for vulnerabilities (`docker scan`, Trivy, Snyk)
 - Remove package manager cache and temp files in same layer
 
@@ -70,7 +70,7 @@ CMD ["node", "dist/server.js"]
 
 ```
 - [ ] Base image pinned to specific version (not :latest or :alpine without tag)
-- [ ] Multi-stage build used (builder → runtime)
+- [ ] Multi-stage build used (builder to runtime)
 - [ ] .dockerignore exists and excludes node_modules, .git, dist
 - [ ] Non-root user created and used
 - [ ] Secrets not baked into image (use ARG with --mount=type=secret)

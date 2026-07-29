@@ -23,7 +23,7 @@ Global AGENTS.md and SKILL.md collection for [OpenCode CLI](https://opencode.ai)
 
 ### Plugin (recommended)
 
-Install as an OpenCode plugin — automatic skill sync, MCP config, and cross-platform support.
+Install as an OpenCode plugin - automatic skill sync, MCP config, and cross-platform support.
 
 Edit `~/.config/opencode/opencode.jsonc`:
 
@@ -81,10 +81,44 @@ agent-skills/
 ├── PRD.md
 ├── SPEC.md
 ├── AGENTS.md
+├── DECISIONS.md
+├── ARCHITECTURE.md
+├── TASKS.md
 ├── package.json
 ├── tsconfig.json
+├── agents/
+│   ├── primary.md
+│   ├── senior-developer.md
+│   ├── ui-ux.md
+│   ├── marketing.md
+│   ├── qa-engineer.md
+│   ├── devops.md
+│   ├── security-auditor.md
+│   ├── brainstormer.md
+│   ├── deep-thinker.md
+│   ├── docs-writer.md
+│   └── refactor-planner.md
+├── commands/
+│   ├── ship.md
+│   ├── fix.md
+│   ├── plan.md
+│   ├── review.md
+│   ├── test.md
+│   ├── commit.md
+│   ├── docs.md
+│   ├── explain.md
+│   ├── brainstorm.md
+│   └── security.md
+├── config/
+│   ├── opencode.jsonc
+│   └── tui.jsonc
+├── instructions/
+│   └── AGENTS.md
 ├── plugin/
 │   └── agent-skills.ts
+├── tools/
+│   ├── task-decomposer.ts
+│   └── quality-verifier.ts
 ├── src/
 │   ├── index.ts
 │   ├── types.ts
@@ -93,6 +127,7 @@ agent-skills/
 │   └── paths.ts
 ├── tests/
 │   └── validate-skills.test.ts
+├── scripts/
 └── skills/
     ├── task-decomposition/
     ├── code-style/
@@ -105,7 +140,10 @@ agent-skills/
     ├── sdlc-documentation/
     ├── git-workflow/
     ├── security-review/
-    └── database/
+    ├── database/
+    ├── ui-design/
+    ├── content-strategy/
+    └── devops-deployment/
 ```
 
 Each skill follows the [agentskills.io](https://agentskills.io/specification) spec:

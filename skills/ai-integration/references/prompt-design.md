@@ -57,13 +57,13 @@ This allows the operator to switch models or providers without changing code.
 
 ## Rules
 
-- Critical instructions belong near the top — not buried at the end.
+- Critical instructions belong near the top -  not buried at the end.
 - Tell the model what to avoid, not just what to do.
 - Request step-by-step reasoning for tasks requiring multi-step logic.
-- Specify the output format explicitly — do not assume the model will infer it.
+- Specify the output format explicitly -  do not assume the model will infer it.
 - Do not use the same prompt across different model families without testing.
 - For structured output: always instruct the model to return only the format, with no preamble.
-- Test prompts with the actual model being used — behavior varies between providers and versions.
+- Test prompts with the actual model being used -  behavior varies between providers and versions.
 
 ---
 

@@ -1,4 +1,4 @@
-# SDD — Software Design Document
+# SDD -  Software Design Document
 
 Audience: engineers, tech leads, architects.
 Use when: engineers are about to implement something non-trivial.
@@ -16,11 +16,11 @@ Use when: engineers are about to implement something non-trivial.
 
 ## 1. Overview
 
-[2–3 sentences: what is being built and why this design approach]
+[2-3 sentences: what is being built and why this design approach]
 
 ### Scope
 
-[What is covered — and what is explicitly not covered]
+[What is covered -  and what is explicitly not covered]
 
 ---
 
@@ -28,7 +28,7 @@ Use when: engineers are about to implement something non-trivial.
 
 ### High-Level Design
 
-CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
+CLIENT to API GATEWAY to SERVICE to DATABASE to MESSAGE QUEUE to WORKER
 
 ### Component Breakdown
 
@@ -42,11 +42,11 @@ CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 
 ### Database Schema
 
-[ERD or table definitions — use planning skill for ERD format]
+[ERD or table definitions -  use planning skill for ERD format]
 
 ### Data Flow
 
-[Input → processing → output → storage]
+[Input to processing to output to storage]
 
 ---
 
@@ -54,7 +54,7 @@ CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 
 ### Endpoints
 
-[New or modified endpoints — use api-conventions skill]
+[New or modified endpoints -  use api-conventions skill]
 
 ---
 
@@ -109,10 +109,10 @@ CLIENT → API GATEWAY → SERVICE → DATABASE → MESSAGE QUEUE → WORKER
 ## SDD Rules
 
 ```text
-✅ Link to the PRD — SDD explains HOW, PRD explains WHAT and WHY
-✅ Document all major design decisions with reasoning
-✅ Include rollout plan for production changes
-✅ Security and performance must be addressed explicitly
-❌ Do not skip data design
-❌ Do not finalize without tech lead review
+Link to the PRD -  SDD explains HOW, PRD explains WHAT and WHY
+Document all major design decisions with reasoning
+Include rollout plan for production changes
+Security and performance must be addressed explicitly
+Do not skip data design
+Do not finalize without tech lead review
 ```

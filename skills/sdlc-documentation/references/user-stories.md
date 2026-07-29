@@ -44,9 +44,9 @@ Definition of Done:
 ## Rules
 
 ```text
-✅ One story = one user action with clear value
-✅ Acceptance criteria must be testable
-✅ Definition of Done agreed before sprint starts
-❌ Do not write stories spanning more than one sprint
-❌ Do not mix multiple user types in one story
+One story = one user action with clear value
+Acceptance criteria must be testable
+Definition of Done agreed before sprint starts
+Do not write stories spanning more than one sprint
+Do not mix multiple user types in one story
 ```

@@ -3,7 +3,7 @@
 ## Prompt Template
 
 ```text
-[ROLE — optional]
+[ROLE -  optional]
 You are a [role] with expertise in [domain].
 
 [TASK]
@@ -51,7 +51,7 @@ FUNCTION call_with_retry(request, max_retries = 3):
 
     ON client_error (4xx):
       log error with status code
-      RAISE immediately — do not retry
+      RAISE immediately -  do not retry
 
   RAISE "Max retries exhausted"
 ```

@@ -1,6 +1,6 @@
 # Test Naming
 
-A test name should make the failure message self-explanatory — without reading the code.
+A test name should make the failure message self-explanatory -  without reading the code.
 
 ---
 
@@ -24,7 +24,7 @@ Both are acceptable. Choose one and apply it consistently across the project.
 
 **Unit under test**
 The function, method, or module being tested.
-Use the actual name — do not abbreviate or rephrase.
+Use the actual name -  do not abbreviate or rephrase.
 
 **Scenario or condition**
 The specific input, state, or circumstance being tested.
@@ -70,4 +70,4 @@ When the language supports test grouping, group by unit under test:
     [scenario 2] should [expected result]
 ```
 
-Nest no more than two levels — deeper nesting makes tests hard to navigate.
+Nest no more than two levels -  deeper nesting makes tests hard to navigate.

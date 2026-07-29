@@ -1,7 +1,7 @@
 # Docstring Structure
 
 A docstring answers: what this does, what goes in, what comes out, and what can fail.
-Write for the next developer reading this in 6 months — not for yourself now.
+Write for the next developer reading this in 6 months -  not for yourself now.
 
 ---
 
@@ -56,7 +56,7 @@ Use the **idiomatic format for your language**:
 - One sentence per field. If a parameter needs a paragraph, the API design is too complex.
 - Do not use decorative banners, emoji, ASCII art, or section dividers inside docstrings.
 - Do not list `@param name Type` without describing what the parameter represents.
-- Document the **why** for non-obvious caps, formulas, or behavior — not the what.
+- Document the **why** for non-obvious caps, formulas, or behavior -  not the what.
 
 ---
 
@@ -75,6 +75,6 @@ Use the **idiomatic format for your language**:
 [ERRORS / EXCEPTIONS]
   ErrorType: [when this is raised]
 
-[WHY — optional, only if non-obvious]
+[WHY -  optional, only if non-obvious]
   [Explanation of design choice or formula]
 ```

@@ -1,4 +1,4 @@
-# Commits — Conventional Commits
+# Commits -  Conventional Commits
 
 ## Format
 
@@ -64,13 +64,13 @@ Right: feat(auth): add password reset via email verification
 ## Commit Hygiene
 
 ```text
-✅ One logical change per commit — do not bundle unrelated changes
-✅ Commit working code — do not commit broken intermediate states
-✅ Use the body to explain WHY the change was made, not what
-❌ No debug code, console.log, or temporary TODOs in commits
-❌ No "fix fix", "wip", "temp", "asdf" commit messages
-❌ No commented-out code committed
-❌ No secrets, credentials, or API keys
+One logical change per commit -  do not bundle unrelated changes
+Commit working code -  do not commit broken intermediate states
+Use the body to explain WHY the change was made, not what
+No debug code, console.log, or temporary TODOs in commits
+No "fix fix", "wip", "temp", "asdf" commit messages
+No commented-out code committed
+No secrets, credentials, or API keys
 ```
 
 ---

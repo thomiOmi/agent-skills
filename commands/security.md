@@ -11,4 +11,4 @@ Process:
 1. Load the `security-review` skill.
 2. Focus on auth, input validation, injection, XSS, secrets, and data exposure.
 3. Report findings by severity with file evidence.
-4. Recommend concrete fixes — do not implement unless asked.
+4. Recommend concrete fixes - do not implement unless asked.

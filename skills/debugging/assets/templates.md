@@ -50,10 +50,10 @@
 
 ### Timeline
 
-- HH:MM — [Event]
-- HH:MM — Bug detected
-- HH:MM — Root cause identified
-- HH:MM — Fix deployed
+- HH:MM -  [Event]
+- HH:MM -  Bug detected
+- HH:MM -  Root cause identified
+- HH:MM -  Fix deployed
 
 ### Root Cause
 

@@ -2,7 +2,7 @@
   "$schema": "https://www.schemastore.org/package.json",
   "name": "@thomiOmi/agent-skills",
   "version": "0.2.0",
-  "description": "Agent Orchestra for OpenCode — primary agent with verification loop, specialized subagents, skills, and custom tools",
+  "description": "Agent Orchestra for OpenCode - primary agent with verification loop, specialized subagents, skills, and custom tools",
   "keywords": [
     "agent-skills",
     "agents",

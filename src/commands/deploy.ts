@@ -68,7 +68,7 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
 
   await ensureDir(dstRoot, opts.dryRun ?? false);
 
-  // Backup (sequential — must finish before overwrite)
+  // Backup (sequential - must finish before overwrite)
   const backupPath = await backupGlobal({
     dryRun: opts.dryRun ?? false,
     skip: opts.skipBackup,

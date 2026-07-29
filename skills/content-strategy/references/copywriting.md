@@ -6,7 +6,7 @@ Formulas and patterns for effective, audience-focused copy.
 
 ## Copywriting Formulas
 
-### AIDA (Attention → Interest → Desire → Action)
+### AIDA (Attention to Interest to Desire to Action)
 
 ```
 Headline: Grab attention with a bold promise or question
@@ -17,14 +17,14 @@ Action: Clear CTA with specific next step
 
 **Example:**
 > **Stop guessing which emails convert.**
-> Most marketers A/B test blind — picking winners by gut feel. Our AI analyzes 12 variables per send and recommends the winning variant before you hit send.
-> **Start your free trial →**
+> Most marketers A/B test blind -  picking winners by gut feel. Our AI analyzes 12 variables per send and recommends the winning variant before you hit send.
+> **Start your free trial to**
 
-### PAS (Problem → Agitate → Solve)
+### PAS (Problem to Agitate to Solve)
 
 ```
 Problem: Name the specific frustration
-Agitate: Make it hurt — what does the problem cost them?
+Agitate: Make it hurt -  what does the problem cost them?
 Solve: Present your solution as the relief
 ```
 
@@ -32,7 +32,7 @@ Solve: Present your solution as the relief
 > Your best engineers spend 3 hours a week fixing `npm install` failures. That's 150 hours a year per dev.
 > Lockfile automates dependency resolution so your team ships, not troubleshoots.
 
-### FAB (Features → Advantages → Benefits)
+### FAB (Features to Advantages to Benefits)
 
 ```
 Feature: What it is
@@ -43,7 +43,7 @@ Benefit: What it means for the user
 **Example:**
 > **Real-time collaboration** (feature)
 > See edits as they happen, not after (advantage)
-> No more "which version is latest?" — everyone stays in sync (benefit)
+> No more "which version is latest?" -  everyone stays in sync (benefit)
 
 ### Before-After-Bridge
 
@@ -71,16 +71,16 @@ Bridge: How to get from Before to After
 
 **Weak CTAs:**
 
-- "Submit" — generic, no motivation
-- "Click here" — tells the action, not the value
-- "Learn More" — overused, low urgency
+- "Submit" -  generic, no motivation
+- "Click here" -  tells the action, not the value
+- "Learn More" -  overused, low urgency
 
 **Strong CTAs:**
 
-- "Start your free trial" — specific, low commitment
-- "Get the report" — clear value exchange
-- "Deploy in one click" — speed, simplicity
-- "See it in action" — demo-focused
+- "Start your free trial" -  specific, low commitment
+- "Get the report" -  clear value exchange
+- "Deploy in one click" -  speed, simplicity
+- "See it in action" -  demo-focused
 
 Rules:
 

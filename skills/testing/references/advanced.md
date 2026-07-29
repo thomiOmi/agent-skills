@@ -1,4 +1,4 @@
-# Advanced Testing — Snapshot and Contract Tests
+# Advanced Testing -  Snapshot and Contract Tests
 
 ## Snapshot Tests
 
@@ -12,9 +12,9 @@ Any difference causes the test to fail.
 
 Snapshot tests are appropriate for output that is:
 
-- Large — too verbose to assert field by field
-- Structural — the shape and relationships matter more than individual values
-- Slow to change — not updated frequently
+- Large -  too verbose to assert field by field
+- Structural -  the shape and relationships matter more than individual values
+- Slow to change -  not updated frequently
 
 Common candidates: rendered UI components, serialized data structures, generated configuration files.
 
@@ -22,7 +22,7 @@ Common candidates: rendered UI components, serialized data structures, generated
 
 - Review every snapshot diff during code review. Do not approve snapshot updates without understanding what changed.
 - Store snapshot files in version control alongside the tests.
-- If a snapshot changes unexpectedly, treat it as a potential bug — investigate before updating.
+- If a snapshot changes unexpectedly, treat it as a potential bug -  investigate before updating.
 - Do not use snapshots for business logic. Use explicit, targeted assertions instead.
 - Snapshots that change frequently are a sign that the wrong thing is being snapshotted.
 
@@ -47,27 +47,27 @@ This approach catches integration failures without running both services simulta
 ### Consumer-driven contract testing workflow
 
 ```text
-STEP 1 — Consumer defines expectations
+STEP 1 -  Consumer defines expectations
   The consuming service records the interactions it expects:
   - The request it will send (method, path, headers, body)
   - The response it expects back (status, body shape)
 
-STEP 2 — Contract is published
+STEP 2 -  Contract is published
   The recorded expectations are saved as a contract file and shared with the provider.
   This is typically done through a contract broker (e.g. Pact Broker).
 
-STEP 3 — Provider verifies
+STEP 3 -  Provider verifies
   The provider runs the contract against its actual implementation.
   If the provider cannot satisfy the consumer's expectations, the build fails.
 
-STEP 4 — CI enforces
+STEP 4 -  CI enforces
   Both consumer and provider pipelines check the contract.
   A deploy that would break a contract is blocked automatically.
 ```
 
 ### Rules
 
-- The consumer defines the contract — not the provider.
+- The consumer defines the contract -  not the provider.
 - Only assert the fields the consumer actually uses. Do not assert the entire response shape.
-- Treat a contract failure as a breaking change — coordinate between teams before proceeding.
+- Treat a contract failure as a breaking change -  coordinate between teams before proceeding.
 - Do not use contract tests as a replacement for unit tests. They serve a different purpose.

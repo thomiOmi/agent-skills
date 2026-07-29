@@ -29,7 +29,7 @@ Brute-force protection:
 Multi-factor authentication:
 
 - [ ] MFA codes expire after one use
-- [ ] MFA codes expire after a short time window (30–60 seconds)
+- [ ] MFA codes expire after a short time window (30-60 seconds)
 - [ ] Backup codes are one-time use
 - [ ] MFA enrollment requires re-authentication
 ```
@@ -43,7 +43,7 @@ Endpoint protection:
 
 - [ ] Every protected endpoint checks authentication
 - [ ] Every protected endpoint checks authorization (not just identity)
-- [ ] Authorization is checked on the server — not trusted from the client
+- [ ] Authorization is checked on the server -  not trusted from the client
 - [ ] Object-level authorization: user can only access their own resources
 
 Role-based access:
@@ -68,12 +68,12 @@ Common failures to check:
 A secure password reset flow must:
 
 ```text
-1. Accept only the email address — do not confirm whether it exists
+1. Accept only the email address -  do not confirm whether it exists
    (consistent response prevents user enumeration)
 2. Generate a cryptographically random, single-use token
 3. Store a hash of the token, not the token itself
 4. Send the token via email to the registered address only
-5. Expire the token after a short time window (15–60 minutes)
+5. Expire the token after a short time window (15-60 minutes)
 6. Invalidate the token after first use
 7. Invalidate all active sessions after password reset
 8. Log the reset event with timestamp and IP

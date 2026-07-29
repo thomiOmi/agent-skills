@@ -37,7 +37,7 @@ export async function backupGlobal(opts: BackupOptions = {}): Promise<string | n
   const backupDir = join(getBackupRoot(), stamp);
 
   if (opts.dryRun) {
-    consola.log(`  [dry-run] backup → ${backupDir}`);
+    consola.log(`  [dry-run] backup to ${backupDir}`);
     return backupDir;
   }
 

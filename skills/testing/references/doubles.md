@@ -7,5 +7,5 @@
 | **Spy**  | Observe calls without replacing behavior                    |
 | **Fake** | Lightweight real implementation (in-memory DB, fake mailer) |
 
-**Prefer fakes over mocks** — they test behavior, not call signatures.
+**Prefer fakes over mocks** -  they test behavior, not call signatures.
 Over-mocking produces tests that pass even when the code is broken.

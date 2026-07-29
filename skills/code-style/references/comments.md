@@ -1,6 +1,6 @@
 # Inline Comments
 
-An inline comment explains **why** the code does something — not what it does.
+An inline comment explains **why** the code does something -  not what it does.
 The code already shows what. The comment explains the reasoning behind it.
 
 ---
@@ -11,7 +11,7 @@ Add an inline comment when any of these apply:
 
 **Magic number or constant**
 The value has a specific origin that is not obvious from its name.
-Document where the number comes from — an SLA, a protocol limit, a business rule.
+Document where the number comes from -  an SLA, a protocol limit, a business rule.
 
 **Non-obvious algorithm step**
 A transformation, bitwise operation, or mathematical formula that is not self-explanatory.
@@ -32,7 +32,7 @@ Describe the rule, not the condition syntax.
 
 Do not add a comment that restates what the code already says.
 
-| Wrong — restates the code | Right — explains the reasoning                               |
+| Wrong -  restates the code | Right -  explains the reasoning                               |
 | ------------------------- | ------------------------------------------------------------ |
 | "increment counter by 1"  | "skip the header row, which is not part of the dataset"      |
 | "check if user is active" | "inactive users retain their data but cannot perform writes" |
@@ -58,6 +58,6 @@ If it is, rename the variable first.
 
 ## Placement
 
-- Place the comment on the line above the code it describes, not after it on the same line — unless it is a short label for a constant.
+- Place the comment on the line above the code it describes, not after it on the same line -  unless it is a short label for a constant.
 - Keep comments up to date. A comment that contradicts the code is worse than no comment.
 - Remove debug comments before committing. `TODO` and `FIXME` with issue references are acceptable.

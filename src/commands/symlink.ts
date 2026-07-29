@@ -45,7 +45,7 @@ async function ensureDir(path: string, dry: boolean): Promise<void> {
 
 async function safeLink(path: string, target: string, label: string, dry: boolean): Promise<void> {
   if (dry) {
-    consola.log(`  [dry-run] symlink ${label} → ${target}`);
+    consola.log(`  [dry-run] symlink ${label} to ${target}`);
     return;
   }
   if (await exists(path)) {
@@ -57,7 +57,7 @@ async function safeLink(path: string, target: string, label: string, dry: boolea
     consola.log(`  symlink ${label}`);
   }
   catch {
-    consola.log(`  symlink fail for ${label} — copying instead`);
+    consola.log(`  symlink fail for ${label} - copying instead`);
     if ((await stat(target)).isDirectory()) {
       await cp(target, path, { recursive: true });
     }
@@ -114,7 +114,7 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   const repoAgentsMd = join(repoRoot, "AGENTS.md");
 
   const useSymlinks = await canCreateSymlinks();
-  const symLabel = useSymlinks ? "available" : "NOT available — falling back to copy";
+  const symLabel = useSymlinks ? "available" : "NOT available - falling back to copy";
 
   consola.info(`Repo:       ${repoRoot}`);
   consola.info(`Global:     ${dstRoot}`);
@@ -161,10 +161,10 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   consola.log("\n==> Done");
   if (backupPath) consola.info(`Backup:  ${backupPath}`);
   if (useSymlinks) {
-    consola.log("Symlinks created — edit files in repo and changes are live.");
+    consola.log("Symlinks created - edit files in repo and changes are live.");
   }
   else {
-    consola.log("Files copied — run this script again after pulling changes.");
+    consola.log("Files copied - run this script again after pulling changes.");
   }
   consola.log("Restart OpenCode (or open a new session) to load the new global setup.");
 }

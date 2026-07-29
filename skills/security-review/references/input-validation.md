@@ -4,10 +4,10 @@
 
 ## Principles
 
-1. Validate at every boundary — do not trust data from any external source.
-2. Validate type, format, range, and length — not just presence.
-3. Reject invalid input — do not try to sanitize and guess intent.
-4. Use allowlists, not denylists — define what is allowed, not what is forbidden.
+1. Validate at every boundary -  do not trust data from any external source.
+2. Validate type, format, range, and length -  not just presence.
+3. Reject invalid input -  do not try to sanitize and guess intent.
+4. Use allowlists, not denylists -  define what is allowed, not what is forbidden.
 
 ---
 
@@ -50,12 +50,12 @@ Correct approach:
 Validate uploads at multiple layers:
 
 ```text
-1. File extension — allowlist only expected extensions
-2. MIME type — check the actual content type, not just the claimed type
-3. File size — enforce maximum size limit
-4. File content — scan for malicious content if handling untrusted uploads
-5. Storage — store uploaded files outside the web root
-6. Filename — never use the original filename; generate a random name
+1. File extension -  allowlist only expected extensions
+2. MIME type -  check the actual content type, not just the claimed type
+3. File size -  enforce maximum size limit
+4. File content -  scan for malicious content if handling untrusted uploads
+5. Storage -  store uploaded files outside the web root
+6. Filename -  never use the original filename; generate a random name
 ```
 
 ---

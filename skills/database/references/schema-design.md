@@ -41,20 +41,20 @@
 
 ## Normalization
 
-### 1NF — First Normal Form
+### 1NF -  First Normal Form
 
 - Each column holds a single value (no comma-separated lists)
 - Each row is unique (has a primary key)
 
-### 2NF — Second Normal Form
+### 2NF -  Second Normal Form
 
 - Every non-key column depends on the whole primary key
 - No partial dependencies in composite-key tables
 
-### 3NF — Third Normal Form
+### 3NF -  Third Normal Form
 
 - Every non-key column depends only on the primary key
-- No transitive dependencies (column A → column B → column C)
+- No transitive dependencies (column A to column B to column C)
 
 When to denormalize:
 
@@ -83,29 +83,29 @@ Add a partial index: CREATE INDEX idx_users_active ON users (id) WHERE deleted_a
 Every table that stores business data should have:
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-  created_by  UUID FK → users.id (optional)
-  updated_by  UUID FK → users.id (optional)
+  created_by  UUID FK to users.id (optional)
+  updated_by  UUID FK to users.id (optional)
 ```
 
 ### Multi-Tenancy
 
 ```text
-Option A — tenant_id on every table (row-level isolation)
+Option A -  tenant_id on every table (row-level isolation)
   Every query must include WHERE tenant_id = ?
   Add tenant_id to all indexes on tenant-scoped tables
 
-Option B — separate schema per tenant
+Option B -  separate schema per tenant
   Each tenant gets their own database schema
   Higher isolation, harder to maintain
 
-Option C — separate database per tenant
+Option C -  separate database per tenant
   Maximum isolation, highest operational cost
 ```
 
 ### Status / State Columns
 
 ```text
-Use an ENUM or lookup table — not a bare VARCHAR:
+Use an ENUM or lookup table -  not a bare VARCHAR:
   status ENUM('pending', 'active', 'suspended', 'deleted') NOT NULL DEFAULT 'pending'
 
 Add a CHECK constraint if ENUM is not available:

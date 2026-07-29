@@ -86,7 +86,7 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
     }
   }
   else {
-    consola.log("  no previous config to merge — clean template only");
+    consola.log("  no previous config to merge - clean template only");
     newCfg.mcp = {};
   }
 
@@ -101,7 +101,7 @@ export async function writeConfig(cfg: OpenCodeConfig, opts: MergeConfigOptions)
   }
   const json = stringifyJSONC(cfg, { space: 2 } as never);
   const banner = [
-    "// OpenCode global config — deployed from agent-skills",
+    "// OpenCode global config - deployed from agent-skills",
     opts.backupPath ? `// Backup: ${opts.backupPath}` : "// Backup: (none)",
     `// Deployed: ${new Date().toISOString().replace("T", " ").slice(0, 19)}`,
     "// MCP/LSP merged from previous config when available.",

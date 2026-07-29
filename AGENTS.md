@@ -6,125 +6,96 @@ Read this fully at the start of every session.
 Priority order (highest to lowest):
 
 ```text
-1. Global AGENTS.md (~/.config/opencode/AGENTS.md) — always applies
-2. Project AGENTS.md (this file) — project context and overrides
-3. Subdir AGENTS.md — scoped overrides for a subtree
+1. Global AGENTS.md (~/.config/opencode/AGENTS.md) - always applies
+2. Project AGENTS.md (this file) - project context and overrides
+3. Subdir AGENTS.md - scoped overrides for a subtree
 ```
 
 This file configures agent behavior **within this project only**.
 When agents are installed to `~/.config/opencode/agents/`, the global AGENTS.md handles cross-project rules. See [OpenCode docs](https://opencode.ai/docs/rules) for details.
 
----
+All global rules (How to Use, Anti-Hallucination, Code Quality, Commits, Testing, Security) apply automatically from `instructions/AGENTS.md` - they are not duplicated here.
 
-## How to Use
-
-1. Read this file fully.
-2. List available skills -- use `skill` tool to load relevant SKILL.md files.
-3. List configured MCP servers. Prefer MCP over writing code for external services.
-4. Use `todowrite` to create a task list before starting any multi-step work.
-5. Begin the task.
+Architectural decisions, conventions, and known issues are in `DECISIONS.md` (loaded automatically via opencode.jsonc instructions).
 
 ---
 
-## Anti-Hallucination
+## Commands
 
-No exceptions.
+Run these from the project root. Never run `bun run publish` locally.
 
-- Read relevant files before proposing changes -- never assume structure or content.
-- Do not reference any function, class, endpoint, or config key unless seen in the codebase or confirmed by the user.
-- Do not suggest a library unless it is in the project manifest (`package.json`, `composer.json`, `go.mod`, etc.).
-- When uncertain: say so and ask one targeted question. Never fill gaps with guesses.
-- Never cite documentation, papers, or sources unless retrieved in this session via `webfetch` or `websearch`.
+| Command | What it does |
+|---|---|
+| `bun run typecheck` | TypeScript type check (tsc --noEmit) |
+| `bun run lint` | ESLint check all files |
+| `bun run lint:fix` | ESLint auto-fix |
+| `bun run test` | Run all tests (bun test tests/) |
+| `bun test tests/<path>` | Single test file |
+| `bun run deploy` | Deploy agents/skills/tools to ~/.config/opencode/ |
+| `bun run sync` | Sync config files to ~/.config/opencode/ |
+| `bun run symlink` | Create symlinks for live editing |
 
-Must do:
-
-- Read relevant files before proposing changes -- never assume structure or content.
-- Do not reference any function, class, endpoint, or config key unless seen in the codebase or confirmed by the user.
-- Do not suggest a library unless it is in the project manifest.
-
-Must not do:
-
-- Do not invent names, endpoints, or config keys not visible in the codebase.
-- Do not write "I'll assume X" and continue without confirmation.
-- Do not cite a library version without checking the manifest.
-- Do not proceed past a blocking ambiguity without surfacing it.
-- Do not state version-specific facts without verification.
-- Do not omit confidence labeling on any factual or technical claim.
-
-**Confidence labeling format:**
-
-- `[High confidence]` -- verified from file read, tool output, or docs fetched this session
-- `[Medium confidence]` -- from prior knowledge, not verified this session
-- `[Low confidence]` -- uncertain; verify before the user acts on this
+**Never run locally:**
+- `bun run publish` - npm publish is CI-only
+- `bun run deploy` without `--dry-run` first
 
 ---
 
-## Code Quality
+## Boundaries
 
-- All functions, methods, and classes must have a docstring or doc comment.
-- Complex or non-obvious logic must have an inline comment explaining **why**.
-- No debug statements in committed code (`console.log`, `print`, `debugger`, etc.).
-- No hardcoded secrets or environment-specific values in source files.
-- No changes outside the scope of the current task.
-- Load the `code-style` skill before writing or reviewing any code.
+### Always do
+- Load `code-style` skill before writing or reviewing code
+- Load `testing` skill before writing or reviewing tests
+- Load relevant skill before domain-specific work (database, api-conventions, etc.)
+- Run `bun run typecheck` and `bun run lint` after any code change
+- Read files before editing them
+- Use `todowrite` for multi-step tasks
 
----
+### Ask first
+- Adding new dependencies (npm, bun)
+- Schema changes or migrations
+- Modifying CI/CD pipeline
+- Changing deploy process or config structure
+- Deleting files or directories
 
-## Commits
-
-Conventional Commits -- one logical change per commit:
-
-```text
-type(scope): short description
-
-- detail if needed
-
-Resolves: #issue
-```
-
-Types: `feat` · `fix` · `refactor` · `test` · `docs` · `chore` · `perf` · `ci`
-
----
-
-## Testing
-
-- New logic without tests is incomplete -- do not mark a task done without tests.
-- Never skip tests because "the code is simple."
-- Load the `testing` skill before writing or reviewing tests.
+### Never do
+- Edit files in `~/.config/opencode/` directly (they are overwritten by deploy)
+  Reason: Source of truth is in this repo; deploy copies from here.
+- Modify `node_modules/` or `dist/`
+- Add emoji, em dashes, or decorative text to any file
+- Skip verification (typecheck + lint + test) before marking a task done
+- Change version in `package.json` locally (CI handles versioning)
 
 ---
 
-## Security
+## Formatting Rules
 
-- Never commit secrets, tokens, passwords, or PII.
-- Never log sensitive values, even in debug branches.
-- Load the `security-review` skill for any feature that handles auth, payments, or user data.
-
----
-
-## Project Knowledge
-
-Read `KNOWLEDGE.md` from the project root at the start of every session — it contains active decisions, conventions, and checkpoint state.
+- No emoji, emoticons, or decorative Unicode characters
+- No em dashes (--) or en dashes (-) - use regular hyphen (-) instead
+- No decorative formatting (ASCII art, banners, separator lines with special chars)
+- No right arrow (->) or other arrows - use words like "to" or "becomes"
+- No checkmark/cross symbols (like [x], (v), etc.) in markdown - use text like "Done" or "Failed"
 
 ---
 
-## Agent Orchestra
+## Agent Selection
 
-This project provides a primary agent with verification loop and specialized subagents:
+Use @agent-name for specific concerns:
 
-- `primary` -- Orchestrator. Decomposes tasks, delegates, verifies results.
-- `senior-developer` -- Architecture, coding, refactoring, code review.
-- `ui-ux` -- Design system, frontend, accessibility.
-- `marketing` -- Content, SEO, copy, strategy.
-- `qa-engineer` -- Test strategy, coverage, quality gates.
-- `devops` -- CI/CD, deployment, infrastructure.
-- `security-auditor` -- Security review, auth, vulnerability assessment.
-- `brainstormer` -- Creative ideation, solution exploration.
-- `deep-thinker` -- Complex reasoning, root cause analysis.
-- `docs-writer` -- Technical writing, documentation.
-- `refactor-planner` -- Safe refactoring, migration planning.
+- `deep-thinker` - Root cause analysis, complex reasoning, trade-off analysis
+  Reason: Low temperature (0.1) produces precise, deterministic output for analytical tasks.
+- `brainstormer` - Creative ideation, solution exploration, challenging assumptions
+  Reason: High temperature (0.8) encourages diverse ideas and divergent thinking.
+- `qa-engineer` - Test writing, coverage analysis, quality gates, bug verification
+- `docs-writer` - Technical documentation, README, changelog, ADR
+- `security-auditor` - Security review, vulnerability assessment, auth audit
+- `devops` - CI/CD, deployment, Docker, infrastructure
+- `refactor-planner` - Safe refactoring plans, migration strategies, breaking change detection
+- `senior-developer` - Architecture, coding, refactoring, code review
+- `ui-ux` - Design system, frontend implementation, accessibility
+- `marketing` - Content strategy, SEO, copywriting
 
-For full project work, invoke `primary`. For a specific concern, invoke the relevant subagent directly via `@name`.
+For multi-step work, invoke `primary` - it decomposes tasks, delegates to subagents, and verifies results.
 
 ---
 
@@ -138,8 +109,11 @@ For full project work, invoke `primary`. For a specific concern, invoke the rele
 **Linter / formatter:** ESLint + typescript-eslint + @stylistic
 **Main branch:** main
 **CI:** GitHub Actions (validate-skills.yml)
-**Key directories:** agents/ · skills/ · tools/ · plugin/ · tests/
-**Do NOT touch:** node_modules/ · dist/
-**Agent files:** agents/*.md (source — installed to `~/.config/opencode/agents/`)
-**Skill files:** skills/*/SKILL.md (source — installed to `~/.config/opencode/skills/`)
-**Custom tools:** tools/*.ts (source — installed to `~/.config/opencode/tools/`)
+**Key directories:** agents/ - skills/ - tools/ - plugin/ - tests/ - src/ - config/
+**Do NOT touch:** node_modules/ - dist/
+**Agent files:** agents/*.md (source - installed to ~/.config/opencode/agents/)
+**Skill files:** skills/*/SKILL.md (source - installed to ~/.config/opencode/skills/)
+**Custom tools:** tools/*.ts (source - installed to ~/.config/opencode/tools/)
+**Global rules:** instructions/AGENTS.md (source of truth - deployed to ~/.config/opencode/AGENTS.md)
+**Global config:** config/opencode.jsonc - config/tui.jsonc (templates - deployed with MCP/LSP merge)
+**CLI installer:** src/ (TypeScript + citty - not deployed, runs locally)

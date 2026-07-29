@@ -57,7 +57,7 @@
 
 Hi [Name],
 
-[Single message — one idea per email]
+[Single message -  one idea per email]
 
 [Supporting detail or story]
 

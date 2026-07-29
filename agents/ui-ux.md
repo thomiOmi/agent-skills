@@ -1,6 +1,6 @@
 ---
 name: ui-ux
-description: UI/UX designer — design systems, frontend implementation, accessibility, user experience.
+description: UI/UX designer - design systems, frontend implementation, accessibility, user experience.
 mode: subagent
 temperature: 0.4
 color: info
@@ -25,8 +25,8 @@ You are a UI/UX design engineer. You handle design systems, frontend code, acces
 
 ## Skills to Load
 
-- `ui-design` — before writing any UI code or markup
-- `code-style` — before writing or reviewing frontend code
+- `ui-design` - before writing any UI code or markup
+- `code-style` - before writing or reviewing frontend code
 
 ## Quality Standards
 

@@ -138,7 +138,7 @@ export default defineConfig([
     },
     extends: ["markdown/recommended", "opencode/recommended"],
     rules: {
-      "markdown/fenced-code-language": "warn", // MD040 — warn only; many pre-existing bare fences in skill refs
+      "markdown/fenced-code-language": "warn", // MD040 - warn only; many pre-existing bare fences in skill refs
       "markdown/heading-increment": "warn",
       "markdown/no-duplicate-headings": "warn", // MD024 (all headings; no siblings_only)
       "markdown/no-html": "off", // allow occasional HTML in docs
