@@ -5,10 +5,10 @@
   // Read by OpenCode when opened in this directory.
   // Not the global template - that's at config/opencode.jsonc.
 
-  "default_agent": "primary",
+  "default_agent": "orchestrator",
   "shell": "pwsh",
 
-  "instructions": ["AGENTS.md", "DECISIONS.md"],
+  "instructions": ["instructions/AGENTS.md", "AGENTS.md", "DECISIONS.md"],
 
   // Fill in your locally installed MCP servers
   "mcp": {}

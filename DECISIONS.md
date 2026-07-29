@@ -24,6 +24,22 @@ Verification has two layers: (1) domain-specific checklist in each SKILL.md exec
 
 Uses `@modelcontextprotocol/server-memory` as the persistence layer for task progress. Knowledge graph structure (entities + observations) fits task state well. Entity name = `checkpoint-{task_id}`, type = `checkpoint`.
 
+### Global rules format: concise + grouped by task type - 2026-07-29
+
+`instructions/AGENTS.md` is deliberately concise (~800 tokens) with intent-based rules, no tool-specific references. Domain detail lives in SKILL.md (progressive disclosure). Rules are grouped by task type (Universal, Analysis, Implementation, Recovery, Efficiency) so agents only apply relevant rules.
+
+### Priority Ladder - 2026-07-29
+
+Rules have explicit priority order when they conflict: Anti-Hallucination > Security > Testing > Code Quality > Evidence & Source Citation > Self-Correction > Task Recovery > Communication > Chain of Thought > Decision-Making > Context Awareness > Final Recommendation. This resolves conflicts like "be concise vs source citation" — source citation wins.
+
+### Intent-based tool references - 2026-07-29
+
+Rules describe intent, not specific tools. "Search instead of reading files" rather than "use rg or grep". This keeps rules cross-platform and independent of environment tools.
+
+### Task Classification - 2026-07-29
+
+Every request is classified as Analysis, Implementation, or Both at the start. Agents apply only the relevant rule set, reducing cognitive overhead and token waste from inapplicable rules.
+
 ### Agent expansion: delay until stable - 2026-07-25
 
 Focus on stabilizing the 11 existing agents before adding new ones (researcher, project-manager, data-analyst, product-manager).

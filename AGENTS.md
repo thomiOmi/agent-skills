@@ -14,7 +14,7 @@ Priority order (highest to lowest):
 This file configures agent behavior **within this project only**.
 When agents are installed to `~/.config/opencode/agents/`, the global AGENTS.md handles cross-project rules. See [OpenCode docs](https://opencode.ai/docs/rules) for details.
 
-All global rules (How to Use, Anti-Hallucination, Code Quality, Commits, Testing, Security) apply automatically from `instructions/AGENTS.md` - they are not duplicated here.
+All global rules (Role & Identity, Anti-Hallucination, Communication, Code Quality, Security, Analysis & Review, Testing, Commits) apply automatically from `instructions/AGENTS.md` - they are not duplicated here.
 
 Architectural decisions, conventions, and known issues are in `DECISIONS.md` (loaded automatically via opencode.jsonc instructions).
 
@@ -38,6 +38,43 @@ Run these from the project root. Never run `bun run publish` locally.
 **Never run locally:**
 - `bun run publish` - npm publish is CI-only
 - `bun run deploy` without `--dry-run` first
+
+---
+
+## Agent Orchestra
+
+Default primary agents: built-in `plan` (analysis) and `build` (implementation). The `orchestrator` subagent handles multi-step coordination.
+
+| Agent | Role | Mode | Key Skills |
+|---|---|---|---|
+| `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, quality-verifier |
+| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, debugging, testing, api-conventions, database, git-workflow, ai-integration |
+| `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, debugging |
+| `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
+| `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment |
+| `ui-ux` | Design system, frontend, accessibility | subagent | ui-design |
+| `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation |
+| `brainstormer` | Creative ideation, solution exploration | subagent | (none) |
+| `deep-thinker` | Complex reasoning, root cause analysis | subagent | (none) |
+| `refactor-planner` | Safe refactoring, migration planning | subagent | planning |
+| `marketing` | Content, SEO, copy, strategy | subagent | content-strategy |
+
+Invoke a specialist directly with `@agent-name` when you already know who should handle it.
+
+**Daily shortcuts (slash commands):**
+
+| Command | Purpose |
+|---|---|
+| `/ship` | Implement + verify end-to-end |
+| `/fix` | Diagnose and fix a bug |
+| `/plan` | Plan only (no code changes) |
+| `/review` | Code review |
+| `/test` | Run / improve tests |
+| `/commit` | Conventional commit from current changes |
+| `/explain` | Explain code or system |
+| `/brainstorm` | Explore options before coding |
+| `/security` | Security audit |
+| `/docs` | Write or update docs |
 
 ---
 
@@ -75,29 +112,6 @@ Run these from the project root. Never run `bun run publish` locally.
 - No decorative formatting (ASCII art, banners, separator lines with special chars)
 - No right arrow (->) or other arrows - use words like "to" or "becomes"
 - No checkmark/cross symbols (like [x], (v), etc.) in markdown - use text like "Done" or "Failed"
-
----
-
-## Agent Selection
-
-Use @agent-name for specific concerns:
-
-- `deep-thinker` - Root cause analysis, complex reasoning, trade-off analysis
-  Reason: Low temperature (0.1) produces precise, deterministic output for analytical tasks.
-- `brainstormer` - Creative ideation, solution exploration, challenging assumptions
-  Reason: High temperature (0.8) encourages diverse ideas and divergent thinking.
-- `qa-engineer` - Test writing, coverage analysis, quality gates, bug verification
-- `docs-writer` - Technical documentation, README, changelog, ADR
-- `security-auditor` - Security review, vulnerability assessment, auth audit
-- `devops` - CI/CD, deployment, Docker, infrastructure
-- `refactor-planner` - Safe refactoring plans, migration strategies, breaking change detection
-- `senior-developer` - Architecture, coding, refactoring, code review
-- `ui-ux` - Design system, frontend implementation, accessibility
-- `marketing` - Content strategy, SEO, copywriting
-
-For multi-step work, invoke `orchestrator` - it decomposes tasks, delegates to subagents, and verifies results.
-
----
 
 ## Project Context
 
