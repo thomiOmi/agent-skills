@@ -5,6 +5,8 @@
   // Read by OpenCode when opened in this directory.
   // Not the global template - that's at config/opencode.jsonc.
   // Settings here deep-merge with the global template.
+  // Dev skill dependencies (install once): find-skills, skill-creator
+  // See INSTALL.md -> Development Skills for setup.
 
   "default_agent": "plan",
   "shell": "pwsh",

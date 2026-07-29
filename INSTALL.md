@@ -346,6 +346,20 @@ Skills and AGENTS.md update automatically on your next OpenCode session after a 
 
 ---
 
+## Development Skills
+
+Ecosystem skills useful when developing or extending this project. Install once:
+
+```bash
+npx skills add https://github.com/vercel-labs/skills --skill find-skills
+npx skills add https://github.com/anthropics/skills --skill skill-creator
+```
+
+- **find-skills** -- discover and install skills from the ecosystem for reference
+- **skill-creator** -- create, test, and iterate new skills with structured evaluation
+
+---
+
 ## Troubleshooting
 
 **Skill not showing up:**
