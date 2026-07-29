@@ -44,6 +44,18 @@ Every request is classified as Analysis, Implementation, or Both at the start. A
 
 Focus on stabilizing the 11 existing agents before adding new ones (researcher, project-manager, data-analyst, product-manager).
 
+### MCP server grouping: REQUIRED vs OPTIONAL - 2026-07-30
+
+MCP servers in `config/opencode.jsonc` are grouped by category. REQUIRED servers are enabled by default: zero-dependency (context7, gh_grep), essential infra (memory), or useful enough to justify the context cost with no setup burden (mermaid, sequential-thinking). OPTIONAL servers are disabled by default and require manual setup (github, playwright, drawio). Section headers and INSTALL.md table enforce the grouping visually.
+
+### Memory persistence: relative path - 2026-07-30
+
+`MEMORY_FILE_PATH` uses `./memory.jsonl` (relative to CWD) instead of `{env:MEMORY_FILE_PATH}`. The memory server resolves relative paths against CWD via `path.resolve(process.cwd(), ...)`. CWD is typically `~/.config/opencode/` when launched by OpenCode, so the file lands in the config directory without requiring users to set an env var. Absolute paths with `~` are not viable because Node's `path.isAbsolute()` does not expand tilde.
+
+### MCP server selection criteria - 2026-07-30
+
+Servers included as REQUIRED must be free, require no paid API key, and not significantly overlap with built-in tools. Paid or key-gated servers go to OPTIONAL (disabled by default). Z.AI servers (Vision, Search, Reader, Zread) were skipped entirely because they require a paid GLM Coding Plan subscription ($18/mo+) and overlap with built-in tools (websearch, webfetch) and the gh_grep MCP.
+
 ---
 
 ## Conventions

@@ -143,6 +143,123 @@ Key changes from v1:
 
 ---
 
+## MCP Servers Setup
+
+This project includes pre-configured MCP servers in `config/opencode.jsonc`.
+After deploy, they are available at `~/.config/opencode/opencode.jsonc`.
+
+### Quick Reference
+
+| Server | Type | Default | Prerequisites | Env Vars |
+|---|---|---|---|---|---|---|
+| **REQUIRED** | | | | |
+| context7 | remote | enabled | none | `CONTEXT7_API_KEY` (optional) |
+| gh_grep | remote | enabled | none | - |
+| memory | local | enabled | `npx` | - |
+| time | local | enabled | `uvx` | - |
+| mermaid | local | enabled | `npx` | - |
+| sequential-thinking | local | enabled | `npx` | `DISABLE_THOUGHT_LOGGING` (optional) |
+| **OPTIONAL** | | | | |
+| github | remote | disabled | GitHub PAT | `GITHUB_PAT_TOKEN` (required) |
+| playwright | local | disabled | Playwright browsers | - |
+| drawio | local | disabled | `npx` | `DRAWIO_BASE_URL` (optional) |
+
+### Enabling a Disabled Server
+
+1. Open `~/.config/opencode/opencode.jsonc`
+2. Find the server entry under `mcp`
+3. Change `"enabled": false` to `"enabled": true`
+4. Set required env vars (see per-server docs below)
+5. Save and restart OpenCode
+
+### Per-Server Setup
+
+#### context7 (enabled)
+
+Library/framework docs lookup. Works out of the box. For higher rate limits:
+
+```bash
+# Set API key (optional) - sign up at https://context7.com
+export CONTEXT7_API_KEY="your-key-here"
+```
+
+#### gh_grep (enabled)
+
+Search GitHub code examples. No setup needed.
+
+#### memory (enabled)
+
+Knowledge graph persistence for the orchestrator checkpoint system. Stored as `./memory.jsonl` relative to CWD (typically `~/.config/opencode/`). No setup needed.
+
+#### time (enabled)
+
+Timezone-aware time utility. Requires `uv` installed:
+
+```bash
+# Install uv (one-time)
+# macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
+# Windows: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+#### mermaid (enabled)
+
+Mermaid diagram generation (flowcharts, sequence diagrams, class diagrams, etc.). Free and open-source. No setup needed.
+
+#### drawio (disabled)
+
+draw.io diagram generation. Opens diagrams in the draw.io editor in your browser. To enable:
+
+```bash
+# 1. Enable in config: set "enabled": true
+# 2. Restart OpenCode
+```
+
+Optional: for self-hosted draw.io, set `DRAWIO_BASE_URL`:
+
+```bash
+export DRAWIO_BASE_URL="https://drawio.example.com/"
+```
+
+#### sequential-thinking (enabled)
+
+Structured step-by-step reasoning tool. Makes model reasoning auditable with revision and branching support. No setup needed.
+
+Optional: suppress thought logging by setting `DISABLE_THOUGHT_LOGGING=true` in the server's `environment` config.
+
+#### github (disabled)
+
+GitHub API tools for the agent. To enable:
+
+```bash
+# 1. Enable in config: set "enabled": true
+
+# 2. Create a GitHub Personal Access Token
+#    https://github.com/settings/tokens
+#    Minimum scopes: repo, read:org
+
+# 3. Set the env var
+export GITHUB_PAT_TOKEN="ghp_your-token-here"
+
+# 4. Restart OpenCode
+```
+
+#### playwright (disabled)
+
+Browser automation for QA/testing. To enable:
+
+```bash
+# 1. Enable in config: set "enabled": true
+
+# 2. Install Playwright browsers
+npx playwright install chromium
+
+# 3. Restart OpenCode
+```
+
+> **Tip:** For heavy MCP servers (github, playwright), consider enabling them per-agent instead of globally. See [OpenCode docs - Per agent MCP](https://opencode.ai/docs/mcp-servers#per-agent).
+
+---
+
 ## Deployment Map
 
 Every file and directory in this repo has a specific purpose when installed
