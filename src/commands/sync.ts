@@ -15,13 +15,19 @@ async function exists(path: string): Promise<boolean> {
 
 export interface SyncOptions {
   dryRun?: boolean
+  targetDir?: string
 }
 
 export async function syncCommand(opts: SyncOptions): Promise<void> {
-  const globalRoot = getGlobalRoot();
+  const globalRoot = getGlobalRoot(opts.targetDir);
 
   if (!(await exists(globalRoot))) {
-    throw new Error(`Global OpenCode directory not found: ${globalRoot}`);
+    if (opts.dryRun) {
+      consola.log(`  [dry-run] mkdir ${globalRoot}`);
+    }
+    else {
+      await mkdir(globalRoot, { recursive: true });
+    }
   }
 
   const sections: { name: string, src: string, dst: string, type: "file" | "dir" }[] = [

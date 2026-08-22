@@ -17,6 +17,7 @@ export interface BackupOptions {
   dryRun?: boolean
   skip?: boolean
   backupPath?: string
+  targetDir?: string
 }
 
 export async function backupGlobal(opts: BackupOptions = {}): Promise<string | null> {
@@ -24,7 +25,7 @@ export async function backupGlobal(opts: BackupOptions = {}): Promise<string | n
     return null;
   }
 
-  const globalRoot = getGlobalRoot();
+  const globalRoot = getGlobalRoot(opts.targetDir);
 
   if (opts.backupPath) {
     if (!(await exists(opts.backupPath))) {
@@ -34,7 +35,7 @@ export async function backupGlobal(opts: BackupOptions = {}): Promise<string | n
   }
 
   const stamp = getTimestamp();
-  const backupDir = join(getBackupRoot(), stamp);
+  const backupDir = join(getBackupRoot(opts.targetDir), stamp);
 
   if (opts.dryRun) {
     consola.log(`  [dry-run] backup to ${backupDir}`);
@@ -46,7 +47,7 @@ export async function backupGlobal(opts: BackupOptions = {}): Promise<string | n
   if (await exists(globalRoot)) {
     const items = await readdir(globalRoot);
     const copies = items
-      .filter(item => item !== "node_modules")
+      .filter(item => item !== "node_modules" && item !== "backups")
       .map(async (item) => {
         const src = join(globalRoot, item);
         const dst = join(backupDir, item);
@@ -66,7 +67,7 @@ export async function backupGlobal(opts: BackupOptions = {}): Promise<string | n
     `Created: ${now}`,
     `Source: ${globalRoot}`,
     `Backup: ${backupDir}`,
-    "Excluded: node_modules",
+    "Excluded: node_modules, backups",
     "",
     "## Restore",
     "```bash",

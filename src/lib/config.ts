@@ -18,6 +18,7 @@ async function exists(path: string): Promise<boolean> {
 export interface MergeConfigOptions {
   dryRun?: boolean
   backupPath?: string | null
+  targetDir?: string
 }
 
 export interface OpenCodeConfig {
@@ -36,7 +37,7 @@ export interface OpenCodeConfig {
 }
 
 export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeConfig> {
-  const globalRoot = getGlobalRoot();
+  const globalRoot = getGlobalRoot(opts.targetDir);
 
   // 1. Read template as base
   const templatePath = repoSubdir("config/opencode.jsonc");
@@ -92,7 +93,7 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
 }
 
 export async function writeConfig(cfg: OpenCodeConfig, opts: MergeConfigOptions): Promise<void> {
-  const dst = join(getGlobalRoot(), "opencode.jsonc");
+  const dst = join(getGlobalRoot(opts.targetDir), "opencode.jsonc");
   if (opts.dryRun) {
     consola.log(`  [dry-run] would write ${dst}`);
     return;

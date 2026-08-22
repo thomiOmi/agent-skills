@@ -19,6 +19,7 @@ export interface DeployOptions {
   dryRun?: boolean
   skipBackup?: boolean
   backupPath?: string
+  targetDir?: string
 }
 
 async function ensureDir(path: string, dry: boolean): Promise<void> {
@@ -50,7 +51,7 @@ async function overwriteDir(
 
 export async function deployCommand(opts: DeployOptions): Promise<void> {
   const repoRoot = repoSubdir(".");
-  const dstRoot = getGlobalRoot();
+  const dstRoot = getGlobalRoot(opts.targetDir);
   const repoAgents = repoSubdir("agents");
   const repoSkills = repoSubdir("skills");
   const repoCommands = repoSubdir("commands");
@@ -74,6 +75,7 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
     dryRun: opts.dryRun ?? false,
     skip: opts.skipBackup,
     backupPath: opts.backupPath,
+    targetDir: opts.targetDir,
   });
 
   // Overwrite all sections in parallel
@@ -98,8 +100,8 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
 
   // Write opencode.jsonc
   consola.log("\n==> Writing opencode.jsonc (merge MCP/LSP from previous config)");
-  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath });
-  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath });
+  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
 
   // Summary
   consola.log("\n==> Done");

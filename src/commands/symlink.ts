@@ -18,6 +18,7 @@ async function exists(path: string): Promise<boolean> {
 
 export interface SymlinkOptions {
   dryRun?: boolean
+  targetDir?: string
 }
 
 async function canCreateSymlinks(): Promise<boolean> {
@@ -106,7 +107,7 @@ async function linkItems(
 
 export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   const repoRoot = repoSubdir(".");
-  const dstRoot = getGlobalRoot();
+  const dstRoot = getGlobalRoot(opts.targetDir);
   const repoAgents = repoSubdir("agents");
   const repoSkills = repoSubdir("skills");
   const repoTools = repoSubdir("tools");
@@ -126,7 +127,7 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   if (!(await exists(repoAgentsMd))) throw new Error(`Missing source: ${repoAgentsMd}`);
 
   // Backup (sequential)
-  const backupPath = await backupGlobal({ dryRun: opts.dryRun ?? false });
+  const backupPath = await backupGlobal({ dryRun: opts.dryRun ?? false, targetDir: opts.targetDir });
 
   // Link all sections in parallel
   await Promise.all([
@@ -154,8 +155,8 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
 
   // Write opencode.jsonc
   consola.log("\n==> Writing opencode.jsonc (merge MCP/LSP from previous config)");
-  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath });
-  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath });
+  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
 
   // Summary
   consola.log("\n==> Done");
