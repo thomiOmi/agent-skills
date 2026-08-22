@@ -27,7 +27,7 @@ Run these from the project root. Never run `bun run publish` locally.
 | Command | What it does |
 |---|---|
 | `bun run typecheck` | TypeScript type check (tsc --noEmit) |
-| `bun run lint` | ESLint check all files |
+| `bun run lint --format json` | ESLint check all files (JSON output) |
 | `bun run lint:fix` | ESLint auto-fix |
 | `bun run test` | Run all tests (bun test tests/) |
 | `bun test tests/<path>` | Single test file |
@@ -84,7 +84,7 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 - Load `code-style` skill before writing or reviewing code
 - Load `testing` skill before writing or reviewing tests
 - Load relevant skill before domain-specific work (database, api-conventions, etc.)
-- Run `bun run typecheck` and `bun run lint` after any code change
+- Run `bun run typecheck` and `bun run lint --format json` after any code change
 - Read files before editing them
 - Use `todowrite` for multi-step tasks
 

@@ -1,11 +1,12 @@
 import type { Plugin } from "@opencode-ai/plugin";
+import taskDecomposer from "../tools/task-decomposer";
+import qualityVerifier from "../tools/quality-verifier";
 
 export const AgentSkillsPlugin: Plugin = async () => {
   return {
-    event: async ({ event }) => {
-      if (event.type === "installation.updated" || event.type === "session.created") {
-        return;
-      }
+    tool: {
+      "task-decomposer": taskDecomposer,
+      "quality-verifier": qualityVerifier,
     },
   };
 };

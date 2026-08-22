@@ -9,13 +9,22 @@
   // See INSTALL.md -> Development Skills for setup.
 
   "default_agent": "plan",
-  "shell": "pwsh",
 
-  "instructions": ["instructions/AGENTS.md", "AGENTS.md", "DECISIONS.md"],
+  "instructions": [
+    "instructions/AGENTS.md",
+    "AGENTS.md",
+    "DECISIONS.md",
+    "ARCHITECTURE.md",
+    "SPEC.md",
+    "TASKS.md"
+  ],
 
   "mcp": {
-    // Override memory path to stay inside .opencode/ (not pollute repo root)
     "memory": {
+      // Override: store checkpoint data inside .opencode/ (not pollute repo root)
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"],
+      "enabled": true,
       "environment": {
         "MEMORY_FILE_PATH": "./.opencode/memory.jsonl"
       }

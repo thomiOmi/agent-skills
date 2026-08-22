@@ -30,7 +30,7 @@ Common candidates: rendered UI components, serialized data structures, generated
 
 ## Contract Tests
 
-### What they are
+### What contract tests are
 
 A contract test verifies that two services agree on the interface between them.
 The consumer defines what it expects from the provider.
@@ -38,7 +38,7 @@ The provider verifies it can satisfy that expectation.
 
 This approach catches integration failures without running both services simultaneously.
 
-### When to use
+### When to use contract tests
 
 - Microservices with separately deployed teams
 - Public APIs with external consumers
@@ -65,7 +65,7 @@ STEP 4 -  CI enforces
   A deploy that would break a contract is blocked automatically.
 ```
 
-### Rules
+### Contract rules
 
 - The consumer defines the contract -  not the provider.
 - Only assert the fields the consumer actually uses. Do not assert the entire response shape.

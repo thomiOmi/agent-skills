@@ -53,11 +53,12 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
   const dstRoot = getGlobalRoot();
   const repoAgents = repoSubdir("agents");
   const repoSkills = repoSubdir("skills");
-  const repoTools = repoSubdir("tools");
   const repoCommands = repoSubdir("commands");
+  const repoTools = repoSubdir("tools");
+  const repoPlugin = repoSubdir("plugin");
   const repoAgentsMd = join(repoRoot, "AGENTS.md");
 
-  const sources = [repoAgents, repoSkills, repoTools, repoCommands, repoAgentsMd];
+  const sources = [repoAgents, repoSkills, repoTools, repoCommands, repoPlugin, repoAgentsMd];
   for (const p of sources) {
     if (!(await exists(p))) throw new Error(`Missing source: ${p}`);
   }
@@ -80,6 +81,7 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
     overwriteDir(repoAgents, join(dstRoot, "agents"), "agents", name => `agent ${name}`, opts.dryRun ?? false),
     overwriteDir(repoSkills, join(dstRoot, "skills"), "skills", name => `skill ${name}`, opts.dryRun ?? false),
     overwriteDir(repoTools, join(dstRoot, "tools"), "tools", name => `tool ${name}`, opts.dryRun ?? false),
+    overwriteDir(repoPlugin, join(dstRoot, "plugins"), "plugins", name => `plugin ${name}`, opts.dryRun ?? false),
     overwriteDir(repoCommands, join(dstRoot, "commands"), "commands", name => `command /${name.replace(/\.md$/, "")}`, opts.dryRun ?? false),
     (async () => {
       consola.log("\n==> Overwriting AGENTS.md");
@@ -102,6 +104,6 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
   // Summary
   consola.log("\n==> Done");
   if (backupPath) consola.info(`Backup:  ${backupPath}`);
-  consola.log("Deployed agents / skills / tools / commands / AGENTS.md / opencode.jsonc");
+  consola.log("Deployed agents / skills / tools / plugins / commands / AGENTS.md / opencode.jsonc");
   consola.log("Restart OpenCode (or open a new session) to load the new global setup.");
 }

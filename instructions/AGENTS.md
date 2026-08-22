@@ -126,6 +126,7 @@ End every analysis with: summary, recommended action with justification, trade-o
 - Every test suite must cover happy path, error path, and edge cases.
 - Every bug fix must include a regression test that would have caught it.
 - Follow the project's testing patterns and coverage conventions.
+- When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly output that only shows failures and summary, hiding verbose passing test output.
 
 ---
 

@@ -1,10 +1,9 @@
 import { readFile, writeFile, stat } from "fs/promises";
 import { join } from "pathe";
-import { homedir } from "os";
 import { parseJSONC, stringifyJSONC } from "confbox";
 import { defu } from "defu";
 import { consola } from "consola";
-import { getGlobalRoot } from "./paths";
+import { getGlobalRoot, repoSubdir } from "./paths";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -24,37 +23,36 @@ export interface MergeConfigOptions {
 export interface OpenCodeConfig {
   $schema: string
   default_agent: string
-  shell: string
+  shell?: string
   subagent_depth: number
-  small_model: string
-  permission: Record<string, string>
-  instructions: string[]
-  mcp?: Record<string, unknown>
-  lsp?: unknown
+  small_model?: string
   model?: string
+  permission?: Record<string, unknown>
+  instructions?: string[]
+  formatter?: unknown
+  lsp?: unknown
+  watcher?: unknown
+  mcp?: Record<string, unknown>
 }
 
 export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeConfig> {
   const globalRoot = getGlobalRoot();
-  const homePosix = homedir().replace(/\\/g, "/");
-  const instructionsPath = `${homePosix}/.config/opencode/AGENTS.md`;
 
+  // 1. Read template as base
+  const templatePath = repoSubdir("config/opencode.jsonc");
+  const templateRaw = await readFile(templatePath, "utf-8");
+  const template = parseJSONC(templateRaw) as OpenCodeConfig;
+
+  // 2. Apply project overrides
   const newCfg: OpenCodeConfig = {
+    ...template,
     $schema: "https://opencode.ai/config.json",
     default_agent: "orchestrator",
-    shell: "pwsh",
-    subagent_depth: 1,
+    instructions: ["AGENTS.md"],
     small_model: "opencode/deepseek-v4-flash-free",
-    permission: {
-      skill: "allow",
-      lsp: "allow",
-      question: "allow",
-      todowrite: "allow",
-      doom_loop: "allow",
-    },
-    instructions: [instructionsPath],
   };
 
+  // 3. Merge old config (preserves user's existing MCP/LSP/model)
   let mergePath = join(globalRoot, "opencode.jsonc");
   if (!(await exists(mergePath)) && opts.backupPath) {
     const candidate = join(opts.backupPath, "opencode.jsonc");
@@ -78,6 +76,7 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
       }
       if (typeof old.model === "string") oldSelected.model = old.model;
 
+      // Old config values override template (preserves user's existing setup)
       Object.assign(newCfg, defu(oldSelected, newCfg));
       consola.log(`  merge source: ${mergePath}`);
     }
@@ -86,8 +85,7 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
     }
   }
   else {
-    consola.log("  no previous config to merge - clean template only");
-    newCfg.mcp = {};
+    consola.log("  no previous config to merge - clean template");
   }
 
   return newCfg;

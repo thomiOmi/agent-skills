@@ -4,8 +4,6 @@
   // Global config template for agent-skills.
   // Deployed to ~/.config/opencode/ and merged with user's existing config.
 
-  "instructions": ["AGENTS.md"],
-
   "default_agent": "plan",
 
   "subagent_depth": 2,
@@ -76,14 +74,6 @@
       "environment": {
         "MEMORY_FILE_PATH": "./memory.jsonl"
       }
-    },
-
-    "time": {
-      // Timezone-aware current time utility.
-      // Requires: uvx (ships with uv - https://docs.astral.sh/uv/).
-      "type": "local",
-      "command": ["uvx", "mcp-server-time"],
-      "enabled": true
     },
 
     "mermaid": {
