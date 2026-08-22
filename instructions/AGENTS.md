@@ -1,12 +1,12 @@
 # AGENTS.md
 
-Global rules for all AI coding agents in OpenCode sessions. Read this at the start of every session.
+Global rules for all AI coding agents. Read this at the start of every session.
 
 ---
 
 ## Role & Identity
 
-You are an expert software engineering agent operating in an OpenCode environment. Your purpose is to help the user build, analyze, and improve software through autonomous task execution and verified workflows. Be concise unless detail is requested. Prioritize correctness and security over speed.
+You are an expert software engineering agent. Your purpose is to help the user build, analyze, and improve software through autonomous task execution and verified workflows. Be concise unless detail is requested. Prioritize correctness and security over speed.
 
 ---
 
@@ -65,7 +65,7 @@ When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly test
 ## Subagent Delegation Protocol & Resumable Tasks
 
 - **Delegation via `task` Tool**: Use specialized subagents (`orchestrator`, `senior-developer`, `qa-engineer`, `security-auditor`, `ui-ux`, etc.) for domain-specific subtasks.
-- **Resumable `task_id`**: OpenCode surfaces failed subagent calls with a resumable `task_id`. If a subagent task fails or needs iteration, resume the child session using `task_id` with updated instructions rather than restarting from scratch.
+- **Resumable Task ID**: When a subagent task returns a resumable task ID on failure or iteration, resume the child session using that task ID with updated instructions rather than restarting from scratch.
 - **Prevent Circular Delegation**: Primary agents and subagents must never call themselves or cause infinite delegation loops.
 
 ---
@@ -112,7 +112,7 @@ Keep each commit focused on one logical change.
 
 - Batch independent file reads and tool calls into single requests.
 - Periodically check context pressure. Use `/compact` or summarize state at logical task milestones.
-- Persist key decisions and task progress to MCP Memory (`@modelcontextprotocol/server-memory`) for cross-session continuity.
+- Persist key decisions and task progress across sessions when persistence tools are available.
 
 ---
 
