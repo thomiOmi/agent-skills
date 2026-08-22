@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Project-level agent instructions for the agent-skills project.
-Read this fully at the start of every session.
+Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md`.
 
 Priority order (highest to lowest):
 
@@ -81,12 +81,13 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 ## Boundaries
 
 ### Always do
+- Read `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md` at the start of every session
 - Load `code-style` skill before writing or reviewing code
 - Load `testing` skill before writing or reviewing tests
 - Load relevant skill before domain-specific work (database, api-conventions, etc.)
 - Run `bun run typecheck` and `bun run lint --format json` after any code change
 - Read files before editing them
-- Use `todowrite` for multi-step tasks
+- Use `todowrite` or `TASKS.md` for multi-step tasks
 
 ### Ask first
 - Adding new dependencies (npm, bun)
