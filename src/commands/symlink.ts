@@ -4,7 +4,7 @@ import { tmpdir } from "os";
 import { consola } from "consola";
 import { getGlobalRoot, repoSubdir } from "../lib/paths";
 import { backupGlobal } from "../lib/backup";
-import { buildConfig, writeConfig } from "../lib/config";
+import { buildConfig, writeConfig, buildTuiConfig, writeTuiConfig } from "../lib/config";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -153,10 +153,13 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
     }
   }
 
-  // Write opencode.jsonc
-  consola.log("\n==> Writing opencode.jsonc (merge MCP/LSP from previous config)");
+  // Write opencode.jsonc & tui.jsonc
+  consola.log("\n==> Writing opencode.jsonc & tui.jsonc (merge from previous config)");
   const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
   await writeConfig(cfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+
+  const tuiCfg = await buildTuiConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  await writeTuiConfig(tuiCfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
 
   // Summary
   consola.log("\n==> Done");

@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach } from "bun:test";
-import { mkdtemp, rm, readdir, readFile, stat } from "fs/promises";
+import { mkdtemp, rm, readdir, readFile, stat, writeFile } from "fs/promises";
 import { join } from "pathe";
 import { tmpdir } from "os";
 import { deployCommand } from "../src/commands/deploy";
@@ -17,7 +17,7 @@ describe("Installer Commands", () => {
     await rm(tempDir, { recursive: true, force: true });
   });
 
-  it("should deploy files and opencode.jsonc to target directory", async () => {
+  it("should deploy files, opencode.jsonc, and tui.jsonc to target directory", async () => {
     await deployCommand({ targetDir: tempDir, skipBackup: true });
 
     const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
@@ -25,15 +25,31 @@ describe("Installer Commands", () => {
     const toolsExists = await stat(join(tempDir, "tools")).then(() => true).catch(() => false);
     const commandsExists = await stat(join(tempDir, "commands")).then(() => true).catch(() => false);
     const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
+    const tuiConfigExists = await stat(join(tempDir, "tui.jsonc")).then(() => true).catch(() => false);
 
     expect(agentsExists).toBe(true);
     expect(skillsExists).toBe(true);
     expect(toolsExists).toBe(true);
     expect(commandsExists).toBe(true);
     expect(configExists).toBe(true);
+    expect(tuiConfigExists).toBe(true);
 
     const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
     expect(configContent).toContain("orchestrator");
+  });
+
+  it("should detect existing opencode.json or opencode.jsonc and merge settings", async () => {
+    const existingOpencodeJson = join(tempDir, "opencode.json");
+    await writeFile(existingOpencodeJson, JSON.stringify({
+      model: "custom/model-id",
+      mcp: { myMcp: { enabled: true } },
+    }));
+
+    await deployCommand({ targetDir: tempDir, skipBackup: true });
+
+    const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
+    expect(configContent).toContain("custom/model-id");
+    expect(configContent).toContain("myMcp");
   });
 
   it("should sync files to target directory", async () => {
@@ -51,8 +67,10 @@ describe("Installer Commands", () => {
 
     const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
     const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
+    const tuiConfigExists = await stat(join(tempDir, "tui.jsonc")).then(() => true).catch(() => false);
 
     expect(agentsExists).toBe(true);
     expect(configExists).toBe(true);
+    expect(tuiConfigExists).toBe(true);
   });
 });

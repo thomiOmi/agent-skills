@@ -15,6 +15,15 @@ async function exists(path: string): Promise<boolean> {
   }
 }
 
+async function findFirstExisting(paths: string[]): Promise<string | null> {
+  for (const p of paths) {
+    if (await exists(p)) {
+      return p;
+    }
+  }
+  return null;
+}
+
 export interface MergeConfigOptions {
   dryRun?: boolean
   backupPath?: string | null
@@ -36,6 +45,17 @@ export interface OpenCodeConfig {
   mcp?: Record<string, unknown>
 }
 
+export interface OpenCodeTuiConfig {
+  $schema?: string
+  theme?: string
+  keybinds?: Record<string, unknown>
+  attention?: Record<string, unknown>
+  cursor?: Record<string, unknown>
+  diff_style?: string
+  scroll_speed?: number
+  [key: string]: unknown
+}
+
 export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeConfig> {
   const globalRoot = getGlobalRoot(opts.targetDir);
 
@@ -53,16 +73,19 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
     small_model: "opencode/deepseek-v4-flash-free",
   };
 
-  // 3. Merge old config (preserves user's existing MCP/LSP/model)
-  let mergePath = join(globalRoot, "opencode.jsonc");
-  if (!(await exists(mergePath)) && opts.backupPath) {
-    const candidate = join(opts.backupPath, "opencode.jsonc");
-    if (await exists(candidate)) {
-      mergePath = candidate;
-    }
+  // 3. Search for existing opencode.json or opencode.jsonc
+  const candidates = [
+    join(globalRoot, "opencode.jsonc"),
+    join(globalRoot, "opencode.json"),
+  ];
+  if (opts.backupPath) {
+    candidates.push(join(opts.backupPath, "opencode.jsonc"));
+    candidates.push(join(opts.backupPath, "opencode.json"));
   }
 
-  if (await exists(mergePath)) {
+  const mergePath = await findFirstExisting(candidates);
+
+  if (mergePath) {
     try {
       const raw = await readFile(mergePath, "utf-8");
       const old = parseJSONC(raw) as Record<string, unknown>;
@@ -108,4 +131,64 @@ export async function writeConfig(cfg: OpenCodeConfig, opts: MergeConfigOptions)
   ].join("\n");
   await writeFile(dst, banner + json, "utf-8");
   consola.success("ok  opencode.jsonc");
+}
+
+export async function buildTuiConfig(opts: MergeConfigOptions): Promise<OpenCodeTuiConfig> {
+  const globalRoot = getGlobalRoot(opts.targetDir);
+
+  const templatePath = repoSubdir("config/tui.jsonc");
+  let template: OpenCodeTuiConfig = {
+    $schema: "https://opencode.ai/tui.json",
+    attention: { enabled: true },
+  };
+
+  if (await exists(templatePath)) {
+    try {
+      const templateRaw = await readFile(templatePath, "utf-8");
+      template = parseJSONC(templateRaw) as OpenCodeTuiConfig;
+    }
+    catch {
+      // fallback to default template
+    }
+  }
+
+  const candidates = [
+    join(globalRoot, "tui.jsonc"),
+    join(globalRoot, "tui.json"),
+  ];
+  if (opts.backupPath) {
+    candidates.push(join(opts.backupPath, "tui.jsonc"));
+    candidates.push(join(opts.backupPath, "tui.json"));
+  }
+
+  const mergePath = await findFirstExisting(candidates);
+
+  if (mergePath) {
+    try {
+      const raw = await readFile(mergePath, "utf-8");
+      const old = parseJSONC(raw) as OpenCodeTuiConfig;
+      return defu(old, template);
+    }
+    catch (err) {
+      consola.warn(`could not parse previous TUI config for merge: ${err}`);
+    }
+  }
+
+  return template;
+}
+
+export async function writeTuiConfig(cfg: OpenCodeTuiConfig, opts: MergeConfigOptions): Promise<void> {
+  const dst = join(getGlobalRoot(opts.targetDir), "tui.jsonc");
+  if (opts.dryRun) {
+    consola.log(`  [dry-run] would write ${dst}`);
+    return;
+  }
+  const json = stringifyJSONC(cfg, { space: 2 } as never);
+  const banner = [
+    "// OpenCode global TUI config - deployed from agent-skills",
+    `// Deployed: ${new Date().toISOString().replace("T", " ").slice(0, 19)}`,
+    "",
+  ].join("\n");
+  await writeFile(dst, banner + json, "utf-8");
+  consola.success("ok  tui.jsonc");
 }
