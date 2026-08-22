@@ -1,48 +1,89 @@
-# Agent Skills Specification
+# Agent Skills Specification & Evaluation Guide
 
-The skills in this repository follow the official Agent Skills format.
+The skills in this repository follow the official Agent Skills format and evaluation standards.
 
 Full specification: <https://agentskills.io/specification>
+Evaluating skills: <https://agentskills.io/skill-creation/evaluating-skills>
 
 ---
 
-## Quick Reference
-
-### SKILL.md Frontmatter
-
-| Field           | Required | Notes                                                                      |
-| --------------- | -------- | -------------------------------------------------------------------------- |
-| `name`          | Yes | Max 64 chars. Lowercase, numbers, hyphens only. Must match directory name. |
-| `description`   | Yes | Max 1024 chars. What it does + when to use it.                             |
-| `license`       | No       | License name or reference to LICENSE file.                                 |
-| `compatibility` | No       | Max 500 chars. Environment requirements.                                   |
-| `metadata`      | No       | Key-value map for additional info (e.g. `version`, `author`).              |
-| `allowed-tools` | No       | Space-separated pre-approved tools. Experimental.                          |
+## Specification Reference
 
 ### Directory Structure
 
 ```text
 skill-name/
-├── SKILL.md          # Required: metadata + instructions
-├── scripts/          # Optional: executable code
+├── SKILL.md          # Required: metadata + instructions (YAML frontmatter + Markdown)
+├── scripts/          # Optional: executable code/utilities
 ├── references/       # Optional: detailed documentation loaded on-demand
 └── assets/           # Optional: templates, schemas, resources
 ```
 
+### Frontmatter Schema
+
+| Field | Required | Constraints |
+|---|---|---|
+| `name` | Yes | 1-64 chars. Lowercase alphanumeric + single hyphens (`^[a-z0-9]+(-[a-z0-9]+)*$`). Must match parent directory name. |
+| `description` | Yes | 1-1024 chars. Non-empty. Describes what the skill does and when to use it. |
+| `license` | No | Short license identifier (e.g. `MIT`, `Apache-2.0`). |
+| `compatibility` | No | Max 500 chars. Environment requirements. |
+| `metadata` | No | String-to-string map for custom properties (e.g., `version`, `author`). |
+| `allowed-tools` | No | Space-separated string of pre-approved tools. (Experimental) |
+
 ### Progressive Disclosure
 
-Skills are loaded progressively - keep this in mind when writing:
+Agents load skills progressively to optimize context window efficiency:
 
-1. `name` + `description` to loaded at startup for all skills (~100 tokens)
-2. Full `SKILL.md` body to loaded when skill is activated (keep under 5000 tokens / 500 lines)
-3. `references/`, `scripts/`, `assets/` to loaded on-demand only
+1. **Metadata (~100 tokens)**: `name` + `description` loaded at startup for discovery.
+2. **Instructions (< 5000 tokens / 500 lines)**: Full `SKILL.md` body loaded when activated.
+3. **Resources (On-demand)**: Files in `references/`, `scripts/`, or `assets/` loaded only when needed.
 
-Move detailed reference material to `references/` to keep `SKILL.md` lean.
+---
 
-### Validation
+## Evaluating Skill Quality (Evals)
 
-```bash
-skills-ref validate ./skills/my-skill
+To verify that a skill produces reliable outputs across varied prompts, follow the eval-driven iteration pattern:
+
+### 1. Test Cases (`evals/evals.json`)
+
+Define test prompts, expected outputs, and optional input files inside `evals/evals.json`:
+
+```json
+{
+  "skill_name": "task-decomposition",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Refactor authentication module to support OAuth2 with Google and GitHub",
+      "expected_output": "Structured TASKS.md breaking work into Active subtasks with assigned subagents and clear phase breakdown.",
+      "assertions": [
+        "Outputs a valid TASKS.md structure",
+        "Includes active subtasks with assigned subagents",
+        "Identifies security review as a dependency"
+      ]
+    }
+  ]
+}
 ```
 
-See: <https://github.com/agentskills/agentskills/tree/main/skills-ref>
+### 2. Workspace & Baseline Runs
+
+Run test cases in two configurations:
+- **Baseline**: Prompt run without the skill
+- **With Skill**: Prompt run with the skill activated
+
+### 3. Assertion Grading & Human Review
+
+- **Concrete Assertions**: Grade each assertion as PASS or FAIL with exact evidence from output files.
+- **Human Feedback**: Record specific, actionable reviewer feedback.
+- **Iteration Loop**: Feed failed assertions and reviewer feedback back to refine `SKILL.md` instructions until pass rate and output quality meet production standards.
+
+---
+
+## Validation Test Suite
+
+Run automated specification validation on all repository skills:
+
+```bash
+bun test tests/validate-skills.test.ts
+```
