@@ -6,13 +6,13 @@ A test name should make the failure message self-explanatory -  without reading 
 
 ## Pattern
 
-```
+```text
 [unit under test]_[scenario or condition]_[expected result]
 ```
 
 Or in sentence form:
 
-```
+```text
 [scenario] should [expected result]
 ```
 
@@ -63,7 +63,7 @@ Be observable: `returnsEmptyList` not `works` · `throwsValidationError` not `fa
 
 When the language supports test grouping, group by unit under test:
 
-```
+```text
 [ClassName or module name]
   [method or function name]
     [scenario 1] should [expected result]

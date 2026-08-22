@@ -30,7 +30,7 @@ If not defined in project AGENTS.md, ask:
 
 **N+1 query problem:**
 
-```
+```text
 Input:  GET /orders -  returns 50 orders with customer names
 Bad:    One query for orders + 50 queries for customer details (51 total)
 Fix:    SELECT orders.* JOIN customers ON orders.customer_id = customers.id (1 query)
@@ -38,14 +38,15 @@ Fix:    SELECT orders.* JOIN customers ON orders.customer_id = customers.id (1 q
 
 **Migration design:**
 
-```
-Input:  Adding a stripe_subscription_id column to the users table
-Bad:    ALTER TABLE users ADD stripe_subscription_id TEXT;
-        (Irreversible -  no DOWN, no default on an existing not-null column)
-Good:   ALTER TABLE users ADD stripe_subscription_id TEXT;
-        UPDATE users SET stripe_subscription_id = '' WHERE stripe_subscription_id IS NULL;
-        ALTER TABLE users ALTER COLUMN stripe_subscription_id SET NOT NULL;
-        (Fill existing rows first, THEN add NOT NULL)
+```sql
+-- Input: Adding a stripe_subscription_id column to the users table
+-- Bad: ALTER TABLE users ADD stripe_subscription_id TEXT;
+--      (Irreversible - no DOWN, no default on an existing not-null column)
+
+-- Good: Fill existing rows first, THEN add NOT NULL
+ALTER TABLE users ADD stripe_subscription_id TEXT;
+UPDATE users SET stripe_subscription_id = '' WHERE stripe_subscription_id IS NULL;
+ALTER TABLE users ALTER COLUMN stripe_subscription_id SET NOT NULL;
 ```
 
 ---

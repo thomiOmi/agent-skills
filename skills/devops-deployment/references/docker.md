@@ -68,7 +68,7 @@ CMD ["node", "dist/server.js"]
 
 ## Dockerfile Checklist
 
-```
+```markdown
 - [ ] Base image pinned to specific version (not :latest or :alpine without tag)
 - [ ] Multi-stage build used (builder to runtime)
 - [ ] .dockerignore exists and excludes node_modules, .git, dist

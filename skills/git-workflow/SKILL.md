@@ -38,7 +38,7 @@ See `assets/templates.md` for PR description and branch naming templates.
 
 ## Hard Rules
 
-```
+```text
 Never commit directly to main, master, or trunk
    Why: Bypassing the PR process skips code review, CI checks, and audit trail. A direct commit can introduce bugs or breaking changes without anyone noticing until production.
 
@@ -68,7 +68,7 @@ Delete branches after merging
 
 ## Checklist
 
-```
+```markdown
 - [ ] Branch name follows project convention
 - [ ] Commits follow Conventional Commits format
 - [ ] No debug statements or temporary code in commits

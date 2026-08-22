@@ -16,7 +16,7 @@ For single-file edits, run phases 0, 1, 3, 4 only.
 
 ## Phases
 
-```
+```text
 PHASE 0 -  Clarify & Scope
 PHASE 1 -  Plan & Decompose
 PHASE 2 -  Scaffold & Setup     (skip if environment already runs)
@@ -48,7 +48,7 @@ See `assets/templates.md` for scope document, task tree, progress report, and mi
 
 ## Hard Rules
 
-```
+```text
 Do not start implementation without completing Phase 0 and 1
    Why: Phases 0-1 (clarify and plan) catch scope ambiguity, missing requirements, and wrong assumptions. Skipping them means rework -  often 2-3x the original estimate.
 

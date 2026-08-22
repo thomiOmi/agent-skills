@@ -1,6 +1,6 @@
 ---
 name: content-strategy
-description: Use this skill when creating, reviewing, or auditing any public-facing content -  landing page copy, email campaigns, blog posts, technical documentation, SEO content, social media, or brand voice. Load this skill proactively before writing any public-facing content to ensure tone, clarity, SEO, and call-to-action alignment. Triggers include: "write a blog post", "optimize SEO", "create content strategy", "write copy", "landing page content", "email marketing", "social media post", "brand voice", "editorial calendar", "content audit", "CTA optimization", "copywriting", "UX writing", "microcopy", "error message copy", "empty state copy", "hero section", "pricing page", "about page", "newsletter", "subject line", "meta description", "title tag", "heading structure", "keyword research", "content calendar". Applies to web copy, emails, docs, social media, and in-app messaging.
+description: 'Use this skill when creating, reviewing, or auditing any public-facing content -  landing page copy, email campaigns, blog posts, technical documentation, SEO content, social media, or brand voice. Load this skill proactively before writing any public-facing content to ensure tone, clarity, SEO, and call-to-action alignment. Triggers include: "write a blog post", "optimize SEO", "create content strategy", "write copy", "landing page content", "email marketing", "social media post", "brand voice", "editorial calendar", "content audit", "CTA optimization", "copywriting", "UX writing", "microcopy", "error message copy", "empty state copy", "hero section", "pricing page", "about page", "newsletter", "subject line", "meta description", "title tag", "heading structure", "keyword research", "content calendar". Applies to web copy, emails, docs, social media, and in-app messaging.'
 license: MIT
 metadata:
   version: "1.0.0"
@@ -37,7 +37,7 @@ Guidelines for creating effective, audience-focused content.
 
 ## SEO Checklist
 
-```
+```markdown
 - [ ] Primary keyword in title tag (front-loaded)
 - [ ] Meta description under 160 chars with keyword and CTA
 - [ ] URL is short and includes primary keyword

@@ -99,7 +99,7 @@ Use a noun or noun phrase describing what the value represents.
 
 Use the singular of the collection name, not single letters.
 
-```
+```text
 for order in orders         -  not: for x in orders
 for user in active_users    -  not: for i in active_users
 for chunk in file_chunks    -  not: for c in file_chunks

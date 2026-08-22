@@ -6,7 +6,7 @@
 
 Before building any AI feature, estimate the cost:
 
-```
+```text
 MONTHLY COST ESTIMATE:
   tokens_per_request = input_tokens + output_tokens
   daily_cost         = tokens_per_request × price_per_token × requests_per_day
@@ -35,7 +35,7 @@ If the worst-case cost is not acceptable, use a smaller model or add caching.
 
 ## Security Rules
 
-```
+```text
 MUST DO:
   - Call LLM APIs from server-side code only -  never expose the API key to clients
   - Store API keys in environment variables -  never hardcode in source code
@@ -63,7 +63,7 @@ Defense strategy:
 2. Instruct the model to ignore any instructions found inside the user input section.
 3. Validate the model's response -  reject responses that appear to repeat system prompt content.
 
-```
+```text
 PROMPT STRUCTURE:
 
   SYSTEM:

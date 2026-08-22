@@ -16,7 +16,7 @@ Systematic approach to diagnosing and fixing bugs.
 
 ### Bug: Login fails for users with accented characters in their name
 
-```
+```text
 Input:  User "José" tries to log in with correct password
 Output: Login fails with "invalid credentials"
 
@@ -33,14 +33,14 @@ STEP 7 -  Prevent: Add test for diacritic inputs in the auth test suite
 
 ## Core Rule
 
-```
+```text
 Wrong: "The bug is probably X, let me fix it."
 Right: "Let me reproduce it, read the error, trace the cause, then fix it."
 ```
 
 ## Workflow
 
-```
+```text
 STEP 1 -  Reproduce
 STEP 2 -  Read the error
 STEP 3 -  Locate the failure point
@@ -64,7 +64,7 @@ See `assets/templates.md` for bug report and RCA document templates.
 
 ## Checklist
 
-```
+```markdown
 - [ ] Bug is reproduced consistently
 - [ ] Full error message and stack trace read (not just the first line)
 - [ ] Failure point located in the code
