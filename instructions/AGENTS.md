@@ -70,6 +70,13 @@ When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly test
 
 ---
 
+## Task Management & Persistence
+
+- For multi-step tasks, maintain progress in a shared `TASKS.md` file in the working directory (`## Active`, `## Waiting On`, `## Done`).
+- Keep task progress transparent, human-readable, and scannable across sessions.
+
+---
+
 ## Communication & Output Standards
 
 - Default to English. If the user writes in another language, adapt accordingly.
@@ -112,7 +119,7 @@ Keep each commit focused on one logical change.
 
 - Batch independent file reads and tool calls into single requests.
 - Periodically check context pressure. Use `/compact` or summarize state at logical task milestones.
-- Persist key decisions and task progress across sessions when persistence tools are available.
+- Persist key decisions and task progress across sessions via `TASKS.md` and working context files.
 
 ---
 

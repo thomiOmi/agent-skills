@@ -1,24 +1,53 @@
 ---
 name: task-decomposition
-description: 'Use this skill FIRST for any non-trivial or multi-step task. Whenever the user asks to implement, build, migrate, refactor, integrate, set up, or review something that spans multiple files, modules, or systems, load this skill before starting any work. It provides a structured 6-phase workflow to decompose complexity, avoid rework, and ensure nothing is missed. Triggers include: "implement", "build", "migrate", "refactor end-to-end", "integrate", "review this module end-to-end", "audit the full feature", "what needs to be improved", "set up from scratch", "plan this feature", "break this down", "complex task", "multi-step", "large change". When in doubt about scope or approach, use this skill first before anything else.'
+description: 'Use this skill FIRST for any non-trivial or multi-step task. Whenever the user asks to implement, build, migrate, refactor, integrate, set up, or review something that spans multiple files, modules, or systems, load this skill before starting any work. It provides a structured 6-phase workflow and simple TASKS.md file tracking to decompose complexity, avoid rework, and track task progress. Triggers include: "implement", "build", "migrate", "refactor end-to-end", "integrate", "review this module end-to-end", "audit the full feature", "what needs to be improved", "set up from scratch", "plan this feature", "break this down", "complex task", "multi-step", "large change", "track tasks". When in doubt about scope or approach, use this skill first before anything else.'
 license: MIT
 metadata:
   version: "2.2.0"
   author: thomiOmi
 ---
 
-# Task Decomposition
+# Task Decomposition & Management
 
-Structured 6-phase workflow for multi-step tasks.
+Structured 6-phase workflow and file-based task management using `TASKS.md`.
 For single-file edits, run phases 0, 1, 3, 4 only.
 
 ---
 
-## Phases
+## Task Persistence via `TASKS.md`
+
+For multi-step work and task tracking across sessions, maintain a `TASKS.md` file in the working directory.
+
+### Format & Template
+
+```markdown
+# Tasks
+
+## Active
+- [ ] **Task title** - context, for whom, due date or assigned subagent
+
+## Waiting On
+- [ ] **Item waiting on** - dependency or user input needed
+
+## Someday
+
+## Done
+- [x] ~~Completed task title~~ (completion date)
+```
+
+### Conventions
+
+- **Bold** the main task title for scannability.
+- Include assigned subagent or module context in sub-bullets.
+- Mark completed tasks with `[x] ~~task~~ (date)` and move to `## Done`.
+
+---
+
+## Workflow Phases
 
 ```text
 PHASE 0 -  Clarify & Scope
-PHASE 1 -  Plan & Decompose
+PHASE 1 -  Plan & Decompose (Create/Update TASKS.md)
 PHASE 2 -  Scaffold & Setup     (skip if environment already runs)
 PHASE 3 -  Implement            (one sub-task at a time)
 PHASE 4 -  Test & Validate
@@ -52,6 +81,9 @@ See `assets/templates.md` for scope document, task tree, progress report, and mi
 Do not start implementation without completing Phase 0 and 1
    Why: Phases 0-1 (clarify and plan) catch scope ambiguity, missing requirements, and wrong assumptions. Skipping them means rework -  often 2-3x the original estimate.
 
+Maintain TASKS.md for multi-step tasks
+   Why: TASKS.md provides a transparent, human-readable, and tool-agnostic checkpoint for progress that persists across sessions.
+
 Do not skip tests because "the code is simple"
    Why: "Simple" code is often the most-touched code (utilities, helpers, config). Untested simple code breaks silently and wastes more debugging time than writing the test did.
 
@@ -63,7 +95,4 @@ Do not write code for a sub-task without reading the relevant skill first
 
 Always run phases 0, 1, 3, 4 at minimum, even for small tasks
    Why: These four phases catch scope issues, plan the approach, implement, and verify. Omitting any one of them increases the risk of incomplete or incorrect work.
-
-Tasks > 1 day or spanning > 3 systems: split into milestones
-   Why: Large tasks without milestones cannot be tracked, blocked tasks are invisible, and partial progress is lost. Milestones give clear checkpoints for status and review.
 ```
