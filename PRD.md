@@ -2,9 +2,7 @@
 
 ## 1. Problem Statement
 
-The agent-skills project enables OpenCode users to work with a curated collection of specialized agents, skills, and custom tools. The current implementation uses a custom primary agent that replaces OpenCode's built-in primary agents.
-
-Key problem: the custom primary agent duplicates OpenCode's built-in orchestration capabilities. The system needs to leverage OpenCode's built-in `plan` and `build` agents as the primary interface, with a dedicated `orchestrator` subagent that handles task decomposition, delegation, and verification.
+The agent-skills project enables OpenCode users to work with a curated collection of specialized agents, skills, and custom tools. The current implementation uses OpenCode's built-in `plan` and `build` agents as the primary interface, with a dedicated `orchestrator` subagent that handles task decomposition, delegation, and verification.
 
 ## 2. Goals
 
@@ -68,7 +66,7 @@ A developer who wants to add new agents, skills, or tools to this repository. Ne
 The system follows this workflow for every task:
 
 ```text
-plan -> orchestrator -> test -> implement -> review -> verify -> remember -> improve
+plan -> orchestrator -> test -> implement -> review -> verify -> improve
 ```
 
 1. **Plan** — built-in `plan` agent analyzes the request and creates a plan
@@ -77,10 +75,9 @@ plan -> orchestrator -> test -> implement -> review -> verify -> remember -> imp
 4. **Implement** — code is implemented to pass the tests
 5. **Review** — implementation is reviewed against requirements
 6. **Verify** — quality verification runs (lint, typecheck, tests, debug statements, docstrings)
-7. **Remember** — key decisions and learnings saved to MCP Memory for cross-session persistence
-8. **Improve** — final polish and optimization after verification passes
+7. **Improve** — final polish and optimization after verification passes
 
-If verification fails, the system retries from the implement step (max 3 retries before escalation).
+If verification fails, the system retries from the implement step using the resumable `task_id` (max 3 retries before escalation).
 
 ### FR-2: Agent Roster
 
@@ -88,7 +85,7 @@ The system provides the following agents:
 
 | Agent | Mode | Role |
 |---|---|---|
-| orchestrator | subagent | Task decomposition, delegation, verification, memory |
+| orchestrator | subagent | Task decomposition, delegation, verification |
 | senior-developer | subagent | Architecture, coding, refactoring |
 | ui-ux | subagent | Design system, frontend, accessibility |
 | marketing | subagent | Content, SEO, copy, strategy |
@@ -125,13 +122,9 @@ Dual-layer verification:
 1. **Skill-level** — domain-specific checks (e.g., security checks for auth, coverage checks for tests)
 2. **Centralized** — cross-cutting checks (typecheck, lint, tests, debug statements, docstrings)
 
-### FR-6: Checkpoint and Resume
+### FR-6: Plugin
 
-The system uses MCP Memory server (`@modelcontextprotocol/server-memory`) for cross-session persistence. Key decisions, task progress, and learnings are saved as knowledge graph entities and restored when a session resumes.
-
-### FR-7: Plugin
-
-The plugin registers agents, skills, and tools via the OpenCode plugin API. It does not contain installer logic or file sync logic.
+The plugin registers agents, skills, and tools via the OpenCode plugin API.
 
 ## 6. Non-Functional Requirements
 
@@ -152,18 +145,13 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API. It d
 - 2 custom tools: task-decomposer, quality-verifier
 - 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security
 - Plugin registration via OpenCode plugin API
-- MCP Memory for checkpoint and resume
 - Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md, TASKS.md
 
 ### Out of Scope
 
-- MCP server auto-configuration
 - opencode.jsonc permissions auto-write
 - Instructions URL auto-write
 - GitHub Actions CI changes
-- Installer or sync logic beyond plugin registration
-- Shell installer scripts
-- Branch chat feature (handled by existing OpenCode fork/session management)
 - Custom notification plugins
 - Custom chat export plugins
 - DESIGN.md support

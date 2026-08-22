@@ -41,11 +41,9 @@ flowchart TD
     SkillCheck -- PASS --> CentralCheck{Centralized<br/>quality-verifier}
     SkillCheck -- FAIL --> SD
 
-    CentralCheck -- PASS --> Remember[MCP Memory<br/>checkpoint]
+    CentralCheck -- PASS --> Return[Return to user]
     CentralCheck -- FAIL < 3 retries --> SD
     CentralCheck -- FAIL exhausted --> Escalate[Escalate to user]
-
-    Remember --> Return[Return to user]
 ```
 
 ---
@@ -79,12 +77,11 @@ Orchestrator also delegates to OpenCode built-in subagents when the task fits be
 5. **Verify** with dual-layer quality gates:
    - **Layer 1 - Skill-level:** each subagent runs its domain-specific checklist from the SKILL.md
    - **Layer 2 - Centralized:** qa-engineer executes the quality-verifier tool (tests, typecheck, lint, debug statements, docstrings)
-   - PASS: proceed to memory and synthesis
-   - FAIL (max 3 retries): send back to subagent with specific feedback
+   - PASS: proceed to synthesis
+   - FAIL (max 3 retries): send back to subagent with specific feedback via `task_id`
    - FAIL (exhausted): escalate to user with details
-6. **Remember** - save key decisions and learnings to MCP Memory for cross-session persistence
-7. **Synthesize** verified results into final response
-8. **Return** to user
+6. **Synthesize** verified results into final response
+7. **Return** to user
 
 ---
 
@@ -108,8 +105,6 @@ Orchestrator also delegates to OpenCode built-in subagents when the task fits be
 | planning | all | System design, ERD, flows, diagrams |
 | sdlc-documentation | all | PRD, SDD, requirements, test plans |
 
-Skills follow progressive disclosure: `name` + `description` loaded at startup (~100 tokens), full `SKILL.md` when activated (under 5000 tokens), `references/` + `assets/` loaded on-demand only.
-
 ---
 
 ## Custom Tools
@@ -120,7 +115,7 @@ Breaks a complex task description into structured subtasks.
 
 - **Input:** `task` (string), optional `context` (string)
 - **Output:** Array of `{id, description, suggestedAgent, dependencies}`
-- **Agent inference:** keyword matching on description (test/qa, deploy/ci/cd, seo/content, ui/ux/design, security/auth, default senior-developer)
+- **Agent inference:** keyword matching on description
 - **Used by:** orchestrator agent
 
 ### quality-verifier.ts
@@ -148,61 +143,15 @@ agent-skills/
 ├── opencode.jsonc                   # Local OpenCode config
 ├── package.json
 ├── tsconfig.json
-├── .gitignore
-├── eslint.config.js
-├── agents/                          # 11 agent definitions (source)
-│   ├── orchestrator.md
-│   ├── senior-developer.md
-│   ├── ui-ux.md
-│   ├── marketing.md
-│   ├── qa-engineer.md
-│   ├── devops.md
-│   ├── security-auditor.md
-│   ├── brainstormer.md
-│   ├── deep-thinker.md
-│   ├── docs-writer.md
-│   └── refactor-planner.md
+├── agents/                          # 11 subagent definitions
 ├── skills/                          # 15 skill directories
-│   ├── code-style/
-│   ├── testing/
-│   ├── debugging/
-│   ├── api-conventions/
-│   ├── database/
-│   ├── git-workflow/
-│   ├── documentation/
-│   ├── planning/
-│   ├── sdlc-documentation/
-│   ├── security-review/
-│   ├── ai-integration/
-│   ├── task-decomposition/
-│   ├── ui-design/
-│   ├── content-strategy/
-│   └── devops-deployment/
 ├── tools/                           # 2 custom tools
-│   ├── task-decomposer.ts
-│   └── quality-verifier.ts
-├── commands/                        # 10 slash-command shortcuts
-│   ├── ship.md
-│   ├── fix.md
-│   ├── plan.md
-│   ├── review.md
-│   ├── test.md
-│   ├── commit.md
-│   ├── docs.md
-│   ├── explain.md
-│   ├── brainstorm.md
-│   └── security.md
+├── commands/                        # 10 slash commands
 ├── instructions/                    # Global AGENTS.md source
-│   └── AGENTS.md
 ├── config/                          # Global config templates
-│   ├── opencode.jsonc
-│   └── tui.jsonc
-├── plugin/
-│   └── agent-skills.ts             # Minimal plugin - registers agents/skills/tools
-├── src/                             # CLI installer (not deployed)
-├── scripts/                         # ESLint plugin (not deployed)
-└── tests/
-    └── validate-skills.test.ts
+├── plugin/                          # Plugin entrypoint
+├── src/                             # CLI installer
+└── tests/                           # Test suites
 ```
 
 ---
@@ -214,27 +163,10 @@ When installed, source files from this repo map to `~/.config/opencode/`:
 | Source (repo) | Destination | Purpose |
 |---|---|---|
 | `instructions/AGENTS.md` | `AGENTS.md` | Global agent rules (read every session) |
-| `config/opencode.jsonc` | `opencode.jsonc` | Global config (merged with existing MCP/LSP) |
-| `config/tui.jsonc` | `tui.jsonc` | TUI config (merged) |
+| `config/opencode.jsonc` | `opencode.jsonc` | Global config |
+| `config/tui.jsonc` | `tui.jsonc` | TUI config |
 | `agents/*.md` | `agents/*.md` | 11 agent definitions |
-| `skills/*/` | `skills/*/` | 15 skill directories |
+| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | 15 skill directories |
 | `tools/*.ts` | `tools/*.ts` | 2 custom tools |
 | `commands/*.md` | `commands/*.md` | 10 slash commands |
 | `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | OpenCode plugin |
-
-Root files (`AGENTS.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, `PRD.md`, `SPEC.md`) are project-only — not deployed to global config.
-
----
-
-## Config Flow
-
-Instructions are loaded in order and merged:
-
-1. **Global AGENTS.md** (`~/.config/opencode/AGENTS.md`) — always applies first
-2. **Project AGENTS.md** (`AGENTS.md`) — project context and overrides
-3. **DECISIONS.md** — architectural decisions, conventions, known issues
-4. **ARCHITECTURE.md** — system design reference
-5. **TASKS.md** — roadmap and backlog
-
-Priority: Global > Project > Decisions > Architecture > Tasks.
-
