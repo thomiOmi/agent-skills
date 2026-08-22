@@ -2,7 +2,7 @@ import { mkdir, cp, readdir, stat, symlink, rm } from "fs/promises";
 import { join } from "pathe";
 import { tmpdir } from "os";
 import { consola } from "consola";
-import { getGlobalRoot, repoSubdir } from "../lib/paths";
+import { getGlobalRoot, getGlobalAgentsRoot, repoSubdir } from "../lib/paths";
 import { backupGlobal } from "../lib/backup";
 import { buildConfig, writeConfig, buildTuiConfig, writeTuiConfig } from "../lib/config";
 
@@ -108,6 +108,7 @@ async function linkItems(
 export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   const repoRoot = repoSubdir(".");
   const dstRoot = getGlobalRoot(opts.targetDir);
+  const agentsRoot = getGlobalAgentsRoot(opts.targetDir);
   const repoAgents = repoSubdir("agents");
   const repoSkills = repoSubdir("skills");
   const repoTools = repoSubdir("tools");
@@ -119,6 +120,7 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
 
   consola.info(`Repo:       ${repoRoot}`);
   consola.info(`Global:     ${dstRoot}`);
+  consola.info(`Agents:     ${agentsRoot}`);
   consola.info(`Symlinks:   ${symLabel}`);
   if (opts.dryRun) consola.info("Mode:       DRY RUN");
 
@@ -133,6 +135,7 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   await Promise.all([
     linkItems(repoAgents, join(dstRoot, "agents"), "agents", useSymlinks, opts.dryRun ?? false),
     linkItems(repoSkills, join(dstRoot, "skills"), "skills", useSymlinks, opts.dryRun ?? false),
+    linkItems(repoSkills, join(agentsRoot, "skills"), "agent-skills (~/.agents/skills)", useSymlinks, opts.dryRun ?? false),
     linkItems(repoTools, join(dstRoot, "tools"), "tools", useSymlinks, opts.dryRun ?? false),
     linkItems(repoCommands, join(dstRoot, "commands"), "commands", useSymlinks, opts.dryRun ?? false),
   ]);

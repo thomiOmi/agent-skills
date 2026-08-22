@@ -1,7 +1,7 @@
 import { mkdir, readdir, cp, stat } from "fs/promises";
 import { join } from "pathe";
 import { consola } from "consola";
-import { getGlobalRoot, repoSubdir } from "../lib/paths";
+import { getGlobalRoot, getGlobalAgentsRoot, repoSubdir } from "../lib/paths";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -20,6 +20,7 @@ export interface SyncOptions {
 
 export async function syncCommand(opts: SyncOptions): Promise<void> {
   const globalRoot = getGlobalRoot(opts.targetDir);
+  const agentsRoot = getGlobalAgentsRoot(opts.targetDir);
 
   if (!(await exists(globalRoot))) {
     if (opts.dryRun) {
@@ -33,12 +34,14 @@ export async function syncCommand(opts: SyncOptions): Promise<void> {
   const sections: { name: string, src: string, dst: string, type: "file" | "dir" }[] = [
     { name: "agents", src: repoSubdir("agents"), dst: join(globalRoot, "agents"), type: "file" as const },
     { name: "skills", src: repoSubdir("skills"), dst: join(globalRoot, "skills"), type: "dir" as const },
+    { name: "agent-skills (~/.agents/skills)", src: repoSubdir("skills"), dst: join(agentsRoot, "skills"), type: "dir" as const },
     { name: "tools", src: repoSubdir("tools"), dst: join(globalRoot, "tools"), type: "file" as const },
     { name: "commands", src: repoSubdir("commands"), dst: join(globalRoot, "commands"), type: "file" as const },
   ];
 
   consola.info(`Repo:   ${repoSubdir(".")}`);
   consola.info(`Global: ${globalRoot}`);
+  consola.info(`Agents: ${agentsRoot}`);
   consola.log("");
 
   for (const section of sections) {

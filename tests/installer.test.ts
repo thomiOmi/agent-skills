@@ -17,11 +17,12 @@ describe("Installer Commands", () => {
     await rm(tempDir, { recursive: true, force: true });
   });
 
-  it("should deploy files, opencode.jsonc, and tui.jsonc to target directory", async () => {
+  it("should deploy files, opencode.jsonc, tui.jsonc, and ~/.agents/skills to target directory", async () => {
     await deployCommand({ targetDir: tempDir, skipBackup: true });
 
     const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
     const skillsExists = await stat(join(tempDir, "skills")).then(() => true).catch(() => false);
+    const agentSkillsExists = await stat(join(tempDir, "..", ".agents", "skills")).then(() => true).catch(() => false);
     const toolsExists = await stat(join(tempDir, "tools")).then(() => true).catch(() => false);
     const commandsExists = await stat(join(tempDir, "commands")).then(() => true).catch(() => false);
     const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
@@ -29,6 +30,7 @@ describe("Installer Commands", () => {
 
     expect(agentsExists).toBe(true);
     expect(skillsExists).toBe(true);
+    expect(agentSkillsExists).toBe(true);
     expect(toolsExists).toBe(true);
     expect(commandsExists).toBe(true);
     expect(configExists).toBe(true);
@@ -57,9 +59,11 @@ describe("Installer Commands", () => {
 
     const agents = await readdir(join(tempDir, "agents"));
     const skills = await readdir(join(tempDir, "skills"));
+    const agentSkills = await readdir(join(tempDir, "..", ".agents", "skills"));
 
     expect(agents.length).toBeGreaterThan(0);
     expect(skills.length).toBeGreaterThan(0);
+    expect(agentSkills.length).toBeGreaterThan(0);
   });
 
   it("should symlink or copy files to target directory", async () => {
