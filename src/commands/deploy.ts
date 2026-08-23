@@ -1,9 +1,9 @@
 import { mkdir, cp, readdir, rm, stat } from "fs/promises";
 import { join } from "pathe";
 import { consola } from "consola";
-import { getGlobalRoot, repoSubdir } from "../lib/paths";
+import { getGlobalRoot, getGlobalAgentsRoot, repoSubdir } from "../lib/paths";
 import { backupGlobal } from "../lib/backup";
-import { buildConfig, writeConfig } from "../lib/config";
+import { buildConfig, writeConfig, buildTuiConfig, writeTuiConfig } from "../lib/config";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -19,6 +19,7 @@ export interface DeployOptions {
   dryRun?: boolean
   skipBackup?: boolean
   backupPath?: string
+  targetDir?: string
 }
 
 async function ensureDir(path: string, dry: boolean): Promise<void> {
@@ -50,7 +51,9 @@ async function overwriteDir(
 
 export async function deployCommand(opts: DeployOptions): Promise<void> {
   const repoRoot = repoSubdir(".");
-  const dstRoot = getGlobalRoot();
+  const dstRoot = getGlobalRoot(opts.targetDir);
+  const agentsRoot = getGlobalAgentsRoot(opts.targetDir);
+
   const repoAgents = repoSubdir("agents");
   const repoSkills = repoSubdir("skills");
   const repoCommands = repoSubdir("commands");
@@ -65,21 +68,25 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
 
   consola.info(`Repo:   ${repoRoot}`);
   consola.info(`Global: ${dstRoot}`);
+  consola.info(`Agents: ${agentsRoot}`);
   if (opts.dryRun) consola.info("Mode:   DRY RUN");
 
   await ensureDir(dstRoot, opts.dryRun ?? false);
+  await ensureDir(agentsRoot, opts.dryRun ?? false);
 
   // Backup (sequential - must finish before overwrite)
   const backupPath = await backupGlobal({
     dryRun: opts.dryRun ?? false,
     skip: opts.skipBackup,
     backupPath: opts.backupPath,
+    targetDir: opts.targetDir,
   });
 
   // Overwrite all sections in parallel
   await Promise.all([
     overwriteDir(repoAgents, join(dstRoot, "agents"), "agents", name => `agent ${name}`, opts.dryRun ?? false),
     overwriteDir(repoSkills, join(dstRoot, "skills"), "skills", name => `skill ${name}`, opts.dryRun ?? false),
+    overwriteDir(repoSkills, join(agentsRoot, "skills"), "agent-compatible skills (~/.agents/skills)", name => `skill ${name}`, opts.dryRun ?? false),
     overwriteDir(repoTools, join(dstRoot, "tools"), "tools", name => `tool ${name}`, opts.dryRun ?? false),
     overwriteDir(repoPlugin, join(dstRoot, "plugins"), "plugins", name => `plugin ${name}`, opts.dryRun ?? false),
     overwriteDir(repoCommands, join(dstRoot, "commands"), "commands", name => `command /${name.replace(/\.md$/, "")}`, opts.dryRun ?? false),
@@ -96,14 +103,18 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
     })(),
   ]);
 
-  // Write opencode.jsonc
-  consola.log("\n==> Writing opencode.jsonc (merge MCP/LSP from previous config)");
-  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath });
-  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath });
+  // Write opencode.jsonc and tui.jsonc
+  consola.log("\n==> Writing opencode.jsonc and tui.jsonc (merge from previous config)");
+  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+
+  const tuiCfg = await buildTuiConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  await writeTuiConfig(tuiCfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
 
   // Summary
   consola.log("\n==> Done");
   if (backupPath) consola.info(`Backup:  ${backupPath}`);
-  consola.log("Deployed agents / skills / tools / plugins / commands / AGENTS.md / opencode.jsonc");
+  consola.log("Deployed agents / skills / tools / plugins / commands / AGENTS.md / opencode.jsonc / tui.jsonc");
+  consola.log("Also synced skills to ~/.agents/skills/ for OpenCode agent-compatible discovery.");
   consola.log("Restart OpenCode (or open a new session) to load the new global setup.");
 }

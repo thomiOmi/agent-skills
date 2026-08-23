@@ -18,7 +18,7 @@ Language-agnostic -  applies to any framework or stack.
 
 ### Vulnerability finding: User ID in URL allows enumeration
 
-```
+```text
 Input:  GET /api/users/123 -  returns user profile
 Issue:  No authorization check -  any authenticated user can access any profile
 Risk:   High -  user data exposed, competitor could enumerate active users
@@ -49,7 +49,7 @@ See `assets/templates.md` for security review report template.
 
 ## Hard Rules
 
-```
+```text
 Never store passwords in plain text -  always hash with a strong algorithm
    Why: A database breach would expose all credentials. Hashing makes them computationally infeasible to reverse.
 
@@ -85,7 +85,7 @@ Encrypt sensitive data at rest and in transit
 
 ## Security Review Checklist
 
-```
+```markdown
 Authentication and Authorization:
 - [ ] All protected routes require authentication
 - [ ] Authorization checked after authentication (not just identity)

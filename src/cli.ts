@@ -19,9 +19,14 @@ const main = defineCommand({
           type: "boolean",
           description: "Show what would be done without writing",
         },
+        "target": {
+          type: "string",
+          description: "Target directory (default: ~/.config/opencode)",
+          valueHint: "path",
+        },
       },
       run: async ({ args }) => {
-        await syncCommand({ dryRun: args["dry-run"] });
+        await syncCommand({ dryRun: args["dry-run"], targetDir: args.target });
       },
     }),
     symlink: defineCommand({
@@ -34,9 +39,14 @@ const main = defineCommand({
           type: "boolean",
           description: "Show what would be done without writing",
         },
+        "target": {
+          type: "string",
+          description: "Target directory (default: ~/.config/opencode)",
+          valueHint: "path",
+        },
       },
       run: async ({ args }) => {
-        await symlinkCommand({ dryRun: args["dry-run"] });
+        await symlinkCommand({ dryRun: args["dry-run"], targetDir: args.target });
       },
     }),
     deploy: defineCommand({
@@ -58,12 +68,18 @@ const main = defineCommand({
           description: "Use existing backup as merge source",
           valueHint: "path",
         },
+        "target": {
+          type: "string",
+          description: "Target directory (default: ~/.config/opencode)",
+          valueHint: "path",
+        },
       },
       run: async ({ args }) => {
         await deployCommand({
           dryRun: args["dry-run"],
           skipBackup: args["skip-backup"],
           backupPath: args["backup-path"],
+          targetDir: args.target,
         });
       },
     }),

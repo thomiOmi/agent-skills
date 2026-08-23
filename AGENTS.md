@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Project-level agent instructions for the agent-skills project.
-Read this fully at the start of every session.
+Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md`.
 
 Priority order (highest to lowest):
 
@@ -48,16 +48,18 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | Agent | Role | Mode | Key Skills |
 |---|---|---|---|
 | `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, quality-verifier |
-| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, debugging, testing, api-conventions, database, git-workflow, ai-integration |
-| `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, debugging |
+| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, code-review, code-simplifier, debugging, testing, api-conventions, schema-design, query-optimization, git-workflow |
+| `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | requirements-spec, sdlc-documentation, task-decomposition |
+| `data-analyst` | SQL queries, schema analysis, data modeling | subagent | schema-design, query-optimization, data-analysis, code-style |
+| `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, test-planning, debugging |
 | `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
-| `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment |
-| `ui-ux` | Design system, frontend, accessibility | subagent | ui-design |
-| `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation |
+| `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment, docker-container, ci-cd-pipeline |
+| `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-system, web-accessibility |
+| `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation, requirements-spec |
 | `brainstormer` | Creative ideation, solution exploration | subagent | (none) |
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | (none) |
-| `refactor-planner` | Safe refactoring, migration planning | subagent | planning |
-| `marketing` | Content, SEO, copy, strategy | subagent | content-strategy |
+| `refactor-planner` | Safe refactoring, migration planning | subagent | tech-debt, system-design, architecture-decision |
+| `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, seo-optimization |
 
 Invoke a specialist directly with `@agent-name` when you already know who should handle it.
 
@@ -66,10 +68,15 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 | Command | Purpose |
 |---|---|
 | `/ship` | Implement + verify end-to-end |
+| `/ship-pr` | Commit, push to origin, and create GitHub PR |
 | `/fix` | Diagnose and fix a bug |
 | `/plan` | Plan only (no code changes) |
 | `/review` | Code review |
+| `/simplify` | Simplify code logic and flatten conditionals |
 | `/test` | Run / improve tests |
+| `/tasks` | Manage tasks in TASKS.md |
+| `/spec` | Draft feature specs / PRDs |
+| `/clean-branches` | Prune stale local git branches |
 | `/commit` | Conventional commit from current changes |
 | `/explain` | Explain code or system |
 | `/brainstorm` | Explore options before coding |
@@ -81,12 +88,13 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 ## Boundaries
 
 ### Always do
+- Read `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md` at the start of every session
 - Load `code-style` skill before writing or reviewing code
 - Load `testing` skill before writing or reviewing tests
 - Load relevant skill before domain-specific work (database, api-conventions, etc.)
 - Run `bun run typecheck` and `bun run lint --format json` after any code change
 - Read files before editing them
-- Use `todowrite` for multi-step tasks
+- Use `todowrite` or `TASKS.md` for multi-step tasks
 
 ### Ask first
 - Adding new dependencies (npm, bun)
@@ -129,5 +137,5 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 **Skill files:** skills/*/SKILL.md (source - installed to ~/.config/opencode/skills/)
 **Custom tools:** tools/*.ts (source - installed to ~/.config/opencode/tools/)
 **Global rules:** instructions/AGENTS.md (source of truth - deployed to ~/.config/opencode/AGENTS.md)
-**Global config:** config/opencode.jsonc - config/tui.jsonc (templates - deployed with MCP/LSP merge)
+**Global config:** config/opencode.jsonc - config/tui.jsonc (templates - deployed with config merge)
 **CLI installer:** src/ (TypeScript + citty - not deployed, runs locally)

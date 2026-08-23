@@ -8,11 +8,33 @@ export function getRepoRoot(): string {
   return resolve(__dirname, "..", "..");
 }
 
-export function getGlobalRoot(): string {
+export function getGlobalRoot(targetOverride?: string): string {
+  if (targetOverride) {
+    return resolve(targetOverride);
+  }
+  if (process.env.OPENCODE_CONFIG_DIR) {
+    return resolve(process.env.OPENCODE_CONFIG_DIR);
+  }
   return join(homedir(), ".config", "opencode");
 }
 
-export function getBackupRoot(): string {
+export function getGlobalAgentsRoot(targetOverride?: string): string {
+  if (targetOverride) {
+    return resolve(targetOverride, "..", ".agents");
+  }
+  if (process.env.OPENCODE_AGENTS_DIR) {
+    return resolve(process.env.OPENCODE_AGENTS_DIR);
+  }
+  return join(homedir(), ".agents");
+}
+
+export function getBackupRoot(targetOverride?: string): string {
+  if (targetOverride) {
+    return resolve(targetOverride, "backups");
+  }
+  if (process.env.OPENCODE_BACKUP_DIR) {
+    return resolve(process.env.OPENCODE_BACKUP_DIR);
+  }
   return join(homedir(), ".config", "opencode-backups");
 }
 

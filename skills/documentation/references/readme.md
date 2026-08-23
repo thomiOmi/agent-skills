@@ -2,7 +2,7 @@
 
 Every project needs a README that answers these in order:
 
-```
+```text
 1. What is this?    -  One paragraph. What it does and who it's for.
 2. Quick start      -  Minimum steps to run it. Must work copy-paste.
 3. Usage            -  Common use cases with real examples.

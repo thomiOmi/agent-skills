@@ -49,7 +49,7 @@ See `assets/templates.md` for README skeleton, changelog entry, and ADR template
 
 ## Checklist
 
-```
+```markdown
 - [ ] README updated if setup, config, or usage changed
 - [ ] CHANGELOG entry added under [Unreleased]
 - [ ] OpenAPI spec updated if any REST endpoint changed

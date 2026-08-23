@@ -1,6 +1,6 @@
 ---
 name: devops-deployment
-description: Use this skill when setting up, configuring, or managing CI/CD pipelines, deployment infrastructure, containers, cloud services, or monitoring. Load this skill proactively before writing any deployment config, Dockerfile, CI workflow, or infrastructure code. Do not write deployment or infrastructure code without this skill loaded. Triggers include: "set up CI/CD", "deploy to production", "write a Dockerfile", "Kubernetes config", "infrastructure review", "monitoring setup", "rollback plan", "cloud architecture", "deployment", "pipeline", "continuous integration", "continuous deployment", "staging", "production", "environment", "secrets management", "Docker", "container", "orchestration", "K8s", "helm", "Terraform", "Pulumi", "AWS", "GCP", "Azure", "Vercel", "Netlify", "nginx config", "reverse proxy", "load balancer", "auto-scaling", "blue-green", "canary", "health endpoint", "readiness probe", "liveness probe", "SRE", "observability", "metrics", "alerts". Covers major cloud providers and PaaS platforms.
+description: 'Use this skill when setting up, configuring, or managing CI/CD pipelines, deployment infrastructure, containers, cloud services, or monitoring. Load this skill proactively before writing any deployment config, Dockerfile, CI workflow, or infrastructure code. Do not write deployment or infrastructure code without this skill loaded. Triggers include: "set up CI/CD", "deploy to production", "write a Dockerfile", "Kubernetes config", "infrastructure review", "monitoring setup", "rollback plan", "cloud architecture", "deployment", "pipeline", "continuous integration", "continuous deployment", "staging", "production", "environment", "secrets management", "Docker", "container", "orchestration", "K8s", "helm", "Terraform", "Pulumi", "AWS", "GCP", "Azure", "Vercel", "Netlify", "nginx config", "reverse proxy", "load balancer", "auto-scaling", "blue-green", "canary", "health endpoint", "readiness probe", "liveness probe", "SRE", "observability", "metrics", "alerts". Covers major cloud providers and PaaS platforms.'
 license: MIT
 metadata:
   version: "1.0.0"
@@ -69,7 +69,7 @@ CMD ["node", "dist/server.js"]
 
 ## CI/CD Pipeline Structure
 
-```
+```text
 Trigger (push/PR) to Lint to Typecheck to Test to Build to Stage to Production
 
 Each stage gates the next. If any stage fails, the pipeline stops.
@@ -79,7 +79,7 @@ Each stage gates the next. If any stage fails, the pipeline stops.
 
 ## Docker Checklist
 
-```
+```markdown
 - [ ] Base image is pinned to a specific version (not :latest)
 - [ ] Multi-stage build for smaller images
 - [ ] .dockerignore excludes node_modules, .git, dist
@@ -94,7 +94,7 @@ Each stage gates the next. If any stage fails, the pipeline stops.
 
 ## Deployment Checklist
 
-```
+```markdown
 - [ ] Database migrations are reversible
 - [ ] Zero-downtime deployment strategy defined
 - [ ] Health check endpoint responds before traffic is routed
@@ -119,7 +119,7 @@ Each stage gates the next. If any stage fails, the pipeline stops.
 
 ## Monitoring Checklist
 
-```
+```markdown
 - [ ] Application health endpoint monitored
 - [ ] Error rate alerts configured
 - [ ] Latency p50/p95/p99 tracked

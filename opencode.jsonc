@@ -3,37 +3,16 @@
 
   // Local dev config for the agent-skills repo.
   // Read by OpenCode when opened in this directory.
-  // Not the global template - that's at config/opencode.jsonc.
-  // Settings here deep-merge with the global template.
-  // Dev skill dependencies (install once): find-skills, skill-creator
-  // See INSTALL.md -> Development Skills for setup.
 
   "default_agent": "plan",
 
   "instructions": [
     "instructions/AGENTS.md",
     "AGENTS.md",
+    "PRD.md",
     "DECISIONS.md",
     "ARCHITECTURE.md",
     "SPEC.md",
     "TASKS.md"
-  ],
-
-  "mcp": {
-    "memory": {
-      // Override: store checkpoint data inside .opencode/ (not pollute repo root)
-      "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"],
-      "enabled": true,
-      "environment": {
-        "MEMORY_FILE_PATH": "./.opencode/memory.jsonl"
-      }
-    },
-    "eslint": {
-      // Lint files directly via MCP during development.
-      "type": "local",
-      "command": ["npx", "-y", "@eslint/mcp@latest"],
-      "enabled": true
-    }
-  }
+  ]
 }

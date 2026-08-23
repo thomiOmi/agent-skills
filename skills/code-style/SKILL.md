@@ -60,7 +60,7 @@ Adapt syntax to your language -  principles apply universally.
 
 ## Checklist
 
-```
+```markdown
 - [ ] All new functions, methods, and classes have docstrings
 - [ ] No decorative banners or emoji in docstrings
 - [ ] Inline comments on complex or non-obvious logic

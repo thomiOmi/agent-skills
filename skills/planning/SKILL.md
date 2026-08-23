@@ -65,7 +65,7 @@ See `assets/` for diagram templates ready to fill in.
 
 ## Technical Design Checklist
 
-```
+```markdown
 - [ ] All diagrams use Mermaid.js syntax
 - [ ] ERD completed if any data storage is involved
 - [ ] All key types defined (PK, UK, FK, IDX)

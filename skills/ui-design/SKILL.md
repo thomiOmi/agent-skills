@@ -1,6 +1,6 @@
 ---
 name: ui-design
-description: Use this skill when creating, reviewing, or auditing UI components, design systems, and frontend architecture. Load this skill proactively before writing any frontend code -  components, layouts, styles, design tokens, or accessibility improvements. Do not write UI code without this skill loaded. Triggers include: "design a component", "implement the UI", "make this accessible", "add a design system", "create a layout", "responsive design", "WCAG", "color palette", "typography system", "frontend", "CSS", "Tailwind", "component library", "button component", "form", "input", "modal", "dropdown", "sidebar", "navbar", "grid", "flexbox", "breakpoint", "dark mode", "theme", "motion", "animation", "loading state", "empty state", "error state", "a11y", "ARIA", "keyboard navigation", "focus management", "screen reader". Covers React, Vue, Svelte, Angular, and vanilla HTML/CSS/JS.
+description: 'Use this skill when creating, reviewing, or auditing UI components, design systems, and frontend architecture. Load this skill proactively before writing any frontend code -  components, layouts, styles, design tokens, or accessibility improvements. Do not write UI code without this skill loaded. Triggers include: "design a component", "implement the UI", "make this accessible", "add a design system", "create a layout", "responsive design", "WCAG", "color palette", "typography system", "frontend", "CSS", "Tailwind", "component library", "button component", "form", "input", "modal", "dropdown", "sidebar", "navbar", "grid", "flexbox", "breakpoint", "dark mode", "theme", "motion", "animation", "loading state", "empty state", "error state", "a11y", "ARIA", "keyboard navigation", "focus management", "screen reader". Covers React, Vue, Svelte, Angular, and vanilla HTML/CSS/JS.'
 license: MIT
 metadata:
   version: "1.0.0"
@@ -17,7 +17,7 @@ Guidelines for building accessible, consistent, and maintainable user interfaces
 
 ### Component design: Button with all states
 
-```
+```text
 Input:  "Create a primary action button for the checkout form"
 Output:
   default   to Solid brand color, pointer cursor
@@ -43,7 +43,7 @@ Output:
 
 ## Accessibility Checklist
 
-```
+```markdown
 - [ ] All interactive elements are keyboard accessible
 - [ ] Focus indicators visible on all interactive elements
 - [ ] Color contrast ratio >= 4.5:1 for normal text, >= 3:1 for large text
@@ -87,13 +87,13 @@ shadows: none, sm, md, lg
 
 Every component must style at minimum:
 
-```
+```text
 default, hover, focus, active, disabled, loading, error
 ```
 
 For data-display components:
 
-```
+```text
 loading (skeleton or spinner), empty (no data message), error (retry option), populated
 ```
 

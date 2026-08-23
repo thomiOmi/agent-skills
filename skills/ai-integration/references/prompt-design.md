@@ -4,7 +4,7 @@
 
 A well-structured prompt has these sections in this order:
 
-```
+```text
 ROLE (optional)
   Describe the persona the model should adopt.
   Use when tone, domain expertise, or communication style matters.
@@ -44,7 +44,7 @@ EXAMPLES (optional)
 Never hardcode a model name in prompt code.
 Read the model identifier from an environment variable or configuration file.
 
-```
+```text
 Config file or environment variable:
   LLM_PROVIDER = "anthropic"    (or "openai", "google", "mistral", etc.)
   LLM_MODEL    = "[model-id]"   (set by the operator, not the developer)

@@ -65,7 +65,7 @@ See `assets/templates.md` for unit, integration, and test case documentation tem
 
 ## Checklist
 
-```
+```markdown
 - [ ] Test name clearly describes the scenario and expected outcome
 - [ ] Follows Arrange, Act, Assert structure
 - [ ] Happy path covered

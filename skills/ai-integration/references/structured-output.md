@@ -8,7 +8,7 @@ When the response will be parsed programmatically, always request structured out
 
 In the prompt, instruct the model to return only the format -  no explanation, no markdown fences.
 
-```
+```text
 PROMPT INSTRUCTION:
   Respond with valid JSON only.
   Do not include any explanation, preamble, or markdown code fences.

@@ -63,7 +63,7 @@ GET  /orders to { "errors": [{ "code": "NOT_FOUND", "message": "Order not found"
 
 ## Review Checklist
 
-```
+```markdown
 - [ ] Success and error response format confirmed
 - [ ] Date/time format confirmed
 - [ ] JSON key naming convention confirmed

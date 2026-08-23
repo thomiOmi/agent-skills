@@ -9,7 +9,7 @@ Do not assume defaults -  format choices affect every consumer of the API.
 
 Before designing request/response shapes, ask:
 
-```
+```text
 1. What is the success response envelope?
    - { data: {...} } -  with a data wrapper
    - { success: true, data: {...} } -  with an explicit success flag
@@ -98,7 +98,7 @@ When the project uses RFC 7807 for error responses:
 
 Once a format is chosen, it must be applied to every endpoint in the project.
 
-```
+```text
 Do not mix date formats across endpoints
 Do not return bare objects on some endpoints and wrapped on others
 Do not mix camelCase and snake_case in the same API

@@ -8,68 +8,44 @@ Architectural decisions, conventions, and known issues for the agent-skills proj
 
 Key architectural decisions. Review before making changes that touch these areas.
 
-### Orchestrator as subagent, built-in plan/build as primary - 2026-07-29
+### Orchestrator as subagent, built-in plan/build as primary
 
 OpenCode built-in `plan` and `build` agents serve as the primary user interface. The `orchestrator` subagent handles task decomposition, delegation, and verification. Orchestrator has `task` permission (except self-delegation) to coordinate specialized subagents.
 
-### Agent selection: hardcoded routing in orchestrator prompt - 2026-07-25
+### Agent selection: hardcoded routing in orchestrator prompt
 
-Task to agent mapping is hardcoded in the orchestrator prompt, not a custom tool. Provides full control and reliability. Can switch to dynamic selector if agent count exceeds 15.
+Task to agent mapping is hardcoded in the orchestrator prompt, not a custom tool. Provides full control and reliability.
 
-### Quality verification: dual-layer (skill-level + centralized) - 2026-07-29
+### Quality verification: dual-layer (skill-level + centralized)
 
 Verification has two layers: (1) domain-specific checklist in each SKILL.md executed by the subagent, (2) centralized quality-verifier tool executed by qa-engineer. qa-engineer has access to run tests, typecheck, lint.
 
-### Checkpoint: MCP Memory server - 2026-07-25
+### Resumable Subagent Task Recovery (`task_id`)
 
-Uses `@modelcontextprotocol/server-memory` as the persistence layer for task progress. Knowledge graph structure (entities + observations) fits task state well. Entity name = `checkpoint-{task_id}`, type = `checkpoint`.
+OpenCode surfaces failed subagent tool calls with a resumable `task_id`. If a subagent task fails or needs iteration, pass the `task_id` back to the `task` tool with additional guidance to resume the child session rather than restarting from scratch.
 
-### Global rules format: concise + grouped by task type - 2026-07-29
+### Global rules format: concise + grouped by task type
 
-`instructions/AGENTS.md` is deliberately concise (~800 tokens) with intent-based rules, no tool-specific references. Domain detail lives in SKILL.md (progressive disclosure). Rules are grouped by task type (Universal, Analysis, Implementation, Recovery, Efficiency) so agents only apply relevant rules.
+`instructions/AGENTS.md` is deliberately concise (~800 tokens) with intent-based rules. Domain detail lives in SKILL.md (progressive disclosure).
 
-### Priority Ladder - 2026-07-29
+### Priority Ladder
 
-Rules have explicit priority order when they conflict: Anti-Hallucination > Security > Testing > Code Quality > Evidence & Source Citation > Self-Correction > Task Recovery > Communication > Chain of Thought > Decision-Making > Context Awareness > Final Recommendation. This resolves conflicts like "be concise vs source citation" — source citation wins.
+Rules have explicit priority order when they conflict: Anti-Hallucination > Security > Testing > Code Quality > Evidence & Source Citation > Self-Correction > Task Recovery > Communication > Chain of Thought > Decision-Making > Context Awareness > Final Recommendation.
 
-### Intent-based tool references - 2026-07-29
+### Intent-based tool references
 
 Rules describe intent, not specific tools. "Search instead of reading files" rather than "use rg or grep". This keeps rules cross-platform and independent of environment tools.
 
-### Task Classification - 2026-07-29
+### Task Classification
 
-Every request is classified as Analysis, Implementation, or Both at the start. Agents apply only the relevant rule set, reducing cognitive overhead and token waste from inapplicable rules.
-
-### Agent expansion: delay until stable - 2026-07-25
-
-Focus on stabilizing the 11 existing agents before adding new ones (researcher, project-manager, data-analyst, product-manager).
-
-### MCP server grouping: REQUIRED vs OPTIONAL - 2026-07-30
-
-MCP servers in `config/opencode.jsonc` are grouped by category. REQUIRED servers are enabled by default: zero-dependency (context7, gh_grep), essential infra (memory), or useful enough to justify the context cost with no setup burden (mermaid, sequential-thinking). OPTIONAL servers are disabled by default and require manual setup (github, playwright, drawio). Section headers and INSTALL.md table enforce the grouping visually.
-
-### Memory persistence: relative path - 2026-07-30
-
-`MEMORY_FILE_PATH` uses `./memory.jsonl` (relative to CWD) instead of `{env:MEMORY_FILE_PATH}`. The memory server resolves relative paths against CWD via `path.resolve(process.cwd(), ...)`. CWD is typically `~/.config/opencode/` when launched by OpenCode, so the file lands in the config directory without requiring users to set an env var. Absolute paths with `~` are not viable because Node's `path.isAbsolute()` does not expand tilde.
-
-### MCP server selection criteria - 2026-07-30
-
-Servers included as REQUIRED must be free, require no paid API key, and not significantly overlap with built-in tools. Paid or key-gated servers go to OPTIONAL (disabled by default). Z.AI servers (Vision, Search, Reader, Zread) were skipped entirely because they require a paid GLM Coding Plan subscription ($18/mo+) and overlap with built-in tools (websearch, webfetch) and the gh_grep MCP.
+Every request is classified as Analysis, Implementation, or Both at the start. Agents apply only the relevant rule set, reducing cognitive overhead and token waste.
 
 ---
 
 ## Conventions
-
-### Checkpoint Convention
-- Entity name: `checkpoint-{task_id}`, entity type: `checkpoint`
-- Observations per step: `"step N: <description> - done"`
-- Decisions: `"decision: <what>"`
-- Delete entity when task complete
-- Simple tasks (< 3 steps) - no checkpoint needed
 
 ### Agent Permission Convention
 - Every agent must have explicit `read: allow`
 - `edit: deny` and `bash: deny` as safe defaults for read-only agents
 - Only agents that need to run tests get bash access
 - orchestrator and senior-developer - full bash access
-

@@ -2,9 +2,9 @@ import { mkdir, cp, readdir, stat, symlink, rm } from "fs/promises";
 import { join } from "pathe";
 import { tmpdir } from "os";
 import { consola } from "consola";
-import { getGlobalRoot, repoSubdir } from "../lib/paths";
+import { getGlobalRoot, getGlobalAgentsRoot, repoSubdir } from "../lib/paths";
 import { backupGlobal } from "../lib/backup";
-import { buildConfig, writeConfig } from "../lib/config";
+import { buildConfig, writeConfig, buildTuiConfig, writeTuiConfig } from "../lib/config";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -18,6 +18,7 @@ async function exists(path: string): Promise<boolean> {
 
 export interface SymlinkOptions {
   dryRun?: boolean
+  targetDir?: string
 }
 
 async function canCreateSymlinks(): Promise<boolean> {
@@ -106,7 +107,8 @@ async function linkItems(
 
 export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   const repoRoot = repoSubdir(".");
-  const dstRoot = getGlobalRoot();
+  const dstRoot = getGlobalRoot(opts.targetDir);
+  const agentsRoot = getGlobalAgentsRoot(opts.targetDir);
   const repoAgents = repoSubdir("agents");
   const repoSkills = repoSubdir("skills");
   const repoTools = repoSubdir("tools");
@@ -118,6 +120,7 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
 
   consola.info(`Repo:       ${repoRoot}`);
   consola.info(`Global:     ${dstRoot}`);
+  consola.info(`Agents:     ${agentsRoot}`);
   consola.info(`Symlinks:   ${symLabel}`);
   if (opts.dryRun) consola.info("Mode:       DRY RUN");
 
@@ -126,12 +129,13 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   if (!(await exists(repoAgentsMd))) throw new Error(`Missing source: ${repoAgentsMd}`);
 
   // Backup (sequential)
-  const backupPath = await backupGlobal({ dryRun: opts.dryRun ?? false });
+  const backupPath = await backupGlobal({ dryRun: opts.dryRun ?? false, targetDir: opts.targetDir });
 
   // Link all sections in parallel
   await Promise.all([
     linkItems(repoAgents, join(dstRoot, "agents"), "agents", useSymlinks, opts.dryRun ?? false),
     linkItems(repoSkills, join(dstRoot, "skills"), "skills", useSymlinks, opts.dryRun ?? false),
+    linkItems(repoSkills, join(agentsRoot, "skills"), "agent-skills (~/.agents/skills)", useSymlinks, opts.dryRun ?? false),
     linkItems(repoTools, join(dstRoot, "tools"), "tools", useSymlinks, opts.dryRun ?? false),
     linkItems(repoCommands, join(dstRoot, "commands"), "commands", useSymlinks, opts.dryRun ?? false),
   ]);
@@ -152,10 +156,13 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
     }
   }
 
-  // Write opencode.jsonc
-  consola.log("\n==> Writing opencode.jsonc (merge MCP/LSP from previous config)");
-  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath });
-  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath });
+  // Write opencode.jsonc & tui.jsonc
+  consola.log("\n==> Writing opencode.jsonc & tui.jsonc (merge from previous config)");
+  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+
+  const tuiCfg = await buildTuiConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  await writeTuiConfig(tuiCfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
 
   // Summary
   consola.log("\n==> Done");

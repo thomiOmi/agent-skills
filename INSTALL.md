@@ -6,9 +6,9 @@ Setup guide for humans. Not read by AI agents.
 
 ## Quick Install
 
-### Option A - Symlink (recommended)
+### Option A - Symlink (recommended for local dev)
 
-Create symbolic links from the repo into your global OpenCode config.
+Create symbolic links from the repo into your global OpenCode config (`~/.config/opencode/` and `~/.agents/skills/`).
 Changes in the repo are instantly reflected - no re-deploy needed.
 
 ```bash
@@ -25,19 +25,15 @@ What it does:
 
 1. Backs up `~/.config/opencode` to `~/.config/opencode-backups/<timestamp>/`
 2. Creates symlinks for `agents/`, `skills/`, `tools/`, `commands/`, `AGENTS.md`
-3. Writes `opencode.jsonc` with `default_agent: orchestrator` and merges MCP + LSP from your previous config
-4. Writes `tui.jsonc` with theme and notification settings
+3. Also syncs skills to `~/.agents/skills/` for OpenCode agent-compatible discovery
+4. Writes `opencode.jsonc` with `default_agent: orchestrator`
+5. Writes `tui.jsonc` with theme and notification settings
 
-**Requirements:**
-
-- Windows: Developer Mode enabled or run as Administrator (for symlink creation)
-- macOS / Linux: standard symlinks - no special permissions needed
-
-Fallback: if symlinks can't be created, the script copies files instead.
+---
 
 ### Option B - Full global deploy (copy-based)
 
-Backup your current global OpenCode config, then **overwrite** it from this repo:
+Backup your current global OpenCode config, then overwrite it from this repo:
 
 ```bash
 bun run deploy
@@ -51,10 +47,11 @@ bun run deploy --dry-run
 
 What it does:
 
-1. Full backup to `~/.config/opencode-backups/<timestamp>/` (excludes `node_modules`)
+1. Full backup to `~/.config/opencode-backups/<timestamp>/` (excludes `node_modules` and `backups`)
 2. Overwrites `agents/`, `skills/`, `tools/`, `commands/`, `AGENTS.md` from this repo
-3. Writes `opencode.jsonc` with `default_agent: orchestrator` and **merges MCP + LSP** from the previous config (tokens keep working)
-4. Writes `tui.jsonc` (merged with existing)
+3. Syncs skills to `~/.agents/skills/`
+4. Writes `opencode.jsonc` with `default_agent: orchestrator` and merges user settings
+5. Writes `tui.jsonc` (merged with existing TUI settings)
 
 Restore a backup:
 
@@ -62,23 +59,21 @@ Restore a backup:
 cp -r ~/.config/opencode-backups/<timestamp>/* ~/.config/opencode/
 ```
 
-### Incremental sync (agents + skills + tools + commands)
+---
+
+### Incremental sync
 
 ```bash
 bun run sync
 ```
 
-Dry run:
+Does not wipe existing custom items or rewrite `opencode.jsonc` or `tui.jsonc`.
 
-```bash
-bun run sync --dry-run
-```
+---
 
-Does not wipe third-party items or rewrite `opencode.jsonc` or `tui.jsonc`.
+## Plugin (npm package)
 
-### Plugin (npm package)
-
-Install as an OpenCode plugin when the package is published:
+Install as an OpenCode plugin when registered:
 
 ```jsonc
 {
@@ -91,205 +86,47 @@ See [OpenCode Plugins docs](https://opencode.ai/docs/plugins) for details.
 
 ---
 
-## opencode.jsonc Template (v2)
+## opencode.jsonc Template
 
-Full reference template - add only what you need:
+Full reference template deployed by installer:
 
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "shell": "pwsh",
 
-  "instructions": ["https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md"],
+  "default_agent": "orchestrator",
+  "subagent_depth": 2,
 
-  "permissions": [{ "action": "skill", "resource": "*", "effect": "allow" }],
+  "formatter": true,
+  "lsp": true,
 
-  "plugins": ["@thomiOmi/agent-skills"],
-
-  "mcp": {
-    "servers": {
-      "github": {
-        "type": "local",
-        "command": "npx",
-        "args": ["@modelcontextprotocol/server-github"],
-        "environment": { "GITHUB_TOKEN": "your_token_here" },
-      },
-      "filesystem": {
-        "type": "local",
-        "command": "npx",
-        "args": ["@modelcontextprotocol/server-filesystem", "/path/to/project"],
-      },
-      "postgres": {
-        "type": "local",
-        "command": "npx",
-        "args": ["@modelcontextprotocol/server-postgres", "postgresql://user:pass@localhost/db"],
-      },
-      "browser": {
-        "type": "local",
-        "command": "npx",
-        "args": ["@modelcontextprotocol/server-puppeteer"],
-      },
-    },
-  },
+  "permission": {
+    "edit": "ask",
+    "bash": "ask"
+  }
 }
 ```
-
-Key changes from v1:
-
-- `"plugins"` - array of plugin package names (was `"plugin"` string)
-- `"mcp.servers"` - MCP servers nested under `mcp.servers` (was flat `"mcp"` top-level key)
-- `"environment"` - for MCP env vars (was `"env"`)
-- `"permissions"` - array of `{action, resource, effect}` objects (was `"permission.skill.*"` map)
-
----
-
-## MCP Servers Setup
-
-This project includes pre-configured MCP servers in `config/opencode.jsonc`.
-After deploy, they are available at `~/.config/opencode/opencode.jsonc`.
-
-### Quick Reference
-
-| Server | Type | Default | Prerequisites | Env Vars |
-|---|---|---|---|---|---|---|
-| **REQUIRED** | | | | |
-| context7 | remote | enabled | none | `CONTEXT7_API_KEY` (optional) |
-| gh_grep | remote | enabled | none | - |
-| memory | local | enabled | `npx` | - |
-| time | local | enabled | `uvx` | - |
-| mermaid | local | enabled | `npx` | - |
-| sequential-thinking | local | enabled | `npx` | `DISABLE_THOUGHT_LOGGING` (optional) |
-| **OPTIONAL** | | | | |
-| github | remote | disabled | GitHub PAT | `GITHUB_PAT_TOKEN` (required) |
-| playwright | local | disabled | Playwright browsers | - |
-| drawio | local | disabled | `npx` | `DRAWIO_BASE_URL` (optional) |
-
-### Enabling a Disabled Server
-
-1. Open `~/.config/opencode/opencode.jsonc`
-2. Find the server entry under `mcp`
-3. Change `"enabled": false` to `"enabled": true`
-4. Set required env vars (see per-server docs below)
-5. Save and restart OpenCode
-
-### Per-Server Setup
-
-#### context7 (enabled)
-
-Library/framework docs lookup. Works out of the box. For higher rate limits:
-
-```bash
-# Set API key (optional) - sign up at https://context7.com
-export CONTEXT7_API_KEY="your-key-here"
-```
-
-#### gh_grep (enabled)
-
-Search GitHub code examples. No setup needed.
-
-#### memory (enabled)
-
-Knowledge graph persistence for the orchestrator checkpoint system. Stored as `./memory.jsonl` relative to CWD (typically `~/.config/opencode/`). No setup needed.
-
-#### time (enabled)
-
-Timezone-aware time utility. Requires `uv` installed:
-
-```bash
-# Install uv (one-time)
-# macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
-# Windows: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-#### mermaid (enabled)
-
-Mermaid diagram generation (flowcharts, sequence diagrams, class diagrams, etc.). Free and open-source. No setup needed.
-
-#### drawio (disabled)
-
-draw.io diagram generation. Opens diagrams in the draw.io editor in your browser. To enable:
-
-```bash
-# 1. Enable in config: set "enabled": true
-# 2. Restart OpenCode
-```
-
-Optional: for self-hosted draw.io, set `DRAWIO_BASE_URL`:
-
-```bash
-export DRAWIO_BASE_URL="https://drawio.example.com/"
-```
-
-#### sequential-thinking (enabled)
-
-Structured step-by-step reasoning tool. Makes model reasoning auditable with revision and branching support. No setup needed.
-
-Optional: suppress thought logging by setting `DISABLE_THOUGHT_LOGGING=true` in the server's `environment` config.
-
-#### github (disabled)
-
-GitHub API tools for the agent. To enable:
-
-```bash
-# 1. Enable in config: set "enabled": true
-
-# 2. Create a GitHub Personal Access Token
-#    https://github.com/settings/tokens
-#    Minimum scopes: repo, read:org
-
-# 3. Set the env var
-export GITHUB_PAT_TOKEN="ghp_your-token-here"
-
-# 4. Restart OpenCode
-```
-
-#### playwright (disabled)
-
-Browser automation for QA/testing. To enable:
-
-```bash
-# 1. Enable in config: set "enabled": true
-
-# 2. Install Playwright browsers
-npx playwright install chromium
-
-# 3. Restart OpenCode
-```
-
-> **Tip:** For heavy MCP servers (github, playwright), consider enabling them per-agent instead of globally. See [OpenCode docs - Per agent MCP](https://opencode.ai/docs/mcp-servers#per-agent).
 
 ---
 
 ## Deployment Map
 
-Every file and directory in this repo has a specific purpose when installed
-to `~/.config/opencode/`. This table shows the mapping:
+Every file and directory in this repo has a specific purpose when installed to `~/.config/opencode/`:
 
 | Source (repo) | Destination (`~/.config/opencode/`) | Purpose |
 |---|---|---|
-| `instructions/AGENTS.md` | `AGENTS.md` | **Global agent rules** - read by the agent every session. Source of truth for the global AGENTS.md. |
-| `config/opencode.jsonc` | `opencode.jsonc` | **Global config** - default_agent, shell, permissions, MCP servers. MCP/LSP are merged from previous config so tokens keep working. |
-| `config/tui.jsonc` | `tui.jsonc` | **TUI config** - theme, diff_style, attention notifications. Merged with existing. |
-| `agents/*.md` | `agents/*.md` | **11 agent definitions** - invoked via `@agent-name` (orchestrator, senior-developer, etc.). |
-| `skills/*/` | `skills/*/` | **15 skill directories** - each contains SKILL.md + references/. Auto-loaded per task. |
-| `tools/*.ts` | `tools/*.ts` | **2 custom tools** - task-decomposer.ts, quality-verifier.ts. Used by agents for specific tasks. |
-| `commands/*.md` | `commands/*.md` | **10 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, `/commit`, `/docs`, `/explain`, `/brainstorm`, `/security`. |
-| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - hooks into the event system. Can also be installed via npm (`plugin: ["@thomiOmi/agent-skills"]`). |
-| `AGENTS.md` (root) | - | No. **Not deployed** - project-only. Contains rules specific to agent-skills repo development. |
-| `DECISIONS.md` (root) | - | No. **Not deployed** - project-only. Architectural decisions, conventions, known issues. |
-| `ARCHITECTURE.md` (root) | - | No. **Not deployed** - project-only. System architecture reference. |
-| `TASKS.md` (root) | - | No. **Not deployed** - project-only. Roadmap and backlog. |
-| `PRD.md` (root) | - | No. **Not deployed** - project-only. Product requirements. |
-| `SPEC.md` (root) | - | No. **Not deployed** - project-only. Agent Skills spec reference. |
-| `src/` | - | No. **Not deployed** - CLI installer (TypeScript + citty) for deploy/sync/symlink commands. |
-| `scripts/` | - | No. **Not deployed** - custom ESLint plugin for markdown frontmatter validation. |
-| `tests/` | - | No. **Not deployed** - test files (if any). |
+| `instructions/AGENTS.md` | `AGENTS.md` | **Global agent rules** - read by the agent every session. |
+| `config/opencode.jsonc` | `opencode.jsonc` | **Global config** - default_agent, permissions, formatters, lsp. |
+| `config/tui.jsonc` | `tui.jsonc` | **TUI config** - theme, attention notifications. |
+| `agents/*.md` | `agents/*.md` | **11 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, etc. |
+| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **15 skill directories** - SKILL.md + references/. Auto-loaded per task. |
+| `tools/*.ts` | `tools/*.ts` | **2 custom tools** - task-decomposer.ts, quality-verifier.ts. |
+| `commands/*.md` | `commands/*.md` | **10 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
+| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers agents, skills, and tools via OpenCode Plugin API. |
 
-### Notes
+---
 
-- **All config files** (`config/`, `instructions/`) are **source of truth** - the originals that get copied/merged to global. Do not edit `~/.config/opencode/` directly as it will be overwritten.
-- **Plugin** can be installed in two ways: (1) automatically via `bun run deploy`/`bun run symlink` which copies the file to `~/.config/opencode/plugins/`, or (2) manually via `plugin: ["@thomiOmi/agent-skills"]` in config once published to npm.
-- **Backup** is always created before deploy - check `~/.config/opencode-backups/` if you need to roll back.
+## Per-Project AGENTS.md Setup
 
 ### Option 1 - Run `/init` inside OpenCode
 
@@ -297,11 +134,7 @@ to `~/.config/opencode/`. This table shows the mapping:
 /init
 ```
 
-OpenCode scans the important files in your repo, asks targeted questions when needed, and creates or updates AGENTS.md with concise project-specific guidance.
-
-### Option 2 - Create manually
-
-Create `AGENTS.md` at the project root - fill in only the Project Context section:
+### Option 2 - Create manually at project root
 
 ```markdown
 # AGENTS.md
@@ -312,51 +145,8 @@ Create `AGENTS.md` at the project root - fill in only the Project Context sectio
 **Test runner:** bun test
 **Linter / formatter:** ESLint + typescript-eslint + @stylistic
 **Main branch:** main
-**CI:** GitHub Actions - see .github/workflows/
-**Key directories:** src/ · tests/ · skills/
-**Do NOT touch:** legacy/ · generated/
+**CI:** GitHub Actions
 ```
-
-All global rules from the global AGENTS.md apply automatically.
-
-### Option 3 - Monorepo with glob patterns
-
-For monorepos, use `opencode.json` with glob patterns instead of duplicating AGENTS.md:
-
-```jsonc
-{
-  "$schema": "https://opencode.ai/config.json",
-  "instructions": [
-    "https://raw.githubusercontent.com/thomiOmi/agent-skills/main/AGENTS.md",
-    "packages/*/AGENTS.md",
-    "CONTRIBUTING.md",
-  ],
-}
-```
-
----
-
-## Updating
-
-```bash
-git pull
-```
-
-Skills and AGENTS.md update automatically on your next OpenCode session after a new npm version is published. Restart OpenCode to trigger the plugin sync.
-
----
-
-## Development Skills
-
-Ecosystem skills useful when developing or extending this project. Install once:
-
-```bash
-npx skills add https://github.com/vercel-labs/skills --skill find-skills
-npx skills add https://github.com/anthropics/skills --skill skill-creator
-```
-
-- **find-skills** -- discover and install skills from the ecosystem for reference
-- **skill-creator** -- create, test, and iterate new skills with structured evaluation
 
 ---
 
@@ -366,19 +156,10 @@ npx skills add https://github.com/anthropics/skills --skill skill-creator
 
 1. Verify `SKILL.md` is spelled in ALL CAPS
 2. Check frontmatter has `name` and `description`
-3. Ensure `name` field matches the directory name exactly
+3. Ensure `name` field matches the directory name
 4. Check skill permissions - `deny` hides skills from agent
 
 **AGENTS.md not loading:**
 
-1. Run `what rules are you following?` in OpenCode to verify
-2. Check `instructions` field in `opencode.jsonc`
-3. For remote URL - verify the URL is accessible (5s timeout)
-
-**Windows execution policy error:**
-
-PowerShell execution policy can block script execution. Set it with:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-```
+1. Check `instructions` field in `opencode.jsonc` or `AGENTS.md` at project root
+2. Run `/init` inside OpenCode to regenerate project instructions

@@ -43,7 +43,7 @@ See `assets/doc-conventions.md` for document storage and naming conventions.
 
 ## SDLC Checklist
 
-```
+```markdown
 - [ ] PRD written and approved before design starts
 - [ ] SDD written and reviewed before development starts
 - [ ] User stories have acceptance criteria and Definition of Done

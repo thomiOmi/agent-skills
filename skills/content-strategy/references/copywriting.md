@@ -8,7 +8,7 @@ Formulas and patterns for effective, audience-focused copy.
 
 ### AIDA (Attention to Interest to Desire to Action)
 
-```
+```text
 Headline: Grab attention with a bold promise or question
 Interest: Explain the problem context
 Desire: Show how your solution makes things better
@@ -22,7 +22,7 @@ Action: Clear CTA with specific next step
 
 ### PAS (Problem to Agitate to Solve)
 
-```
+```text
 Problem: Name the specific frustration
 Agitate: Make it hurt -  what does the problem cost them?
 Solve: Present your solution as the relief
@@ -34,7 +34,7 @@ Solve: Present your solution as the relief
 
 ### FAB (Features to Advantages to Benefits)
 
-```
+```text
 Feature: What it is
 Advantage: What it does better
 Benefit: What it means for the user
@@ -47,7 +47,7 @@ Benefit: What it means for the user
 
 ### Before-After-Bridge
 
-```
+```text
 Before: What life looks like now (painful)
 After: What life looks like with your solution (better)
 Bridge: How to get from Before to After
