@@ -8,7 +8,7 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 
 | Skill | Description |
 |---|---|
-| `task-decomposition` | Multi-file tasks, module reviews, unclear scope |
+| `task-decomposition` | Multi-file tasks, module reviews, TASKS.md tracking |
 | `code-style` | Writing, reviewing, refactoring, auditing any code |
 | `api-conventions` | REST, GraphQL, WebSocket design and review |
 | `testing` | Unit, integration, snapshot, contract tests, coverage audit |
@@ -20,6 +20,7 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 | `git-workflow` | Branching, commits, PR review, merge strategy |
 | `security-review` | OWASP, auth audit, input validation, data exposure |
 | `database` | Schema design, migrations, query optimization, indexing |
+| `data-analysis` | SQL queries, dataset analysis, data modeling, reporting |
 | `ui-design` | Design systems, accessibility (WCAG), responsive UI |
 | `content-strategy` | Technical writing, marketing copy, SEO optimization |
 | `devops-deployment` | CI/CD pipelines, Docker, Kubernetes, infrastructure |
@@ -94,15 +95,15 @@ agent-skills/
 ├── TASKS.md
 ├── package.json
 ├── tsconfig.json
-├── agents/            # 11 specialized subagents
-├── commands/          # 10 slash commands
+├── agents/            # 13 specialized subagents
+├── commands/          # 12 slash commands
 ├── config/            # Global opencode.jsonc & tui.jsonc templates
 ├── instructions/      # Global AGENTS.md source
 ├── plugin/            # OpenCode plugin entrypoint
 ├── tools/             # Custom TypeScript tools
 ├── src/               # CLI installer tooling
 ├── tests/             # Test suites
-└── skills/            # 15 domain skills
+└── skills/            # 16 domain skills
 ```
 
 ---

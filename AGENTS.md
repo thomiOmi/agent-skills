@@ -49,6 +49,8 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 |---|---|---|---|
 | `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, quality-verifier |
 | `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, debugging, testing, api-conventions, database, git-workflow, ai-integration |
+| `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | sdlc-documentation, task-decomposition, documentation |
+| `data-analyst` | SQL queries, schema analysis, data modeling | subagent | database, data-analysis, code-style |
 | `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, debugging |
 | `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
 | `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment |
@@ -70,6 +72,8 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 | `/plan` | Plan only (no code changes) |
 | `/review` | Code review |
 | `/test` | Run / improve tests |
+| `/tasks` | Manage tasks in TASKS.md |
+| `/spec` | Draft feature specs / PRDs |
 | `/commit` | Conventional commit from current changes |
 | `/explain` | Explain code or system |
 | `/brainstorm` | Explore options before coding |

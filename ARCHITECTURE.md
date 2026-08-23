@@ -12,7 +12,7 @@ Agent Orchestra turns OpenCode into a multi-role development team. The primary `
 
 - **Primary plan agent for user interaction** — default primary agent is `plan`
 - **Orchestrator as coordinator** — delegates, does not do domain work directly
-- **Subagents are focused** — each owns a domain (coding, QA, security, design, etc.)
+- **Subagents are focused** — each owns a domain (coding, product, data, QA, security, design, etc.)
 - **Verification before delivery** — every result is verified before returning to the user
 - **Progressive disclosure** — skills are loaded on-demand, not all at once
 
@@ -26,6 +26,8 @@ flowchart TD
     Plan --> Orchestrator[orchestrator subagent<br/>task decomposition]
 
     Orchestrator --> SD[senior-developer<br/>code-style, testing, debugging]
+    Orchestrator --> PM[product-manager<br/>sdlc-documentation]
+    Orchestrator --> DA[data-analyst<br/>database, data-analysis]
     Orchestrator --> UX[ui-ux<br/>ui-design]
     Orchestrator --> MKT[marketing<br/>content-strategy]
     Orchestrator --> QA[qa-engineer<br/>testing, debugging]
@@ -33,6 +35,8 @@ flowchart TD
     Orchestrator --> SA[security-auditor<br/>security-review]
 
     SD --> SkillCheck{Skill-level<br/>verification}
+    PM --> SkillCheck
+    DA --> SkillCheck
     UX --> SkillCheck
     MKT --> SkillCheck
     QA --> SkillCheck
@@ -57,6 +61,8 @@ flowchart TD
 |---|---|---|---|---|
 | **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, quality-verifier |
 | **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, ai-integration |
+| **product-manager** | subagent | PRDs, feature specs, user stories, roadmap | - | sdlc-documentation, task-decomposition, documentation |
+| **data-analyst** | subagent | SQL queries, schema analysis, data modeling | - | database, data-analysis, code-style |
 | **ui-ux** | subagent | Design system, frontend, accessibility | - | ui-design |
 | **marketing** | subagent | Content, SEO, copy, strategy | - | content-strategy |
 | **qa-engineer** | subagent | Test strategy, coverage, quality gates | - | testing, debugging |
@@ -66,8 +72,6 @@ flowchart TD
 | **deep-thinker** | subagent | Complex reasoning, root cause analysis | - | (none) |
 | **docs-writer** | subagent | Technical writing, documentation | - | documentation, sdlc-documentation |
 | **refactor-planner** | subagent | Safe refactoring, migration planning | - | planning |
-
-Orchestrator also delegates to OpenCode built-in subagents when the task fits better: `build` (clear implementation), `plan` (analysis only), `explore` (codebase search), `scout` (external research), `general` (generic multi-step).
 
 ---
 
@@ -82,6 +86,29 @@ Workflow: `discussion -> plan -> orchestrator -> test -> implement -> review -> 
 5. **Verify** — dual-layer quality gates (skill-level + centralized quality verifier)
 6. **Remember** — progress and decisions persisted to `TASKS.md`
 7. **Return** — verified results delivered to user
+
+---
+
+## Skills to Agent Mapping
+
+| Skill | Used By | Purpose |
+|---|---|---|
+| task-decomposition | orchestrator | Breaking down complex tasks and TASKS.md tracking |
+| code-style | senior-developer | Code quality conventions |
+| testing | senior-developer, qa-engineer | Test writing conventions |
+| debugging | senior-developer, qa-engineer | Bug diagnosis workflow |
+| api-conventions | senior-developer | API design consistency |
+| database | senior-developer, data-analyst | Schema, queries, optimization |
+| data-analysis | data-analyst | SQL queries, data modeling, dataset analysis |
+| git-workflow | senior-developer | Git conventions |
+| ai-integration | senior-developer | LLM/API integration |
+| ui-design | ui-ux | Design system, frontend, accessibility |
+| content-strategy | marketing | Content, SEO, copy, strategy |
+| devops-deployment | devops | CI/CD, deployment, infrastructure |
+| security-review | security-auditor | Security audit checklist |
+| documentation | all | Writing docs |
+| planning | all | System design, ERD, flows, diagrams |
+| sdlc-documentation | product-manager, docs-writer | PRD, SDD, requirements, test plans |
 
 ---
 
