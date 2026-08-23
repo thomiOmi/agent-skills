@@ -9,6 +9,7 @@
   "instructions": [
     "instructions/AGENTS.md",
     "AGENTS.md",
+    "PRD.md",
     "DECISIONS.md",
     "ARCHITECTURE.md",
     "SPEC.md",
