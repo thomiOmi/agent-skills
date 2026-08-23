@@ -15,6 +15,7 @@ describe("Installer Commands", () => {
 
   afterEach(async () => {
     await rm(tempDir, { recursive: true, force: true });
+    delete process.env.OPENCODE_CONFIG;
   });
 
   it("should deploy files, opencode.jsonc, tui.jsonc, and ~/.agents/skills to target directory", async () => {
@@ -52,6 +53,20 @@ describe("Installer Commands", () => {
     const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
     expect(configContent).toContain("custom/model-id");
     expect(configContent).toContain("myMcp");
+  });
+
+  it("should respect OPENCODE_CONFIG env var for custom config discovery", async () => {
+    const customConfigPath = join(tempDir, "custom-opencode.json");
+    await writeFile(customConfigPath, JSON.stringify({
+      model: "custom-env/model-id",
+    }));
+
+    process.env.OPENCODE_CONFIG = customConfigPath;
+
+    await deployCommand({ targetDir: tempDir, skipBackup: true });
+
+    const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
+    expect(configContent).toContain("custom-env/model-id");
   });
 
   it("should sync files to target directory", async () => {
