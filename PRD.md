@@ -66,7 +66,7 @@ A developer who wants to add new agents, skills, or tools to this repository. Ne
 The system follows this workflow for every task:
 
 ```text
-plan -> orchestrator -> test -> implement -> review -> verify -> improve
+plan -> orchestrator -> test -> implement -> review -> verify -> remember -> improve
 ```
 
 1. **Plan** — built-in `plan` agent analyzes the request and creates a plan
@@ -75,7 +75,8 @@ plan -> orchestrator -> test -> implement -> review -> verify -> improve
 4. **Implement** — code is implemented to pass the tests
 5. **Review** — implementation is reviewed against requirements
 6. **Verify** — quality verification runs (lint, typecheck, tests, debug statements, docstrings)
-7. **Improve** — final polish and optimization after verification passes
+7. **Remember** — key decisions, progress, and learnings saved to `TASKS.md` and working context for cross-session persistence
+8. **Improve** — final polish and optimization after verification passes
 
 If verification fails, the system retries from the implement step using the resumable `task_id` (max 3 retries before escalation).
 
@@ -85,7 +86,7 @@ The system provides the following agents:
 
 | Agent | Mode | Role |
 |---|---|---|
-| orchestrator | subagent | Task decomposition, delegation, verification |
+| orchestrator | subagent | Task decomposition, delegation, verification, persistence |
 | senior-developer | subagent | Architecture, coding, refactoring |
 | ui-ux | subagent | Design system, frontend, accessibility |
 | marketing | subagent | Content, SEO, copy, strategy |
@@ -122,7 +123,11 @@ Dual-layer verification:
 1. **Skill-level** — domain-specific checks (e.g., security checks for auth, coverage checks for tests)
 2. **Centralized** — cross-cutting checks (typecheck, lint, tests, debug statements, docstrings)
 
-### FR-6: Plugin
+### FR-6: Persistence & Task Tracking
+
+The system uses `TASKS.md` file-based tracking and working context documents for transparent, tool-agnostic cross-session persistence.
+
+### FR-7: Plugin
 
 The plugin registers agents, skills, and tools via the OpenCode plugin API.
 
@@ -145,13 +150,13 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API.
 - 2 custom tools: task-decomposer, quality-verifier
 - 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security
 - Plugin registration via OpenCode plugin API
+- File-based task tracking and persistence (`TASKS.md`)
 - Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md, TASKS.md
 
 ### Out of Scope
 
 - opencode.jsonc permissions auto-write
 - Instructions URL auto-write
-- GitHub Actions CI changes
 - Custom notification plugins
 - Custom chat export plugins
 - DESIGN.md support

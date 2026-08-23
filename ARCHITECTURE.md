@@ -41,9 +41,11 @@ flowchart TD
     SkillCheck -- PASS --> CentralCheck{Centralized<br/>quality-verifier}
     SkillCheck -- FAIL --> SD
 
-    CentralCheck -- PASS --> Return[Return to user]
+    CentralCheck -- PASS --> Remember[TASKS.md & Context<br/>persistence]
     CentralCheck -- FAIL < 3 retries --> SD
     CentralCheck -- FAIL exhausted --> Escalate[Escalate to user]
+
+    Remember --> Return[Return to user]
 ```
 
 ---
@@ -77,11 +79,12 @@ Orchestrator also delegates to OpenCode built-in subagents when the task fits be
 5. **Verify** with dual-layer quality gates:
    - **Layer 1 - Skill-level:** each subagent runs its domain-specific checklist from the SKILL.md
    - **Layer 2 - Centralized:** qa-engineer executes the quality-verifier tool (tests, typecheck, lint, debug statements, docstrings)
-   - PASS: proceed to synthesis
+   - PASS: proceed to remember and synthesis
    - FAIL (max 3 retries): send back to subagent with specific feedback via `task_id`
    - FAIL (exhausted): escalate to user with details
-6. **Synthesize** verified results into final response
-7. **Return** to user
+6. **Remember** - save key decisions, task progress, and learnings to `TASKS.md` for cross-session persistence
+7. **Synthesize** verified results into final response
+8. **Return** to user
 
 ---
 
@@ -89,7 +92,7 @@ Orchestrator also delegates to OpenCode built-in subagents when the task fits be
 
 | Skill | Used By | Purpose |
 |---|---|---|
-| task-decomposition | orchestrator | Breaking down complex tasks |
+| task-decomposition | orchestrator | Breaking down complex tasks and TASKS.md tracking |
 | code-style | senior-developer | Code quality conventions |
 | testing | senior-developer, qa-engineer | Test writing conventions |
 | debugging | senior-developer, qa-engineer | Bug diagnosis workflow |
