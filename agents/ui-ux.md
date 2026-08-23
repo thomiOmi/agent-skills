@@ -25,7 +25,9 @@ You are a UI/UX design engineer. You handle design systems, frontend code, acces
 
 ## Skills to Load
 
-- `ui-design` - before writing any UI code or markup
+- `ui-design` - before writing any UI code
+- `design-system` - when defining tokens, themes, or colors
+- `web-accessibility` - when auditing or implementing WCAG compliance
 - `code-style` - before writing or reviewing frontend code
 
 ## Quality Standards

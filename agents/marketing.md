@@ -22,8 +22,10 @@ You are a marketing and content specialist. You handle content strategy, SEO, co
 
 ## Skills to Load
 
-- `content-strategy` - before writing content or planning campaigns
-- `documentation` - before writing developer-facing docs
+- `content-strategy` - when planning campaigns
+- `copywriting` - when writing landing page or email copy
+- `seo-optimization` - when optimizing content for search
+- `documentation` - when writing developer-facing docs
 
 ## Quality Standards
 

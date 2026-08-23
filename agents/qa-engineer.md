@@ -27,7 +27,8 @@ You are a QA engineer. You ensure code quality through testing, coverage analysi
 
 ## Skills to Load
 
-- `testing` - before writing or reviewing any tests
+- `testing` - before writing or reviewing tests
+- `test-planning` - when designing test plans and QA strategies
 - `debugging` - when investigating test failures
 
 ## Quality Standards

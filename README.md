@@ -9,21 +9,37 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 | Skill | Description |
 |---|---|
 | `task-decomposition` | Multi-file tasks, module reviews, TASKS.md tracking |
-| `code-style` | Writing, reviewing, refactoring, auditing any code |
+| `code-style` | Syntax, variable naming, docstrings, formatting |
+| `code-review` | Pull request review, code smells, audit checklist |
+| `tech-debt` | Technical debt identification and remediation plans |
 | `api-conventions` | REST, GraphQL, WebSocket design and review |
-| `testing` | Unit, integration, snapshot, contract tests, coverage audit |
-| `documentation` | README, changelog, ADR, OpenAPI spec |
-| `planning` | ERD, system architecture, flowchart, sequence diagram |
+| `testing` | Unit, integration, snapshot, contract tests |
+| `test-planning` | Test plans, quality gates, QA coverage strategies |
 | `debugging` | Bug diagnosis, slow queries, root cause analysis |
-| `ai-integration` | LLM API, prompt design, RAG, agents, embeddings |
-| `sdlc-documentation` | PRD, SDD, user stories, test plan, release notes |
-| `git-workflow` | Branching, commits, PR review, merge strategy |
-| `security-review` | OWASP, auth audit, input validation, data exposure |
-| `database` | Schema design, migrations, query optimization, indexing |
+| `system-design` | Architecture design, data flow, scaling (Anthropic framework) |
+| `architecture-decision` | Architecture Decision Records (ADRs) and trade-offs |
+| `schema-design` | Relational tables, DDL, normalization, foreign keys |
+| `query-optimization` | SQL EXPLAIN plans, composite indexing, N+1 prevention |
 | `data-analysis` | SQL queries, dataset analysis, data modeling, reporting |
-| `ui-design` | Design systems, accessibility (WCAG), responsive UI |
-| `content-strategy` | Technical writing, marketing copy, SEO optimization |
-| `devops-deployment` | CI/CD pipelines, Docker, Kubernetes, infrastructure |
+| `requirements-spec` | Product requirements (PRD), user stories, acceptance criteria |
+| `sdlc-documentation` | SDLC specs, user stories, release notes |
+| `documentation` | README, changelog, OpenAPI spec, developer guides |
+| `git-workflow` | Branching, Conventional Commits, PR descriptions |
+| `security-review` | OWASP Top 10, auth audit, input validation |
+| `prompt-design` | System prompts, LLM prompt engineering structure |
+| `structured-output` | JSON schema, tool calling, defensive parsing |
+| `design-system` | Design tokens, color palettes, dark mode themes |
+| `web-accessibility` | WCAG 2.1 compliance, ARIA roles, keyboard nav |
+| `copywriting` | Landing page copy, CTAs, marketing formulas |
+| `seo-optimization` | Meta tags, title tags, heading hierarchy, on-page SEO |
+| `docker-container` | Dockerfiles, multi-stage builds, non-root security |
+| `ci-cd-pipeline` | GitHub Actions, pipeline stages, caching, deploy gates |
+| `devops-deployment` | Infrastructure, cloud architecture, monitoring |
+| `planning` | Diagramming, sequence flows, ERDs |
+| `ui-design` | Frontend components, layouts, responsive UI |
+| `content-strategy` | Content calendars, brand voice guidelines |
+| `ai-integration` | AI model configuration, embeddings, RAG |
+| `database` | Database engine selection, transaction handling |
 
 ---
 
@@ -103,7 +119,7 @@ agent-skills/
 ├── tools/             # Custom TypeScript tools
 ├── src/               # CLI installer tooling
 ├── tests/             # Test suites
-└── skills/            # 16 domain skills
+└── skills/            # 32 atomic domain skills
 ```
 
 ---

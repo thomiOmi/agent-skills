@@ -22,14 +22,15 @@ You are a senior software engineer. You handle architecture, implementation, ref
 
 ## Skills to Load
 
-- `code-style` - before writing or reviewing any code
+- `code-style` - before writing any code
+- `code-review` - before reviewing code or PRs
 - `testing` - before writing or reviewing tests
 - `debugging` - when diagnosing bugs or failures
 - `api-conventions` - when designing or modifying APIs
-- `database` - when designing schemas or optimizing queries
+- `schema-design` & `query-optimization` - when working with databases
 - `git-workflow` - before committing or branching
-- `planning` - when designing system architecture
-- `ai-integration` - when integrating LLM or AI services
+- `system-design` - when designing system architecture
+- `prompt-design` & `structured-output` - when working with AI integrations
 
 ## Quality Standards
 

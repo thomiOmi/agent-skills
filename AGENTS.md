@@ -48,18 +48,18 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | Agent | Role | Mode | Key Skills |
 |---|---|---|---|
 | `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, quality-verifier |
-| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, debugging, testing, api-conventions, database, git-workflow, ai-integration |
-| `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | sdlc-documentation, task-decomposition, documentation |
-| `data-analyst` | SQL queries, schema analysis, data modeling | subagent | database, data-analysis, code-style |
-| `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, debugging |
+| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, code-review, debugging, testing, api-conventions, schema-design, query-optimization, git-workflow |
+| `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | requirements-spec, sdlc-documentation, task-decomposition |
+| `data-analyst` | SQL queries, schema analysis, data modeling | subagent | schema-design, query-optimization, data-analysis, code-style |
+| `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, test-planning, debugging |
 | `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
-| `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment |
-| `ui-ux` | Design system, frontend, accessibility | subagent | ui-design |
-| `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation |
+| `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment, docker-container, ci-cd-pipeline |
+| `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-system, web-accessibility |
+| `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation, requirements-spec |
 | `brainstormer` | Creative ideation, solution exploration | subagent | (none) |
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | (none) |
-| `refactor-planner` | Safe refactoring, migration planning | subagent | planning |
-| `marketing` | Content, SEO, copy, strategy | subagent | content-strategy |
+| `refactor-planner` | Safe refactoring, migration planning | subagent | tech-debt, system-design, architecture-decision |
+| `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, seo-optimization |
 
 Invoke a specialist directly with `@agent-name` when you already know who should handle it.
 
