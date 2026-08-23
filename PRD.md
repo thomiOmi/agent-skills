@@ -66,17 +66,18 @@ A developer who wants to add new agents, skills, or tools to this repository. Ne
 The system follows this workflow for every task:
 
 ```text
-plan -> orchestrator -> test -> implement -> review -> verify -> remember -> improve
+discussion -> plan -> orchestrator -> test -> implement -> review -> verify -> remember -> improve
 ```
 
-1. **Plan** — built-in `plan` agent analyzes the request and creates a plan
-2. **Orchestrator** — `orchestrator` subagent decomposes the plan into subtasks and delegates to specialized subagents
-3. **Test** — tests are written first (TDD approach)
-4. **Implement** — code is implemented to pass the tests
-5. **Review** — implementation is reviewed against requirements
-6. **Verify** — quality verification runs (lint, typecheck, tests, debug statements, docstrings)
-7. **Remember** — key decisions, progress, and learnings saved to `TASKS.md` and working context for cross-session persistence
-8. **Improve** — final polish and optimization after verification passes
+1. **Discussion** — user and agent interact to clarify requirements and confirm assumptions
+2. **Plan** — built-in primary `plan` agent analyzes the request and creates a structured plan
+3. **Orchestrator** — `orchestrator` subagent decomposes the plan into subtasks and delegates to specialized subagents
+4. **Test** — tests are written first (TDD approach)
+5. **Implement** — code is implemented to pass the tests
+6. **Review** — implementation is reviewed against requirements
+7. **Verify** — quality verification runs (lint, typecheck, tests, debug statements, docstrings)
+8. **Remember** — key decisions, progress, and learnings saved to `TASKS.md` and working context for cross-session persistence
+9. **Improve** — final polish and optimization after verification passes
 
 If verification fails, the system retries from the implement step using the resumable `task_id` (max 3 retries before escalation).
 

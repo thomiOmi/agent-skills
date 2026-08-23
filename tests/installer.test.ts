@@ -38,7 +38,7 @@ describe("Installer Commands", () => {
     expect(tuiConfigExists).toBe(true);
 
     const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
-    expect(configContent).toContain("orchestrator");
+    expect(configContent).toContain("plan");
   });
 
   it("should detect existing opencode.json or opencode.jsonc and merge settings", async () => {

@@ -6,10 +6,11 @@ System architecture for the agent-skills Agent Orchestra.
 
 ## Overview
 
-Agent Orchestra turns OpenCode into a multi-role development team. The orchestrator subagent coordinates work across specialized subagents using a verification loop, mimicking real-world engineering orgs.
+Agent Orchestra turns OpenCode into a multi-role development team. The primary `plan` agent interacts with the user for planning, while the `orchestrator` subagent coordinates work across specialized subagents using a verification loop, mimicking real-world engineering orgs.
 
 **Key principles:**
 
+- **Primary plan agent for user interaction** — default primary agent is `plan`
 - **Orchestrator as coordinator** — delegates, does not do domain work directly
 - **Subagents are focused** — each owns a domain (coding, QA, security, design, etc.)
 - **Verification before delivery** — every result is verified before returning to the user
@@ -21,7 +22,7 @@ Agent Orchestra turns OpenCode into a multi-role development team. The orchestra
 
 ```mermaid
 flowchart TD
-    User[User Input] --> Plan[plan agent (built-in)]
+    User[User Input / Discussion] --> Plan[plan agent (built-in primary)]
     Plan --> Orchestrator[orchestrator subagent<br/>task decomposition]
 
     Orchestrator --> SD[senior-developer<br/>code-style, testing, debugging]
@@ -72,41 +73,15 @@ Orchestrator also delegates to OpenCode built-in subagents when the task fits be
 
 ## Verification Loop
 
-1. **Analyze** the user's request - goal and required expertise
-2. **Decompose** into subtasks using `todowrite` + `task-decomposer` tool
-3. **Delegate** each subtask to the appropriate subagent via `task` tool
-4. **Collect** results from all subagents
-5. **Verify** with dual-layer quality gates:
-   - **Layer 1 - Skill-level:** each subagent runs its domain-specific checklist from the SKILL.md
-   - **Layer 2 - Centralized:** qa-engineer executes the quality-verifier tool (tests, typecheck, lint, debug statements, docstrings)
-   - PASS: proceed to remember and synthesis
-   - FAIL (max 3 retries): send back to subagent with specific feedback via `task_id`
-   - FAIL (exhausted): escalate to user with details
-6. **Remember** - save key decisions, task progress, and learnings to `TASKS.md` for cross-session persistence
-7. **Synthesize** verified results into final response
-8. **Return** to user
+Workflow: `discussion -> plan -> orchestrator -> test -> implement -> review -> verify -> remember -> improve`
 
----
-
-## Skills to Agent Mapping
-
-| Skill | Used By | Purpose |
-|---|---|---|
-| task-decomposition | orchestrator | Breaking down complex tasks and TASKS.md tracking |
-| code-style | senior-developer | Code quality conventions |
-| testing | senior-developer, qa-engineer | Test writing conventions |
-| debugging | senior-developer, qa-engineer | Bug diagnosis workflow |
-| api-conventions | senior-developer | API design consistency |
-| database | senior-developer | Schema, queries, optimization |
-| git-workflow | senior-developer | Git conventions |
-| ai-integration | senior-developer | LLM/API integration |
-| ui-design | ui-ux | Design system, frontend, accessibility |
-| content-strategy | marketing | Content, SEO, copy, strategy |
-| devops-deployment | devops | CI/CD, deployment, infrastructure |
-| security-review | security-auditor | Security audit checklist |
-| documentation | all | Writing docs |
-| planning | all | System design, ERD, flows, diagrams |
-| sdlc-documentation | all | PRD, SDD, requirements, test plans |
+1. **Discussion** — user and agent clarify goals and requirements
+2. **Plan** — built-in primary `plan` agent analyzes the request and creates a plan
+3. **Decompose** — `orchestrator` subagent breaks down tasks into `TASKS.md`
+4. **Delegate** — subtasks dispatched to specialized subagents via `task` tool
+5. **Verify** — dual-layer quality gates (skill-level + centralized quality verifier)
+6. **Remember** — progress and decisions persisted to `TASKS.md`
+7. **Return** — verified results delivered to user
 
 ---
 
@@ -128,48 +103,3 @@ Verifies code quality against defined criteria.
 - **Input:** `files` (string[]), optional boolean flags: `checkLint`, `checkTypecheck`, `checkTests`, `checkNoDebug`, `checkDocstrings`
 - **Output:** `{pass: boolean, details: {criterion, passed, message}[]}`
 - **Used by:** orchestrator agent (via qa-engineer subagent)
-
----
-
-## Directory Structure
-
-```text
-agent-skills/
-├── AGENTS.md                        # Project-level agent instructions
-├── DECISIONS.md                     # Architectural decisions, conventions, known issues
-├── ARCHITECTURE.md                  # System architecture (this file)
-├── TASKS.md                         # Roadmap and backlog
-├── PRD.md                           # Product requirements
-├── SPEC.md                          # Agent Skills spec reference
-├── README.md                        # Overview and quick start
-├── INSTALL.md                       # Setup guide
-├── opencode.jsonc                   # Local OpenCode config
-├── package.json
-├── tsconfig.json
-├── agents/                          # 11 subagent definitions
-├── skills/                          # 15 skill directories
-├── tools/                           # 2 custom tools
-├── commands/                        # 10 slash commands
-├── instructions/                    # Global AGENTS.md source
-├── config/                          # Global config templates
-├── plugin/                          # Plugin entrypoint
-├── src/                             # CLI installer
-└── tests/                           # Test suites
-```
-
----
-
-## Deployment Map
-
-When installed, source files from this repo map to `~/.config/opencode/`:
-
-| Source (repo) | Destination | Purpose |
-|---|---|---|
-| `instructions/AGENTS.md` | `AGENTS.md` | Global agent rules (read every session) |
-| `config/opencode.jsonc` | `opencode.jsonc` | Global config |
-| `config/tui.jsonc` | `tui.jsonc` | TUI config |
-| `agents/*.md` | `agents/*.md` | 11 agent definitions |
-| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | 15 skill directories |
-| `tools/*.ts` | `tools/*.ts` | 2 custom tools |
-| `commands/*.md` | `commands/*.md` | 10 slash commands |
-| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | OpenCode plugin |
