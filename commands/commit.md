@@ -1,15 +1,14 @@
 ---
-description: Create a Conventional Commit from current staged/unstaged changes
-agent: build
+description: Stage, draft Conventional Commit message, and commit changes
+agent: orchestrator
 ---
 
-Create a git commit for the current changes.
+Create git commit for current changes: $ARGUMENTS
 
-Rules:
-
-1. Run !`git status`, !`git diff`, and !`git log -10 --oneline` first.
-2. Stage only relevant files - never stage secrets (`.env`, credentials, keys).
-3. Write a Conventional Commits message: `type(scope): description`.
-4. Keep the subject concise; add a body only if needed.
-5. Don't push unless the user explicitly requests it.
-6. If there is nothing to commit, say so and stop.
+Workflow:
+1. Load `git-workflow` skill.
+2. Check `git status`, `git diff`, and recent `git log -10 --oneline` to match repository style.
+3. Stage relevant files, strictly excluding secrets (`.env`, credentials, API keys).
+4. Draft a Conventional Commit message: `type(scope): description`.
+5. Execute `git commit -m "..."` and display commit summary.
+6. Do not push unless explicitly requested.

@@ -48,7 +48,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | Agent | Role | Mode | Key Skills |
 |---|---|---|---|
 | `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, quality-verifier |
-| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, code-review, debugging, testing, api-conventions, schema-design, query-optimization, git-workflow |
+| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, code-review, code-simplifier, debugging, testing, api-conventions, schema-design, query-optimization, git-workflow |
 | `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | requirements-spec, sdlc-documentation, task-decomposition |
 | `data-analyst` | SQL queries, schema analysis, data modeling | subagent | schema-design, query-optimization, data-analysis, code-style |
 | `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, test-planning, debugging |
@@ -68,12 +68,15 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 | Command | Purpose |
 |---|---|
 | `/ship` | Implement + verify end-to-end |
+| `/ship-pr` | Commit, push to origin, and create GitHub PR |
 | `/fix` | Diagnose and fix a bug |
 | `/plan` | Plan only (no code changes) |
 | `/review` | Code review |
+| `/simplify` | Simplify code logic and flatten conditionals |
 | `/test` | Run / improve tests |
 | `/tasks` | Manage tasks in TASKS.md |
 | `/spec` | Draft feature specs / PRDs |
+| `/clean-branches` | Prune stale local git branches |
 | `/commit` | Conventional commit from current changes |
 | `/explain` | Explain code or system |
 | `/brainstorm` | Explore options before coding |

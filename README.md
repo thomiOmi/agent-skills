@@ -11,6 +11,7 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 | `task-decomposition` | Multi-file tasks, module reviews, TASKS.md tracking |
 | `code-style` | Syntax, variable naming, docstrings, formatting |
 | `code-review` | Pull request review, code smells, audit checklist |
+| `code-simplifier` | Simplifying code, guard clauses, dead code removal |
 | `tech-debt` | Technical debt identification and remediation plans |
 | `api-conventions` | REST, GraphQL, WebSocket design and review |
 | `testing` | Unit, integration, snapshot, contract tests |
@@ -112,14 +113,14 @@ agent-skills/
 ├── package.json
 ├── tsconfig.json
 ├── agents/            # 13 specialized subagents
-├── commands/          # 12 slash commands
+├── commands/          # 15 slash commands
 ├── config/            # Global opencode.jsonc & tui.jsonc templates
 ├── instructions/      # Global AGENTS.md source
 ├── plugin/            # OpenCode plugin entrypoint
 ├── tools/             # Custom TypeScript tools
 ├── src/               # CLI installer tooling
 ├── tests/             # Test suites
-└── skills/            # 32 atomic domain skills
+└── skills/            # 33 atomic domain skills
 ```
 
 ---
