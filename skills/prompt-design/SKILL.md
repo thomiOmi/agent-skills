@@ -1,39 +1,58 @@
 ---
 name: prompt-design
-description: 'Use this skill when designing, structuring, or refining LLM prompts, system prompts, or agent instructions. Trigger with "prompt engineering", "write a system prompt", "prompt design", "refine prompt", "few-shot examples", or when authoring AI instructions. Do not write complex prompts without this skill loaded.'
+description: 'Use this skill when designing, structuring, or refining LLM prompts, system prompts, or agent instructions. Trigger with "prompt engineering", "write a system prompt", "prompt design", "refine prompt", "few-shot examples", "xml tags prompt", or when authoring AI instructions.'
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   author: thomiOmi
 ---
 
 # Prompt Engineering & Design
 
-Guidelines for structuring clear, robust, and reliable LLM prompts.
+Guidelines for structuring clear, robust, deterministic, and reliable LLM prompts using XML tags and canonical prompt structures.
 
 ---
 
-## Canonical Prompt Structure
+## Canonical Prompt Structure (XML Tag Standard)
 
-```text
-ROLE (optional)
-  Persona and domain expertise.
+```xml
+<role>
+  Persona, domain expertise, and operational boundaries.
+</role>
 
-TASK
-  One specific description of what the model must do.
+<task>
+  Single, unambiguous statement of what the model must accomplish.
+</task>
 
-CONTEXT
-  Background information and dynamic variables.
+<context>
+  Background information, system environment, dynamic variables, and domain constraints.
+</context>
 
-CONSTRAINTS
-  Explicit limits (e.g. "Do not explain", "Under 150 words").
+<workflow>
+  Sequential, step-by-step instructions execution flow.
+</workflow>
 
-OUTPUT FORMAT
-  Exact schema or template (e.g. "Respond with valid JSON only").
+<constraints>
+  Explicit prohibitions (what NOT to do) and operational boundaries.
+</constraints>
 
-EXAMPLES (optional)
-  1-2 representative input/output pairs.
+<output_format>
+  Exact output schema, JSON schema, or XML layout template.
+</output_format>
+
+<examples>
+  1-2 representative input/output pairs demonstrating required output shape and style.
+</examples>
 ```
+
+---
+
+## Best Practices
+
+1. **Use Explicit XML Tags**: Wrap functional prompt components in XML tags (`<role>`, `<instructions>`, `<constraints>`, `<output_format>`) to prevent injection and clarify context boundaries.
+2. **Front-Load Constraints**: Place negative constraints and safety boundaries near the end or prominently under `<constraints>`.
+3. **Specify Format Deterministically**: Define strict JSON Schemas or XML structures under `<output_format>`.
+4. **Few-Shot Prompting**: Provide minimal, high-quality examples under `<examples>` for complex pattern matching.
 
 ---
 
@@ -41,7 +60,8 @@ EXAMPLES (optional)
 
 ```markdown
 - [ ] Task and role instructions front-loaded
-- [ ] Output format explicitly defined
+- [ ] XML tags used to segregate functional sections
+- [ ] Output format explicitly defined (JSON schema or exact layout template)
 - [ ] Constraints state what to avoid as well as what to do
-- [ ] Model name configurable via environment variable (not hardcoded)
+- [ ] Model parameters/keys driven by config/env variables
 ```
