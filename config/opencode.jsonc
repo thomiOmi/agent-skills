@@ -8,6 +8,11 @@
 
   "subagent_depth": 2,
 
+  "instructions": [
+    "AGENTS.md",
+    "OPENCODE.md"
+  ],
+
   "formatter": true,
 
   "lsp": true,
@@ -34,10 +39,5 @@
       ".env.local",
       ".env.*.local"
     ]
-  },
-
-  "permission": {
-    "edit": "ask",
-    "bash": "ask"
   }
 }
