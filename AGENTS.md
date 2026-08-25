@@ -54,7 +54,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, test-planning, debugging |
 | `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
 | `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment, docker-container, ci-cd-pipeline |
-| `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-system, web-accessibility |
+| `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-md, web-accessibility |
 | `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation, requirements-spec |
 | `brainstormer` | Creative ideation, solution exploration | subagent | (none) |
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | (none) |

@@ -29,7 +29,7 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 | `security-review` | OWASP Top 10, auth audit, input validation |
 | `prompt-design` | System prompts, LLM prompt engineering structure |
 | `structured-output` | JSON schema, tool calling, defensive parsing |
-| `design-system` | Design tokens, color palettes, dark mode themes |
+| `design-md` | Design tokens, color palettes, dark mode themes, DESIGN.md specs |
 | `web-accessibility` | WCAG 2.1 compliance, ARIA roles, keyboard nav |
 | `copywriting` | Landing page copy, CTAs, marketing formulas |
 | `seo-optimization` | Meta tags, title tags, heading hierarchy, on-page SEO |
