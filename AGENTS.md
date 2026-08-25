@@ -48,6 +48,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | Agent | Role | Mode | Key Skills |
 |---|---|---|---|
 | `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, quality-verifier |
+| `ai-engineer` | Prompt engineering, AI integration, RAG, structured output | subagent | prompt-design, structured-output, ai-integration, code-style, testing |
 | `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, code-review, code-simplifier, debugging, testing, api-conventions, schema-design, query-optimization, git-workflow |
 | `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | requirements-spec, sdlc-documentation, task-decomposition |
 | `data-analyst` | SQL queries, schema analysis, data modeling | subagent | schema-design, query-optimization, data-analysis, code-style |
@@ -56,9 +57,9 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment, docker-container, ci-cd-pipeline |
 | `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-md, web-accessibility |
 | `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation, requirements-spec |
-| `brainstormer` | Creative ideation, solution exploration | subagent | (none) |
-| `deep-thinker` | Complex reasoning, root cause analysis | subagent | (none) |
-| `refactor-planner` | Safe refactoring, migration planning | subagent | tech-debt, system-design, architecture-decision |
+| `brainstormer` | Creative ideation, solution exploration | subagent | prompt-design, planning, code-style |
+| `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style |
+| `refactor-planner` | Safe refactoring, migration planning | subagent | tech-debt, system-design, architecture-decision, code-simplifier |
 | `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, seo-optimization |
 
 Invoke a specialist directly with `@agent-name` when you already know who should handle it.
@@ -72,6 +73,8 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 | `/fix` | Diagnose and fix a bug |
 | `/plan` | Plan only (no code changes) |
 | `/review` | Code review |
+| `/refactor` | Plan and execute safe code refactoring |
+| `/audit` | Audit codebase for security vulnerabilities |
 | `/simplify` | Simplify code logic and flatten conditionals |
 | `/test` | Run / improve tests |
 | `/tasks` | Manage tasks in TASKS.md |
