@@ -10,3 +10,14 @@ updates:
       github-actions:
         patterns:
           - "*"
+          
+ - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
