@@ -56,4 +56,5 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-08-28 | Added researcher + project-manager agents, research-methodology skill, updated routing and docs |
 | 2026-08-28 | Refactored installer: single install command with copy/symlink/merge modes, bin entry for bunx, npm package renamed to @thomiomi/agent-skills |
 | 2026-08-28 | Implemented unjs ecosystem: c12 config loader, pkg-types version flag, std-env env info, scule naming utils, ufo + giget remote source install |
+| 2026-08-28 | Added eval runner (scripts/evals/run-evals.ts), eval validation test, and example evals for task-decomposition |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |

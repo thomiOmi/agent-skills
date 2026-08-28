@@ -87,3 +87,20 @@ Run automated specification validation on all repository skills:
 ```bash
 bun test tests/validate-skills.test.ts
 ```
+
+## Running Evals
+
+Scaffold and run evals for every skill that ships an `evals/evals.json`:
+
+```bash
+bun scripts/evals/run-evals.ts --dry-run   # scaffold prompts only
+bun scripts/evals/run-evals.ts             # run prompts via `opencode run` executor
+bun scripts/evals/run-evals.ts --skill task-decomposition --iteration 2
+```
+
+The runner builds `evals/workspace/<skill>/iteration-N/` with a
+`with_skill/` and `without_skill/` subdirectory per test case, writes
+`prompt.txt` (skill body + user prompt, or bare prompt), `expected_output.txt`,
+and `output.txt` (executor output), then a `summary.json` per iteration.
+Passing `--executor "bunx promptfoo eval"` (or any shell command) swaps the
+executor for grading or a different runtime.
