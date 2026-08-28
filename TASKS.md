@@ -51,6 +51,4 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-07-29 | Cleaned em dash/emoji/arrows across repo |
 | 2026-07-29 | Added Formatting Rules, Boundaries, Agent Selection to AGENTS.md |
 | 2026-08-28 | Added researcher + project-manager agents, research-methodology skill, updated routing and docs |
-| 2026-08-28 | Fixed skill and command counts in PRD and README |
-| 2026-08-28 | Added lint-staged and commitlint configs so the git hooks work |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |

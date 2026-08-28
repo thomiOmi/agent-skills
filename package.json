@@ -49,11 +49,6 @@
     "sync": "bun run src/cli.ts sync",
     "symlink": "bun run src/cli.ts symlink"
   },
-  "lint-staged": {
-    "*.{ts,mts,cts,js,mjs,cjs,json,jsonc,md,yml,yaml}": [
-      "eslint --fix"
-    ]
-  },
   "dependencies": {
     "@opencode-ai/plugin": "^1.18.4",
     "citty": "^0.2.2",
