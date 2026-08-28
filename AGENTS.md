@@ -55,6 +55,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `ai-engineer` | Prompt engineering, AI integration, RAG, structured output | subagent | prompt-design, structured-output, ai-integration, code-style, testing |
 | `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, code-review, code-simplifier, debugging, testing, api-conventions, schema-design, query-optimization, git-workflow |
 | `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | requirements-spec, sdlc-documentation, task-decomposition |
+| `project-manager` | Project planning, milestone tracking, risk, status reports | subagent | task-decomposition, planning, sdlc-documentation |
 | `data-analyst` | SQL queries, schema analysis, data modeling | subagent | schema-design, query-optimization, data-analysis, code-style |
 | `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, test-planning, debugging |
 | `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
@@ -63,6 +64,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation, requirements-spec |
 | `brainstormer` | Creative ideation, solution exploration | subagent | prompt-design, planning, code-style |
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style |
+| `researcher` | Technical research, comparisons, evidence-based recommendations | subagent | research-methodology, planning |
 | `refactor-planner` | Safe refactoring, migration planning | subagent | tech-debt, system-design, architecture-decision, code-simplifier |
 | `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, seo-optimization |
 

@@ -20,6 +20,8 @@ Roadmap and backlog for the agent-skills project.
 - Move DECISIONS.md to root, add ARCHITECTURE.md + TASKS.md — 2026-07-29
 - GitHub Actions improvements: CI concurrency + bun cache, commitlint job — 2026-08-28
 - Release tooling: changelogen (bun run release / bun run changelog), CHANGELOG.md baseline, git hooks (simple-git-hooks + lint-staged + commitlint) — 2026-08-28
+- Agent expansion: researcher + project-manager with research-methodology skill — 2026-08-28
+  - Note: data-analyst and product-manager from the original plan already existed in the roster
 
 ### In Progress
 
@@ -27,8 +29,8 @@ Roadmap and backlog for the agent-skills project.
 
 ### Planned
 
-- Agent expansion: researcher, project-manager, data-analyst, product-manager
-  Ref: DECISIONS.md — delay until 11 existing agents are stable
+- GitHub Actions improvements beyond validate-skills.yml
+  Ref: PRD.md section 11 Out of Scope — planned after stabilization
 
 ---
 
@@ -51,4 +53,5 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-07-29 | Cleaned em dash/emoji/arrows across repo |
 | 2026-07-29 | Added Formatting Rules, Boundaries, Agent Selection to AGENTS.md |
 | 2026-08-28 | Added CI concurrency + bun cache + commitlint job, changelogen release tooling, git hooks, CHANGELOG.md; removed npm publish release workflow |
+| 2026-08-28 | Added researcher + project-manager agents, research-methodology skill, updated routing and docs |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |

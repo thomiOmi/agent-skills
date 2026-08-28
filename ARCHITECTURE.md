@@ -33,6 +33,8 @@ flowchart TD
     Orchestrator --> QA[qa-engineer<br/>testing, debugging]
     Orchestrator --> DO[devops<br/>devops-deployment]
     Orchestrator --> SA[security-auditor<br/>security-review]
+    Orchestrator --> PJM[project-manager<br/>task-decomposition, planning]
+    Orchestrator --> RES[researcher<br/>research-methodology]
 
     SD --> SkillCheck{Skill-level<br/>verification}
     PM --> SkillCheck
@@ -42,6 +44,8 @@ flowchart TD
     QA --> SkillCheck
     DO --> SkillCheck
     SA --> SkillCheck
+    PJM --> SkillCheck
+    RES --> SkillCheck
 
     SkillCheck -- PASS --> CentralCheck{Centralized<br/>quality-verifier}
     SkillCheck -- FAIL --> SD
@@ -62,6 +66,7 @@ flowchart TD
 | **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, quality-verifier |
 | **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, ai-integration |
 | **product-manager** | subagent | PRDs, feature specs, user stories, roadmap | - | sdlc-documentation, task-decomposition, documentation |
+| **project-manager** | subagent | Project planning, milestone tracking, risk management, status reporting | - | task-decomposition, planning, sdlc-documentation |
 | **data-analyst** | subagent | SQL queries, schema analysis, data modeling | - | database, data-analysis, code-style |
 | **ui-ux** | subagent | Design system, frontend, accessibility | - | ui-design |
 | **marketing** | subagent | Content, SEO, copy, strategy | - | content-strategy |
@@ -70,6 +75,7 @@ flowchart TD
 | **security-auditor** | subagent | Security review, auth, vulnerability assessment | - | security-review |
 | **brainstormer** | subagent | Creative ideation, solution exploration | - | (none) |
 | **deep-thinker** | subagent | Complex reasoning, root cause analysis | - | (none) |
+| **researcher** | subagent | Technical research, tool and library comparison, evidence-based recommendations | - | research-methodology, planning |
 | **docs-writer** | subagent | Technical writing, documentation | - | documentation, sdlc-documentation |
 | **refactor-planner** | subagent | Safe refactoring, migration planning | - | planning |
 
@@ -100,6 +106,7 @@ Workflow: `discussion -> plan -> orchestrator -> test -> implement -> review -> 
 | api-conventions | senior-developer | API design consistency |
 | database | senior-developer, data-analyst | Schema, queries, optimization |
 | data-analysis | data-analyst | SQL queries, data modeling, dataset analysis |
+| research-methodology | researcher | Technical research, comparisons, evidence-based recommendations |
 | git-workflow | senior-developer | Git conventions |
 | ai-integration | senior-developer | LLM/API integration |
 | ui-design | ui-ux | Design system, frontend, accessibility |
