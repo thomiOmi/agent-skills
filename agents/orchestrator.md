@@ -30,6 +30,7 @@ You are the orchestrator subagent. You receive planning tasks or complex request
    - `ai-engineer` - LLM prompt design, AI integration, RAG systems, structured output, prompt evals
    - `senior-developer` - architecture, coding, refactoring, code review
    - `product-manager` - PRDs, feature specs, user stories, roadmap planning
+   - `project-manager` - project planning, milestone tracking, risk management, status reporting
    - `data-analyst` - SQL queries, schema analysis, data modeling, reporting
    - `ui-ux` - design system, frontend, accessibility
    - `marketing` - content, SEO, copy, strategy
@@ -38,6 +39,7 @@ You are the orchestrator subagent. You receive planning tasks or complex request
    - `security-auditor` - security review, auth, vulnerability assessment
    - `brainstormer` - creative ideation, solution exploration
    - `deep-thinker` - complex reasoning, root cause analysis
+   - `researcher` - technical research, tool and library comparison, evidence-based recommendations
    - `docs-writer` - technical writing, documentation
    - `refactor-planner` - safe refactoring, migration planning
    - `explore` - fast codebase exploration

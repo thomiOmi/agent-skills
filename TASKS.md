@@ -18,6 +18,8 @@ Roadmap and backlog for the agent-skills project.
 - Clean em dash/emoji/arrow characters across 100+ files — 2026-07-29
 - Formatting rules and Boundaries section in AGENTS.md — 2026-07-29
 - Move DECISIONS.md to root, add ARCHITECTURE.md + TASKS.md — 2026-07-29
+- Agent expansion: researcher + project-manager with research-methodology skill — 2026-08-28
+  - Note: data-analyst and product-manager from the original plan already existed in the roster
 
 ### In Progress
 
@@ -25,8 +27,6 @@ Roadmap and backlog for the agent-skills project.
 
 ### Planned
 
-- Agent expansion: researcher, project-manager, data-analyst, product-manager
-  Ref: DECISIONS.md — delay until 11 existing agents are stable
 - GitHub Actions improvements beyond validate-skills.yml
   Ref: PRD.md section 11 Out of Scope — planned after stabilization
 
@@ -50,4 +50,5 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-07-29 | Moved DECISIONS.md from docs/ to root |
 | 2026-07-29 | Cleaned em dash/emoji/arrows across repo |
 | 2026-07-29 | Added Formatting Rules, Boundaries, Agent Selection to AGENTS.md |
+| 2026-08-28 | Added researcher + project-manager agents, research-methodology skill, updated routing and docs |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |
