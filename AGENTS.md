@@ -22,7 +22,7 @@ Architectural decisions, conventions, and known issues are in `DECISIONS.md` (lo
 
 ## Commands
 
-Run these from the project root. Never run `bun run publish` locally.
+Run these from the project root. Never run `npm publish` locally.
 
 | Command | What it does |
 |---|---|
@@ -36,7 +36,7 @@ Run these from the project root. Never run `bun run publish` locally.
 | `bun run symlink` | Create symlinks for live editing |
 
 **Never run locally:**
-- `bun run publish` - npm publish is CI-only
+- `npm publish` - publishing is CI-only via the release workflow, triggered by pushing a version tag (`vX.Y.Z`)
 - `bun run deploy` without `--dry-run` first
 
 ---
@@ -112,7 +112,7 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 - Modify `node_modules/` or `dist/`
 - Add emoji, em dashes, or decorative text to any file
 - Skip verification (typecheck + lint + test) before marking a task done
-- Change version in `package.json` locally (CI handles versioning)
+- Change version in `package.json` outside of a release commit (releases are tag-driven: the tag `vX.Y.Z` must match the `package.json` version, validated by CI)
 
 ---
 
