@@ -105,7 +105,7 @@ The orchestrator subagent has permission to delegate to all other subagents via 
 
 ### FR-3: Skills
 
-The system provides 15 skills covering code quality, testing, security, design, DevOps, AI integration, planning, and documentation.
+The system provides 34 skills covering code quality, testing, security, design, DevOps, AI integration, planning, documentation, and research methodology.
 
 - Skills follow SKILL.md format with frontmatter (name, description)
 - Skills load progressively: frontmatter at startup (~100 tokens), full body on activation (< 5000 tokens)
@@ -149,9 +149,9 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API.
 ### In Scope
 
 - 16 specialized subagents with documented roles
-- 15 skills with progressive disclosure and verification checklists
+- 34 skills with progressive disclosure and verification checklists
 - 2 custom tools: task-decomposer, quality-verifier
-- 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security
+- 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
 - Plugin registration via OpenCode plugin API
 - File-based task tracking and persistence (`TASKS.md`)
 - Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md, TASKS.md
