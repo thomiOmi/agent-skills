@@ -18,7 +18,8 @@ Roadmap and backlog for the agent-skills project.
 - Clean em dash/emoji/arrow characters across 100+ files — 2026-07-29
 - Formatting rules and Boundaries section in AGENTS.md — 2026-07-29
 - Move DECISIONS.md to root, add ARCHITECTURE.md + TASKS.md — 2026-07-29
-- GitHub Actions improvements: release workflow (npm publish on version tags), CI concurrency + bun cache, PR title validation — 2026-08-28
+- GitHub Actions improvements: CI concurrency + bun cache, PR title validation, commitlint job — 2026-08-28
+- Release tooling: changelogen (bun run release / bun run changelog), CHANGELOG.md baseline, git hooks (simple-git-hooks + lint-staged + commitlint) — 2026-08-28
 
 ### In Progress
 
@@ -49,5 +50,5 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-07-29 | Moved DECISIONS.md from docs/ to root |
 | 2026-07-29 | Cleaned em dash/emoji/arrows across repo |
 | 2026-07-29 | Added Formatting Rules, Boundaries, Agent Selection to AGENTS.md |
-| 2026-08-28 | Added release workflow, CI concurrency + bun cache, PR title validation, updated release docs |
+| 2026-08-28 | Added CI concurrency + bun cache + commitlint job, changelogen release tooling, git hooks, CHANGELOG.md; removed npm publish release workflow |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |
