@@ -1,86 +1,60 @@
 import { defineCommand, runMain } from "citty";
-import { syncCommand } from "./commands/sync";
-import { symlinkCommand } from "./commands/symlink";
-import { deployCommand } from "./commands/deploy";
+import { installCommand, type InstallMode } from "./commands/install";
+
+const installArgs = {
+  "mode": {
+    type: "enum" as const,
+    options: ["copy", "symlink", "merge"],
+    description: "Install mode: copy (default), symlink, or merge",
+  },
+  "dry-run": {
+    type: "boolean" as const,
+    description: "Show what would be done without writing",
+  },
+  "target": {
+    type: "string" as const,
+    description: "Target directory (default: ~/.config/opencode)",
+    valueHint: "path",
+  },
+  "skip-backup": {
+    type: "boolean" as const,
+    description: "Skip backup before install (copy mode only)",
+  },
+  "backup-path": {
+    type: "string" as const,
+    description: "Use existing backup as merge source (copy mode only)",
+    valueHint: "path",
+  },
+};
+
+function toInstallOptions(args: Record<string, unknown>) {
+  return {
+    mode: args.mode as InstallMode | undefined,
+    dryRun: args["dry-run"] as boolean | undefined,
+    targetDir: args.target as string | undefined,
+    skipBackup: args["skip-backup"] as boolean | undefined,
+    backupPath: args["backup-path"] as string | undefined,
+  };
+}
 
 const main = defineCommand({
   meta: {
-    name: "opencode-deploy",
-    description: "Deploy agent-skills repo to OpenCode global config",
+    name: "agent-skills",
+    description: "Install agent-skills repo into OpenCode global config",
+  },
+  args: installArgs,
+  run: async ({ args }) => {
+    await installCommand(toInstallOptions(args));
   },
   subCommands: {
-    sync: defineCommand({
+    install: defineCommand({
       meta: {
-        name: "sync",
-        description: "Copy repo files into ~/.config/opencode/",
+        name: "install",
+        description: "Install agents, skills, tools, commands, plugin, and config into OpenCode global config",
       },
-      args: {
-        "dry-run": {
-          type: "boolean",
-          description: "Show what would be done without writing",
-        },
-        "target": {
-          type: "string",
-          description: "Target directory (default: ~/.config/opencode)",
-          valueHint: "path",
-        },
-      },
+      args: installArgs,
       run: async ({ args }) => {
-        await syncCommand({ dryRun: args["dry-run"], targetDir: args.target });
-      },
-    }),
-    symlink: defineCommand({
-      meta: {
-        name: "symlink",
-        description: "Create symlinks from repo to ~/.config/opencode/",
-      },
-      args: {
-        "dry-run": {
-          type: "boolean",
-          description: "Show what would be done without writing",
-        },
-        "target": {
-          type: "string",
-          description: "Target directory (default: ~/.config/opencode)",
-          valueHint: "path",
-        },
-      },
-      run: async ({ args }) => {
-        await symlinkCommand({ dryRun: args["dry-run"], targetDir: args.target });
-      },
-    }),
-    deploy: defineCommand({
-      meta: {
-        name: "deploy",
-        description: "Backup then overwrite ~/.config/opencode/ from repo",
-      },
-      args: {
-        "dry-run": {
-          type: "boolean",
-          description: "Show what would be done without writing",
-        },
-        "skip-backup": {
-          type: "boolean",
-          description: "Skip backup",
-        },
-        "backup-path": {
-          type: "string",
-          description: "Use existing backup as merge source",
-          valueHint: "path",
-        },
-        "target": {
-          type: "string",
-          description: "Target directory (default: ~/.config/opencode)",
-          valueHint: "path",
-        },
-      },
-      run: async ({ args }) => {
-        await deployCommand({
-          dryRun: args["dry-run"],
-          skipBackup: args["skip-backup"],
-          backupPath: args["backup-path"],
-          targetDir: args.target,
-        });
+        await installCommand(toInstallOptions(args));
       },
     }),
   },

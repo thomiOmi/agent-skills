@@ -2,9 +2,7 @@ import { describe, expect, it, beforeEach, afterEach } from "bun:test";
 import { mkdtemp, rm, readdir, readFile, stat, writeFile } from "fs/promises";
 import { join } from "pathe";
 import { tmpdir } from "os";
-import { deployCommand } from "../src/commands/deploy";
-import { syncCommand } from "../src/commands/sync";
-import { symlinkCommand } from "../src/commands/symlink";
+import { installCommand } from "../src/commands/install";
 
 describe("Installer Commands", () => {
   let tempDir: string;
@@ -18,8 +16,8 @@ describe("Installer Commands", () => {
     delete process.env.OPENCODE_CONFIG;
   });
 
-  it("should deploy files, opencode.jsonc, tui.jsonc, and ~/.agents/skills to target directory", async () => {
-    await deployCommand({ targetDir: tempDir, skipBackup: true });
+  it("should install files, opencode.jsonc, tui.jsonc, and ~/.agents/skills with copy mode", async () => {
+    await installCommand({ mode: "copy", targetDir: tempDir, skipBackup: true });
 
     const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
     const skillsExists = await stat(join(tempDir, "skills")).then(() => true).catch(() => false);
@@ -41,6 +39,13 @@ describe("Installer Commands", () => {
     expect(configContent).toContain("plan");
   });
 
+  it("should default to copy mode when no mode is given", async () => {
+    await installCommand({ targetDir: tempDir, skipBackup: true });
+
+    const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
+    expect(configExists).toBe(true);
+  });
+
   it("should detect existing opencode.json or opencode.jsonc and merge settings", async () => {
     const existingOpencodeJson = join(tempDir, "opencode.json");
     await writeFile(existingOpencodeJson, JSON.stringify({
@@ -48,7 +53,7 @@ describe("Installer Commands", () => {
       mcp: { myMcp: { enabled: true } },
     }));
 
-    await deployCommand({ targetDir: tempDir, skipBackup: true });
+    await installCommand({ mode: "copy", targetDir: tempDir, skipBackup: true });
 
     const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
     expect(configContent).toContain("custom/model-id");
@@ -63,14 +68,14 @@ describe("Installer Commands", () => {
 
     process.env.OPENCODE_CONFIG = customConfigPath;
 
-    await deployCommand({ targetDir: tempDir, skipBackup: true });
+    await installCommand({ mode: "copy", targetDir: tempDir, skipBackup: true });
 
     const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
     expect(configContent).toContain("custom-env/model-id");
   });
 
-  it("should sync files to target directory", async () => {
-    await syncCommand({ targetDir: tempDir });
+  it("should merge files into target directory with merge mode", async () => {
+    await installCommand({ mode: "merge", targetDir: tempDir });
 
     const agents = await readdir(join(tempDir, "agents"));
     const skills = await readdir(join(tempDir, "skills"));
@@ -81,8 +86,8 @@ describe("Installer Commands", () => {
     expect(agentSkills.length).toBeGreaterThan(0);
   });
 
-  it("should symlink or copy files to target directory", async () => {
-    await symlinkCommand({ targetDir: tempDir });
+  it("should symlink or copy files to target directory with symlink mode", async () => {
+    await installCommand({ mode: "symlink", targetDir: tempDir });
 
     const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
     const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
@@ -91,5 +96,11 @@ describe("Installer Commands", () => {
     expect(agentsExists).toBe(true);
     expect(configExists).toBe(true);
     expect(tuiConfigExists).toBe(true);
+  });
+
+  it("should reject unknown install modes", async () => {
+    await installCommand({ mode: "deploy" as never, targetDir: tempDir }).catch((err: Error) => {
+      expect(err.message).toContain("Unknown install mode");
+    });
   });
 });

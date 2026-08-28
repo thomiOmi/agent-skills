@@ -54,4 +54,5 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-07-29 | Added Formatting Rules, Boundaries, Agent Selection to AGENTS.md |
 | 2026-08-28 | Added CI concurrency + bun cache + commitlint job, changelogen release tooling, git hooks, CHANGELOG.md; removed npm publish release workflow |
 | 2026-08-28 | Added researcher + project-manager agents, research-methodology skill, updated routing and docs |
+| 2026-08-28 | Refactored installer: single install command with copy/symlink/merge modes, bin entry for bunx, npm package renamed to @thomiomi/agent-skills |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |

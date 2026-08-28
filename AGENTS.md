@@ -33,13 +33,14 @@ Run these from the project root. Never run `npm publish` locally.
 | `bun test tests/<path>` | Single test file |
 | `bun run changelog` | Regenerate CHANGELOG.md from conventional commits (changelogen, no version bump) |
 | `bun run release` | Release: bump version, update CHANGELOG.md, create release commit and tag (changelogen) |
-| `bun run deploy` | Deploy agents/skills/tools to ~/.config/opencode/ |
-| `bun run sync` | Sync config files to ~/.config/opencode/ |
-| `bun run symlink` | Create symlinks for live editing |
+| `bun run setup` | Install agents/skills/tools/commands/config to ~/.config/opencode/ (backup, overwrite, config merge) |
+| `bun run setup:symlink` | Install via symlinks for live editing |
+| `bun run setup:merge` | Install without wiping global-only items |
+| `bun run cli` | Run the installer CLI directly (same as bunx agent-skills after publish) |
 
 **Never run locally:**
 - `npm publish` - publishing is not automated yet; releases stop at changelog and tag (via `bun run release`)
-- `bun run deploy` without `--dry-run` first
+- `bun run setup` without `--dry-run` first
 
 **Git hooks (simple-git-hooks):** pre-commit runs lint-staged, commit-msg runs commitlint, pre-push runs typecheck and tests. If hooks are missing after cloning, run `bunx simple-git-hooks`.
 

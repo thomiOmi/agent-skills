@@ -44,25 +44,31 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 
 ---
 
-## Install & Deploy
+## Install
 
-### Quick Global Deploy
+### Quick Install
 
-Deploy agents, skills, commands, tools, and configuration to your global OpenCode setup (`~/.config/opencode/` and `~/.agents/skills/`):
+Install agents, skills, commands, tools, and configuration into your global OpenCode setup (`~/.config/opencode/` and `~/.agents/skills/`):
 
 ```bash
-# Option A: Symlink deployment (recommended for development)
-bun run symlink
+# Option A: Symlink install (recommended for development)
+bun run setup:symlink
 
-# Option B: Copy deployment
-bun run deploy
+# Option B: Copy install (backup, overwrite, config merge)
+bun run setup
 
-# Option C: Incremental sync
-bun run sync
+# Option C: Merge install (preserve global-only items)
+bun run setup:merge
 ```
 
-Dry run options are available for all commands:
-`bun run deploy --dry-run` or `bun run deploy --target ./test-dir`
+Dry run options are available for all modes:
+`bun run setup --dry-run` or `bun run setup --target ./test-dir`
+
+### Install via bunx (after npm publish)
+
+```bash
+bunx @thomiomi/agent-skills@latest install
+```
 
 ### OpenCode Plugin Registration
 
@@ -71,7 +77,7 @@ Add to your `~/.config/opencode/opencode.jsonc`:
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@thomiOmi/agent-skills"]
+  "plugin": ["@thomiomi/agent-skills"]
 }
 ```
 
@@ -132,4 +138,4 @@ agent-skills/
 | `bun run lint` | Run ESLint to check for code and markdown formatting issues |
 | `bun run typecheck` | Run TypeScript compiler type checking |
 | `bun test` | Run unit test suites |
-| `bun run deploy` | Backup and deploy to global OpenCode configuration |
+| `bun run setup` | Backup and install to global OpenCode configuration (copy mode) |

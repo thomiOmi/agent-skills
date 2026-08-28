@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/package.json",
-  "name": "@thomiOmi/agent-skills",
+  "name": "@thomiomi/agent-skills",
   "version": "0.2.0",
   "description": "Agent Orchestra for OpenCode - primary agent with verification loop, specialized subagents, skills, and custom tools",
   "keywords": [
@@ -25,10 +25,15 @@
     "skills",
     "tools",
     "plugin",
+    "bin",
+    "src",
     "AGENTS.md"
   ],
   "type": "module",
   "main": "./plugin/agent-skills.ts",
+  "bin": {
+    "agent-skills": "./bin/agent-skills.mjs"
+  },
   "exports": {
     ".": {
       "import": "./plugin/agent-skills.ts"
@@ -47,9 +52,10 @@
     "test": "bun test tests/",
     "changelog": "changelogen --output CHANGELOG.md",
     "release": "changelogen --release",
-    "deploy": "bun run src/cli.ts deploy",
-    "sync": "bun run src/cli.ts sync",
-    "symlink": "bun run src/cli.ts symlink"
+    "setup": "bun run src/cli.ts install",
+    "setup:symlink": "bun run src/cli.ts install --mode symlink",
+    "setup:merge": "bun run src/cli.ts install --mode merge",
+    "cli": "bun run src/cli.ts"
   },
   "lint-staged": {
     "*.{js,mjs,cjs,ts,mts,cts}": [

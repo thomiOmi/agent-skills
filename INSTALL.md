@@ -9,16 +9,16 @@ Setup guide for humans. Not read by AI agents.
 ### Option A - Symlink (recommended for local dev)
 
 Create symbolic links from the repo into your global OpenCode config (`~/.config/opencode/` and `~/.agents/skills/`).
-Changes in the repo are instantly reflected - no re-deploy needed.
+Changes in the repo are instantly reflected - no re-install needed.
 
 ```bash
-bun run symlink
+bun run setup:symlink
 ```
 
 Dry run:
 
 ```bash
-bun run symlink --dry-run
+bun run setup:symlink --dry-run
 ```
 
 What it does:
@@ -26,23 +26,23 @@ What it does:
 1. Backs up `~/.config/opencode` to `~/.config/opencode-backups/<timestamp>/`
 2. Creates symlinks for `agents/`, `skills/`, `tools/`, `commands/`, `AGENTS.md`
 3. Also syncs skills to `~/.agents/skills/` for OpenCode agent-compatible discovery
-4. Writes `opencode.jsonc` with `default_agent: orchestrator`
+4. Writes `opencode.jsonc` with `default_agent: plan`
 5. Writes `tui.jsonc` with theme and notification settings
 
 ---
 
-### Option B - Full global deploy (copy-based)
+### Option B - Full install (copy-based)
 
 Backup your current global OpenCode config, then overwrite it from this repo:
 
 ```bash
-bun run deploy
+bun run setup
 ```
 
 Dry run:
 
 ```bash
-bun run deploy --dry-run
+bun run setup --dry-run
 ```
 
 What it does:
@@ -50,7 +50,7 @@ What it does:
 1. Full backup to `~/.config/opencode-backups/<timestamp>/` (excludes `node_modules` and `backups`)
 2. Overwrites `agents/`, `skills/`, `tools/`, `commands/`, `AGENTS.md` from this repo
 3. Syncs skills to `~/.agents/skills/`
-4. Writes `opencode.jsonc` with `default_agent: orchestrator` and merges user settings
+4. Writes `opencode.jsonc` with `default_agent: plan` and merges user settings
 5. Writes `tui.jsonc` (merged with existing TUI settings)
 
 Restore a backup:
@@ -61,13 +61,27 @@ cp -r ~/.config/opencode-backups/<timestamp>/* ~/.config/opencode/
 
 ---
 
-### Incremental sync
+### Option C - Merge install (preserve global-only items)
 
 ```bash
-bun run sync
+bun run setup:merge
 ```
 
-Does not wipe existing custom items or rewrite `opencode.jsonc` or `tui.jsonc`.
+Copies repo files over the global config without wiping existing custom items and without rewriting `opencode.jsonc` or `tui.jsonc`.
+
+---
+
+### Install via bunx (after npm publish)
+
+Once the package is published to npm, install without cloning this repo:
+
+```bash
+bunx @thomiomi/agent-skills@latest install
+bunx @thomiomi/agent-skills@latest install --mode symlink
+bunx @thomiomi/agent-skills@latest install --mode merge
+```
+
+Publishing is manual: run `bun run release` to bump the version and tag, then `npm publish --access public`.
 
 ---
 
@@ -78,7 +92,7 @@ Install as an OpenCode plugin when registered:
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@thomiOmi/agent-skills"]
+  "plugin": ["@thomiomi/agent-skills"]
 }
 ```
 
@@ -94,7 +108,7 @@ Full reference template deployed by installer:
 {
   "$schema": "https://opencode.ai/config.json",
 
-  "default_agent": "orchestrator",
+  "default_agent": "plan",
   "subagent_depth": 2,
 
   "formatter": true,
@@ -121,7 +135,7 @@ Every file and directory in this repo has a specific purpose when installed to `
 | `agents/*.md` | `agents/*.md` | **16 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, etc. |
 | `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
 | `tools/*.ts` | `tools/*.ts` | **2 custom tools** - task-decomposer.ts, quality-verifier.ts. |
-| `commands/*.md` | `commands/*.md` | **10 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
+| `commands/*.md` | `commands/*.md` | **17 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
 | `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers agents, skills, and tools via OpenCode Plugin API. |
 
 ---
