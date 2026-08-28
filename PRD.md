@@ -96,6 +96,8 @@ The system provides the following agents:
 | security-auditor | subagent | Security review, auth, vulnerability assessment |
 | brainstormer | subagent | Creative ideation, solution exploration |
 | deep-thinker | subagent | Complex reasoning, root cause analysis |
+| researcher | subagent | Technical research, tool and library comparison, evidence-based recommendations |
+| project-manager | subagent | Project planning, milestone tracking, risk management, status reporting |
 | docs-writer | subagent | Technical writing, documentation |
 | refactor-planner | subagent | Safe refactoring, migration planning |
 
@@ -146,7 +148,7 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API.
 
 ### In Scope
 
-- 11 specialized subagents with documented roles
+- 16 specialized subagents with documented roles
 - 15 skills with progressive disclosure and verification checklists
 - 2 custom tools: task-decomposer, quality-verifier
 - 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security

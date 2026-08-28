@@ -118,8 +118,8 @@ Every file and directory in this repo has a specific purpose when installed to `
 | `instructions/AGENTS.md` | `AGENTS.md` | **Global agent rules** - read by the agent every session. |
 | `config/opencode.jsonc` | `opencode.jsonc` | **Global config** - default_agent, permissions, formatters, lsp. |
 | `config/tui.jsonc` | `tui.jsonc` | **TUI config** - theme, attention notifications. |
-| `agents/*.md` | `agents/*.md` | **11 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, etc. |
-| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **15 skill directories** - SKILL.md + references/. Auto-loaded per task. |
+| `agents/*.md` | `agents/*.md` | **16 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, etc. |
+| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
 | `tools/*.ts` | `tools/*.ts` | **2 custom tools** - task-decomposer.ts, quality-verifier.ts. |
 | `commands/*.md` | `commands/*.md` | **10 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
 | `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers agents, skills, and tools via OpenCode Plugin API. |

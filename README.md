@@ -112,7 +112,7 @@ agent-skills/
 ├── TASKS.md
 ├── package.json
 ├── tsconfig.json
-├── agents/            # 13 specialized subagents
+├── agents/            # 16 specialized subagents
 ├── commands/          # 15 slash commands
 ├── config/            # Global opencode.jsonc & tui.jsonc templates
 ├── instructions/      # Global AGENTS.md source
