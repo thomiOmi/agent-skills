@@ -19,6 +19,7 @@ async function exists(path: string): Promise<boolean> {
 export interface SymlinkOptions {
   dryRun?: boolean
   targetDir?: string
+  repoRoot?: string
 }
 
 async function canCreateSymlinks(): Promise<boolean> {
@@ -106,13 +107,13 @@ async function linkItems(
 }
 
 export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
-  const repoRoot = repoSubdir(".");
+  const repoRoot = opts.repoRoot ?? repoSubdir(".");
   const dstRoot = getGlobalRoot(opts.targetDir);
   const agentsRoot = getGlobalAgentsRoot(opts.targetDir);
-  const repoAgents = repoSubdir("agents");
-  const repoSkills = repoSubdir("skills");
-  const repoTools = repoSubdir("tools");
-  const repoCommands = repoSubdir("commands");
+  const repoAgents = join(repoRoot, "agents");
+  const repoSkills = join(repoRoot, "skills");
+  const repoTools = join(repoRoot, "tools");
+  const repoCommands = join(repoRoot, "commands");
   const repoAgentsMd = join(repoRoot, "AGENTS.md");
 
   const useSymlinks = await canCreateSymlinks();
@@ -158,11 +159,11 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
 
   // Write opencode.jsonc & tui.jsonc
   consola.log("\n==> Writing opencode.jsonc & tui.jsonc (merge from previous config)");
-  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
-  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  const cfg = await buildConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir, repoRoot });
+  await writeConfig(cfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir, repoRoot });
 
-  const tuiCfg = await buildTuiConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
-  await writeTuiConfig(tuiCfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir });
+  const tuiCfg = await buildTuiConfig({ dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir, repoRoot });
+  await writeTuiConfig(tuiCfg, { dryRun: opts.dryRun, backupPath, targetDir: opts.targetDir, repoRoot });
 
   // Summary
   consola.log("\n==> Done");

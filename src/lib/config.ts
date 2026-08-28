@@ -2,6 +2,7 @@ import { readFile, writeFile, stat } from "fs/promises";
 import { join, resolve } from "pathe";
 import { parseJSONC, stringifyJSONC } from "confbox";
 import { defu } from "defu";
+import { loadConfig } from "c12";
 import { consola } from "consola";
 import { getGlobalRoot, repoSubdir } from "./paths";
 
@@ -24,10 +25,20 @@ async function findFirstExisting(paths: string[]): Promise<string | null> {
   return null;
 }
 
+async function readConfigSource(id: string): Promise<unknown> {
+  const raw = await readFile(id, "utf-8");
+  return parseJSONC(raw) as unknown;
+}
+
+function asRecord(value: object): Record<string, unknown> {
+  return value as unknown as Record<string, unknown>;
+}
+
 export interface MergeConfigOptions {
   dryRun?: boolean
   backupPath?: string | null
   targetDir?: string
+  repoRoot?: string
 }
 
 export interface OpenCodeConfig {
@@ -63,7 +74,7 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
   const cwd = process.cwd();
 
   // 1. Read template as base
-  const templatePath = repoSubdir("config/opencode.jsonc");
+  const templatePath = join(opts.repoRoot ?? repoSubdir("."), "config/opencode.jsonc");
   const templateRaw = await readFile(templatePath, "utf-8");
   const template = parseJSONC(templateRaw) as OpenCodeConfig;
 
@@ -100,27 +111,46 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
 
   if (mergePath) {
     try {
-      const raw = await readFile(mergePath, "utf-8");
-      const old = parseJSONC(raw) as Record<string, unknown>;
+      // Load the existing config file via c12 (single explicit file, all
+      // advanced sources disabled so behaviour stays deterministic).
+      const res = await loadConfig<Record<string, unknown>>({
+        name: "opencode",
+        cwd,
+        configFile: mergePath,
+        defaults: asRecord(template),
+        packageJson: false,
+        rcFile: false,
+        dotenv: false,
+        envName: false,
+        extend: false,
+        import: readConfigSource,
+      });
+      const layer = res.layers?.find(l => l.configFile === mergePath) ?? res.layers?.at(-1);
+      const old = (layer?.config ?? res.config ?? null) as Record<string, unknown> | null;
 
-      const oldSelected: Record<string, unknown> = {};
-      if (typeof old.small_model === "string") oldSelected.small_model = old.small_model;
-      if (typeof old.model === "string") oldSelected.model = old.model;
-      if (typeof old.shell === "string") oldSelected.shell = old.shell;
-      if (old.lsp !== undefined) oldSelected.lsp = old.lsp;
-      if (old.formatter !== undefined) oldSelected.formatter = old.formatter;
-      if (old.provider !== undefined) oldSelected.provider = old.provider;
-      if (old.permission !== undefined) oldSelected.permission = old.permission;
-      if (Array.isArray(old.plugin)) oldSelected.plugin = old.plugin;
-      if (old.mcp !== undefined && typeof old.mcp === "object" && old.mcp !== null) {
-        oldSelected.mcp = old.mcp;
-        const names = Object.keys(old.mcp).join(", ");
-        consola.log(`  merged MCP servers: ${names}`);
+      if (old) {
+        const oldSelected: Record<string, unknown> = {};
+        if (typeof old.small_model === "string") oldSelected.small_model = old.small_model;
+        if (typeof old.model === "string") oldSelected.model = old.model;
+        if (typeof old.shell === "string") oldSelected.shell = old.shell;
+        if (old.lsp !== undefined) oldSelected.lsp = old.lsp;
+        if (old.formatter !== undefined) oldSelected.formatter = old.formatter;
+        if (old.provider !== undefined) oldSelected.provider = old.provider;
+        if (old.permission !== undefined) oldSelected.permission = old.permission;
+        if (Array.isArray(old.plugin)) oldSelected.plugin = old.plugin;
+        if (old.mcp !== undefined && typeof old.mcp === "object" && old.mcp !== null) {
+          oldSelected.mcp = old.mcp;
+          const names = Object.keys(old.mcp).join(", ");
+          consola.log(`  merged MCP servers: ${names}`);
+        }
+
+        // Old config values override template (preserves user's existing setup)
+        Object.assign(newCfg, defu(oldSelected, newCfg));
+        consola.log(`  merge source: ${mergePath}`);
       }
-
-      // Old config values override template (preserves user's existing setup)
-      Object.assign(newCfg, defu(oldSelected, newCfg));
-      consola.log(`  merge source: ${mergePath}`);
+      else {
+        consola.log("  no config to merge from loaded file - clean template");
+      }
     }
     catch (err) {
       consola.warn(`could not parse previous config for merge: ${err}`);
@@ -155,7 +185,7 @@ export async function buildTuiConfig(opts: MergeConfigOptions): Promise<OpenCode
   const globalRoot = getGlobalRoot(opts.targetDir);
   const cwd = process.cwd();
 
-  const templatePath = repoSubdir("config/tui.jsonc");
+  const templatePath = join(opts.repoRoot ?? repoSubdir("."), "config/tui.jsonc");
   let template: OpenCodeTuiConfig = {
     $schema: "https://opencode.ai/tui.json",
     attention: { enabled: true },
@@ -190,9 +220,24 @@ export async function buildTuiConfig(opts: MergeConfigOptions): Promise<OpenCode
 
   if (mergePath) {
     try {
-      const raw = await readFile(mergePath, "utf-8");
-      const old = parseJSONC(raw) as OpenCodeTuiConfig;
-      return defu(old, template);
+      // Load the existing TUI config file via c12 with the template as defaults.
+      const res = await loadConfig<Record<string, unknown>>({
+        name: "tui",
+        cwd,
+        configFile: mergePath,
+        defaults: asRecord(template),
+        packageJson: false,
+        rcFile: false,
+        dotenv: false,
+        envName: false,
+        extend: false,
+        import: readConfigSource,
+      });
+      const layer = res.layers?.find(l => l.configFile === mergePath) ?? res.layers?.at(-1);
+      const old = (layer?.config ?? res.config ?? null) as OpenCodeTuiConfig | null;
+      if (old) {
+        return defu(old, template);
+      }
     }
     catch (err) {
       consola.warn(`could not parse previous TUI config for merge: ${err}`);

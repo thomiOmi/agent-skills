@@ -81,6 +81,18 @@ bunx @thomiomi/agent-skills@latest install --mode symlink
 bunx @thomiomi/agent-skills@latest install --mode merge
 ```
 
+Install from a specific source (local path, git URL, or giget template):
+
+```bash
+bunx @thomiomi/agent-skills@latest install --source github:thomiOmi/agent-skills
+```
+
+Check the installed version:
+
+```bash
+bunx @thomiomi/agent-skills@latest --version
+```
+
 Publishing is manual: run `bun run release` to bump the version and tag, then `npm publish --access public`.
 
 ---

@@ -3,6 +3,7 @@ import { mkdtemp, rm, readdir, readFile, stat, writeFile } from "fs/promises";
 import { join } from "pathe";
 import { tmpdir } from "os";
 import { installCommand } from "../src/commands/install";
+import { describeSource } from "../src/commands/install";
 
 describe("Installer Commands", () => {
   let tempDir: string;
@@ -102,5 +103,21 @@ describe("Installer Commands", () => {
     await installCommand({ mode: "deploy" as never, targetDir: tempDir }).catch((err: Error) => {
       expect(err.message).toContain("Unknown install mode");
     });
+  });
+
+  it("should install from a local source path", async () => {
+    const repoRoot = join(import.meta.dir, "..");
+    await installCommand({ source: repoRoot, mode: "copy", targetDir: tempDir, skipBackup: true });
+
+    const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
+    const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
+    expect(configExists).toBe(true);
+    expect(agentsExists).toBe(true);
+  });
+
+  it("should describe sources", () => {
+    expect(describeSource(undefined)).toContain("local repo");
+    expect(describeSource("github:thomiOmi/agent-skills")).toContain("remote template");
+    expect(describeSource("C:/some/path")).toContain("local path");
   });
 });
