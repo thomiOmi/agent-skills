@@ -18,7 +18,7 @@ Roadmap and backlog for the agent-skills project.
 - Clean em dash/emoji/arrow characters across 100+ files — 2026-07-29
 - Formatting rules and Boundaries section in AGENTS.md — 2026-07-29
 - Move DECISIONS.md to root, add ARCHITECTURE.md + TASKS.md — 2026-07-29
-- GitHub Actions improvements: CI concurrency + bun cache, PR title validation, commitlint job — 2026-08-28
+- GitHub Actions improvements: CI concurrency + bun cache, commitlint job — 2026-08-28
 - Release tooling: changelogen (bun run release / bun run changelog), CHANGELOG.md baseline, git hooks (simple-git-hooks + lint-staged + commitlint) — 2026-08-28
 
 ### In Progress
