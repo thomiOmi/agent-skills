@@ -1,6 +1,37 @@
 # Changelog
 
 
+## v0.2.1
+
+[compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.2.0...v0.2.1)
+
+### 🚀 Enhancements
+
+- Add researcher and project-manager agents with research-methodology skill ([c00678e](https://github.com/thomiOmi/agent-skills/commit/c00678e))
+- Replace deploy/sync/symlink with single install command and add bunx bin entry ([67490f8](https://github.com/thomiOmi/agent-skills/commit/67490f8))
+- Integrate unjs ecosystem into installer (c12, pkg-types, std-env, scule, ufo, giget) ([a6de03e](https://github.com/thomiOmi/agent-skills/commit/a6de03e))
+- Add agentskills.io eval runner with workspace scaffold and validation test ([d0390d9](https://github.com/thomiOmi/agent-skills/commit/d0390d9))
+
+### 📖 Documentation
+
+- Fix skill and command counts in PRD and README ([6b36510](https://github.com/thomiOmi/agent-skills/commit/6b36510))
+- Clear completed GitHub Actions item from roadmap Planned ([09aa862](https://github.com/thomiOmi/agent-skills/commit/09aa862))
+
+### 🏡 Chore
+
+- Add commitlint config for commit-msg hook ([6f88504](https://github.com/thomiOmi/agent-skills/commit/6f88504))
+- Add commitlint config for commit-msg hook" ([9848173](https://github.com/thomiOmi/agent-skills/commit/9848173))
+
+### 🤖 CI
+
+- Add release workflow, concurrency, bun cache, and PR title validation ([841eb9d](https://github.com/thomiOmi/agent-skills/commit/841eb9d))
+- Add commitlint, changelogen release tooling, and git hooks ([264ed86](https://github.com/thomiOmi/agent-skills/commit/264ed86))
+- Drop pr-title job, commitlint covers commit convention ([655e57a](https://github.com/thomiOmi/agent-skills/commit/655e57a))
+
+### ❤️ Contributors
+
+- Thomi Syauqi ([@thomiOmi](https://github.com/thomiOmi))
+
 ## v0.2.0
 
 ### 🚀 Enhancements
