@@ -22,6 +22,7 @@ Roadmap and backlog for the agent-skills project.
 - Release tooling: changelogen (bun run release / bun run changelog), CHANGELOG.md baseline, git hooks (simple-git-hooks + lint-staged + commitlint) — 2026-08-28
 - Agent expansion: researcher + project-manager with research-methodology skill — 2026-08-28
   - Note: data-analyst and product-manager from the original plan already existed in the roster
+- Eval coverage: evals.json for 5 skills (task-decomposition, code-style, testing, security-review, git-workflow) with assertion grading in run-evals.ts — 2026-08-30
 
 ### In Progress
 
@@ -37,7 +38,6 @@ Roadmap and backlog for the agent-skills project.
 
 Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
-- [ ] Eval coverage: add evals.json to core skills and assertion grading to run-evals.ts (AUDIT.md F3)
 - [ ] Tighten agent permissions to match DECISIONS.md convention (AUDIT.md F4)
 - [ ] Multi-runtime plugin manifest (.claude-plugin) for cross-harness distribution (AUDIT.md F5)
 - [ ] Cross-session handoff convention in task-decomposition (AUDIT.md F6)
@@ -60,4 +60,5 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-08-28 | Added eval runner (scripts/evals/run-evals.ts), eval validation test, and example evals for task-decomposition |
 | 2026-08-28 | Cleared completed GitHub Actions item from roadmap Planned section |
 | 2026-08-29 | Added docs/AUDIT.md: skill and agent audit against 5 reference frameworks, with prioritized findings |
+| 2026-08-30 | Added evals.json for 5 core skills and assertion grading + pass-rate report in run-evals.ts |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |

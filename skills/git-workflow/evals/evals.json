@@ -1,0 +1,23 @@
+{
+  "skill_name": "git-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a commit message for adding OAuth2 login using Conventional Commits",
+      "expected_output": "A conventional commit message with type feat, scope auth, and a summary under 100 characters.",
+      "assertions": [
+        "feat",
+        "auth"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Propose a branch name for fixing the API timeout issue and describe the intended workflow",
+      "expected_output": "A purpose-describing branch name like fix/api-timeout and a checkout-commit-push-PR workflow.",
+      "assertions": [
+        "fix/api-timeout",
+        "PR"
+      ]
+    }
+  ]
+}

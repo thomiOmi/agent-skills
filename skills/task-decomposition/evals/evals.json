@@ -4,12 +4,21 @@
     {
       "id": 1,
       "prompt": "Refactor authentication module to support OAuth2 with Google and GitHub",
-      "expected_output": "Structured TASKS.md breaking work into Active subtasks with assigned subagents, dependency tracking, and security review as a dependency."
+      "expected_output": "Structured TASKS.md breaking work into Active subtasks with assigned subagents, dependency tracking, and security review as a dependency.",
+      "assertions": [
+        "TASKS.md",
+        "security review"
+      ]
     },
     {
       "id": 2,
       "prompt": "Plan the migration of a monolith REST API to microservices across two quarters",
-      "expected_output": "A milestone breakdown with dependencies, a risk list, and phased subtasks assigned to subagents."
+      "expected_output": "A milestone breakdown with dependencies, a risk list, and phased subtasks assigned to subagents.",
+      "assertions": [
+        "milestone",
+        "dependencies",
+        "risk"
+      ]
     }
   ]
 }

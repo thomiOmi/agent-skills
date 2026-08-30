@@ -52,6 +52,7 @@
     "test": "bun test tests/",
     "changelog": "changelogen --output CHANGELOG.md",
     "release": "changelogen --release",
+    "evals": "bun run scripts/evals/run-evals.ts",
     "setup": "bun run src/cli.ts install",
     "setup:symlink": "bun run src/cli.ts install --mode symlink",
     "setup:merge": "bun run src/cli.ts install --mode merge",
