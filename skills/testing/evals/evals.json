@@ -1,0 +1,23 @@
+{
+  "skill_name": "testing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write unit tests for a calculateDiscount(amount, code) function covering happy path, error path, and 0% discount",
+      "expected_output": "Deterministic tests covering happy path, error path, and no-discount edge case, one scenario per test.",
+      "assertions": [
+        "happy path",
+        "error path"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review the test suite for the invoice module: what behavior gaps does it miss?",
+      "expected_output": "List of untested behaviors including error paths, edge cases, and boundary conditions.",
+      "assertions": [
+        "error",
+        "edge case"
+      ]
+    }
+  ]
+}

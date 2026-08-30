@@ -1,0 +1,23 @@
+{
+  "skill_name": "code-style",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review src/auth/login.ts and report naming and docstring violations before we ship it",
+      "expected_output": "List of naming and docstring violations with file:line references and concrete fixes.",
+      "assertions": [
+        "naming",
+        "docstring"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Refactor this function for readability: function p(a,b){return a*b+1}",
+      "expected_output": "Single-letter arguments renamed, magic number explained, and a docstring added.",
+      "assertions": [
+        "docstring",
+        "rename"
+      ]
+    }
+  ]
+}

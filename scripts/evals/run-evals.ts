@@ -20,11 +20,48 @@ interface EvalCase {
   prompt: string
   expected_output?: string
   files?: string[]
+  assertions?: string[]
 }
 
 interface EvalsFile {
   skill_name: string
   evals: EvalCase[]
+}
+
+interface GradeResult {
+  passed: number
+  total: number
+  details: { assertion: string, passed: boolean }[]
+}
+
+interface EntryStatus {
+  status: string
+  passed: number
+  total: number
+}
+
+function aggregatePass(items: EntryStatus[]): { passed: number, graded: number } {
+  const graded = items.filter(i => i.total > 0);
+  return {
+    passed: graded.filter(i => i.passed === i.total).length,
+    graded: graded.length,
+  };
+}
+
+function gradeOutput(output: string, assertions: string[] | undefined): GradeResult {
+  const list = assertions ?? [];
+  if (list.length === 0) {
+    return { passed: 0, total: 0, details: [] };
+  }
+  const details = list.map(assertion => ({
+    assertion,
+    passed: output.toLowerCase().includes(assertion.toLowerCase()),
+  }));
+  return {
+    passed: details.filter(d => d.passed).length,
+    total: details.length,
+    details,
+  };
 }
 
 async function exists(p: string): Promise<boolean> {
@@ -157,12 +194,12 @@ async function runEvals(options: {
     const iterationDir = join(WORKSPACE_ROOT, skillName, `iteration-${options.iteration}`);
     await mkdir(iterationDir, { recursive: true });
 
-    const entries: { id: number, with_skill: string, without_skill: string }[] = [];
+    const entries: { id: number, with_skill: EntryStatus, without_skill: EntryStatus }[] = [];
 
     for (const evalCase of evalsFile.evals) {
-      const status: { with_skill: string, without_skill: string } = {
-        with_skill: "pending",
-        without_skill: "pending",
+      const status: { with_skill: EntryStatus, without_skill: EntryStatus } = {
+        with_skill: { status: "pending", passed: 0, total: 0 },
+        without_skill: { status: "pending", passed: 0, total: 0 },
       };
 
       for (const mode of MODES) {
@@ -175,12 +212,17 @@ async function runEvals(options: {
           const promptText = await readFile(join(caseDir, "prompt.txt"), "utf-8");
           const output = await runPrompt(execCmd, execArgs, caseDir, promptText);
           await writeFile(join(caseDir, "output.txt"), output, "utf-8");
-          status[mode] = "done";
-          consola.log(`  ok  ${mode}: ${skillName}-${evalCase.id}`);
+          const grade = gradeOutput(output, evalCase.assertions);
+          status[mode] = {
+            status: "done",
+            passed: grade.passed,
+            total: grade.total,
+          };
+          consola.log(`  ok  ${mode}: ${skillName}-${evalCase.id} assertions ${grade.passed}/${grade.total}`);
         }
         catch (err) {
           const message = err instanceof Error ? err.message : String(err);
-          status[mode] = `failed: ${message}`;
+          status[mode] = { status: `failed: ${message}`, passed: 0, total: 0 };
           failed++;
           consola.error(`  ${mode} failed: ${message}`);
         }
@@ -190,9 +232,18 @@ async function runEvals(options: {
       entries.push({ id: evalCase.id, ...status });
     }
 
+    const aggregate = {
+      with_skill: aggregatePass(entries.map(e => e.with_skill)),
+      without_skill: aggregatePass(entries.map(e => e.without_skill)),
+    };
+    consola.log(
+      `  pass rate (assertion-graded cases): with_skill ${aggregate.with_skill.passed}/${aggregate.with_skill.graded}`
+      + `, without_skill ${aggregate.without_skill.passed}/${aggregate.without_skill.graded}`,
+    );
+
     await writeFile(
       join(iterationDir, "summary.json"),
-      JSON.stringify({ skill_name: skillName, iteration: options.iteration, entries }, null, 2),
+      JSON.stringify({ skill_name: skillName, iteration: options.iteration, entries, aggregate }, null, 2),
       "utf-8",
     );
   }

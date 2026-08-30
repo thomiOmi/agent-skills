@@ -7,6 +7,7 @@ interface EvalCase {
   prompt: string
   expected_output?: string
   files?: string[]
+  assertions?: string[]
 }
 
 interface EvalsFile {
@@ -51,6 +52,12 @@ describe("Validate Eval Files (agentskills.io)", () => {
         }
         if (evalCase.files !== undefined) {
           expect(Array.isArray(evalCase.files), `${file}: files must be an array`).toBe(true);
+        }
+        if (evalCase.assertions !== undefined) {
+          expect(Array.isArray(evalCase.assertions), `${file}: assertions must be an array`).toBe(true);
+          for (const assertion of evalCase.assertions) {
+            expect(typeof assertion, `${file}: assertion must be a string`).toBe("string");
+          }
         }
       }
     }

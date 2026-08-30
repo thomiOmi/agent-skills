@@ -1,0 +1,23 @@
+{
+  "skill_name": "security-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the authentication middleware that reads req.user.id against the requested resource id",
+      "expected_output": "Identifies the missing authorization check, risk level, and the exact fix.",
+      "assertions": [
+        "authorization",
+        "fix"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review the login endpoint for OWASP Top 10 issues before release",
+      "expected_output": "OWASP-relevant findings with input validation, auth, and data exposure checks applied.",
+      "assertions": [
+        "OWASP",
+        "input validation"
+      ]
+    }
+  ]
+}
