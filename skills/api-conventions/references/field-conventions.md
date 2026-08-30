@@ -1,7 +1,7 @@
 # Field Conventions
 
 These conventions must be confirmed with the user before designing any API.
-Do not assume defaults -  format choices affect every consumer of the API.
+Do not assume defaults - format choices affect every consumer of the API.
 
 ---
 
@@ -11,9 +11,9 @@ Before designing request/response shapes, ask:
 
 ```text
 1. What is the success response envelope?
-   - { data: {...} } -  with a data wrapper
-   - { success: true, data: {...} } -  with an explicit success flag
-   - Bare object -  no wrapper
+   - { data: {...} } - with a data wrapper
+   - { success: true, data: {...} } - with an explicit success flag
+   - Bare object - no wrapper
    - Other (describe)
 
 2. What is the error/problem response format?
@@ -51,10 +51,10 @@ These apply regardless of the chosen format:
 
 | Field type      | Rule                                                    |
 | --------------- | ------------------------------------------------------- |
-| Monetary values | Integer cents -  `"amount": 1999` for $19.99             |
-| Boolean flags   | Explicit `true`/`false` -  not `1`/`0` or `"yes"`/`"no"` |
-| Nullable fields | Explicit `null` -  do not omit the field                 |
-| Arrays          | Empty array `[]` -  not `null` when empty                |
+| Monetary values | Integer cents - `"amount": 1999` for $19.99             |
+| Boolean flags   | Explicit `true`/`false` - not `1`/`0` or `"yes"`/`"no"` |
+| Nullable fields | Explicit `null` - do not omit the field                 |
+| Arrays          | Empty array `[]` - not `null` when empty                |
 
 ---
 

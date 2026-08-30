@@ -3,9 +3,9 @@
 ## Principles
 
 1. Every migration must be versioned and tracked by the migration tool.
-2. Every migration must be reversible -  write the rollback method.
+2. Every migration must be reversible - write the rollback method.
 3. Never modify a migration file after it has been committed and run.
-4. Migrations are code -  review them as carefully as application code.
+4. Migrations are code - review them as carefully as application code.
 
 ---
 
@@ -20,7 +20,7 @@ Before writing:
 Before committing:
 
 - [ ] Up method tested locally
-- [ ] Down method tested locally -  confirm it actually reverses the change
+- [ ] Down method tested locally - confirm it actually reverses the change
 - [ ] No application code in the migration file
 - [ ] No hardcoded data beyond necessary seed values
 - [ ] Large table changes are zero-downtime safe (see below)
@@ -29,7 +29,7 @@ Before running in production:
 
 - [ ] Migration tested on a recent copy of production data
 - [ ] Rollback plan documented and tested
-- [ ] Estimated duration verified -  long migrations need a maintenance window or online migration strategy
+- [ ] Estimated duration verified - long migrations need a maintenance window or online migration strategy
 - [ ] Application code that depends on the new schema is deployed first (if adding) or after (if removing)
 ```
 
@@ -81,9 +81,9 @@ Every migration must have a documented rollback approach:
 | Migration type     | Rollback approach                                            |
 | ------------------ | ------------------------------------------------------------ |
 | Add column         | Drop column                                                  |
-| Drop column        | Cannot restore data -  require confirmation before proceeding |
+| Drop column        | Cannot restore data - require confirmation before proceeding |
 | Add table          | Drop table                                                   |
-| Drop table         | Cannot restore data -  require confirmation                   |
+| Drop table         | Cannot restore data - require confirmation                   |
 | Add index          | Drop index                                                   |
 | Modify column type | Revert to original type (may require data conversion)        |
 | Backfill data      | Document how to reverse if needed                            |

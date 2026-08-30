@@ -44,7 +44,7 @@
 - [x] Authentication reviewed
 - [x] Authorization reviewed
 - [x] Input validation reviewed
-- [ ] Data exposure reviewed -  findings above
+- [ ] Data exposure reviewed - findings above
 - [x] Error handling reviewed
 - [x] Rate limiting reviewed
 ```

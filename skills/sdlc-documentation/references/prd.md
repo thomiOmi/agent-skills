@@ -1,4 +1,4 @@
-# PRD -  Product Requirements Document
+# PRD - Product Requirements Document
 
 Audience: product managers, designers, engineers, stakeholders.
 Use when: starting a new feature, product, or significant change.
@@ -26,7 +26,7 @@ Use when: starting a new feature, product, or significant change.
 
 ### Non-Goals
 
-[What this explicitly will NOT do -  prevents scope creep]
+[What this explicitly will NOT do - prevents scope creep]
 
 ---
 

@@ -5,7 +5,7 @@ Use this as the primary checklist for any security review.
 
 ---
 
-## A01 -  Broken Access Control
+## A01 - Broken Access Control
 
 Users can act outside their intended permissions.
 
@@ -25,7 +25,7 @@ Users can act outside their intended permissions.
 
 ---
 
-## A02 -  Cryptographic Failures
+## A02 - Cryptographic Failures
 
 Sensitive data exposed due to weak or missing encryption.
 
@@ -45,7 +45,7 @@ Sensitive data exposed due to weak or missing encryption.
 
 ---
 
-## A03 -  Injection
+## A03 - Injection
 
 Untrusted data sent to an interpreter causes unintended execution.
 
@@ -65,7 +65,7 @@ Untrusted data sent to an interpreter causes unintended execution.
 
 ---
 
-## A04 -  Insecure Design
+## A04 - Insecure Design
 
 Fundamental security flaws in the design, not just the implementation.
 
@@ -78,7 +78,7 @@ Fundamental security flaws in the design, not just the implementation.
 
 ---
 
-## A05 -  Security Misconfiguration
+## A05 - Security Misconfiguration
 
 Insecure default settings, incomplete configurations.
 
@@ -93,7 +93,7 @@ Insecure default settings, incomplete configurations.
 
 ---
 
-## A06 -  Vulnerable and Outdated Components
+## A06 - Vulnerable and Outdated Components
 
 Using components with known vulnerabilities.
 
@@ -105,7 +105,7 @@ Using components with known vulnerabilities.
 
 ---
 
-## A07 -  Identification and Authentication Failures
+## A07 - Identification and Authentication Failures
 
 Weaknesses in authentication implementation.
 
@@ -120,7 +120,7 @@ Weaknesses in authentication implementation.
 
 ---
 
-## A08 -  Software and Data Integrity Failures
+## A08 - Software and Data Integrity Failures
 
 Code and infrastructure that does not protect against integrity violations.
 
@@ -132,7 +132,7 @@ Code and infrastructure that does not protect against integrity violations.
 
 ---
 
-## A09 -  Security Logging and Monitoring Failures
+## A09 - Security Logging and Monitoring Failures
 
 Insufficient logging prevents detection of breaches.
 
@@ -159,7 +159,7 @@ Insufficient logging prevents detection of breaches.
 
 ---
 
-## A10 -  Server-Side Request Forgery (SSRF)
+## A10 - Server-Side Request Forgery (SSRF)
 
 Server makes requests to attacker-controlled destinations.
 

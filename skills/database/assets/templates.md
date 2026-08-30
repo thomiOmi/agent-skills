@@ -70,11 +70,11 @@ Table size estimate: [small / medium / large / very large]
 
 Checks:
 
-- [ ] No SELECT * -  specific columns listed
+- [ ] No SELECT * - specific columns listed
 - [ ] WHERE clause uses indexed columns
 - [ ] ORDER BY column is indexed (if on large table)
 - [ ] Result set is paginated
-- [ ] No N+1 -  related data is eagerly loaded
+- [ ] No N+1 - related data is eagerly loaded
 - [ ] EXPLAIN reviewed and no sequential scans on large tables
 - [ ] Transaction used if multiple writes
 ```

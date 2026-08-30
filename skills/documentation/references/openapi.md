@@ -34,6 +34,6 @@ Minimum required per endpoint:
 Rules:
 
 - Every endpoint must have: summary, security, all parameters, all response codes.
-- Define reusable schemas in `components/schemas` -  do not inline the same shape twice.
-- Keep spec and implementation in sync -  validate in CI if possible.
+- Define reusable schemas in `components/schemas` - do not inline the same shape twice.
+- Keep spec and implementation in sync - validate in CI if possible.
 - Breaking changes to the spec = bump the API version.

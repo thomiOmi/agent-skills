@@ -1,4 +1,4 @@
-# SDD -  Software Design Document
+# SDD - Software Design Document
 
 Audience: engineers, tech leads, architects.
 Use when: engineers are about to implement something non-trivial.
@@ -20,7 +20,7 @@ Use when: engineers are about to implement something non-trivial.
 
 ### Scope
 
-[What is covered -  and what is explicitly not covered]
+[What is covered - and what is explicitly not covered]
 
 ---
 
@@ -42,7 +42,7 @@ CLIENT to API GATEWAY to SERVICE to DATABASE to MESSAGE QUEUE to WORKER
 
 ### Database Schema
 
-[ERD or table definitions -  use planning skill for ERD format]
+[ERD or table definitions - use planning skill for ERD format]
 
 ### Data Flow
 
@@ -54,7 +54,7 @@ CLIENT to API GATEWAY to SERVICE to DATABASE to MESSAGE QUEUE to WORKER
 
 ### Endpoints
 
-[New or modified endpoints -  use api-conventions skill]
+[New or modified endpoints - use api-conventions skill]
 
 ---
 
@@ -109,7 +109,7 @@ CLIENT to API GATEWAY to SERVICE to DATABASE to MESSAGE QUEUE to WORKER
 ## SDD Rules
 
 ```text
-Link to the PRD -  SDD explains HOW, PRD explains WHAT and WHY
+Link to the PRD - SDD explains HOW, PRD explains WHAT and WHY
 Document all major design decisions with reasoning
 Include rollout plan for production changes
 Security and performance must be addressed explicitly

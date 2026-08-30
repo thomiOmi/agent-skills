@@ -15,11 +15,11 @@ Guidelines for reliable, secure, and maintainable infrastructure and deployment 
 
 ## References
 
-- `references/cicd.md` -  CI/CD pipeline patterns, caching, parallel stages, self-hosted runners
-- `references/docker.md` -  multi-stage builds, security scanning, registry management
-- `references/kubernetes.md` -  deployment manifests, service mesh, auto-scaling, rolling updates
-- `references/cloud.md` -  major cloud provider comparisons, networking, IAM
-- `references/monitoring.md` -  observability stack, alert rules, on-call runbooks
+- `references/cicd.md` - CI/CD pipeline patterns, caching, parallel stages, self-hosted runners
+- `references/docker.md` - multi-stage builds, security scanning, registry management
+- `references/kubernetes.md` - deployment manifests, service mesh, auto-scaling, rolling updates
+- `references/cloud.md` - major cloud provider comparisons, networking, IAM
+- `references/monitoring.md` - observability stack, alert rules, on-call runbooks
 
 See `assets/templates.md` for Dockerfile, pipeline, and deployment workflow templates.
 
@@ -59,11 +59,11 @@ CMD ["node", "dist/server.js"]
 
 ## CI/CD Principles
 
-1. **Fail fast** -  validate lint, typecheck, tests before building
-2. **Deterministic builds** -  same commit always produces same artifact
-3. **Immutable artifacts** -  build once, promote through environments
-4. **Idempotent deployments** -  running the same deploy twice is safe
-5. **Rollback always** -  every deployment has a tested rollback plan
+1. **Fail fast** - validate lint, typecheck, tests before building
+2. **Deterministic builds** - same commit always produces same artifact
+3. **Immutable artifacts** - build once, promote through environments
+4. **Idempotent deployments** - running the same deploy twice is safe
+5. **Rollback always** - every deployment has a tested rollback plan
 
 ---
 
@@ -133,13 +133,13 @@ Each stage gates the next. If any stage fails, the pipeline stops.
 
 ## Hard Rules
 
-- Never hardcode secrets -  use environment variables or secret managers
-  - Why: Secrets in source code end up in Git history, CI logs, and artifact storage -  all of which lack access controls and rotation policies. A single leaked secret can compromise production.
-- Never use :latest tag in production -  always pin versions
+- Never hardcode secrets - use environment variables or secret managers
+  - Why: Secrets in source code end up in Git history, CI logs, and artifact storage - all of which lack access controls and rotation policies. A single leaked secret can compromise production.
+- Never use :latest tag in production - always pin versions
   - Why: `:latest` changes without notice. A deployment that works today may pull a subtly different image tomorrow. Pinning to a specific digest or version ensures deterministic builds.
 - Never deploy without a rollback plan
-  - Why: Deployments fail -  schema mismatches, config errors, traffic spikes. Without a tested rollback plan, a bad deployment becomes a production incident measured in hours, not minutes.
+  - Why: Deployments fail - schema mismatches, config errors, traffic spikes. Without a tested rollback plan, a bad deployment becomes a production incident measured in hours, not minutes.
 - Never make manual changes to production infrastructure
   - Why: Manual changes are unreproducible, undocumented, and lost when the instance is replaced. They create "snowflake" infrastructure that drifts from IaC and breaks automation.
 - Always test rollback procedure before depending on it
-  - Why: An untested rollback is worse than no rollback -  you discover during an incident that the migration is irreversible, the old artifact is gone, or the data format has changed.
+  - Why: An untested rollback is worse than no rollback - you discover during an incident that the migration is irreversible, the old artifact is gone, or the data format has changed.

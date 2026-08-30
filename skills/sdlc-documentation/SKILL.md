@@ -21,3 +21,16 @@ A `SPEC.md` contains low-level technical design, module interactions, data struc
 ### When to create SPEC.md
 - Designing complex multi-file features or API refactors.
 - Reference template available in `references/SPEC_TEMPLATE.md`.
+
+---
+
+## SDLC Documentation Checklist
+
+```markdown
+- [ ] Requirements are specific, unambiguous, and testable
+- [ ] Acceptance criteria defined for every user story or feature
+- [ ] Edge cases and non-functional requirements covered
+- [ ] Dependencies between features identified
+- [ ] Doc matches the actual implementation after changes
+- [ ] Versioned and formatted cleanly in Markdown
+```

@@ -33,6 +33,6 @@ What risks does this introduce? What follow-up work does this create?
 
 ## Alternatives Considered
 
-- **Option A:** [brief] -  rejected because [reason]
-- **Option B:** [brief] -  rejected because [reason]
+- **Option A:** [brief] - rejected because [reason]
+- **Option B:** [brief] - rejected because [reason]
 ```

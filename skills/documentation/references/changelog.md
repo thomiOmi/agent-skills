@@ -20,7 +20,7 @@ Update on every PR that changes behavior.
 
 ### Deprecated
 
-- `POST /v1/users/create` -  use `POST /v2/users` instead
+- `POST /v1/users/create` - use `POST /v2/users` instead
 
 ### Removed
 
@@ -31,4 +31,4 @@ Update on every PR that changes behavior.
 - Upgraded `jsonwebtoken` to address CVE-2024-XXXXX
 ```
 
-Valid sections: `Added` · `Changed` · `Fixed` · `Deprecated` · `Removed` · `Security`
+Valid sections: `Added` Â· `Changed` Â· `Fixed` Â· `Deprecated` Â· `Removed` Â· `Security`

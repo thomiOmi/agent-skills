@@ -2,9 +2,9 @@
 
 ## Schema Design
 
-- Types: **nouns, singular, PascalCase** -  `User`, `Order`
-- Queries: **camelCase** -  `user(id)`, `orders(filter)`
-- Mutations: describe the action -  `createUser`, `updateOrder`
+- Types: **nouns, singular, PascalCase** - `User`, `Order`
+- Queries: **camelCase** - `user(id)`, `orders(filter)`
+- Mutations: describe the action - `createUser`, `updateOrder`
 
 ```graphql
 type Query {
@@ -19,7 +19,7 @@ type Mutation {
 
 ## Mutation Payload Pattern
 
-Every mutation returns a payload type -  never a bare resource:
+Every mutation returns a payload type - never a bare resource:
 
 ```graphql
 type CreateUserPayload {
@@ -39,6 +39,6 @@ type UserError {
 Every mutation returns a payload type
 Paginated lists use connection types: UserConnection
 Use input types for mutations: CreateUserInput
-Do not return HTTP 4xx for GraphQL validation failures -  use errors field
+Do not return HTTP 4xx for GraphQL validation failures - use errors field
 Do not use generic names: Data, Result, Response
 ```

@@ -100,6 +100,6 @@ Note the communication protocol on each arrow (HTTPS, gRPC, events)
 Identify single points of failure
 Show where data is stored
 Use sequenceDiagram for request flows, graph for topology
-Do not design in isolation -  review existing architecture first
+Do not design in isolation - review existing architecture first
 Do not combine more than one concern in a single diagram
 ```

@@ -31,11 +31,11 @@ flowchart TD
 ```
 
 **Never skip to STEP 5 without completing STEP 4.**
-Root cause first -  fix second.
+Root cause first - fix second.
 
 ---
 
-## STEP 1 -  Reproduce
+## STEP 1 - Reproduce
 
 Confirm the bug exists and understand exact conditions.
 
@@ -51,14 +51,14 @@ Do not fix an unreproduced bug
 Write a failing test that reproduces the bug before fixing it
 ```
 
-## STEP 2 -  Read the Error
+## STEP 2 - Read the Error
 
-- Read the **full** error message -  not just the first line
-- Read the **full** stack trace -  find which line in your code triggered it
+- Read the **full** error message - not just the first line
+- Read the **full** stack trace - find which line in your code triggered it
 - Note the error type and any error codes
 - Check logs for events that happened before the error
 
-## STEP 3 -  Locate the Failure Point
+## STEP 3 - Locate the Failure Point
 
 **Binary search:**
 Does the bug happen before or after line 50?
@@ -76,7 +76,7 @@ print(f"[DEBUG] value after transform: {result}")
 
 Remove all debug logs after fixing.
 
-## STEP 4 -  Trace the Root Cause
+## STEP 4 - Trace the Root Cause
 
 Ask "why" at each level until you reach the root:
 
@@ -90,7 +90,7 @@ Why did the DB query return no results?
 Root cause: JWT decoded with wrong key.
 ```
 
-## STEP 5 -  Fix
+## STEP 5 - Fix
 
 State the fix clearly before writing it:
 
@@ -103,7 +103,7 @@ Side effects: [what else might be affected]
 Rules:
 
 ```text
-Fix the root cause -  not the symptom
+Fix the root cause - not the symptom
 Make the smallest change that fixes the bug
 Keep the fix isolated from refactoring
 Do not add null checks to hide a bug without understanding why it's null
@@ -111,7 +111,7 @@ Do not catch and swallow exceptions without logging
 Do not change multiple things at once
 ```
 
-## STEP 6 -  Verify
+## STEP 6 - Verify
 
 ```markdown
 - [ ] Original reproduction case no longer triggers the bug
@@ -120,7 +120,7 @@ Do not change multiple things at once
 - [ ] Tested in the same environment where the bug occurred
 ```
 
-## STEP 7 -  Prevent Recurrence
+## STEP 7 - Prevent Recurrence
 
 ```markdown
 - [ ] Write a regression test that would have caught this bug

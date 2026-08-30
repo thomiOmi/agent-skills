@@ -47,7 +47,7 @@ Remove [entity] from test database
 ## Test Case Documentation
 
 ```mardown
-TEST CASE: TC-[number] -  [Descriptive title]
+TEST CASE: TC-[number] - [Descriptive title]
 
 Type:         Unit | Integration | E2E | Performance | Security
 Priority:     Critical | High | Medium | Low
@@ -73,12 +73,12 @@ Notes:        [Any relevant context or known limitations]
 FEATURE: [Feature or module name]
 
 Coverage targets:
-[ ] Happy path -  valid input returns expected output
-[ ] Boundary -  empty, zero, maximum, null
-[ ] Error -  invalid input raises correct error
-[ ] Business rules -  [list specific rules for this feature]
-[ ] Side effects -  [list expected DB changes, events, notifications]
-[ ] Permissions -  unauthorized access is rejected
+[ ] Happy path - valid input returns expected output
+[ ] Boundary - empty, zero, maximum, null
+[ ] Error - invalid input raises correct error
+[ ] Business rules - [list specific rules for this feature]
+[ ] Side effects - [list expected DB changes, events, notifications]
+[ ] Permissions - unauthorized access is rejected
 
 Test types needed:
 [ ] Unit tests
