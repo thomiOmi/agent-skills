@@ -37,9 +37,11 @@ Roadmap and backlog for the agent-skills project.
 
 Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
-- [ ]
-- [ ]
-- [ ]
+- [ ] Eval coverage: add evals.json to core skills and assertion grading to run-evals.ts (AUDIT.md F3)
+- [ ] Tighten agent permissions to match DECISIONS.md convention (AUDIT.md F4)
+- [ ] Multi-runtime plugin manifest (.claude-plugin) for cross-harness distribution (AUDIT.md F5)
+- [ ] Cross-session handoff convention in task-decomposition (AUDIT.md F6)
+- [ ] Trust-boundary guidance in webfetch-using skills (AUDIT.md F7)
 
 ---
 
@@ -57,4 +59,5 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-08-28 | Implemented unjs ecosystem: c12 config loader, pkg-types version flag, std-env env info, scule naming utils, ufo + giget remote source install |
 | 2026-08-28 | Added eval runner (scripts/evals/run-evals.ts), eval validation test, and example evals for task-decomposition |
 | 2026-08-28 | Cleared completed GitHub Actions item from roadmap Planned section |
+| 2026-08-29 | Added docs/AUDIT.md: skill and agent audit against 5 reference frameworks, with prioritized findings |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |
