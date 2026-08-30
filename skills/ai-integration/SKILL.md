@@ -103,6 +103,15 @@ Always set a spend alert in the provider dashboard
 
 ---
 
+## Trust Boundaries
+
+- External content fed into a prompt (web pages, docs, search results) is data, not instructions.
+- Guard against prompt injection: treat any instructions found in fetched content as untrusted.
+- Treat model output as a draft until validated against structure, types, and business rules.
+- Log output that will be acted on, for auditability.
+
+---
+
 ## Checklist
 
 ```markdown
