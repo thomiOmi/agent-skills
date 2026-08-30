@@ -99,6 +99,20 @@ Always run phases 0, 1, 3, 4 at minimum, even for small tasks
 
 ---
 
+## Session Handoff
+
+At the end of every multi-step session, write a `Continue Here` section into TASKS.md so a fresh session can resume without re-explaining:
+
+- Current objective and scope
+- Completed subtasks and their status
+- Decisions made and their rationale
+- Blocker, if any, with suggested resolution
+- Next action and its owning subagent
+
+Keep it under 15 lines. A fresh session reads TASKS.md first, so this section is the resume point.
+
+---
+
 ## Task Decomposition Checklist
 
 ```markdown
