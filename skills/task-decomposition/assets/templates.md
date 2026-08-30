@@ -1,4 +1,4 @@
-# Task Decomposition -  Templates
+# Task Decomposition - Templates
 
 ## Phase 0 Scope Document
 
@@ -17,7 +17,7 @@
 
 **Blocking questions:**
 
-- [ ] [question] -  needs answer from: [person/team]
+- [ ] [question] - needs answer from: [person/team]
 
 **Assumptions:**
 
@@ -32,13 +32,13 @@
 ## Task Tree: [Task Name]
 
 TASK: [main task name]
-├── SUB-TASK 1: [description] [S] -  skill: code-style
-├── SUB-TASK 2: [description] [M] -  skill: api-conventions -  depends on 1
-│ ├── Step 2.1: [detail]
-│ └── Step 2.2: [detail]
-└── SUB-TASK 3: [description] [S] -  skill: testing -  parallel with 2
+â”œâ”€â”€ SUB-TASK 1: [description] [S] - skill: code-style
+â”œâ”€â”€ SUB-TASK 2: [description] [M] - skill: api-conventions - depends on 1
+â”‚ â”œâ”€â”€ Step 2.1: [detail]
+â”‚ â””â”€â”€ Step 2.2: [detail]
+â””â”€â”€ SUB-TASK 3: [description] [S] - skill: testing - parallel with 2
 
-**Size guide:** S < 30 min · M 30 min-2 hr · L > 2 hr (must split before starting)
+**Size guide:** S < 30 min Â· M 30 min-2 hr Â· L > 2 hr (must split before starting)
 
 **Dependencies:**
 
@@ -47,7 +47,7 @@ TASK: [main task name]
 
 **Key risks:**
 
-- [risk] -  mitigation: [approach]
+- [risk] - mitigation: [approach]
 
 **Estimated total:** [S/M/L/XL]
 ```
@@ -59,7 +59,7 @@ TASK: [main task name]
 ```markdown
 ## Progress: [Task Name]
 
-**Phase:** PHASE X -  [name]
+**Phase:** PHASE X - [name]
 **Status:** In Progress | Done | Blocked
 
 **Completed:**
@@ -69,7 +69,7 @@ TASK: [main task name]
 
 **In Progress:**
 
-- PHASE 3: Sub-task 2/4 -  [description]
+- PHASE 3: Sub-task 2/4 - [description]
 
 **Waiting:**
 
@@ -78,7 +78,7 @@ TASK: [main task name]
 
 **Blockers:**
 
-- [description] -  needs: [what is required]
+- [description] - needs: [what is required]
 ```
 
 ---

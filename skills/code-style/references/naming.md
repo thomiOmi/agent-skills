@@ -1,6 +1,6 @@
 # Naming Conventions
 
-Name things by what they **are** or **do** -  not by how they are implemented.
+Name things by what they **are** or **do** - not by how they are implemented.
 Every name must be readable without additional context.
 
 ---
@@ -14,7 +14,7 @@ A longer descriptive name is always better than a short ambiguous one.
 Acceptable: `id`, `url`, `db`, `ctx`, `api`, `http`
 Not acceptable: `usr`, `cfg`, `tmp`, `mgr`, `util`, `hlpr`, `req`, `res`
 
-**No single-letter names** -  except mathematical loop indices (`i`, `j`, `k`).
+**No single-letter names** - except mathematical loop indices (`i`, `j`, `k`).
 Every other variable must have a name that explains what it holds.
 
 **Consistency takes priority.**
@@ -100,9 +100,9 @@ Use a noun or noun phrase describing what the value represents.
 Use the singular of the collection name, not single letters.
 
 ```text
-for order in orders         -  not: for x in orders
-for user in active_users    -  not: for i in active_users
-for chunk in file_chunks    -  not: for c in file_chunks
+for order in orders         - not: for x in orders
+for user in active_users    - not: for i in active_users
+for chunk in file_chunks    - not: for c in file_chunks
 ```
 
 Exception: pure mathematical index loops where `i`, `j`, `k` are conventional.

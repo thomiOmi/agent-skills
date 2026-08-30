@@ -4,10 +4,10 @@
 
 Likely causes:
 
-- **Shared state** between tests -  one test pollutes another
-- **Time dependency** -  assumes specific clock time or duration
-- **Race condition** -  async operations in different orders
-- **Real network calls** -  inherently unreliable in tests
+- **Shared state** between tests - one test pollutes another
+- **Time dependency** - assumes specific clock time or duration
+- **Race condition** - async operations in different orders
+- **Real network calls** - inherently unreliable in tests
 
 Fix: isolate the test, mock time/network, reset state between tests.
 
@@ -25,7 +25,7 @@ Checklist:
 
 ## Performance Bug (too slow)
 
-Do not guess -  measure first:
+Do not guess - measure first:
 
 ```text
 1. Profile the code (cProfile, Chrome DevTools, go pprof, etc.)
@@ -34,7 +34,7 @@ Do not guess -  measure first:
 4. Measure again to confirm improvement
 ```
 
-## Anti-Patterns -  Never Do These
+## Anti-Patterns - Never Do These
 
 ```text
 Guess and check: changing random things until it works

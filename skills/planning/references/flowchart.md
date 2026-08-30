@@ -83,8 +83,8 @@ flowchart TD
 ```text
 Every flow must have a clear start and end node
 Every decision node must have all possible branches
-Include error paths -  they are as important as happy paths
-One diagram per concern -  split complex flows into sub-diagrams
+Include error paths - they are as important as happy paths
+One diagram per concern - split complex flows into sub-diagrams
 Use TD (top-down) for process flows, LR (left-right) for state machines
-Do not exceed 3 levels of nesting -  split into sub-diagrams instead
+Do not exceed 3 levels of nesting - split into sub-diagrams instead
 ```

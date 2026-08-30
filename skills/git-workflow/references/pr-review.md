@@ -52,7 +52,7 @@ Resolves: #[issue-number]
 ## Self-Review Checklist (before requesting review)
 
 ```markdown
-- [ ] Read every line of the diff -  not just what you changed
+- [ ] Read every line of the diff - not just what you changed
 - [ ] No unintended files included
 - [ ] No debug statements left in
 - [ ] No hardcoded values that belong in config
@@ -69,15 +69,15 @@ Resolves: #[issue-number]
 **For the reviewer:**
 
 - Review the intent, not just the implementation
-- Suggest, do not demand -  use "consider" and "what if" language for non-blocking comments
+- Suggest, do not demand - use "consider" and "what if" language for non-blocking comments
 - Distinguish blocking issues from suggestions: prefix with `[blocking]` or `[nit]`
 - Approve only when you would be comfortable maintaining this code
 
 **Response labels:**
 
-- `[blocking]` -  must be addressed before merge
-- `[nit]` -  minor style or preference, author's discretion
-- `[question]` -  seeking understanding, not requesting a change
+- `[blocking]` - must be addressed before merge
+- `[nit]` - minor style or preference, author's discretion
+- `[question]` - seeking understanding, not requesting a change
 
 ---
 

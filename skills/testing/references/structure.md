@@ -30,10 +30,10 @@ Label each section with a comment (`# Arrange`, `// Act`, etc.) when the separat
 
 **Always test:**
 
-- Happy path -  valid input produces the expected output
-- Boundary values -  empty string, zero, maximum allowed value, null, undefined
-- Error paths -  see section below
-- Business rules -  quotas, permission checks, state transitions, validation logic
+- Happy path - valid input produces the expected output
+- Boundary values - empty string, zero, maximum allowed value, null, undefined
+- Error paths - see section below
+- Business rules - quotas, permission checks, state transitions, validation logic
 
 ---
 
@@ -46,9 +46,9 @@ Error paths are as important as happy paths. Every function that can fail must h
 - Invalid input that should be rejected (wrong type, out of range, missing required field)
 - Missing or null values where the code expects a value
 - Dependency failure (database unreachable, external API returns error, file not found)
-- Permission denied -  authenticated but not authorized
-- Business rule violation -  quota exceeded, state transition not allowed, duplicate entry
-- Concurrent modification -  optimistic locking failure, race condition
+- Permission denied - authenticated but not authorized
+- Business rule violation - quota exceeded, state transition not allowed, duplicate entry
+- Concurrent modification - optimistic locking failure, race condition
 
 **For each function, ask:**
 
@@ -117,10 +117,10 @@ Right:  assert the response status is 422 with error code "INVALID_EMAIL"
 
 ## What Not to Test
 
-- Private methods or internal state -  test through the public interface
-- Framework or library behavior -  test your code, not third-party code
-- Trivial accessors with no logic -  getters and setters that do nothing but read/write a field
-- Exact log message strings -  fragile and low value
+- Private methods or internal state - test through the public interface
+- Framework or library behavior - test your code, not third-party code
+- Trivial accessors with no logic - getters and setters that do nothing but read/write a field
+- Exact log message strings - fragile and low value
 
 ---
 
@@ -129,7 +129,7 @@ Right:  assert the response status is 422 with error code "INVALID_EMAIL"
 Rules specific to tests that cross system boundaries (database, file system, network):
 
 - Use a real test database, not a mock, for database integration tests.
-- Each test must clean up its own data -  tests must not depend on execution order.
+- Each test must clean up its own data - tests must not depend on execution order.
 - Use transactions that roll back after each test where the framework supports it.
 - Do not share state between integration tests.
 
@@ -141,11 +141,11 @@ Place test files adjacent to the source files they test, or in a parallel direct
 Follow the convention already established in the project.
 
 ```text
-Option A -  co-located:
+Option A - co-located:
   src/users/service.[ext]
   src/users/service.test.[ext]
 
-Option B -  parallel directory:
+Option B - parallel directory:
   src/users/service.[ext]
   tests/users/service.test.[ext]
 ```

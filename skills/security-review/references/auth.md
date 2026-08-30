@@ -43,7 +43,7 @@ Endpoint protection:
 
 - [ ] Every protected endpoint checks authentication
 - [ ] Every protected endpoint checks authorization (not just identity)
-- [ ] Authorization is checked on the server -  not trusted from the client
+- [ ] Authorization is checked on the server - not trusted from the client
 - [ ] Object-level authorization: user can only access their own resources
 
 Role-based access:
@@ -68,7 +68,7 @@ Common failures to check:
 A secure password reset flow must:
 
 ```text
-1. Accept only the email address -  do not confirm whether it exists
+1. Accept only the email address - do not confirm whether it exists
    (consistent response prevents user enumeration)
 2. Generate a cryptographically random, single-use token
 3. Store a hash of the token, not the token itself

@@ -21,3 +21,16 @@ In real projects, this skill generates or updates `ARCHITECTURE.md` at the proje
 ### When to create ARCHITECTURE.md
 - Initializing repository architecture or explaining service topologies.
 - Reference template available in `references/ARCHITECTURE_TEMPLATE.md`.
+
+---
+
+## System Design Checklist
+
+```markdown
+- [ ] All components and their communication protocols shown
+- [ ] Tech stack choices justified against alternatives
+- [ ] Data flow and state management covered
+- [ ] External dependencies and single points of failure identified
+- [ ] Diagrams match the implemented system
+- [ ] Architecture reviewed before implementation starts
+```

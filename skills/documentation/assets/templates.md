@@ -19,7 +19,7 @@ cp .env.example .env
 
 | Variable | Required | Default | Description   |
 | -------- | -------- | ------- | ------------- |
-| `KEY`    | Yes      | -        | [Description] |
+| `KEY`    | Yes      | -      | [Description] |
 
 ## Development
 
@@ -55,5 +55,5 @@ cp .env.example .env
 
 ## Alternatives Considered
 
-- [Option A] -  rejected because [reason]
+- [Option A] - rejected because [reason]
 ```

@@ -17,14 +17,14 @@ Action: Clear CTA with specific next step
 
 **Example:**
 > **Stop guessing which emails convert.**
-> Most marketers A/B test blind -  picking winners by gut feel. Our AI analyzes 12 variables per send and recommends the winning variant before you hit send.
+> Most marketers A/B test blind - picking winners by gut feel. Our AI analyzes 12 variables per send and recommends the winning variant before you hit send.
 > **Start your free trial to**
 
 ### PAS (Problem to Agitate to Solve)
 
 ```text
 Problem: Name the specific frustration
-Agitate: Make it hurt -  what does the problem cost them?
+Agitate: Make it hurt - what does the problem cost them?
 Solve: Present your solution as the relief
 ```
 
@@ -43,7 +43,7 @@ Benefit: What it means for the user
 **Example:**
 > **Real-time collaboration** (feature)
 > See edits as they happen, not after (advantage)
-> No more "which version is latest?" -  everyone stays in sync (benefit)
+> No more "which version is latest?" - everyone stays in sync (benefit)
 
 ### Before-After-Bridge
 
@@ -71,16 +71,16 @@ Bridge: How to get from Before to After
 
 **Weak CTAs:**
 
-- "Submit" -  generic, no motivation
-- "Click here" -  tells the action, not the value
-- "Learn More" -  overused, low urgency
+- "Submit" - generic, no motivation
+- "Click here" - tells the action, not the value
+- "Learn More" - overused, low urgency
 
 **Strong CTAs:**
 
-- "Start your free trial" -  specific, low commitment
-- "Get the report" -  clear value exchange
-- "Deploy in one click" -  speed, simplicity
-- "See it in action" -  demo-focused
+- "Start your free trial" - specific, low commitment
+- "Get the report" - clear value exchange
+- "Deploy in one click" - speed, simplicity
+- "See it in action" - demo-focused
 
 Rules:
 

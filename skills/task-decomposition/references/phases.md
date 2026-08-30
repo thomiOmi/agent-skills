@@ -1,4 +1,4 @@
-# Task Decomposition -  Phase Reference
+# Task Decomposition - Phase Reference
 
 ## Phase Flow
 
@@ -61,7 +61,7 @@ Minimum for any task: PHASE 0 to 1 to 3 to 4.
 
 ---
 
-## PHASE 0 -  Clarify & Scope
+## PHASE 0 - Clarify & Scope
 
 **Goal:** Fully understand the task before doing anything.
 
@@ -78,7 +78,7 @@ Required output:
 
 ---
 
-## PHASE 1 -  Plan & Decompose
+## PHASE 1 - Plan & Decompose
 
 **Goal:** Break the task into ordered, actionable sub-tasks.
 
@@ -86,13 +86,13 @@ Sub-task sizes:
 
 ```mermaid
 flowchart LR
-    S["S -  Small
+    S["S - Small
 < 30 min
 Single file or function"]
-    M["M -  Medium
+    M["M - Medium
 30 min - 2 hr
 Multiple files"]
-    L["L -  Large
+    L["L - Large
 > 2 hr
 Must be split before starting"]
 
@@ -107,9 +107,9 @@ Task tree format:
 
 ```text
 TASK: [main task name]
-├── SUB-TASK 1: [description] [S]
-├── SUB-TASK 2: [description] [M] -  depends on 1
-└── SUB-TASK 3: [description] [S] -  parallel with 2
+â”œâ”€â”€ SUB-TASK 1: [description] [S]
+â”œâ”€â”€ SUB-TASK 2: [description] [M] - depends on 1
+â””â”€â”€ SUB-TASK 3: [description] [S] - parallel with 2
 ```
 
 Required output:
@@ -125,7 +125,7 @@ Required output:
 
 ---
 
-## PHASE 2 -  Scaffold & Setup
+## PHASE 2 - Scaffold & Setup
 
 **Goal:** Foundation before core implementation.
 
@@ -141,7 +141,7 @@ Required output:
 
 ---
 
-## PHASE 3 -  Implement
+## PHASE 3 - Implement
 
 **Goal:** Execute sub-tasks one by one.
 
@@ -180,7 +180,7 @@ Resolves: SUB-TASK-X
 
 ---
 
-## PHASE 4 -  Test & Validate
+## PHASE 4 - Test & Validate
 
 **Goal:** Confirm correctness; no regressions.
 
@@ -198,7 +198,7 @@ Required output:
 
 ---
 
-## PHASE 5 -  Review & Integrate
+## PHASE 5 - Review & Integrate
 
 **Goal:** Code is clean and ready to merge.
 
@@ -216,7 +216,7 @@ Checklist:
 
 ---
 
-## PHASE 6 -  Document & Hand-off
+## PHASE 6 - Document & Hand-off
 
 **Goal:** Work can be continued by another person or agent.
 
@@ -238,7 +238,7 @@ Required output:
 ## Progress
 
 Task: [name]
-Phase: PHASE X -  [name]
+Phase: PHASE X - [name]
 Status: In Progress In Progress | OK Done | Blocked Blocked
 
 Completed:
@@ -246,11 +246,11 @@ Completed:
 - OK PHASE 1: 4 sub-tasks planned
 
 In Progress:
-- In Progress PHASE 3: Sub-task 2/4 -  [description]
+- In Progress PHASE 3: Sub-task 2/4 - [description]
 
 Waiting:
-- ⏳ PHASE 3: Sub-tasks 3, 4
+- â³ PHASE 3: Sub-tasks 3, 4
 
 Blockers:
-- Blocked [description] -  needs: [what is required]
+- Blocked [description] - needs: [what is required]
 ```
