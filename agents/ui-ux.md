@@ -5,8 +5,9 @@ mode: subagent
 temperature: 0.3
 color: accent
 permission:
+  read: allow
   edit: allow
-  bash: allow
+  bash: ask
   skill: allow
 ---
 

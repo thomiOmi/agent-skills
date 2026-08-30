@@ -47,5 +47,6 @@ Every request is classified as Analysis, Implementation, or Both at the start. A
 ### Agent Permission Convention
 - Every agent must have explicit `read: allow`
 - `edit: deny` and `bash: deny` as safe defaults for read-only agents
-- Only agents that need to run tests get bash access
+- Only agents that need to run tests get `bash: allow` without restriction
+- Content and planning agents (docs, product, marketing, data, design, devops) get `bash: ask` - usable with user confirmation, never silent
 - orchestrator and senior-developer - full bash access
