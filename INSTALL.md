@@ -148,7 +148,7 @@ Every file and directory in this repo has a specific purpose when installed to `
 | `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
 | `tools/*.ts` | `tools/*.ts` | **2 custom tools** - task-decomposer.ts, quality-verifier.ts. |
 | `commands/*.md` | `commands/*.md` | **17 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
-| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers agents, skills, and tools via OpenCode Plugin API. |
+| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers custom tools and a compaction hook that preserves TASKS.md state across context compaction. |
 
 ---
 
