@@ -135,6 +135,88 @@ Full reference template deployed by installer:
 
 ---
 
+## Skill Permissions and MCP Servers
+
+### Skill loading permissions
+
+Control which skills agents can load with wildcard patterns in `opencode.jsonc`
+(see [Agent Skills docs](https://opencode.ai/docs/skills/)):
+
+```jsonc
+{
+  "permission": {
+    "skill": {
+      "*": "allow",
+      "internal-*": "deny",
+      "experimental-*": "ask"
+    }
+  }
+}
+```
+
+- `allow` - skill loads immediately
+- `deny` - skill hidden from the agent entirely
+- `ask` - user prompted before the skill loads
+
+You can also disable the skill tool for a specific agent:
+
+```jsonc
+{
+  "agent": {
+    "build": { "tools": { "skill": false } }
+  }
+}
+```
+
+### MCP servers
+
+Add local or remote MCP servers under `mcp`. Tools register as
+`<server-name>_*` so you can disable them per agent with glob patterns.
+Uncommented example (disabled by default):
+
+```jsonc
+{
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "my-local-server": {
+      "type": "local",
+      "command": ["bun", "x", "my-mcp-command"],
+      "enabled": true,
+      "environment": {
+        "MY_ENV_VAR": "value"
+      }
+    }
+  },
+  "tools": {
+    "my-local-server_*": false
+  },
+  "agent": {
+    "senior-developer": { "tools": { "my-local-server_*": true } }
+  }
+}
+```
+
+MCP servers add to context - enable only what you need.
+See [MCP docs](https://opencode.ai/docs/mcp-servers/) for all options.
+
+### Plugin from npm
+
+Once the package is published, plugins load automatically from your config:
+
+```jsonc
+{
+  "plugin": ["@thomiomi/agent-skills"]
+}
+```
+
+The package owner publishes with `bun publish` (releases stop at changelog and
+tag otherwise).
+
+---
+
 ## Deployment Map
 
 Every file and directory in this repo has a specific purpose when installed to `~/.config/opencode/`:
