@@ -18,7 +18,7 @@
   "author": "thomiOmi",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thomiOmi/agent-skills.git"
+    "url": "git+https://github.com/thomiOmi/agent-skills.git"
   },
   "files": [
     "agents",
@@ -32,7 +32,7 @@
   "type": "module",
   "main": "./plugin/agent-skills.ts",
   "bin": {
-    "agent-skills": "./bin/agent-skills.mjs"
+    "agent-skills": "bin/agent-skills.mjs"
   },
   "exports": {
     ".": {
