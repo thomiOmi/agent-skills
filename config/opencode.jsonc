@@ -39,5 +39,29 @@
       ".env.local",
       ".env.*.local"
     ]
-  }
+  },
+
+  // Skill loading permissions (wildcard patterns). Uncomment and adapt.
+  // "permission": {
+  //   "skill": {
+  //     "*": "allow",
+  //     "experimental-*": "ask"
+  //   }
+  // },
+
+  // MCP servers (optional). Tools register as <server-name>_*. Uncomment and adapt.
+  // "mcp": {
+  //   "context7": {
+  //     "type": "remote",
+  //     "url": "https://mcp.context7.com/mcp"
+  //   },
+  //   "my-local-server": {
+  //     "type": "local",
+  //     "command": ["bun", "x", "my-mcp-command"],
+  //     "enabled": true
+  //   }
+  // },
+
+  // npm plugins (optional). Requires the package to be published to npm.
+  // "plugin": ["@thomiomi/agent-skills"]
 }
