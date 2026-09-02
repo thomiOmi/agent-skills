@@ -99,7 +99,21 @@ Publishing is manual: run `bun run release` to bump the version and tag, then `n
 
 ## Plugin (npm package)
 
-Install as an OpenCode plugin when registered:
+Distribution status:
+
+1. **Local clone (active)** - the primary install path. Clone this repo and run
+   `bun run setup` (or `setup:symlink` for live editing). Everything works:
+   agents, skills, tools, commands, and the compaction plugin.
+2. **GitHub source (requires public repo)** - `install --source github:thomiOmi/agent-skills`
+   downloads via the GitHub tarball API without auth, so it only works if the
+   repo is public. It currently returns 404 because the repo is private.
+3. **npm (not published yet)** - `bunx @thomiomi/agent-skills@latest install`
+   and the `"plugin": ["@thomiomi/agent-skills"]` config entry activate only
+   after the package owner runs `bun publish` (npm login + 2FA required).
+
+Until npm publish happens, always install from a local clone.
+
+Install as an OpenCode plugin (after publish):
 
 ```jsonc
 {
