@@ -149,6 +149,61 @@ Full reference template deployed by installer:
 
 ---
 
+## Per-Agent Model Overrides
+
+Each agent can run on a different model with provider-specific options.
+Overrides work in agent markdown frontmatter or in `opencode.jsonc`.
+
+### In agent frontmatter (agents/*.md)
+
+```yaml
+---
+name: deep-thinker
+description: Complex reasoning specialist
+mode: subagent
+temperature: 0.1
+model: cline/claude-sonnet-4.5
+reasoningEffort: high
+---
+```
+
+- `model` uses the `provider/model-id` format. Omit it to use the session model.
+- Any other frontmatter key (for example `reasoningEffort`, `textVerbosity`,
+  `top_p`) is passed through to the provider as a model option.
+- OpenCode lists available models with `opencode models`.
+
+### In opencode.jsonc (including built-in agents)
+
+```jsonc
+{
+  "agent": {
+    "deep-thinker": {
+      "model": "cline/claude-sonnet-4.5",
+      "reasoningEffort": "high"
+    },
+    "plan": {
+      "model": "cline/claude-haiku-4.5"
+    }
+  }
+}
+```
+
+### Recommended assignments for this orchestra
+
+| Agent | Rationale |
+|---|---|
+| `deep-thinker` | Strongest reasoning model available - root cause analysis and trade-offs |
+| `orchestrator` | Fast, capable model - it only decomposes and delegates |
+| `senior-developer` | Strong coding model - architecture and implementation |
+| `qa-engineer` | Strong coding model - writes and audits tests |
+| `marketing`, `docs-writer` | Mid-tier model - prose quality matters less than speed and cost |
+
+Keep cost down: give the heavy reasoning model only to `deep-thinker` and the
+strong coding model to `senior-developer` and `qa-engineer`. Everything else
+can ride the default session model.
+
+---
+
 ## Skill Permissions and MCP Servers
 
 ### Skill loading permissions
