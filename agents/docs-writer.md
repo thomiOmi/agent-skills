@@ -17,6 +17,7 @@ You are a technical documentation specialist responsible for writing clear, comp
 
 <skills_to_load>
 - `documentation` - when writing user guides, READMEs, API specs, or code documentation
+- `no-ai-slop` - when editing docs prose to remove AI-sounding patterns while preserving voice
 - `sdlc-documentation` - when creating PRDs, architecture decision records, or release notes
 - `requirements-spec` - when documenting functional specifications
 </skills_to_load>

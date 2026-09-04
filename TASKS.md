@@ -23,6 +23,7 @@ Roadmap and backlog for the agent-skills project.
 - Agent expansion: researcher + project-manager with research-methodology skill — 2026-08-28
   - Note: data-analyst and product-manager from the original plan already existed in the roster
 - Eval coverage: evals.json for 5 skills (task-decomposition, code-style, testing, security-review, git-workflow) with assertion grading in run-evals.ts — 2026-08-30
+- no-ai-slop skill: remove 20+ AI slop patterns from prose while preserving voice (edit + detect modes), adapted from petergyang/no-ai-slop (MIT) — 2026-09-04
 
 ### In Progress
 
@@ -62,4 +63,5 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 | 2026-08-30 | Tightened agent permissions (read: allow everywhere, bash: ask for content agents) |
 | 2026-08-30 | Added trust boundaries to research-methodology and ai-integration, session handoff to task-decomposition |
 | 2026-08-31 | Added compaction plugin hook: TASKS.md state preserved across OpenCode context compaction |
+| 2026-09-04 | Added no-ai-slop skill (adapted from petergyang/no-ai-slop, MIT), wired to marketing and docs-writer agents, evals.json with edit and detect cases |
 | 2026-07-26 | Agent Orchestra initial release (11 agents, 15 skills, 2 tools, 10 commands) |

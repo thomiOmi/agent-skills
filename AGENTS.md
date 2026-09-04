@@ -62,12 +62,12 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
 | `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment, docker-container, ci-cd-pipeline |
 | `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-md, web-accessibility |
-| `docs-writer` | Technical writing, documentation | subagent | documentation, sdlc-documentation, requirements-spec |
+| `docs-writer` | Technical writing, documentation | subagent | documentation, no-ai-slop, sdlc-documentation, requirements-spec |
 | `brainstormer` | Creative ideation, solution exploration | subagent | prompt-design, planning, code-style |
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style |
 | `researcher` | Technical research, comparisons, evidence-based recommendations | subagent | research-methodology, planning |
 | `refactor-planner` | Safe refactoring, migration planning | subagent | tech-debt, system-design, architecture-decision, code-simplifier |
-| `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, seo-optimization |
+| `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, no-ai-slop, seo-optimization |
 
 Invoke a specialist directly with `@agent-name` when you already know who should handle it.
 

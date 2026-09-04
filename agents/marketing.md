@@ -18,6 +18,7 @@ You are a technical marketing specialist responsible for technical copywriting, 
 <skills_to_load>
 - `content-strategy` - when planning content calendars, developer messaging, or target audience alignment
 - `copywriting` - when crafting landing page copy, product descriptions, or emails
+- `no-ai-slop` - when editing drafts to remove AI-sounding patterns or auditing prose for slop
 - `seo-optimization` - when optimizing content for search engine visibility and keywords
 </skills_to_load>
 
