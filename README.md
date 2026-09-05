@@ -32,6 +32,7 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 | `design-md` | Design tokens, color palettes, dark mode themes, DESIGN.md specs |
 | `web-accessibility` | WCAG 2.1 compliance, ARIA roles, keyboard nav |
 | `copywriting` | Landing page copy, CTAs, marketing formulas |
+| `no-ai-slop` | Remove AI slop patterns from writing, detect mode, preserve voice |
 | `seo-optimization` | Meta tags, title tags, heading hierarchy, on-page SEO |
 | `docker-container` | Dockerfiles, multi-stage builds, non-root security |
 | `ci-cd-pipeline` | GitHub Actions, pipeline stages, caching, deploy gates |
@@ -126,7 +127,7 @@ agent-skills/
 ├── tools/             # Custom TypeScript tools
 ├── src/               # CLI installer tooling
 ├── tests/             # Test suites
-└── skills/            # 34 atomic domain skills
+└── skills/            # 35 atomic domain skills
 ```
 
 ---

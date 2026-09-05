@@ -69,14 +69,14 @@ flowchart TD
 | **project-manager** | subagent | Project planning, milestone tracking, risk management, status reporting | - | task-decomposition, planning, sdlc-documentation |
 | **data-analyst** | subagent | SQL queries, schema analysis, data modeling | - | database, data-analysis, code-style |
 | **ui-ux** | subagent | Design system, frontend, accessibility | - | ui-design |
-| **marketing** | subagent | Content, SEO, copy, strategy | - | content-strategy |
+| **marketing** | subagent | Content, SEO, copy, strategy | - | content-strategy, no-ai-slop |
 | **qa-engineer** | subagent | Test strategy, coverage, quality gates | - | testing, debugging |
 | **devops** | subagent | CI/CD, deployment, infrastructure | - | devops-deployment |
 | **security-auditor** | subagent | Security review, auth, vulnerability assessment | - | security-review |
 | **brainstormer** | subagent | Creative ideation, solution exploration | - | (none) |
 | **deep-thinker** | subagent | Complex reasoning, root cause analysis | - | (none) |
 | **researcher** | subagent | Technical research, tool and library comparison, evidence-based recommendations | - | research-methodology, planning |
-| **docs-writer** | subagent | Technical writing, documentation | - | documentation, sdlc-documentation |
+| **docs-writer** | subagent | Technical writing, documentation | - | documentation, no-ai-slop, sdlc-documentation |
 | **refactor-planner** | subagent | Safe refactoring, migration planning | - | planning |
 
 ---
@@ -111,6 +111,7 @@ Workflow: `discussion -> plan -> orchestrator -> test -> implement -> review -> 
 | ai-integration | senior-developer | LLM/API integration |
 | ui-design | ui-ux | Design system, frontend, accessibility |
 | content-strategy | marketing | Content, SEO, copy, strategy |
+| no-ai-slop | marketing, docs-writer | Removing AI slop patterns from prose while preserving voice |
 | devops-deployment | devops | CI/CD, deployment, infrastructure |
 | security-review | security-auditor | Security audit checklist |
 | documentation | all | Writing docs |
