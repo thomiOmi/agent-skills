@@ -6,46 +6,80 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 
 ## Skills
 
+Skills are grouped by SDLC phase — pick the group that matches what you are doing right now.
+
+### 📋 Plan & Architect
+
 | Skill | Description |
 |---|---|
 | `task-decomposition` | Multi-file tasks, module reviews, TASKS.md tracking |
-| `memory-management` | Session handoff, context persistence, memory compaction |
-| `code-style` | Syntax, variable naming, docstrings, formatting |
-| `code-review` | Pull request review, code smells, audit checklist |
-| `code-simplifier` | Simplifying code, guard clauses, dead code removal |
-| `tech-debt` | Technical debt identification and remediation plans |
-| `api-conventions` | REST, GraphQL, WebSocket design and review |
-| `testing` | Unit, integration, snapshot, contract tests |
-| `test-planning` | Test plans, quality gates, QA coverage strategies |
-| `debugging` | Bug diagnosis, slow queries, root cause analysis |
+| `planning` | Diagramming, sequence flows, ERDs |
 | `system-design` | Architecture design, data flow, scaling (Anthropic framework) |
 | `architecture-decision` | Architecture Decision Records (ADRs) and trade-offs |
+| `requirements-spec` | Product requirements (PRD), user stories, acceptance criteria |
+| `sdlc-documentation` | SDLC specs, user stories, release notes |
+| `research-methodology` | Research plans, source evaluation, synthesis |
+
+### 🔧 Build & Implement
+
+| Skill | Description |
+|---|---|
+| `code-style` | Syntax, variable naming, docstrings, formatting |
+| `api-conventions` | REST, GraphQL, WebSocket design and review |
+| `database` | Database engine selection, transaction handling |
 | `schema-design` | Relational tables, DDL, normalization, foreign keys |
 | `query-optimization` | SQL EXPLAIN plans, composite indexing, N+1 prevention |
 | `data-analysis` | SQL queries, dataset analysis, data modeling, reporting |
-| `requirements-spec` | Product requirements (PRD), user stories, acceptance criteria |
-| `sdlc-documentation` | SDLC specs, user stories, release notes |
-| `documentation` | README, changelog, OpenAPI spec, developer guides |
 | `git-workflow` | Branching, Conventional Commits, PR descriptions |
 | `conventional-branch` | Branch naming prefixes, kebab-case rules, lifecycle |
 | `conventional-commit` | Commit types, subject and footer rules, breaking changes |
-| `security-review` | OWASP Top 10, auth audit, input validation |
-| `prompt-design` | System prompts, LLM prompt engineering structure |
-| `structured-output` | JSON schema, tool calling, defensive parsing |
+| `ui-design` | Frontend components, layouts, responsive UI |
 | `design-md` | Design tokens, color palettes, dark mode themes, DESIGN.md specs |
 | `web-accessibility` | WCAG 2.1 compliance, ARIA roles, keyboard nav |
-| `copywriting` | Landing page copy, CTAs, marketing formulas |
-| `no-ai-slop` | Remove AI slop patterns from writing, detect mode, preserve voice |
-| `seo-optimization` | Meta tags, title tags, heading hierarchy, on-page SEO |
-| `docker-container` | Dockerfiles, multi-stage builds, non-root security |
-| `ci-cd-pipeline` | GitHub Actions, pipeline stages, caching, deploy gates |
-| `devops-deployment` | Infrastructure, cloud architecture, monitoring |
-| `planning` | Diagramming, sequence flows, ERDs |
-| `research-methodology` | Research plans, source evaluation, synthesis |
-| `ui-design` | Frontend components, layouts, responsive UI |
-| `content-strategy` | Content calendars, brand voice guidelines |
+
+### 🤖 AI Integration & Context
+
+| Skill | Description |
+|---|---|
+| `prompt-design` | System prompts, LLM prompt engineering structure |
+| `structured-output` | JSON schema, tool calling, defensive parsing |
 | `ai-integration` | AI model configuration, embeddings, RAG |
-| `database` | Database engine selection, transaction handling |
+| `memory-management` | Session handoff, context persistence, memory compaction |
+
+### ✅ Verify & Quality
+
+| Skill | Description |
+|---|---|
+| `testing` | Unit, integration, snapshot, contract tests |
+| `test-planning` | Test plans, quality gates, QA coverage strategies |
+| `code-review` | Pull request review, code smells, audit checklist |
+| `code-simplifier` | Simplifying code, guard clauses, dead code removal |
+| `debugging` | Bug diagnosis, slow queries, root cause analysis |
+| `security-review` | OWASP Top 10, auth audit, input validation |
+
+### 🚀 Ship & Release
+
+| Skill | Description |
+|---|---|
+| `documentation` | README, changelog, OpenAPI spec, developer guides |
+| `ci-cd-pipeline` | GitHub Actions, pipeline stages, caching, deploy gates |
+| `docker-container` | Dockerfiles, multi-stage builds, non-root security |
+
+### ⚙️ Operate & Maintain
+
+| Skill | Description |
+|---|---|
+| `devops-deployment` | Infrastructure, cloud architecture, monitoring |
+| `tech-debt` | Technical debt identification and remediation plans |
+
+### ✍️ Content & Writing
+
+| Skill | Description |
+|---|---|
+| `copywriting` | Landing page copy, CTAs, marketing formulas |
+| `content-strategy` | Content calendars, brand voice guidelines |
+| `seo-optimization` | Meta tags, title tags, heading hierarchy, on-page SEO |
+| `no-ai-slop` | Remove AI slop patterns from writing, detect mode, preserve voice |
 
 ---
 
