@@ -17,15 +17,15 @@ Systematic approach to diagnosing and fixing bugs.
 ### Bug: Login fails for users with accented characters in their name
 
 ```text
-Input:  User "JosÃ©" tries to log in with correct password
+Input:  User "José" tries to log in with correct password
 Output: Login fails with "invalid credentials"
 
 STEP 1 - Reproduce: Successfully reproduced with accented name, works without accent
-STEP 2 - Read the error: The auth API returns 401 for "JosÃ©" but 200 for "Jose"
+STEP 2 - Read the error: The auth API returns 401 for "José" but 200 for "Jose"
 STEP 3 - Locate: The normalization function at src/auth/normalize.ts strips diacritics but the password hash was computed BEFORE normalization
 STEP 4 - Trace root cause: Hash is computed on raw input, then normalized for lookup to mismatch
 STEP 5 - Fix: Normalize input before hashing
-STEP 6 - Verify: "JosÃ©" now logs in, existing users unaffected
+STEP 6 - Verify: "José" now logs in, existing users unaffected
 STEP 7 - Prevent: Add test for diacritic inputs in the auth test suite
 ```
 

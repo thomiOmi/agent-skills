@@ -37,7 +37,7 @@ If any field is missing, use null. Do not infer missing values."
 1. Does this task actually need an LLM? (rules, regex, or a classifier may be simpler and cheaper)
 2. What model tier fits? (small/fast for simple tasks, large/capable for complex reasoning)
 3. What is the acceptable latency? (real-time under 1s, or async batch)
-4. What is the cost estimate? (tokens Ã— price Ã— requests per day)
+4. What is the cost estimate? (tokens × price × requests per day)
 
 **Clarify before building:**
 

@@ -24,6 +24,18 @@ A `SPEC.md` contains low-level technical design, module interactions, data struc
 
 ---
 
+## References
+
+- `references/SPEC_TEMPLATE.md` - SPEC.md template for technical feature specs
+- `references/prd.md` - Product Requirements Document template
+- `references/sdd.md` - Software Design Document template
+- `references/user-stories.md` - user story format with acceptance criteria
+- `references/test-plan.md` - test plan template
+- `references/release-notes.md` - release notes template
+- `references/roadmap-and-research.md` - roadmap design and user research synthesis
+
+---
+
 ## SDLC Documentation Checklist
 
 ```markdown

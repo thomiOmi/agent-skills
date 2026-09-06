@@ -120,3 +120,9 @@ Validate and check `DESIGN.md` files using the official CLI:
 - [ ] Component tokens reference valid defined colors (`{colors.primary}`)
 - [ ] Contrast ratio between text and background passes WCAG AA minimum (4.5:1)
 - [ ] `DESIGN.md` passes lint check via `npx @google/design.md lint DESIGN.md`
+
+---
+
+## References
+
+- `references/DESIGN_SPEC.md` - full DESIGN.md token schema reference with example values

@@ -15,13 +15,10 @@ Guidelines for reliable, secure, and maintainable infrastructure and deployment 
 
 ## References
 
-- `references/cicd.md` - CI/CD pipeline patterns, caching, parallel stages, self-hosted runners
 - `references/docker.md` - multi-stage builds, security scanning, registry management
-- `references/kubernetes.md` - deployment manifests, service mesh, auto-scaling, rolling updates
-- `references/cloud.md` - major cloud provider comparisons, networking, IAM
-- `references/monitoring.md` - observability stack, alert rules, on-call runbooks
 
 See `assets/templates.md` for Dockerfile, pipeline, and deployment workflow templates.
+For CI/CD pipeline patterns, load the `ci-cd-pipeline` skill.
 
 ---
 
@@ -43,7 +40,7 @@ CMD ["npm", "start"]
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 COPY . .
 
 FROM node:20-alpine

@@ -18,6 +18,7 @@ describe("Validate Skills (Agent Skills Specification)", () => {
   it("should validate all skills against agentskills.io specification", async () => {
     const entries = await readdir(skillsDir);
     let validSkillCount = 0;
+    let totalRefCount = 0;
 
     for (const entry of entries) {
       const skillDirPath = join(skillsDir, entry);
@@ -74,9 +75,21 @@ describe("Validate Skills (Agent Skills Specification)", () => {
       const bodyLines = parts.slice(2).join("---").split("\n");
       expect(bodyLines.length).toBeLessThanOrEqual(500);
 
+      // 8. Validate internal references point to files that actually exist
+      const refMatches = [...content.matchAll(/`((?:references|assets)\/[A-Za-z0-9_.-]+\.md)`/g)];
+      totalRefCount += refMatches.length;
+
+      for (const match of refMatches) {
+        const refRel = match[1] ?? "";
+        const refPath = join(skillDirPath, refRel);
+        const refExists = await stat(refPath).then(() => true).catch(() => false);
+        expect(refExists).toBe(true);
+      }
+
       validSkillCount++;
     }
 
     expect(validSkillCount).toBeGreaterThanOrEqual(15);
+    expect(totalRefCount).toBeGreaterThan(0);
   });
 });

@@ -20,7 +20,7 @@ Guidelines for writing secure, small, and deterministic container images.
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 COPY . .
 
 # Stage 2: Minimal runtime image

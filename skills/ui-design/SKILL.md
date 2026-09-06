@@ -61,11 +61,9 @@ Output:
 ## References
 
 - `references/components.md` - component anatomy patterns (button, input, modal, dropdown)
-- `references/responsive.md` - breakpoint system, grid, mobile-first patterns
-- `references/accessibility.md` - WCAG compliance details, ARIA patterns, testing tools
-- `references/design-tokens.md` - token naming conventions, dark mode, theme structure
 
 See `assets/templates.md` for component and design token templates.
+For deeper accessibility work, load the `web-accessibility` skill.
 
 ---
 
