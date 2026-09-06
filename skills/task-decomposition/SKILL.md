@@ -56,6 +56,7 @@ PHASE 6 - Document & Hand-off  (skip if no public interface changed)
 ```
 
 See `references/phases.md` for full phase descriptions, gates, and progress report format.
+See `references/TASKS_TEMPLATE.md` for a ready-to-use TASKS.md template.
 See `assets/templates.md` for scope document, task tree, progress report, and milestone templates.
 
 ---

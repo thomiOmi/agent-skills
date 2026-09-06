@@ -85,8 +85,8 @@ Right: docs/installation-guide
 5. Delete the branch immediately after merge
 ```
 
-For branching strategies (GitHub Flow, GitFlow, trunk-based), see the
-git-workflow skill, references/branching.md.
+For branching strategies (GitHub Flow, GitFlow, trunk-based), load the
+`git-workflow` skill.
 
 ## Checklist
 

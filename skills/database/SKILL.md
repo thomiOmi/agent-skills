@@ -72,7 +72,7 @@ Never drop a column or table without a deprecation period in production
    Why: Deployed code may still reference the column. Dropping immediately causes runtime errors. Deprecate first, remove after confirming zero references.
 
 Never store monetary values as float - use integer cents
-   Why: Floating-point arithmetic produces rounding errors (0.1 + 0.2 â‰  0.3). Integer cents are exact and deterministic for accounting.
+   Why: Floating-point arithmetic produces rounding errors (0.1 + 0.2 ≠ 0.3). Integer cents are exact and deterministic for accounting.
 
 Never store multiple values in one column - normalize instead
    Why: Arrays or comma-separated values in a single column break joins, indexes, constraints, and queryability. Normalization ensures referential integrity.

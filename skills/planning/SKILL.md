@@ -48,7 +48,7 @@ flowchart TD
 
 All diagrams use **Mermaid.js** syntax - renders in GitHub, GitLab, Notion, and most documentation tools.
 
-> For PRD, SDD, user stories, MVP scope, or timelines to use `sdlc-documentation` instead.
+> For PRD, SDD, user stories, MVP scope, or timelines, use `sdlc-documentation` instead.
 
 ---
 
@@ -58,6 +58,7 @@ All diagrams use **Mermaid.js** syntax - renders in GitHub, GitLab, Notion, and 
 - `references/flowchart.md` - flowchart and user flow with Mermaid `flowchart TD`
 - `references/architecture.md` - system and component diagrams with Mermaid `graph` and `sequenceDiagram`
 - `references/sequence.md` - sequence diagram patterns and examples
+- `references/technical-roadmap.md` - technical roadmap structure and architecture planning
 
 See `assets/` for diagram templates ready to fill in.
 

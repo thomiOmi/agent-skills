@@ -55,3 +55,9 @@ LIMIT 5;
 - [ ] Results bounded with explicit `LIMIT` where applicable
 - [ ] No PII or credentials exposed in data reports
 ```
+
+---
+
+## References
+
+- `references/sql-patterns.md` - SQL query patterns for aggregations, window functions, and maintainable analysis queries

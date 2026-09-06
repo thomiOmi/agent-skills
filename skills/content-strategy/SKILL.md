@@ -54,12 +54,10 @@ Guidelines for creating effective, audience-focused content.
 
 ## References
 
-- `references/seo.md` - advanced SEO techniques, keyword research, technical SEO
 - `references/copywriting.md` - copywriting formulas, tone adjustment, audience analysis
-- `references/email.md` - email marketing structure, subject line formulas, A/B testing
-- `references/social.md` - social media content calendar, platform-specific patterns, engagement metrics
 
 See `assets/templates.md` for blog post, landing page, and email campaign templates.
+For deeper SEO work, load the `seo-optimization` skill.
 
 ---
 
