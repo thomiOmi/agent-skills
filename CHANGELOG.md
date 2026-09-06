@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v0.2.2
+
+[compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.2.1...v0.2.2)
+
+### 🚀 Enhancements
+
+- Expand eval coverage to core skills with assertion grading ([9d122dc](https://github.com/thomiOmi/agent-skills/commit/9d122dc))
+- Add compaction hook preserving TASKS.md state ([a16656d](https://github.com/thomiOmi/agent-skills/commit/a16656d))
+- Add no-ai-slop skill for removing AI slop patterns from prose ([afa2601](https://github.com/thomiOmi/agent-skills/commit/afa2601))
+- Add tool guard hooks and conventional git skills ([319b795](https://github.com/thomiOmi/agent-skills/commit/319b795))
+
+### 🩹 Fixes
+
+- **skills:** Repair broken references, mojibake, and unlisted reference files ([aa98fb8](https://github.com/thomiOmi/agent-skills/commit/aa98fb8))
+- Fix bin path and repository url for npm publish ([d71bf2e](https://github.com/thomiOmi/agent-skills/commit/d71bf2e))
+
+### 📖 Documentation
+
+- Add agent skills audit report ([57b84b1](https://github.com/thomiOmi/agent-skills/commit/57b84b1))
+- Record compaction plugin in TASKS.md change history ([108f027](https://github.com/thomiOmi/agent-skills/commit/108f027))
+- Document skill permissions and MCP server config ([22f6d3f](https://github.com/thomiOmi/agent-skills/commit/22f6d3f))
+- Document distribution status and local clone install path ([8aa1534](https://github.com/thomiOmi/agent-skills/commit/8aa1534))
+- Document per-agent model overrides ([e426f03](https://github.com/thomiOmi/agent-skills/commit/e426f03))
+
+### 🏡 Chore
+
+- Fix double-space artifact and add missing checklists ([c6d597b](https://github.com/thomiOmi/agent-skills/commit/c6d597b))
+- Tighten agent permissions per DECISIONS convention ([3b73301](https://github.com/thomiOmi/agent-skills/commit/3b73301))
+- Add trust boundaries and session handoff guidance ([c647c45](https://github.com/thomiOmi/agent-skills/commit/c647c45))
+
+### ❤️ Contributors
+
+- Thomi Syauqi ([@thomiOmi](https://github.com/thomiOmi))
+
 ## v0.2.1
 
 [compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.2.0...v0.2.1)
