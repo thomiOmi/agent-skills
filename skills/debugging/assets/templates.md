@@ -1,5 +1,22 @@
 # Debugging Templates
 
+## Bug Reproduction Brief
+
+A minimal brief to write before attempting any fix. See the Reproduce Before
+Fix section in SKILL.md.
+
+```markdown
+## Bug Reproduction Brief
+- Title: [one line]
+- Environment: [OS, runtime version, browser]
+- Steps: [numbered, copy-pasteable]
+- Expected: [what should happen]
+- Actual: [what happens]
+- Frequency: always | sometimes | rarely
+- Minimal failing case: [smallest input that triggers the bug]
+- Evidence: [log lines, stack trace, screenshot references]
+```
+
 ## Bug Report
 
 ```markdown

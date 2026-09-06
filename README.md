@@ -26,6 +26,8 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 | `sdlc-documentation` | SDLC specs, user stories, release notes |
 | `documentation` | README, changelog, OpenAPI spec, developer guides |
 | `git-workflow` | Branching, Conventional Commits, PR descriptions |
+| `conventional-branch` | Branch naming prefixes, kebab-case rules, lifecycle |
+| `conventional-commit` | Commit types, subject and footer rules, breaking changes |
 | `security-review` | OWASP Top 10, auth audit, input validation |
 | `prompt-design` | System prompts, LLM prompt engineering structure |
 | `structured-output` | JSON schema, tool calling, defensive parsing |
@@ -127,7 +129,7 @@ agent-skills/
 ├── tools/             # Custom TypeScript tools
 ├── src/               # CLI installer tooling
 ├── tests/             # Test suites
-└── skills/            # 35 atomic domain skills
+└── skills/            # 37 atomic domain skills
 ```
 
 ---

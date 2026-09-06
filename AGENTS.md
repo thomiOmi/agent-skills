@@ -54,7 +54,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 |---|---|---|---|
 | `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, quality-verifier |
 | `ai-engineer` | Prompt engineering, AI integration, RAG, structured output | subagent | prompt-design, structured-output, ai-integration, code-style, testing |
-| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, code-review, code-simplifier, debugging, testing, api-conventions, schema-design, query-optimization, git-workflow |
+| `senior-developer` | Architecture, coding, refactoring, code review | subagent | code-style, code-review, code-simplifier, debugging, testing, api-conventions, schema-design, query-optimization, git-workflow, conventional-branch, conventional-commit |
 | `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | requirements-spec, sdlc-documentation, task-decomposition |
 | `project-manager` | Project planning, milestone tracking, risk, status reports | subagent | task-decomposition, planning, sdlc-documentation |
 | `data-analyst` | SQL queries, schema analysis, data modeling | subagent | schema-design, query-optimization, data-analysis, code-style |

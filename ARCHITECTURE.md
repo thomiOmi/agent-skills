@@ -64,7 +64,7 @@ flowchart TD
 | Agent | Mode | Role | Delegates To | Key Skills |
 |---|---|---|---|---|
 | **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, quality-verifier |
-| **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, ai-integration |
+| **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, conventional-branch, conventional-commit, ai-integration |
 | **product-manager** | subagent | PRDs, feature specs, user stories, roadmap | - | sdlc-documentation, task-decomposition, documentation |
 | **project-manager** | subagent | Project planning, milestone tracking, risk management, status reporting | - | task-decomposition, planning, sdlc-documentation |
 | **data-analyst** | subagent | SQL queries, schema analysis, data modeling | - | database, data-analysis, code-style |
@@ -108,6 +108,8 @@ Workflow: `discussion -> plan -> orchestrator -> test -> implement -> review -> 
 | data-analysis | data-analyst | SQL queries, data modeling, dataset analysis |
 | research-methodology | researcher | Technical research, comparisons, evidence-based recommendations |
 | git-workflow | senior-developer | Git conventions |
+| conventional-branch | senior-developer | Branch naming prefixes and lifecycle |
+| conventional-commit | senior-developer | Commit message format and types |
 | ai-integration | senior-developer | LLM/API integration |
 | ui-design | ui-ux | Design system, frontend, accessibility |
 | content-strategy | marketing | Content, SEO, copy, strategy |
@@ -138,3 +140,21 @@ Verifies code quality against defined criteria.
 - **Input:** `files` (string[]), optional boolean flags: `checkLint`, `checkTypecheck`, `checkTests`, `checkNoDebug`, `checkDocstrings`
 - **Output:** `{pass: boolean, details: {criterion, passed, message}[]}`
 - **Used by:** orchestrator agent (via qa-engineer subagent)
+
+---
+
+## Plugin Hooks
+
+All hooks live in `plugin/` and are registered by the harness in `plugin/agent-skills.ts`.
+
+### compaction.ts
+
+Injects TASKS.md project state (Continue Here section) into the compaction prompt via `experimental.session.compacting`, so task progress survives context compaction.
+
+### secrets-scanner.ts
+
+Blocks write/edit tool calls whose string arguments contain likely secrets (AWS, GitHub, OpenAI, Anthropic, Stripe, Google, Slack, private key blocks, hardcoded credential assignments) via `tool.execute.before`. Throws before execution; placeholder values are ignored. Escape hatch: `AGENT_SKILLS_DISABLE_SECRETS_SCANNER=1`.
+
+### tool-guardian.ts
+
+Blocks irreversible destructive bash commands via `tool.execute.before`: recursive force deletes of filesystem roots, home, or wildcards; git force push (except `--force-with-lease`); mkfs/fdisk/dd to devices/format; DROP TABLE/DATABASE/SCHEMA; chmod -R 777 on / or ~. Specific-path deletes and recoverable operations are allowed. Escape hatch: `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.

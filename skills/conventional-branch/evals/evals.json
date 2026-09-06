@@ -1,0 +1,30 @@
+{
+  "skill_name": "conventional-branch",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a branch for fixing an API timeout bug in a project using Jira ticket OPS-42",
+      "expected_output": "A conventional branch name like fix/OPS-42-api-timeout with kebab-case description and ticket ID.",
+      "assertions": [
+        "fix/",
+        "OPS-42"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "What branch prefix should I use for a dependency update, and what name would be wrong?",
+      "expected_output": "The chore/ prefix for maintenance work, with an explanation that generic names like chore/changes are not acceptable.",
+      "assertions": [
+        "chore/"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review the branch name feature/ThomasPasswordReset and suggest a fix",
+      "expected_output": "Flags the personal name and non-kebab-case description, proposes feature/password-reset or feature/AUTH-123-password-reset.",
+      "assertions": [
+        "kebab-case"
+      ]
+    }
+  ]
+}

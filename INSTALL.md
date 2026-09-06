@@ -103,7 +103,7 @@ Distribution status:
 
 1. **Local clone (active)** - the primary install path. Clone this repo and run
    `bun run setup` (or `setup:symlink` for live editing). Everything works:
-   agents, skills, tools, commands, and the compaction plugin.
+   agents, skills, tools, commands, and the plugin guards.
 2. **GitHub source (requires public repo)** - `install --source github:thomiOmi/agent-skills`
    downloads via the GitHub tarball API without auth, so it only works if the
    repo is public. It currently returns 404 because the repo is private.
@@ -296,10 +296,10 @@ Every file and directory in this repo has a specific purpose when installed to `
 | `config/opencode.jsonc` | `opencode.jsonc` | **Global config** - default_agent, permissions, formatters, lsp. |
 | `config/tui.jsonc` | `tui.jsonc` | **TUI config** - theme, attention notifications. |
 | `agents/*.md` | `agents/*.md` | **16 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, etc. |
-| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **35 skill directories** - SKILL.md + references/. Auto-loaded per task. |
+| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **37 skill directories** - SKILL.md + references/. Auto-loaded per task. |
 | `tools/*.ts` | `tools/*.ts` | **2 custom tools** - task-decomposer.ts, quality-verifier.ts. |
 | `commands/*.md` | `commands/*.md` | **17 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
-| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers custom tools and a compaction hook that preserves TASKS.md state across context compaction. |
+| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers custom tools, a compaction hook that preserves TASKS.md state across context compaction, and two tool guard hooks: secrets-scanner (blocks writing hardcoded secrets via write/edit) and tool-guardian (blocks destructive bash commands). |
 
 ---
 
