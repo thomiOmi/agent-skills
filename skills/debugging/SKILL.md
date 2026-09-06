@@ -3,7 +3,7 @@ name: debugging
 description: 'Use this skill whenever something is wrong - bugs, errors, crashes, slow performance, incorrect output, or unexpected behavior. Do NOT guess the cause - this skill enforces a systematic diagnosis-before-fix workflow. Load this skill proactively whenever the user reports a problem, even if they phrase it casually or in a non-English language. Triggers include: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "why is this slow", "performance issue", "N+1 query", "this is broken", "this doesnt work", "debug this", "trace this error", "root cause", "regression", "flaky test". Also use when the user reports a problem in any informal way - "error", "bug", "broken", "not working", "slow", "crash", "fail".'
 license: MIT
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   author: thomiOmi
 ---
 
@@ -49,6 +49,32 @@ STEP 5 - Fix
 STEP 6 - Verify
 STEP 7 - Prevent recurrence
 ```
+
+---
+
+## Reproduce Before Fix
+
+Never fix from the error message alone. Before STEP 5, write a reproduction
+brief so the bug is confirmed, shareable, and testable:
+
+```markdown
+## Bug Reproduction Brief
+- Title: [one line]
+- Environment: [OS, runtime version, browser]
+- Steps: [numbered, copy-pasteable]
+- Expected: [what should happen]
+- Actual: [what happens]
+- Frequency: always | sometimes | rarely
+- Minimal failing case: [smallest input that triggers the bug]
+```
+
+Rules:
+
+- If you cannot reproduce the bug, say so and gather more evidence instead of guessing
+- For "sometimes" bugs, find the condition that flips it (timing, data, environment) before touching code
+- Keep the brief updated as you learn; the minimal failing case becomes the regression test in STEP 7
+
+Full template lives in `assets/templates.md`.
 
 ---
 

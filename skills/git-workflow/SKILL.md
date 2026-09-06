@@ -34,6 +34,11 @@ If the project does not define these in AGENTS.md, ask:
 
 See `assets/templates.md` for PR description and branch naming templates.
 
+Related deep-dive skills:
+
+- `conventional-branch` skill - detailed branch naming rules, prefixes, and lifecycle
+- `conventional-commit` skill - detailed commit format, types, footers, and examples
+
 ---
 
 ## Hard Rules

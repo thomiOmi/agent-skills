@@ -40,6 +40,18 @@ Rules describe intent, not specific tools. "Search instead of reading files" rat
 
 Every request is classified as Analysis, Implementation, or Both at the start. Agents apply only the relevant rule set, reducing cognitive overhead and token waste.
 
+### Tool guard hooks: throw-to-block in `tool.execute.before`
+
+`secrets-scanner` and `tool-guardian` are sibling modules in `plugin/` registered by the harness in `plugin/agent-skills.ts` (composed into one `tool.execute.before` hook). They block by throwing an error from the hook, the official OpenCode pattern. Scope: secrets-scanner inspects write/edit string args only; tool-guardian inspects bash commands only. Specific-path deletes (`rm -rf node_modules`), `git reset --hard`, and `--force-with-lease` are deliberately allowed; guards are a safety net, not a permission system. Escape hatch env vars: `AGENT_SKILLS_DISABLE_SECRETS_SCANNER=1`, `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.
+
+### Conventional git skills as deep-dives under git-workflow
+
+`conventional-branch` and `conventional-commit` are standalone skills (separate descriptions so routing stays unambiguous) but positioned as deep-dives under the `git-workflow` umbrella: git-workflow keeps its references as quick-reference and points to the new skills. Both wired to senior-developer.
+
+### Eval tooling: assertion grading, no external eval library
+
+Evaluated external eval libraries (Vercel evalite-style runners, DeepEval, Harbor, G-Eval implementations) and decided none is needed: `scripts/evals/run-evals.ts` grades with assertion matching, which is deterministic and free. LLM-judge grading (via `opencode run` in G-Eval style) is recognized as the future pattern but is deferred until skill development stabilizes.
+
 ---
 
 ## Conventions
