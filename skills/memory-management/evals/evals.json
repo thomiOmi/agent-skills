@@ -1,0 +1,25 @@
+{
+  "skill_name": "memory-management",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Continue the work from my last session on this repo",
+      "expected_output": "Reads TASKS.md and DECISIONS.md in order, verifies claims against the working tree and git log, then resumes from the Continue Here section.",
+      "assertions": [
+        "TASKS.md",
+        "DECISIONS.md",
+        "verify"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The conversation is getting very long, wrap up what we decided so far",
+      "expected_output": "Persists decisions to DECISIONS.md, updates TASKS.md with a Continue Here handoff under 15 lines, and never records secrets or credentials.",
+      "assertions": [
+        "DECISIONS.md",
+        "Continue Here",
+        "secrets"
+      ]
+    }
+  ]
+}

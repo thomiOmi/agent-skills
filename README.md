@@ -9,6 +9,7 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 | Skill | Description |
 |---|---|
 | `task-decomposition` | Multi-file tasks, module reviews, TASKS.md tracking |
+| `memory-management` | Session handoff, context persistence, memory compaction |
 | `code-style` | Syntax, variable naming, docstrings, formatting |
 | `code-review` | Pull request review, code smells, audit checklist |
 | `code-simplifier` | Simplifying code, guard clauses, dead code removal |
@@ -40,6 +41,7 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 | `ci-cd-pipeline` | GitHub Actions, pipeline stages, caching, deploy gates |
 | `devops-deployment` | Infrastructure, cloud architecture, monitoring |
 | `planning` | Diagramming, sequence flows, ERDs |
+| `research-methodology` | Research plans, source evaluation, synthesis |
 | `ui-design` | Frontend components, layouts, responsive UI |
 | `content-strategy` | Content calendars, brand voice guidelines |
 | `ai-integration` | AI model configuration, embeddings, RAG |
