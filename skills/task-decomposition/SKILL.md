@@ -3,7 +3,7 @@ name: task-decomposition
 description: 'Use this skill FIRST for any non-trivial or multi-step task. Whenever the user asks to implement, build, migrate, refactor, integrate, set up, or review something that spans multiple files, modules, or systems, load this skill before starting any work. It provides a structured 6-phase workflow and simple TASKS.md file tracking to decompose complexity, avoid rework, and track task progress. Triggers include: "implement", "build", "migrate", "refactor end-to-end", "integrate", "review this module end-to-end", "audit the full feature", "what needs to be improved", "set up from scratch", "plan this feature", "break this down", "complex task", "multi-step", "large change", "track tasks". When in doubt about scope or approach, use this skill first before anything else.'
 license: MIT
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   author: thomiOmi
 ---
 
@@ -111,6 +111,7 @@ At the end of every multi-step session, write a `Continue Here` section into TAS
 - Next action and its owning subagent
 
 Keep it under 15 lines. A fresh session reads TASKS.md first, so this section is the resume point.
+For the full session start/end protocol and context compaction rules, load the `memory-management` skill.
 
 ---
 
