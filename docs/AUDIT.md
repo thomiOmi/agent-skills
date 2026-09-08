@@ -108,3 +108,49 @@ Complete per audit: no dead code found. deploy.ts, sync.ts, and symlink.ts are i
 | P4 | F5 plugin manifest, F6 handoff artifact, F7 trust boundaries | Medium, strategic |
 
 P1 is implemented in the same series as this report. P2 to P4 are tracked in TASKS.md backlog.
+
+---
+
+# Audit Update: 2026-09-08
+
+Scope: 29-skill catalog after the granularity consolidation (38 to 29 skills, PR #28 to #30) and the eval runner upgrade (PR #31). Reference standard: agentskills.io specification and the six audit dimensions above.
+
+## Automated scan results
+
+- Spec validation: all 29 skills pass tests/validate-skills.test.ts.
+- Eval coverage: 29 of 29 skills ship evals/evals.json (71 cases, all schema-validated; runner now grades assertions deterministically with --limit support).
+- Verification checklist: 29 of 29 skills end with a checklist section (FR-5 satisfied).
+- Trigger routing: tests/trigger-collision.test.ts guards against duplicate trigger phrases, self-repeats, and cross-skill file path references.
+- Progressive disclosure: content-heavy skills (ai-integration, database, devops-deployment, security-review, git-workflow, planning, sdlc-documentation) ship references/; bodies stay within token budget.
+
+## Content depth findings
+
+Body word counts range from 159 (structured-output) to 1206 (no-ai-slop). Thin is not automatically bad, but four skills under 200 words lacked concrete failure guidance and shipped only happy-path rules:
+
+- structured-output (159 words)
+- seo-optimization (189 words)
+- copywriting (190 words)
+- test-planning (192 words)
+
+Fixed in this series: each gained a "Common Pitfalls" section (five domain-specific anti-patterns with corrective guidance) and a version bump to 1.1.0.
+
+Assessed as adequate despite low word count (focused, actionable, template- or framework-driven): architecture-decision, code-review, prompt-design, tech-debt, code-simplifier.
+
+## Domain gaps (recommendations, not implemented)
+
+Given the trigger-collision history, new skills require deliberate routing analysis before creation. Candidates identified:
+
+1. Observability and monitoring (logging, metrics, tracing, alerting): currently a subsection inside devops-deployment. Split only if routing demand justifies it.
+2. Performance optimization (profiling, caching, database query tuning): currently spread across debugging and database. Highest demand signal from eval prompts.
+3. Frontend state management: no coverage at all; niche, defer until requested.
+4. Accessibility (a11y): partially covered in ui-design; a dedicated skill is justified only for deep WCAG auditing workflows.
+
+Recommendation: none of these are urgent. Revisit after the deterministic eval runner has been executed against real outputs to see which domains actually underperform.
+
+## Backlog status from prior audit
+
+- F3 eval coverage and runner grading: done (this series).
+- F4 permission tightening: done previously.
+- F5 plugin manifest for multi-runtime distribution: open, strategic, not started.
+- F6 cross-session handoff artifact: open, strategic, not started.
+- F7 trust-boundary guidance in research-methodology and ai-integration: open, low effort, not started.
