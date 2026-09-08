@@ -1,12 +1,4 @@
----
-name: ci-cd-pipeline
-description: 'Use this skill when configuring CI/CD workflows, GitHub Actions, GitLab CI, or automated deployment pipelines. Trigger with "CI/CD pipeline", "GitHub Actions", "GitLab CI", "deployment workflow", "automated pipeline", or when setting up continuous integration. Do not write CI/CD pipelines without this skill loaded.'
-license: MIT
-metadata:
-  version: "1.0.0"
-  author: thomiOmi
----
-
+﻿
 # CI/CD Pipeline Design
 
 Guidelines for designing fast, deterministic, and secure CI/CD workflows.

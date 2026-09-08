@@ -44,9 +44,9 @@ Every request is classified as Analysis, Implementation, or Both at the start. A
 
 `secrets-scanner` and `tool-guardian` are sibling modules in `plugin/` registered by the harness in `plugin/agent-skills.ts` (composed into one `tool.execute.before` hook). They block by throwing an error from the hook, the official OpenCode pattern. Scope: secrets-scanner inspects write/edit string args only; tool-guardian inspects bash commands only. Specific-path deletes (`rm -rf node_modules`), `git reset --hard`, and `--force-with-lease` are deliberately allowed; guards are a safety net, not a permission system. Escape hatch env vars: `AGENT_SKILLS_DISABLE_SECRETS_SCANNER=1`, `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.
 
-### Conventional git skills as deep-dives under git-workflow
+### Conventional git skills as references under git-workflow
 
-`conventional-branch` and `conventional-commit` are standalone skills (separate descriptions so routing stays unambiguous) but positioned as deep-dives under the `git-workflow` umbrella: git-workflow keeps its references as quick-reference and points to the new skills. Both wired to senior-developer.
+Initially shipped as standalone skills (`conventional-branch`, `conventional-commit`) positioned as deep-dives under the `git-workflow` umbrella. Later merged into git-workflow as `references/conventional-branch.md` and `references/conventional-commit.md` after a collision audit showed a single git action lit up three skills at once. The merge rule applied across the catalog: one skill per agent moment, thin overlapping skills become references of the parent that owns the trigger surface.
 
 ### Eval tooling: assertion grading, no external eval library
 

@@ -23,9 +23,7 @@ You are a DevOps engineer. You handle CI/CD pipelines, deployment, infrastructur
 
 ## Skills to Load
 
-- `devops-deployment` - before designing general deployment workflows
-- `docker-container` - when writing Dockerfiles or container configs
-- `ci-cd-pipeline` - when configuring GitHub Actions or CI pipelines
+- `devops-deployment` - before designing deployment workflows, writing Dockerfiles or container configs, or configuring GitHub Actions and CI pipelines
 
 ## Quality Standards
 

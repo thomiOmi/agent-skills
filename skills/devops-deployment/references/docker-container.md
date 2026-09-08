@@ -1,12 +1,4 @@
----
-name: docker-container
-description: 'Use this skill when writing Dockerfiles, docker-compose configs, or containerizing applications. Trigger with "write Dockerfile", "docker-compose", "containerize", "Docker multi-stage", "container security", or when configuring container images. Do not write container configs without this skill loaded.'
-license: MIT
-metadata:
-  version: "1.0.0"
-  author: thomiOmi
----
-
+﻿
 # Docker & Containerization
 
 Guidelines for writing secure, small, and deterministic container images.

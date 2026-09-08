@@ -1,13 +1,4 @@
----
-name: conventional-branch
-description: 'Use this skill when creating, naming, or reviewing Git branches. Enforces the conventional branch naming format: type prefixes like feature/, fix/, hotfix/, refactor/, chore/, docs/, kebab-case descriptions, ticket IDs when available, and short-lived branch lifecycle. Load this skill BEFORE running git checkout -b or git switch -c, or when the user asks about branch naming, branch strategy, or which branch prefix to use. Triggers include: "buat branch", "new branch", "branch name", "naming a branch", "feature branch", "hotfix branch", "branch prefix", "what should I name this branch", "git branch", "checkout -b", "switch -c", "create a branch for this".'
-license: MIT
-metadata:
-  version: "1.0.0"
-  author: thomiOmi
-  credits: "Adapted from github/awesome-copilot (MIT License)"
----
-
+﻿
 # Conventional Branch
 
 Naming and lifecycle conventions for Git branches. A branch name should tell
@@ -79,7 +70,7 @@ Right: docs/installation-guide
 
 ```text
 1. Branch from the latest base (main, or develop in GitFlow)
-2. Commit in small, focused steps (see conventional-commit skill)
+2. Commit in small, focused steps (see `conventional-commit.md`)
 3. Push and open a PR early; use a draft if it is not ready for review
 4. Merge when approved and CI passes
 5. Delete the branch immediately after merge

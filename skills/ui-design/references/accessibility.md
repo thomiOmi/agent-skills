@@ -1,12 +1,4 @@
----
-name: web-accessibility
-description: 'Use this skill when auditing or implementing web accessibility (WCAG 2.1), ARIA roles, keyboard navigation, or screen reader support. Trigger with "accessibility", "WCAG", "a11y", "keyboard navigation", "screen reader", "ARIA", "color contrast", or when auditing UI accessibility. Do not implement UI accessibility without this skill loaded.'
-license: MIT
-metadata:
-  version: "1.0.0"
-  author: thomiOmi
----
-
+﻿
 # Web Accessibility (WCAG 2.1)
 
 Guidelines for building accessible user interfaces that work for all users.

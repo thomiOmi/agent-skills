@@ -1,12 +1,4 @@
----
-name: requirements-spec
-description: 'Use this skill when writing product requirements documents (PRDs), feature specifications, user stories, or acceptance criteria. Trigger with "write a PRD", "feature spec", "user story", "acceptance criteria", "product requirements", or before defining scope for new features. Do not write feature specs without this skill loaded.'
-license: MIT
-metadata:
-  version: "1.1.0"
-  author: thomiOmi
----
-
+﻿
 # Requirements Specification (PRD & User Stories)
 
 Guidelines for defining feature specifications, user stories, and acceptance criteria.
