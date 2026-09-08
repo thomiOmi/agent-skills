@@ -48,7 +48,7 @@ function aggregatePass(items: EntryStatus[]): { passed: number, graded: number }
   };
 }
 
-function gradeOutput(output: string, assertions: string[] | undefined): GradeResult {
+export function gradeOutput(output: string, assertions: string[] | undefined): GradeResult {
   const list = assertions ?? [];
   if (list.length === 0) {
     return { passed: 0, total: 0, details: [] };
@@ -160,6 +160,7 @@ async function runEvals(options: {
   iteration: string
   executor: string
   dryRun: boolean
+  limit: number
 }): Promise<void> {
   const execParts = options.executor.split(" ").filter(Boolean);
   const execCmd = execParts[0] ?? "opencode";
@@ -194,9 +195,13 @@ async function runEvals(options: {
     const iterationDir = join(WORKSPACE_ROOT, skillName, `iteration-${options.iteration}`);
     await mkdir(iterationDir, { recursive: true });
 
+    const cases = options.limit > 0 ? evalsFile.evals.slice(0, options.limit) : evalsFile.evals;
+    if (cases.length < evalsFile.evals.length) {
+      consola.info(`  limited to first ${cases.length} of ${evalsFile.evals.length} cases`);
+    }
     const entries: { id: number, with_skill: EntryStatus, without_skill: EntryStatus }[] = [];
 
-    for (const evalCase of evalsFile.evals) {
+    for (const evalCase of cases) {
       const status: { with_skill: EntryStatus, without_skill: EntryStatus } = {
         with_skill: { status: "pending", passed: 0, total: 0 },
         without_skill: { status: "pending", passed: 0, total: 0 },
@@ -253,6 +258,9 @@ async function runEvals(options: {
   if (options.dryRun) {
     consola.log("Dry run - re-run without --dry-run to execute prompts via the executor.");
   }
+  if (failed > 0) {
+    process.exitCode = 1;
+  }
 }
 
 const main = defineCommand({
@@ -265,15 +273,32 @@ const main = defineCommand({
     "iteration": { type: "string" as const, description: "Iteration number (default: 1)" },
     "executor": { type: "string" as const, description: "Shell command to run each prompt" },
     "dry-run": { type: "boolean" as const, description: "Scaffold without executing prompts" },
+    "limit": {
+      type: "string" as const,
+      description: "Limit number of eval cases per skill (0 = all; useful for small paid batches)",
+      default: "0",
+    },
+    "judge": {
+      type: "boolean" as const,
+      description: "Reserved for LLM-judge grading; not implemented yet",
+    },
   },
   run: async ({ args }) => {
+    if (args.judge) {
+      consola.error("--judge is not implemented yet; deterministic assertion grading is used by default (see DECISIONS.md)");
+      process.exitCode = 1;
+      return;
+    }
     await runEvals({
       skill: args.skill as string | undefined,
       iteration: (args.iteration as string | undefined) ?? "1",
       executor: (args.executor as string | undefined) ?? "opencode run",
       dryRun: Boolean(args["dry-run"]),
+      limit: Number(args.limit ?? 0) || 0,
     });
   },
 });
 
-runMain(main);
+if (import.meta.main) {
+  runMain(main);
+}
