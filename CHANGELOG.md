@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.4.0
+
+[compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.3.0...v0.4.0)
+
+### 🚀 Enhancements
+
+- Add eval suites for 8 high-value skills ([#28](https://github.com/thomiOmi/agent-skills/pull/28))
+- Complete eval coverage for all skills ([#29](https://github.com/thomiOmi/agent-skills/pull/29))
+
+### 🏡 Chore
+
+- Ignore duplicate heading warnings in generated CHANGELOG ([ed381b3](https://github.com/thomiOmi/agent-skills/commit/ed381b3))
+
+### ❤️ Contributors
+
+- Thomi Syauqi ([@thomiOmi](https://github.com/thomiOmi))
+
 ## v0.3.0
 
 [compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.2.2...v0.3.0)
