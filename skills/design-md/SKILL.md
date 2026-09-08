@@ -1,6 +1,6 @@
 ---
 name: design-md
-description: Use this skill when working with UI design systems, visual identity specifications, or design tokens in DESIGN.md format. Trigger with "design system", "design tokens", "DESIGN.md", "color palette", "typography", or "theme".
+description: Use this skill when working with UI design systems, visual identity specifications, or design tokens in DESIGN.md format. Trigger with "design system", "design tokens", "DESIGN.md", or "typography".
 license: MIT
 metadata:
   version: "2.0.0"
