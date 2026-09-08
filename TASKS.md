@@ -42,7 +42,6 @@ Roadmap and backlog for the agent-skills project.
 
 Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
-- [ ] Tighten agent permissions to match DECISIONS.md convention (AUDIT.md F4)
 - [ ] Multi-runtime plugin manifest (.claude-plugin) for cross-harness distribution (AUDIT.md F5)
 
 ---
@@ -51,6 +50,7 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-09-08 | Added trigger collision regression tests and trigger dedupe (PR #30), eval runner --limit flag with --judge guard and exit code (PR #31), common pitfalls sections for four thin skills plus audit refresh (PR #32), closed F7 trust-boundary audit item (PR #33) |
 | 2026-07-29 | Created TASKS.md with Roadmap + Backlog |
 | 2026-07-29 | Moved DECISIONS.md from docs/ to root |
 | 2026-07-29 | Cleaned em dash/emoji/arrows across repo |
