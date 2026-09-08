@@ -153,4 +153,4 @@ Recommendation: none of these are urgent. Revisit after the deterministic eval r
 - F4 permission tightening: done previously.
 - F5 plugin manifest for multi-runtime distribution: open, strategic, not started.
 - F6 cross-session handoff artifact: open, strategic, not started.
-- F7 trust-boundary guidance in research-methodology and ai-integration: open, low effort, not started.
+- F7 trust-boundary guidance in research-methodology and ai-integration: done (verified 2026-09-08: both skills already contain a Trust Boundaries section covering untrusted fetched content, prompt injection, and output validation; the original audit finding was stale).
