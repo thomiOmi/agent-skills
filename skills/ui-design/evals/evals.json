@@ -1,0 +1,34 @@
+{
+  "skill_name": "ui-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a responsive navbar component",
+      "expected_output": "A component with mobile and desktop breakpoints, explicit hover, focus, active, and disabled states, keyboard navigation for menu items, and semantic HTML with ARIA attributes.",
+      "assertions": [
+        "responsive",
+        "focus",
+        "ARIA"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Audit our dashboard for accessibility issues",
+      "expected_output": "Checks color contrast against WCAG ratios, keyboard operability of all interactive elements, visible focus indicators, labels on form inputs, and motion respecting prefers-reduced-motion.",
+      "assertions": [
+        "contrast",
+        "keyboard",
+        "prefers-reduced-motion"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Build a design system with color tokens and dark mode",
+      "expected_output": "Semantic design tokens (surface, text, accent) rather than raw hex values, a dark theme mapped onto the same token names, and components consuming tokens only.",
+      "assertions": [
+        "token",
+        "dark"
+      ]
+    }
+  ]
+}
