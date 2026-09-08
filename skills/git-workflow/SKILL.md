@@ -1,9 +1,9 @@
 ---
 name: git-workflow
-description: 'Use this skill whenever you work with Git - branching, committing, reviewing PRs, resolving conflicts, or auditing Git conventions. Load this skill BEFORE creating branches, making commits, or opening pull requests to ensure consistent Git workflow across the project. Triggers include: "branch strategy", "create a branch", "branch naming", "conventional commit", "breaking change", "PR template", "commit convention", "merge conflict", "rebase", "squash", "review the PR", "audit commit history", "git workflow", "git init", "clone", "branch", "checkout", "commit", "push", "pull", "merge", "rebase", "cherry-pick", "stash", "log", "diff", "status", "reset", "revert", "tag", "submodule", "gitignore", "gitattributes". Apply before creating branches or opening PRs. Enforces Conventional Commits standard for all commit messages.'
+description: 'Use this skill whenever you work with Git - branching, committing, reviewing PRs, resolving conflicts, or auditing Git conventions. Load this skill BEFORE creating branches, making commits, or opening pull requests to ensure consistent Git workflow across the project. Triggers include: "branch strategy", "create a branch", "branch naming", "conventional commit", "breaking change", "PR template", "commit convention", "merge conflict", "rebase", "squash", "review the PR", "audit commit history", "git workflow", "git init", "clone", "branch", "checkout", "commit", "push", "pull", "merge", "cherry-pick", "stash", "log", "diff", "status", "reset", "revert", "tag", "submodule", "gitignore", "gitattributes". Apply before creating branches or opening PRs. Enforces Conventional Commits standard for all commit messages.'
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   author: thomiOmi
 ---
 

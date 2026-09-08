@@ -1,9 +1,9 @@
 ---
 name: debugging
-description: 'Use this skill whenever something is wrong - bugs, errors, crashes, slow performance, incorrect output, or unexpected behavior. Do NOT guess the cause - this skill enforces a systematic diagnosis-before-fix workflow. Load this skill proactively whenever the user reports a problem, even if they phrase it casually or in a non-English language. Triggers include: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "tests are failing", "unexpected output", "crash", "why is this slow", "performance issue", "N+1 query", "this is broken", "this doesnt work", "debug this", "trace this error", "root cause", "regression", "flaky test". Also use when the user reports a problem in any informal way - "error", "bug", "broken", "not working", "slow", "crash", "fail".'
+description: 'Use this skill whenever something is wrong - bugs, errors, crashes, slow performance, incorrect output, or unexpected behavior. Do NOT guess the cause - this skill enforces a systematic diagnosis-before-fix workflow. Load this skill proactively whenever the user reports a problem, even if they phrase it casually or in a non-English language. Triggers include: "ada bug", "error ini", "kenapa gagal", "fix this", "something is wrong", "unexpected output", "why is this slow", "performance issue", "N+1 query", "this is broken", "this doesnt work", "debug this", "trace this error", "root cause", "regression", "flaky test". Also use when the user reports a problem in any informal way - "error", "bug", "broken", "not working", "slow", "crash", "fail".'
 license: MIT
 metadata:
-  version: "2.3.0"
+  version: "2.3.1"
   author: thomiOmi
 ---
 
