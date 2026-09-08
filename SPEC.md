@@ -44,9 +44,9 @@ Agents load skills progressively to optimize context window efficiency:
 
 To verify that a skill produces reliable outputs across varied prompts, follow the eval-driven iteration pattern:
 
-### 1. Test Cases (`evals/evals.json`)
+### 1. Test Cases (`evals/cases/<skill>.json`)
 
-Define test prompts, expected outputs, and optional input files inside `evals/evals.json`:
+Define test prompts, expected outputs, and optional input files inside a per-skill case file under `evals/cases/`:
 
 ```json
 {
@@ -65,6 +65,8 @@ Define test prompts, expected outputs, and optional input files inside `evals/ev
   ]
 }
 ```
+
+Eval case files are centralized under `evals/cases/` (one file per skill, named `<skill>.json`) instead of living inside each skill directory, because they are maintainer tooling and should not be shipped to users who install the skills. Optional fixture files for a case live under `evals/cases/<skill>.files/` and are referenced by the `files` array relative to that directory.
 
 ### 2. Workspace & Baseline Runs
 
@@ -90,7 +92,7 @@ bun test tests/validate-skills.test.ts
 
 ## Running Evals
 
-Scaffold and run evals for every skill that ships an `evals/evals.json`:
+Scaffold and run evals for every skill that has a case file under `evals/cases/`:
 
 ```bash
 bun scripts/evals/run-evals.ts --dry-run   # scaffold prompts only

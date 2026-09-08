@@ -118,7 +118,7 @@ Scope: 29-skill catalog after the granularity consolidation (38 to 29 skills, PR
 ## Automated scan results
 
 - Spec validation: all 29 skills pass tests/validate-skills.test.ts.
-- Eval coverage: 29 of 29 skills ship evals/evals.json (71 cases, all schema-validated; runner now grades assertions deterministically with --limit support).
+- Eval coverage: 29 of 29 skills ship eval case files under evals/cases/ (71 cases, all schema-validated; runner now grades assertions deterministically with --limit support).
 - Verification checklist: 29 of 29 skills end with a checklist section (FR-5 satisfied).
 - Trigger routing: tests/trigger-collision.test.ts guards against duplicate trigger phrases, self-repeats, and cross-skill file path references.
 - Progressive disclosure: content-heavy skills (ai-integration, database, devops-deployment, security-review, git-workflow, planning, sdlc-documentation) ship references/; bodies stay within token budget.

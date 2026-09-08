@@ -50,6 +50,7 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-09-08 | Centralized eval case files from skills/*/evals/evals.json to evals/cases/<skill>.json; updated runner, validation tests, and SPEC.md; installer no longer ships dev-time eval data to users |
 | 2026-09-08 | Added trigger collision regression tests and trigger dedupe (PR #30), eval runner --limit flag with --judge guard and exit code (PR #31), common pitfalls sections for four thin skills plus audit refresh (PR #32), closed F7 trust-boundary audit item (PR #33) |
 | 2026-07-29 | Created TASKS.md with Roadmap + Backlog |
 | 2026-07-29 | Moved DECISIONS.md from docs/ to root |
