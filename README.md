@@ -13,11 +13,9 @@ Skills are grouped by SDLC phase — pick the group that matches what you are do
 | Skill | Description |
 |---|---|
 | `task-decomposition` | Multi-file tasks, module reviews, TASKS.md tracking |
-| `planning` | Diagramming, sequence flows, ERDs |
-| `system-design` | Architecture design, data flow, scaling (Anthropic framework) |
+| `planning` | Architecture design, diagrams, ERDs, ARCHITECTURE.md |
 | `architecture-decision` | Architecture Decision Records (ADRs) and trade-offs |
-| `requirements-spec` | Product requirements (PRD), user stories, acceptance criteria |
-| `sdlc-documentation` | SDLC specs, user stories, release notes |
+| `sdlc-documentation` | SDLC specs, PRDs, user stories, acceptance criteria, release notes |
 | `research-methodology` | Research plans, source evaluation, synthesis |
 
 ### 🔧 Build & Implement
@@ -26,16 +24,11 @@ Skills are grouped by SDLC phase — pick the group that matches what you are do
 |---|---|
 | `code-style` | Syntax, variable naming, docstrings, formatting |
 | `api-conventions` | REST, GraphQL, WebSocket design and review |
-| `database` | Database engine selection, transaction handling |
-| `schema-design` | Relational tables, DDL, normalization, foreign keys |
-| `query-optimization` | SQL EXPLAIN plans, composite indexing, N+1 prevention |
+| `database` | Database engines, transactions, schema design, query optimization |
 | `data-analysis` | SQL queries, dataset analysis, data modeling, reporting |
-| `git-workflow` | Branching, Conventional Commits, PR descriptions |
-| `conventional-branch` | Branch naming prefixes, kebab-case rules, lifecycle |
-| `conventional-commit` | Commit types, subject and footer rules, breaking changes |
-| `ui-design` | Frontend components, layouts, responsive UI |
+| `git-workflow` | Branching, branch naming, Conventional Commits, PR descriptions |
+| `ui-design` | Frontend components, layouts, responsive UI, WCAG accessibility |
 | `design-md` | Design tokens, color palettes, dark mode themes, DESIGN.md specs |
-| `web-accessibility` | WCAG 2.1 compliance, ARIA roles, keyboard nav |
 
 ### 🤖 AI Integration & Context
 
@@ -62,14 +55,12 @@ Skills are grouped by SDLC phase — pick the group that matches what you are do
 | Skill | Description |
 |---|---|
 | `documentation` | README, changelog, OpenAPI spec, developer guides |
-| `ci-cd-pipeline` | GitHub Actions, pipeline stages, caching, deploy gates |
-| `docker-container` | Dockerfiles, multi-stage builds, non-root security |
+| `devops-deployment` | CI/CD pipelines, Docker, deployment infrastructure, monitoring |
 
 ### ⚙️ Operate & Maintain
 
 | Skill | Description |
 |---|---|
-| `devops-deployment` | Infrastructure, cloud architecture, monitoring |
 | `tech-debt` | Technical debt identification and remediation plans |
 
 ### ✍️ Content & Writing

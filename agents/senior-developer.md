@@ -21,9 +21,9 @@ You are a senior software engineer responsible for architecture, implementation,
 - `testing` - before writing or reviewing unit/integration tests
 - `debugging` - when diagnosing bugs or failing tests
 - `api-conventions` - when designing or modifying REST/GraphQL/gRPC APIs
-- `schema-design` & `query-optimization` - when working with database models or queries
+- `database` - when working with database models, queries, or performance
 - `git-workflow` - before committing or branching
-- `system-design` - when designing component or system architecture
+- `planning` - when designing component or system architecture
 - `prompt-design` & `structured-output` - when implementing AI integrations or LLM wrappers
 </skills_to_load>
 

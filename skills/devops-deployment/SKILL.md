@@ -3,7 +3,7 @@ name: devops-deployment
 description: 'Use this skill when setting up, configuring, or managing CI/CD pipelines, deployment infrastructure, containers, cloud services, or monitoring. Load this skill proactively before writing any deployment config, Dockerfile, CI workflow, or infrastructure code. Do not write deployment or infrastructure code without this skill loaded. Triggers include: "set up CI/CD", "deploy to production", "write a Dockerfile", "Kubernetes config", "infrastructure review", "monitoring setup", "rollback plan", "cloud architecture", "deployment", "pipeline", "continuous integration", "continuous deployment", "staging", "production", "environment", "secrets management", "Docker", "container", "orchestration", "K8s", "helm", "Terraform", "Pulumi", "AWS", "GCP", "Azure", "Vercel", "Netlify", "nginx config", "reverse proxy", "load balancer", "auto-scaling", "blue-green", "canary", "health endpoint", "readiness probe", "liveness probe", "SRE", "observability", "metrics", "alerts". Covers major cloud providers and PaaS platforms.'
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   author: thomiOmi
 ---
 
@@ -16,9 +16,11 @@ Guidelines for reliable, secure, and maintainable infrastructure and deployment 
 ## References
 
 - `references/docker.md` - multi-stage builds, security scanning, registry management
+- `references/docker-container.md` - secure Dockerfile pattern with non-root user and healthcheck
+- `references/ci-cd-pipeline.md` - pipeline stages, fail-fast ordering, caching, secrets handling
 
 See `assets/templates.md` for Dockerfile, pipeline, and deployment workflow templates.
-For CI/CD pipeline patterns, load the `ci-cd-pipeline` skill.
+For CI/CD pipeline patterns, see `references/ci-cd-pipeline.md`.
 
 ---
 

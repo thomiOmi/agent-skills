@@ -64,7 +64,7 @@ flowchart TD
 | Agent | Mode | Role | Delegates To | Key Skills |
 |---|---|---|---|---|
 | **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, quality-verifier |
-| **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, conventional-branch, conventional-commit, ai-integration |
+| **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, planning, ai-integration |
 | **product-manager** | subagent | PRDs, feature specs, user stories, roadmap | - | sdlc-documentation, task-decomposition, documentation |
 | **project-manager** | subagent | Project planning, milestone tracking, risk management, status reporting | - | task-decomposition, planning, sdlc-documentation |
 | **data-analyst** | subagent | SQL queries, schema analysis, data modeling | - | database, data-analysis, code-style |
@@ -107,9 +107,7 @@ Workflow: `discussion -> plan -> orchestrator -> test -> implement -> review -> 
 | database | senior-developer, data-analyst | Schema, queries, optimization |
 | data-analysis | data-analyst | SQL queries, data modeling, dataset analysis |
 | research-methodology | researcher | Technical research, comparisons, evidence-based recommendations |
-| git-workflow | senior-developer | Git conventions |
-| conventional-branch | senior-developer | Branch naming prefixes and lifecycle |
-| conventional-commit | senior-developer | Commit message format and types |
+| git-workflow | senior-developer | Git conventions, branch naming, Conventional Commits |
 | ai-integration | senior-developer | LLM/API integration |
 | ui-design | ui-ux | Design system, frontend, accessibility |
 | content-strategy | marketing | Content, SEO, copy, strategy |

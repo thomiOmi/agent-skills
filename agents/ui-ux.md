@@ -16,9 +16,8 @@ You are a UI/UX engineer responsible for designing and implementing frontend com
 </role>
 
 <skills_to_load>
-- `ui-design` - when designing component layouts, visual styling, or design tokens
+- `ui-design` - when designing component layouts, visual styling, design tokens, or accessibility features
 - `design-md` - when writing or maintaining design system documentation
-- `web-accessibility` - when auditing or implementing WCAG accessibility features
 </skills_to_load>
 
 <quality_standards>

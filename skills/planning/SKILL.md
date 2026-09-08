@@ -1,9 +1,9 @@
 ---
 name: planning
-description: 'Use this skill when creating or reviewing technical design artifacts - system architecture, data models, component diagrams, sequence diagrams, ERDs, flowcharts, and user flows. Load this skill proactively any time the user asks about architecture, design, or structure before writing code. Domain-agnostic - works for any project type. For formal PRD, SDD, or requirements documents, use sdlc-documentation instead. Triggers include: "design the database", "ERD", "system architecture", "flowchart", "review the system design", "audit the data model", "sequence diagram", "component diagram", "user flow", "architecture review", "data flow", "state machine", "dependency graph", "system design interview", "how does this work", "visualize this", "draw a diagram". Use Mermaid.js syntax for all diagrams so they render natively in markdown.'
+description: 'Use this skill when creating or reviewing technical design artifacts - system architecture, data models, component diagrams, sequence diagrams, ERDs, flowcharts, and user flows. Load this skill proactively any time the user asks about architecture, design, or structure before writing code, or when writing ARCHITECTURE.md. Domain-agnostic - works for any project type. For formal PRD, SDD, or requirements documents, use sdlc-documentation instead. Triggers include: "design the database", "ERD", "system architecture", "system design", "ARCHITECTURE.md", "service boundaries", "flowchart", "review the system design", "audit the data model", "sequence diagram", "component diagram", "user flow", "architecture review", "data flow", "state machine", "dependency graph", "how does this work", "visualize this", "draw a diagram". Use Mermaid.js syntax for all diagrams so they render natively in markdown.'
 license: MIT
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   author: thomiOmi
 ---
 

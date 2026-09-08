@@ -1,13 +1,4 @@
----
-name: conventional-commit
-description: 'Use this skill when writing, reviewing, or fixing Git commit messages. Enforces the Conventional Commits format: type(scope): subject, the full type list (feat, fix, perf, refactor, test, docs, chore, ci, build, style, revert), imperative lowercase subjects under 72 characters, body explaining why, footers for breaking changes and issue references. Load this skill BEFORE running git commit or composing a commit message. Triggers include: "commit message", "buat commit", "conventional commit", "write a commit", "git commit", "commit type", "feat or fix", "breaking change", "semantic commit", "commit convention", "amend the commit message".'
-license: MIT
-metadata:
-  version: "1.0.0"
-  author: thomiOmi
-  credits: "Adapted from conventionalcommits.org and github/awesome-copilot (MIT License)"
----
-
+﻿
 # Conventional Commit
 
 Format for commit messages that are readable by humans and machines. A good
@@ -114,7 +105,7 @@ Is it releases, deps, config?              chore or build
 If a commit mixes types, split it into multiple commits - one logical change
 per commit.
 
-For branch naming, see the conventional-branch skill. For the full Git
+For branch naming, see `conventional-branch.md`. For the full Git
 workflow (branching strategies, PR reviews, merge strategy), see the
 git-workflow skill.
 

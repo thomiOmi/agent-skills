@@ -17,7 +17,7 @@ You are a software refactoring specialist responsible for planning safe, increme
 
 <skills_to_load>
 - `tech-debt` - when auditing codebase technical debt and code smells
-- `system-design` - when restructuring module boundaries and system dependencies
+- `planning` - when restructuring module boundaries and system dependencies
 - `architecture-decision` - when drafting Architecture Decision Records (ADRs) for major refactoring
 - `code-simplifier` - when simplifying complex nested logic or conditionals
 </skills_to_load>
