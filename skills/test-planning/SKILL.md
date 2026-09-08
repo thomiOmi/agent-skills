@@ -3,7 +3,7 @@ name: test-planning
 description: 'Use this skill when designing test strategies, test plans, QA entry/exit criteria, and coverage targets. Trigger with "test plan", "test strategy", "QA plan", "coverage target", "quality gates", or before launching major test suites. Do not write test plans without this skill loaded.'
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   author: thomiOmi
 ---
 
@@ -24,6 +24,16 @@ Guidelines for designing comprehensive test plans, QA entry/exit criteria, and c
    - Entry: Code frozen, unit tests passing.
    - Exit: 0 critical/high bugs open, 80%+ test coverage.
 4. **Environment & Data Setup**: Mocking requirements and test database seeding.
+
+---
+
+## Common Pitfalls
+
+1. **Coverage percentage as a goal**: Chasing a number produces assertions-free tests. Measure coverage to find gaps, never as the exit criterion itself.
+2. **Testing implementation instead of behavior**: Tests coupled to internals break on every refactor. Assert observable outputs and side effects.
+3. **E2E for everything**: End-to-end suites are slow and flaky; putting most cases there stalls feedback. Push coverage down the pyramid toward unit tests.
+4. **Skipping non-functional targets**: Load, security, and accessibility requirements discovered after release are expensive. Set their targets in the plan, not in production.
+5. **No test data strategy**: Realistic data volumes and edge cases (empty, huge, unicode, concurrent) surface bugs that happy-path fixtures never will.
 
 ---
 
