@@ -1,15 +1,18 @@
 ---
 name: data-analysis
-description: 'Use this skill whenever you write SQL queries, analyze datasets, model data, or generate data insights and reports. Load this skill before writing complex SQL, auditing database queries, or performing data analysis. Triggers include: "write a SQL query", "analyze this dataset", "data modeling", "query optimization", "data visualization", "metrics report", "data analysis", "SQL", "JOIN", "GROUP BY", "aggregation", "analytics", "dashboard metrics". Do not write or audit data analysis queries without this skill loaded.'
+description: 'Use this skill whenever you write SQL queries to analyze datasets, generate data insights, or produce metrics and reports. Load this skill before writing analysis SQL or performing data analysis. Triggers include: "write a SQL query", "analyze this dataset", "data visualization", "metrics report", "data analysis", "SQL", "aggregation", "analytics", "dashboard metrics". For optimizing slow queries and indexing, load `query-optimization`. For schema design and migrations, load `database`. Do not write or audit data analysis queries without this skill loaded.'
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   author: thomiOmi
 ---
 
 # Data Analysis
 
 Guidelines for querying, analyzing, and interpreting datasets accurately and securely.
+
+For optimizing slow queries and indexing, load `query-optimization`.
+For schema design and migrations, load `database`.
 
 ---
 
