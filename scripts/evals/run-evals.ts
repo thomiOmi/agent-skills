@@ -1,7 +1,8 @@
 /**
  * Eval runner for agent skills (agentskills.io eval pattern).
  *
- * Scaffolds evals/workspace/<skill>/iteration-N/<skill>-<id>/with_skill and
+ * Reads eval case definitions from evals/cases/<skill>.json, scaffolds
+ * evals/workspace/<skill>/iteration-N/<skill>-<id>/with_skill and
  * without_skill subdirs with prompt.txt, expected_output.txt, output.txt
  * (executor output), and summary.json. Executor default: opencode run.
  */
@@ -14,6 +15,8 @@ import { consola } from "consola";
 type EvalMode = "with_skill" | "without_skill";
 const MODES: EvalMode[] = ["with_skill", "without_skill"];
 const WORKSPACE_ROOT = resolve(process.cwd(), "evals", "workspace");
+const CASES_DIR = resolve(process.cwd(), "evals", "cases");
+const SKILLS_ROOT = resolve(process.cwd(), "skills");
 
 interface EvalCase {
   id: number
@@ -74,23 +77,24 @@ async function exists(p: string): Promise<boolean> {
   }
 }
 
+function caseStem(path: string): string {
+  const name = path.replace(/\\/g, "/").split("/").pop() ?? "";
+  return name.endsWith(".json") ? name.slice(0, -5) : name;
+}
+
 async function findEvalsFiles(): Promise<string[]> {
-  const root = resolve(process.cwd(), "skills");
-  if (!(await exists(root))) {
+  if (!(await exists(CASES_DIR))) {
     return [];
   }
-  const dirs = await readdir(root, { withFileTypes: true });
+  const entries = await readdir(CASES_DIR, { withFileTypes: true });
   const out: string[] = [];
-  for (const d of dirs) {
-    if (!d.isDirectory()) {
+  for (const e of entries) {
+    if (!e.isFile() || !e.name.endsWith(".json") || e.name === "evals.example.json") {
       continue;
     }
-    const file = join(root, d.name, "evals", "evals.json");
-    if (await exists(file)) {
-      out.push(file);
-    }
+    out.push(join(CASES_DIR, e.name));
   }
-  return out;
+  return out.sort();
 }
 
 function runPrompt(command: string, args: string[], cwd: string, promptText: string): Promise<string> {
@@ -121,6 +125,7 @@ function runPrompt(command: string, args: string[], cwd: string, promptText: str
 
 async function scaffold(
   skillDir: string,
+  fixtureDir: string,
   skillName: string,
   evalCase: EvalCase,
   mode: EvalMode,
@@ -143,7 +148,7 @@ async function scaffold(
   await writeFile(join(caseDir, "expected_output.txt"), evalCase.expected_output ?? "", "utf-8");
 
   for (const rel of evalCase.files ?? []) {
-    const src = resolve(skillDir, "evals", rel);
+    const src = resolve(fixtureDir, rel);
     if (!(await exists(src))) {
       continue;
     }
@@ -169,10 +174,10 @@ async function runEvals(options: {
   let files = await findEvalsFiles();
   if (options.skill) {
     const wanted = options.skill;
-    files = files.filter(f => f.replace(/\\/g, "/").includes(`/${wanted}/evals/`));
+    files = files.filter(f => caseStem(f) === wanted);
   }
   if (files.length === 0) {
-    consola.info("no evals/evals.json found under skills/ - nothing to do");
+    consola.info("no eval case files found under evals/cases/ - nothing to do");
     return;
   }
 
@@ -186,10 +191,11 @@ async function runEvals(options: {
   let failed = 0;
 
   for (const file of files) {
-    const skillDir = resolve(file, "..", "..");
     const raw = await readFile(file, "utf-8");
     const evalsFile: EvalsFile = JSON.parse(raw) as EvalsFile;
     const skillName = evalsFile.skill_name;
+    const skillDir = join(SKILLS_ROOT, skillName);
+    const fixtureDir = join(CASES_DIR, `${skillName}.files`);
 
     consola.log(`\n==> ${skillName} (${evalsFile.evals.length} cases)`);
     const iterationDir = join(WORKSPACE_ROOT, skillName, `iteration-${options.iteration}`);
@@ -208,7 +214,7 @@ async function runEvals(options: {
       };
 
       for (const mode of MODES) {
-        const caseDir = await scaffold(skillDir, skillName, evalCase, mode, iterationDir);
+        const caseDir = await scaffold(skillDir, fixtureDir, skillName, evalCase, mode, iterationDir);
         if (options.dryRun) {
           consola.log(`  [dry-run] ${mode}: ${skillName}-${evalCase.id}`);
           continue;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { readdir, readFile, stat } from "fs/promises";
+import { readFile, readdir } from "fs/promises";
 import { join, resolve } from "pathe";
 
 interface EvalCase {
@@ -15,28 +15,22 @@ interface EvalsFile {
   evals: EvalCase[]
 }
 
-const skillsRoot = resolve(import.meta.dir, "..", "skills");
+const casesRoot = resolve(import.meta.dir, "..", "evals", "cases");
 
-describe("Validate Eval Files (agentskills.io)", () => {
-  it("validates evals.json for every skill that ships one", async () => {
-    const dirs = (await readdir(skillsRoot, { withFileTypes: true }))
-      .filter(d => d.isDirectory());
+describe("Validate Eval Case Files (centralized)", () => {
+  it("validates every case file under evals/cases/", async () => {
+    const entries = (await readdir(casesRoot, { withFileTypes: true }))
+      .filter(e => e.isFile() && e.name.endsWith(".json") && e.name !== "evals.example.json");
 
-    let checked = 0;
-    for (const dir of dirs) {
-      const file = join(skillsRoot, dir.name, "evals", "evals.json");
-      try {
-        await stat(file);
-      }
-      catch {
-        continue;
-      }
+    expect(entries.length, "at least one eval case file").toBeGreaterThan(0);
 
-      checked++;
+    for (const entry of entries) {
+      const file = join(casesRoot, entry.name);
+      const expectedSkill = entry.name.slice(0, -".json".length);
       const raw = await readFile(file, "utf-8");
       const evals = JSON.parse(raw) as EvalsFile;
 
-      expect(evals.skill_name, `${file}: skill_name must match directory`).toBe(dir.name);
+      expect(evals.skill_name, `${file}: skill_name must match file stem`).toBe(expectedSkill);
       expect(Array.isArray(evals.evals), `${file}: evals must be an array`).toBe(true);
       expect(evals.evals.length, `${file}: at least one eval case`).toBeGreaterThan(0);
 
@@ -61,7 +55,5 @@ describe("Validate Eval Files (agentskills.io)", () => {
         }
       }
     }
-
-    expect(checked, "at least one skill ships an evals.json").toBeGreaterThan(0);
   });
 });

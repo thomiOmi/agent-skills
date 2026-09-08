@@ -52,6 +52,10 @@ Initially shipped as standalone skills (`conventional-branch`, `conventional-com
 
 Evaluated external eval libraries (Vercel evalite-style runners, DeepEval, Harbor, G-Eval implementations) and decided none is needed: `scripts/evals/run-evals.ts` grades with assertion matching, which is deterministic and free. LLM-judge grading (via `opencode run` in G-Eval style) is recognized as the future pattern but is deferred until skill development stabilizes.
 
+### Eval cases centralized under evals/cases/ (divergence from agentskills.io)
+
+Eval case definitions live in `evals/cases/<skill>.json` (one file per skill) instead of inside each skill directory (`skills/<name>/evals/evals.json`). This deliberately diverges from the agentskills.io per-skill eval convention: eval cases are maintainer tooling, and the old layout shipped them to every user via the installer (deploy/sync/symlink copy `skills/` recursively without filtering). Centralizing keeps `skills/` distribution-clean, gives a single root for eval infrastructure (cases + workspace + judge), and preserves per-skill diffs via filename granularity. Fixture files for a case live under `evals/cases/<skill>.files/`.
+
 ### Release notes: changelogen emoji headings kept, bodies applied via notes-file
 
 changelogen emits emoji section headings such as (🚀 Enhancements, 🩹 Fixes, 💅 Refactors, 📖 Documentation, 🏡 Chore) into CHANGELOG.md and release output. They are kept as-is - the changelog is already the documented exception to the no-emoji rule, so v0.3.0 and v0.4.0 lacking emoji headings was not a regression to fix. Separately, GitHub Release bodies created with inline shell interpolation (`bun -e`, PowerShell strings) were silently truncated at the first `#` character, cutting off the first emoji heading. Practice: extract the version section from CHANGELOG.md into a temporary file and apply it with `gh release create/edit --notes-file <file>`, then verify the body via `gh release view --json body` before moving on.
