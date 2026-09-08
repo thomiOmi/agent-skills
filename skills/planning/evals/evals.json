@@ -1,0 +1,34 @@
+{
+  "skill_name": "planning",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Draw an ERD for an e-commerce system with users, orders, and products",
+      "expected_output": "A Mermaid erDiagram with users, orders, order_items, and products entities, explicit cardinality (one user has many orders, orders contain many products through order_items), and primary and foreign keys marked.",
+      "assertions": [
+        "mermaid",
+        "erDiagram",
+        "order_items"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Design the architecture for a real-time chat application",
+      "expected_output": "A component diagram (Mermaid) showing clients, WebSocket gateway, message store, and presence service, with data flow described and scaling concerns (fan-out, persistence) addressed before implementation.",
+      "assertions": [
+        "mermaid",
+        "WebSocket",
+        "data flow"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create a sequence diagram for OAuth login",
+      "expected_output": "A Mermaid sequenceDiagram with client, auth provider, and backend lifelines showing the redirect, code exchange, token validation, and session creation in the correct order.",
+      "assertions": [
+        "sequenceDiagram",
+        "token"
+      ]
+    }
+  ]
+}
