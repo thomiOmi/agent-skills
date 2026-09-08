@@ -1,0 +1,24 @@
+{
+  "skill_name": "code-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review this pull request",
+      "expected_output": "A structured review covering correctness, error handling, naming, test coverage, and security, with comments labeled by severity: blocking issues separated from suggestions and nitpicks.",
+      "assertions": [
+        "correctness",
+        "security",
+        "blocking"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our PR reviews take days and are full of nitpicks. Improve the review process",
+      "expected_output": "Defines review scope and severity levels (only correctness, security, and design issues block), keeps style issues to automated lint, and sets an explicit turnaround expectation for reviewers.",
+      "assertions": [
+        "severity",
+        "style"
+      ]
+    }
+  ]
+}

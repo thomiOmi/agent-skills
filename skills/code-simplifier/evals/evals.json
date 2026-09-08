@@ -1,0 +1,24 @@
+{
+  "skill_name": "code-simplifier",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Simplify this deeply nested function",
+      "expected_output": "Replaces nesting with guard clauses and early returns, extracts small focused helpers for repeated logic, and removes dead code while keeping the public behavior identical.",
+      "assertions": [
+        "guard clause",
+        "early return",
+        "dead code"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Reduce the complexity of this module without breaking anything",
+      "expected_output": "Confirms behavior is preserved by running existing tests first (or adding a characterization test), then flattens conditionals and simplifies data flow step by step with verification after each change.",
+      "assertions": [
+        "behavior",
+        "test"
+      ]
+    }
+  ]
+}

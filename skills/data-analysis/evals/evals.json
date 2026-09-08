@@ -1,0 +1,25 @@
+{
+  "skill_name": "data-analysis",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Analyze this dataset of monthly sales and produce insights",
+      "expected_output": "SQL aggregations over the monthly sales data (GROUP BY month, category), identifies trend and seasonality, flags anomalies with numbers, and states limitations of the data before conclusions.",
+      "assertions": [
+        "GROUP BY",
+        "trend",
+        "anomal"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Build a metrics report for customer churn",
+      "expected_output": "Defines churn precisely (time window, what counts as churned), writes the query that computes it, separates the definition from presentation, and visualizes the trend with a clear period comparison.",
+      "assertions": [
+        "churn",
+        "query",
+        "definition"
+      ]
+    }
+  ]
+}

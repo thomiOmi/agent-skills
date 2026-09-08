@@ -1,0 +1,24 @@
+{
+  "skill_name": "documentation",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a README for our library",
+      "expected_output": "A README with what the library does in one line, installation, a quickstart example that actually runs, links to API reference, and contribution or license notes. No marketing fluff.",
+      "assertions": [
+        "install",
+        "quickstart",
+        "example"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our OpenAPI spec drifted from the actual API. Fix it",
+      "expected_output": "Audits each documented endpoint against the implementation, corrects schemas, required fields, and status codes, and sets up a check (spec lint or contract test) so drift is caught in CI.",
+      "assertions": [
+        "schema",
+        "endpoint"
+      ]
+    }
+  ]
+}
