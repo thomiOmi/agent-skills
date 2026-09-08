@@ -1,0 +1,24 @@
+{
+  "skill_name": "copywriting",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write hero copy for our landing page",
+      "expected_output": "A benefit-led headline with a clear subheadline, a specific call to action, and optional social proof. Speaks to the user outcome, not product features.",
+      "assertions": [
+        "headline",
+        "CTA",
+        "benefit"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our pricing page converts poorly. Rewrite the copy",
+      "expected_output": "Reframes plans around customer value instead of feature lists, handles the top objections (is this worth it, what if I outgrow it), and makes the recommended plan visually and verbally obvious.",
+      "assertions": [
+        "value",
+        "objection"
+      ]
+    }
+  ]
+}

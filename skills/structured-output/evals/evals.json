@@ -1,0 +1,23 @@
+{
+  "skill_name": "structured-output",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Get the model to return valid JSON for orders",
+      "expected_output": "Defines a JSON schema for the order object, instructs the model to output only JSON, validates the response against the schema, and retries or falls back on validation failure instead of trusting raw output.",
+      "assertions": [
+        "schema",
+        "validat"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The model sometimes wraps JSON in markdown fences. Handle it",
+      "expected_output": "Strips code fences and leading text before parsing, uses tolerant parsing for common variants, and treats parse failure as a retryable condition with a bounded retry count.",
+      "assertions": [
+        "parse",
+        "retry"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "skill_name": "seo-optimization",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit our page for on-page SEO",
+      "expected_output": "Checks title tag length and keyword placement, meta description, heading hierarchy (single h1, logical h2/h3), image alt text, internal links, and URL structure, with prioritized fixes.",
+      "assertions": [
+        "title tag",
+        "meta description",
+        "heading"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We have duplicate content across multiple URLs. Fix it",
+      "expected_output": "Recommends canonical tags pointing to the preferred URL, removes or redirects duplicates where possible, and updates the sitemap so only canonical URLs are listed.",
+      "assertions": [
+        "canonical",
+        "sitemap"
+      ]
+    }
+  ]
+}

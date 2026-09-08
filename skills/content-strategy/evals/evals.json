@@ -1,0 +1,24 @@
+{
+  "skill_name": "content-strategy",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Plan content for our product launch month",
+      "expected_output": "A content calendar mapped to audience segments and channels, with pieces sequenced (teaser, launch, follow-up), owners, and measurable goals per channel.",
+      "assertions": [
+        "calendar",
+        "audience",
+        "channel"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our blog gets traffic but no conversions. Improve the content strategy",
+      "expected_output": "Maps existing content to funnel stages, finds the gap (top-of-funnel posts with no path to product), and adds conversion points such as relevant internal CTAs and mid-funnel content.",
+      "assertions": [
+        "funnel",
+        "CTA"
+      ]
+    }
+  ]
+}
