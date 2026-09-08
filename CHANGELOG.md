@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v0.3.0
+
+[compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.2.2...v0.3.0)
+
+### 🚀 Enhancements
+
+- Add memory-management skill ([#23](https://github.com/thomiOmi/agent-skills/pull/23))
+
+### 🩹 Fixes
+
+- Remove overlapping skill triggers and add by-name pointers ([#25](https://github.com/thomiOmi/agent-skills/pull/25))
+
+### 💅 Refactors
+
+- Merge colliding skills into parent skills as references ([#26](https://github.com/thomiOmi/agent-skills/pull/26))
+
+### 📖 Documentation
+
+- Group skills by SDLC phase in README ([#24](https://github.com/thomiOmi/agent-skills/pull/24))
+
+### ❤️ Contributors
+
+- Thomi Syauqi ([@thomiOmi](https://github.com/thomiOmi))
+
 ## v0.2.2
 
 [compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.2.1...v0.2.2)
