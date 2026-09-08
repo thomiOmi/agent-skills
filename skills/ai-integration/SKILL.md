@@ -1,9 +1,9 @@
 ---
 name: ai-integration
-description: 'Use this skill when building, reviewing, or auditing AI-powered features - LLM APIs, prompts, RAG, agents, embeddings, vector databases, or any AI/ML integration. Load this skill proactively before writing any code that calls an LLM API, designs a RAG pipeline, or constructs prompts. Do not write AI integration code without this skill loaded. Triggers include: "integrasikan Claude", "pakai OpenAI", "prompt engineering", "RAG", "vector database", "AI agent", "review the prompt", "audit LLM integration", "LLM", "GPT", "Claude", "Gemini", "embedding", "vector search", "semantic search", "fine-tuning", "function calling", "tool use", "structured output", "token counting", "cost estimation", "rate limiting", "retry logic", "streaming", "context window", "system prompt", "few-shot", "chain of thought", "agent loop", "hallucination", "guardrails". Covers OpenAI, Anthropic, Google, AWS Bedrock, and self-hosted models.'
+description: 'Use this skill when building, reviewing, or auditing AI-powered features - LLM APIs, RAG, agents, embeddings, vector databases, or any AI/ML integration. Load this skill proactively before writing any code that calls an LLM API or designs a RAG pipeline. Do not write AI integration code without this skill loaded. Triggers include: "integrasikan Claude", "pakai OpenAI", "RAG", "vector database", "AI agent", "audit LLM integration", "LLM", "GPT", "Claude", "Gemini", "embedding", "vector search", "semantic search", "fine-tuning", "token counting", "cost estimation", "rate limiting", "retry logic", "streaming", "context window", "chain of thought", "agent loop", "hallucination", "guardrails". For designing or refining prompt structure, load `prompt-design`. For JSON output contracts and response parsing, load `structured-output`. Covers OpenAI, Anthropic, Google, AWS Bedrock, and self-hosted models.'
 license: MIT
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   author: thomiOmi
 ---
 
@@ -11,6 +11,9 @@ metadata:
 
 Guidelines for building reliable, cost-efficient, and maintainable AI-powered features.
 Provider-agnostic and language-agnostic - applies to any LLM API and any language.
+
+For designing or refining prompt structure, load `prompt-design`.
+For JSON output contracts and response parsing, load `structured-output`.
 
 ---
 
