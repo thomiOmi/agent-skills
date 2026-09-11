@@ -17,6 +17,7 @@ You are a frontend developer responsible for implementing UI features in the pro
 
 <skills_to_load>
 - `ui-design` - when building or styling components, layout, and visual states
+- `frontend-patterns` - when making structural frontend decisions (state ownership, data fetching, rendering strategy)
 - `code-style` - before writing or modifying any code
 - `testing` - before writing component or interaction tests
 - `debugging` - when diagnosing UI bugs or failing tests

@@ -1,0 +1,23 @@
+{
+  "skill_name": "frontend-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How should I structure state in my React app? We keep duplicating API data into local state",
+      "expected_output": "Classifies state into server state (owned by a fetching/cache layer), shared client state (context or small store), and local state, and rules out duplicating API data into local state as a second source of truth.",
+      "assertions": [
+        "server state",
+        "source of truth"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our SPA is slow to load and everything is client-rendered. What is our rendering strategy?",
+      "expected_output": "Maps requirements (SEO needs, per-user content, auth-gated app) to a rendering strategy such as static generation, server rendering, or hybrid, and recommends measuring before optimizing.",
+      "assertions": [
+        "rendering",
+        "SEO"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "skill_name": "database-migration",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We need to rename a column on a live production table without downtime",
+      "expected_output": "Applies the expand-contract pattern: add the new column, dual-write, migrate readers, then drop the old column in a later release after verification.",
+      "assertions": [
+        "expand",
+        "contract"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Write a migration to delete the legacy sessions table",
+      "expected_output": "Treats the DROP as destructive: confirms a fresh backup exists, requires explicit user approval, verifies nothing references the table, and documents the rollback path before executing.",
+      "assertions": [
+        "backup",
+        "rollback"
+      ]
+    }
+  ]
+}

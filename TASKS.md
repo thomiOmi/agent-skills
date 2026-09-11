@@ -44,7 +44,7 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
 - [ ] Multi-runtime plugin manifest (.claude-plugin) for cross-harness distribution (AUDIT.md F5)
 - [ ] Implement DeepEval as optional LLM-judge for catalog evals (was in-progress, deferred 2026-09-08): new `evals/judge/` Python module (uv project, deps = deepeval) that reads `evals/workspace/<skill>/iteration-N/...` outputs and grades them with G-Eval/metrics; integrate the reserved `--judge` flag in `scripts/evals/run-evals.ts` to run prompts then spawn the judge, merging scores into `summary.json`. Also reconsider the DECISIONS.md "no external eval library" decision when implemented. Prereq (sentralisasi eval cases) already done in PR #35.
-- [ ] Task 2: create skills for the new delivery agents (roster expanded 2026-09-08): `frontend-patterns` (component architecture, client state, rendering patterns) and `backend-patterns` (layering, transactions, background jobs) for frontend/backend-developer; `database-migration` (migration planning, rollback, zero-downtime patterns) for database-engineer; evaluate strengthening `code-review` for the senior-developer tech lead role. New agents: frontend-developer, backend-developer, software-architect, database-engineer. Also planned: `project-lifecycle` skill (end-to-end project engagement phases with 2 gates) already designed in conversation.
+- [ ] Task 2 remainder: evaluate strengthening `code-review` for the senior-developer tech lead role. The three delivery skills (`frontend-patterns`, `backend-patterns`, `database-migration`) are shipped (2026-09-11) and wired into the agents' skills_to_load. Also planned: `project-lifecycle` skill (end-to-end project engagement phases with 2 gates) already designed in conversation.
 
 ---
 
@@ -52,6 +52,7 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-09-11 | Added frontend-patterns, backend-patterns, database-migration skills (architectural decision patterns per one-skill-per-moment; complements ui-design, api-conventions, database) with eval cases, wired into frontend-developer, backend-developer, database-engineer skills_to_load, updated README catalog |
 | 2026-09-08 | Expanded agent roster from 16 to 20 for the agency structure: added frontend-developer, backend-developer, software-architect, database-engineer; reframed senior-developer as tech lead; updated orchestrator delegation list and AGENTS.md Agent Orchestra table (removed dangling quality-verifier reference) |
 | 2026-09-08 | Centralized eval case files from skills/*/evals/evals.json to evals/cases/<skill>.json; updated runner, validation tests, and SPEC.md; installer no longer ships dev-time eval data to users |
 | 2026-09-08 | Added trigger collision regression tests and trigger dedupe (PR #30), eval runner --limit flag with --judge guard and exit code (PR #31), common pitfalls sections for four thin skills plus audit refresh (PR #32), closed F7 trust-boundary audit item (PR #33) |
