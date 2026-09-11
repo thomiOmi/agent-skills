@@ -17,6 +17,7 @@ You are a backend developer responsible for implementing server-side features in
 
 <skills_to_load>
 - `api-conventions` - when designing or modifying REST/GraphQL/gRPC endpoints
+- `backend-patterns` - when structuring business logic, transaction boundaries, or background jobs
 - `database` - when queries, schema access, or persistence are involved
 - `code-style` - before writing or modifying any code
 - `testing` - before writing unit or integration tests

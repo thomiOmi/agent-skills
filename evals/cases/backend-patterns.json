@@ -1,0 +1,23 @@
+{
+  "skill_name": "backend-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Where should our business logic live? Our controllers are getting huge",
+      "expected_output": "Recommends thin transport layer, fat domain/service layer with business rules, and explicit persistence layer, with controllers containing no business decisions.",
+      "assertions": [
+        "domain",
+        "controller"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We have a payment processing job that sometimes runs twice and double-charges",
+      "expected_output": "Explains idempotency keys or deduplication for non-idempotent writes, idempotent job handlers, and retry policies with poison paths for background jobs.",
+      "assertions": [
+        "idempotency",
+        "retry"
+      ]
+    }
+  ]
+}
