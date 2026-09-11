@@ -148,7 +148,7 @@ agent-skills/
 ├── TASKS.md
 ├── package.json
 ├── tsconfig.json
-├── agents/            # 16 specialized subagents
+├── agents/            # 20 specialized subagents
 ├── commands/          # 17 slash commands
 ├── config/            # Global opencode.jsonc & tui.jsonc templates
 ├── instructions/      # Global AGENTS.md source
@@ -156,7 +156,7 @@ agent-skills/
 ├── tools/             # Custom TypeScript tools
 ├── src/               # CLI installer tooling
 ├── tests/             # Test suites
-└── skills/            # 37 atomic domain skills
+└── skills/            # 29 atomic domain skills
 ```
 
 ---
