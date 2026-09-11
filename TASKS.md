@@ -51,6 +51,7 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-09-11 | Audit fix: sharpened data-analyst role boundary (pure analysis plus migration outcome validation; schema and migration routing to database-engineer), removed duplicate senior-developer row from orchestrator delegation list, synchronized AGENTS.md Key Skills with actual skills_to_load (added frontend-patterns, backend-patterns, debugging, database-migration; removed phantom code-simplifier), clarified refactor-planner as legacy code migration
 | 2026-09-11 | Added project-lifecycle skill (7-phase engagement arc, 2 hard gates, scope document with S/M/L milestones, client communication templates, TASKS.md phase state) wired into orchestrator skills_to_load; strengthened code-review to v1.1.0 with Tech Lead Review Priorities (layering, boundaries, duplication, cross-domain consistency, scope discipline) |
 | 2026-09-11 | Added frontend-patterns, backend-patterns, database-migration skills (architectural decision patterns per one-skill-per-moment; complements ui-design, api-conventions, database) with eval cases, wired into frontend-developer, backend-developer, database-engineer skills_to_load, updated README catalog |
 | 2026-09-08 | Expanded agent roster from 16 to 20 for the agency structure: added frontend-developer, backend-developer, software-architect, database-engineer; reframed senior-developer as tech lead; updated orchestrator delegation list and AGENTS.md Agent Orchestra table (removed dangling quality-verifier reference) |

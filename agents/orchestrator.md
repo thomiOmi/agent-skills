@@ -35,10 +35,9 @@ You are the orchestrator subagent. You receive planning tasks or complex request
    - `software-architect` - system design, ADRs, trade-off analysis, architecture review
    - `senior-developer` (tech lead) - cross-domain code review, standards enforcement, glue work, hard debugging
    - `ai-engineer` - LLM prompt design, AI integration, RAG systems, structured output, prompt evals
-   - `senior-developer` - architecture, coding, refactoring, code review
    - `product-manager` - PRDs, feature specs, user stories, roadmap planning
    - `project-manager` - project planning, milestone tracking, risk management, status reporting
-   - `data-analyst` - SQL queries, schema analysis, data modeling, reporting
+   - `data-analyst` - SQL analysis, reporting queries, data profiling, migration outcome validation
    - `ui-ux` - design system, frontend, accessibility
    - `marketing` - content, SEO, copy, strategy
    - `qa-engineer` - test strategy, coverage, quality gates
@@ -48,7 +47,7 @@ You are the orchestrator subagent. You receive planning tasks or complex request
    - `deep-thinker` - complex reasoning, root cause analysis
    - `researcher` - technical research, tool and library comparison, evidence-based recommendations
    - `docs-writer` - technical writing, documentation
-   - `refactor-planner` - safe refactoring, migration planning
+   - `refactor-planner` - safe refactoring, legacy code migration planning
    - `explore` - fast codebase exploration
    - `scout` - external dependency research
    - `general` - general-purpose multi-step tasks

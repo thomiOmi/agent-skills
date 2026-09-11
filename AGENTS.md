@@ -53,15 +53,15 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | Agent | Role | Mode | Key Skills |
 |---|---|---|---|
 | `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, project-lifecycle, planning, code-review, testing |
-| `frontend-developer` | UI implementation, components, client state, styling | subagent | ui-design, code-style, testing, debugging, git-workflow |
-| `backend-developer` | API endpoints, business logic, auth, server-side integration | subagent | api-conventions, database, code-style, testing, git-workflow |
+| `frontend-developer` | UI implementation, components, client state, styling | subagent | ui-design, frontend-patterns, code-style, testing, debugging, git-workflow |
+| `backend-developer` | API endpoints, business logic, auth, server-side integration | subagent | api-conventions, backend-patterns, database, code-style, testing, debugging, git-workflow |
 | `software-architect` | System design, ADRs, trade-off analysis, architecture review | subagent | planning, architecture-decision, research-methodology, tech-debt |
-| `database-engineer` | Schema design, migrations, indexing, query performance | subagent | database, data-analysis, api-conventions, testing |
+| `database-engineer` | Schema design, migrations, indexing, query performance | subagent | database, database-migration, data-analysis, api-conventions, testing |
 | `ai-engineer` | Prompt engineering, AI integration, RAG, structured output | subagent | prompt-design, structured-output, ai-integration, code-style, testing |
-| `senior-developer` | Tech lead: cross-domain review, standards, glue work, hard debugging | subagent | code-style, code-review, code-simplifier, debugging, testing, api-conventions, database, git-workflow, planning |
+| `senior-developer` | Tech lead: cross-domain review, standards, glue work, hard debugging | subagent | code-style, code-review, debugging, testing, api-conventions, database, git-workflow, planning |
 | `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | sdlc-documentation, task-decomposition |
 | `project-manager` | Project planning, milestone tracking, risk, status reports | subagent | task-decomposition, planning, sdlc-documentation |
-| `data-analyst` | SQL queries, schema analysis, data modeling | subagent | database, data-analysis, code-style |
+| `data-analyst` | SQL analysis, reporting, data profiling | subagent | database, data-analysis, code-style |
 | `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, test-planning, debugging |
 | `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
 | `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment |
@@ -70,7 +70,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `brainstormer` | Creative ideation, solution exploration | subagent | prompt-design, planning, code-style |
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style |
 | `researcher` | Technical research, comparisons, evidence-based recommendations | subagent | research-methodology, planning |
-| `refactor-planner` | Safe refactoring, migration planning | subagent | tech-debt, planning, architecture-decision, code-simplifier |
+| `refactor-planner` | Safe refactoring, legacy code migration | subagent | tech-debt, planning, architecture-decision, code-simplifier |
 | `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, no-ai-slop, seo-optimization |
 
 Invoke a specialist directly with `@agent-name` when you already know who should handle it.
