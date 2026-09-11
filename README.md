@@ -16,6 +16,7 @@ Skills are grouped by SDLC phase — pick the group that matches what you are do
 | `planning` | Architecture design, diagrams, ERDs, ARCHITECTURE.md |
 | `architecture-decision` | Architecture Decision Records (ADRs) and trade-offs |
 | `sdlc-documentation` | SDLC specs, PRDs, user stories, acceptance criteria, release notes |
+| `project-lifecycle` | End-to-end project engagement: phases, gates, scope document, client updates |
 | `research-methodology` | Research plans, source evaluation, synthesis |
 
 ### 🔧 Build & Implement
@@ -159,7 +160,7 @@ agent-skills/
 ├── tools/             # Custom TypeScript tools
 ├── src/               # CLI installer tooling
 ├── tests/             # Test suites
-└── skills/            # 32 atomic domain skills
+└── skills/            # 33 atomic domain skills
 ```
 
 ---

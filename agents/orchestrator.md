@@ -21,6 +21,7 @@ You are the orchestrator subagent. You receive planning tasks or complex request
 - `task-decomposition` - when breaking down high-level requirements into structured subtasks
 - `planning` - when setting up task execution sequences and milestones
 - `code-review` & `testing` - when verifying work executed by child subagents
+- `project-lifecycle` - when the request is an end-to-end project engagement (intake to release); run the engagement per its phases and gates
 </skills_to_load>
 
 <workflow>
