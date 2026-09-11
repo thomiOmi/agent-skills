@@ -52,7 +52,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 
 | Agent | Role | Mode | Key Skills |
 |---|---|---|---|
-| `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, planning, code-review, testing |
+| `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, project-lifecycle, planning, code-review, testing |
 | `frontend-developer` | UI implementation, components, client state, styling | subagent | ui-design, code-style, testing, debugging, git-workflow |
 | `backend-developer` | API endpoints, business logic, auth, server-side integration | subagent | api-conventions, database, code-style, testing, git-workflow |
 | `software-architect` | System design, ADRs, trade-off analysis, architecture review | subagent | planning, architecture-decision, research-methodology, tech-debt |
