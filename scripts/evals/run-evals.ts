@@ -3,8 +3,11 @@
  *
  * Reads eval case definitions from evals/cases/<skill>.json, scaffolds
  * evals/workspace/<skill>/iteration-N/<skill>-<id>/with_skill and
- * without_skill subdirs with prompt.txt, expected_output.txt, output.txt
- * (executor output), and summary.json. Executor default: opencode run.
+ * without_skill subdirs with prompt.txt, output.txt (executor output), and a
+ * graded/ subdir holding expected_output.txt (kept out of the executor cwd to
+ * avoid leaking the grading key), plus summary.json. Executor default:
+ * opencode run --agent build --auto (build agent so candidates execute the
+ * task instead of answering in plan mode).
  */
 import { defineCommand, runMain } from "citty";
 import { mkdir, readdir, readFile, writeFile, cp, stat } from "fs/promises";
@@ -145,7 +148,12 @@ async function scaffold(
     : evalCase.prompt;
 
   await writeFile(join(caseDir, "prompt.txt"), prompt, "utf-8");
-  await writeFile(join(caseDir, "expected_output.txt"), evalCase.expected_output ?? "", "utf-8");
+  // Keep the expected output out of the case dir: the executor runs with the
+  // case dir as cwd, so an expected_output.txt next to the prompt would let
+  // the candidate read the grading key (contamination).
+  const gradedDir = join(caseDir, "graded");
+  await mkdir(gradedDir, { recursive: true });
+  await writeFile(join(gradedDir, "expected_output.txt"), evalCase.expected_output ?? "", "utf-8");
 
   for (const rel of evalCase.files ?? []) {
     const src = resolve(fixtureDir, rel);
@@ -298,7 +306,7 @@ const main = defineCommand({
     await runEvals({
       skill: args.skill as string | undefined,
       iteration: (args.iteration as string | undefined) ?? "1",
-      executor: (args.executor as string | undefined) ?? "opencode run",
+      executor: (args.executor as string | undefined) ?? "opencode run --agent build --auto",
       dryRun: Boolean(args["dry-run"]),
       limit: Number(args.limit ?? 0) || 0,
     });
