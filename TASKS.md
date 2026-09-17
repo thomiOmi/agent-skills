@@ -8,6 +8,9 @@ Roadmap and backlog for the agent-skills project.
 
 ### Done
 
+- Eval harness validity fixes: grading key isolated from executor cwd (`graded/expected_output.txt`), default executor `opencode run --agent build --auto` so candidates execute instead of answering in plan mode - 2026-09-17
+- git-workflow 1.2.0: "Defaults Before Clarification" replaces "Clarify Before Acting" (iteration-1 diagnosis: model deferred specific tasks with clarifying questions, 0/7 with vs 7/7 without) - 2026-09-17
+- Eval iteration-1 baseline batch: all 33 skills, 79 cases, 158 runs via resumable lane, zero retries (~4.5 hrs); aggregate with_skill 49/79 vs without_skill 53/79; failure causes classified (plan-mode behavior, grading-key contamination, clarify-pattern) - 2026-09-17
 - Agent Orchestra rewrite with verification loop — 2026-07-25
 - 11 specialized agents with routing in orchestrator prompt — 2026-07-25
   - orchestrator, senior-developer, ui-ux, marketing, qa-engineer, devops, security-auditor, brainstormer, deep-thinker, docs-writer, refactor-planner
@@ -35,7 +38,7 @@ Roadmap and backlog for the agent-skills project.
 
 ### Planned
 
-- _(none)_
+- Eval iteration-2 with fixed harness: re-run git-workflow, data-analysis, documentation, code-simplifier, design-md, project-lifecycle (`--iteration 2`); success criteria: git-workflow rises from 0/7 and clarify-pattern absent from outputs; consider DeepEval LLM-judge for wording-vs-quality failure separation
 
 ---
 
@@ -52,6 +55,7 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-09-17 | Eval iteration-1 baseline completed (33 skills, 79 cases, 158 runs): with_skill 49/79 vs without_skill 53/79; output diagnosis identified plan-mode candidate behavior, grading-key contamination (expected_output.txt in executor cwd), and clarify-deferral pattern (git-workflow 0/7); runner fixed (graded/ isolation, build agent default executor) and git-workflow revised to apply defaults instead of pausing with clarifying questions |
 | 2026-09-15 | Parked the assertion-grading eval runner as baseline-only and chose DeepEval as the LLM-judge direction for the next eval iteration (evals/judge/ module, reserved --judge flag); runner and eval cases stay tracked as migration reference, decision recorded in DECISIONS.md |
 | 2026-09-11 | Evaluated agent file markup format (XML tags vs markdown headings) against the agentskills.io specification, Anthropic prompting best practices, OpenCode docs, and community agent examples; decision recorded in DECISIONS.md: XML tags retained, agent files treated as system prompts where XML structuring is a recommended technique |
 | 2026-09-11 | Normalized devops and security-auditor agent markup to the XML tag convention (role, skills_to_load, quality standards) used by the other 18 agents; content preserved
