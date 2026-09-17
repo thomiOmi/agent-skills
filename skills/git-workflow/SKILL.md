@@ -3,7 +3,7 @@ name: git-workflow
 description: 'Use this skill whenever you work with Git - branching, committing, reviewing PRs, resolving conflicts, or auditing Git conventions. Load this skill BEFORE creating branches, making commits, or opening pull requests to ensure consistent Git workflow across the project. Triggers include: "branch strategy", "create a branch", "branch naming", "conventional commit", "breaking change", "PR template", "commit convention", "merge conflict", "rebase", "squash", "review the PR", "audit commit history", "git workflow", "git init", "clone", "branch", "checkout", "commit", "push", "pull", "merge", "cherry-pick", "stash", "log", "diff", "status", "reset", "revert", "tag", "submodule", "gitignore", "gitattributes". Apply before creating branches or opening PRs. Enforces Conventional Commits standard for all commit messages.'
 license: MIT
 metadata:
-  version: "1.1.1"
+  version: "1.2.0"
   author: thomiOmi
 ---
 
@@ -14,14 +14,22 @@ Applies to any Git hosting platform - GitHub, GitLab, Bitbucket, or self-hosted.
 
 ---
 
-## Clarify Before Acting
+## Defaults Before Clarification
 
-If the project does not define these in AGENTS.md, ask:
+If the project does not define these in AGENTS.md, apply the following defaults
+and state them in one line - do not pause the task to ask:
 
-1. What branching strategy is used? (GitHub Flow, GitFlow, trunk-based)
-2. What is the main branch name? (`main`, `master`, `trunk`)
-3. Is squash merge, merge commit, or rebase merge preferred?
-4. Is there a PR template or review checklist?
+| Unknown | Default |
+| ------- | ------- |
+| Branching strategy | GitHub Flow (short-lived branches off the default branch, PR to merge) |
+| Main branch name | `main` |
+| Merge style | Squash merge for feature PRs |
+| PR template | Write what/why/how to test if none exists |
+
+Only ask the user when the choice is irreversible or genuinely ambiguous (for
+example, a team standard that contradicts these defaults). A specific task
+("commit this change", "open a PR for this branch") must be executed with the
+defaults applied, never deferred with clarifying questions.
 
 ---
 
