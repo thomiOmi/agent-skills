@@ -48,9 +48,11 @@ Every request is classified as Analysis, Implementation, or Both at the start. A
 
 Initially shipped as standalone skills (`conventional-branch`, `conventional-commit`) positioned as deep-dives under the `git-workflow` umbrella. Later merged into git-workflow as `references/conventional-branch.md` and `references/conventional-commit.md` after a collision audit showed a single git action lit up three skills at once. The merge rule applied across the catalog: one skill per agent moment, thin overlapping skills become references of the parent that owns the trigger surface.
 
-### Eval tooling: assertion grading, no external eval library
+### Eval tooling: assertion grading parked, DeepEval chosen for LLM-judge
 
 Evaluated external eval libraries (Vercel evalite-style runners, DeepEval, Harbor, G-Eval implementations) and decided none is needed: `scripts/evals/run-evals.ts` grades with assertion matching, which is deterministic and free. LLM-judge grading (via `opencode run` in G-Eval style) is recognized as the future pattern but is deferred until skill development stabilizes.
+
+Update 2026-09-15: the assertion-grading runner is parked as baseline-only. It stays tracked in git together with `evals/cases/` as reference material for the next iteration, and its final baseline batch (one sequential run over the remaining 31 skills after the free-tier quota resets) is still executed to identify weak skills for free. DeepEval is chosen as the direction for the next eval iteration (LLM-judge, G-Eval style, reading `evals/workspace/` outputs, wired through the reserved `--judge` flag). The current runner is no longer the target architecture for grading quality; new eval capabilities should not be built on it.
 
 ### Eval cases centralized under evals/cases/ (divergence from agentskills.io)
 
