@@ -144,7 +144,7 @@ async function scaffold(
   }
 
   const prompt = mode === "with_skill" && body
-    ? `[Skill: ${skillName}]\n\nSkill instructions:\n${body}\n---\n${evalCase.prompt}`
+    ? `TASK: ${evalCase.prompt}\n\nYou have the following skill loaded. Follow it while completing the task above.\n\n--- SKILL ${skillName} START ---\n${body}\n--- SKILL ${skillName} END ---\n\nRespond with the deliverable the task asks for. Do not summarize the skill and do not ask what the task is.`
     : evalCase.prompt;
 
   await writeFile(join(caseDir, "prompt.txt"), prompt, "utf-8");
