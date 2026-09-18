@@ -100,6 +100,8 @@ async function findEvalsFiles(): Promise<string[]> {
   return out.sort();
 }
 
+const PROMPT_TIMEOUT_MS = 15 * 60 * 1000;
+
 function runPrompt(command: string, args: string[], cwd: string, promptText: string): Promise<string> {
   return new Promise((resolvePromise, reject) => {
     const proc = spawn(command, [...args, promptText], {
@@ -109,6 +111,20 @@ function runPrompt(command: string, args: string[], cwd: string, promptText: str
     });
     let stdout = "";
     let stderr = "";
+    let timedOut = false;
+    // Kill the executor if it hangs (e.g. provider rate-limit retry loops) so
+    // the run can continue to the next case instead of stalling for hours.
+    const timer = setTimeout(() => {
+      timedOut = true;
+      if (process.platform === "win32" && proc.pid) {
+        // shell: true wraps the command in cmd.exe; tree-kill so the child
+        // executor process does not survive the shell.
+        spawn("taskkill", ["/pid", String(proc.pid), "/T", "/F"], { shell: false });
+      }
+      else {
+        proc.kill("SIGKILL");
+      }
+    }, PROMPT_TIMEOUT_MS);
     proc.stdout.on("data", (d: Buffer) => {
       stdout += d.toString();
     });
@@ -116,7 +132,11 @@ function runPrompt(command: string, args: string[], cwd: string, promptText: str
       stderr += d.toString();
     });
     proc.on("close", (code) => {
-      if (code === 0) {
+      clearTimeout(timer);
+      if (timedOut) {
+        reject(new Error(`executor timed out after ${PROMPT_TIMEOUT_MS / 60000} min (possible rate limit)`));
+      }
+      else if (code === 0) {
         resolvePromise(stdout || stderr);
       }
       else {
@@ -174,6 +194,7 @@ async function runEvals(options: {
   executor: string
   dryRun: boolean
   limit: number
+  resume: boolean
 }): Promise<void> {
   const execParts = options.executor.split(" ").filter(Boolean);
   const execCmd = execParts[0] ?? "opencode";
@@ -227,10 +248,25 @@ async function runEvals(options: {
           consola.log(`  [dry-run] ${mode}: ${skillName}-${evalCase.id}`);
           continue;
         }
+        const outputPath = join(caseDir, "output.txt");
+        if (options.resume && (await exists(outputPath))) {
+          // Resume: grade the existing executor output instead of re-running.
+          // Pair with idempotent scaffolding so interrupted runs pick up where
+          // they stopped (useful when a lane dies mid-case).
+          const output = await readFile(outputPath, "utf-8");
+          const grade = gradeOutput(output, evalCase.assertions);
+          status[mode] = {
+            status: "done (resumed)",
+            passed: grade.passed,
+            total: grade.total,
+          };
+          consola.log(`  ok  ${mode}: ${skillName}-${evalCase.id} assertions ${grade.passed}/${grade.total} (resumed)`);
+          continue;
+        }
         try {
           const promptText = await readFile(join(caseDir, "prompt.txt"), "utf-8");
           const output = await runPrompt(execCmd, execArgs, caseDir, promptText);
-          await writeFile(join(caseDir, "output.txt"), output, "utf-8");
+          await writeFile(outputPath, output, "utf-8");
           const grade = gradeOutput(output, evalCase.assertions);
           status[mode] = {
             status: "done",
@@ -292,6 +328,10 @@ const main = defineCommand({
       description: "Limit number of eval cases per skill (0 = all; useful for small paid batches)",
       default: "0",
     },
+    "resume": {
+      type: "boolean" as const,
+      description: "Grade existing output.txt instead of re-executing (resumes interrupted runs)",
+    },
     "judge": {
       type: "boolean" as const,
       description: "Reserved for LLM-judge grading; not implemented yet",
@@ -309,6 +349,7 @@ const main = defineCommand({
       executor: (args.executor as string | undefined) ?? "opencode run --agent build --auto",
       dryRun: Boolean(args["dry-run"]),
       limit: Number(args.limit ?? 0) || 0,
+      resume: Boolean(args.resume),
     });
   },
 });
