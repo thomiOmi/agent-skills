@@ -8,7 +8,12 @@
       "assertions": [
         "install",
         "quickstart",
-        "example"
+        "example",
+        {
+          "text": "^\\s*(which|what|could you|please provide|share)\\b",
+          "regex": true,
+          "negate": true
+        }
       ]
     },
     {

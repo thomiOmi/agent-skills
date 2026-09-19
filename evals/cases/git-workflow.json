@@ -24,7 +24,12 @@
       "prompt": "How do I mark a commit that removes deprecated v1 endpoints as a breaking change?",
       "expected_output": "An exclamation mark after the type like feat(api)!: and a BREAKING CHANGE footer describing the migration.",
       "assertions": [
-        "BREAKING CHANGE"
+        "BREAKING CHANGE",
+        {
+          "text": "^(feat|fix|refactor)\\([a-z0-9-]+\\)!:",
+          "regex": true,
+          "caseSensitive": true
+        }
       ]
     },
     {

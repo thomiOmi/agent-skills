@@ -7,7 +7,9 @@ interface EvalCase {
   prompt: string
   expected_output?: string
   files?: string[]
-  assertions?: string[]
+  // Plain string = case-insensitive substring match (legacy). Object form =
+  // regex / case-sensitive / negated assertion (run-evals.ts Assertion type).
+  assertions?: (string | Record<string, unknown>)[]
 }
 
 interface EvalsFile {
@@ -50,7 +52,26 @@ describe("Validate Eval Case Files (centralized)", () => {
         if (evalCase.assertions !== undefined) {
           expect(Array.isArray(evalCase.assertions), `${file}: assertions must be an array`).toBe(true);
           for (const assertion of evalCase.assertions) {
-            expect(typeof assertion, `${file}: assertion must be a string`).toBe("string");
+            if (typeof assertion === "string") {
+              expect(assertion.length, `${file}: string assertion must not be empty`).toBeGreaterThan(0);
+              continue;
+            }
+            expect(typeof assertion, `${file}: assertion must be a string or an object`).toBe("object");
+            expect(typeof assertion.text, `${file}: object assertion needs a "text" string`).toBe("string");
+            expect((assertion.text as string).length, `${file}: object assertion "text" must not be empty`).toBeGreaterThan(0);
+            for (const flag of ["regex", "caseSensitive", "negate"]) {
+              if (assertion[flag] !== undefined) {
+                expect(typeof assertion[flag], `${file}: assertion.${flag} must be a boolean`).toBe("boolean");
+              }
+            }
+            if (assertion.regex === true) {
+              try {
+                new RegExp(assertion.text as string, assertion.caseSensitive ? "" : "i");
+              }
+              catch {
+                expect.unreachable(`${file}: assertion regex "${assertion.text as string}" does not compile`);
+              }
+            }
           }
         }
       }

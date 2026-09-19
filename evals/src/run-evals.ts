@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Eval runner for agent skills (agentskills.io eval pattern).
  *
  * Reads eval case definitions from evals/cases/<skill>.json, scaffolds
@@ -15,58 +15,21 @@ import { join, resolve } from "pathe";
 import { spawn } from "child_process";
 import { consola } from "consola";
 
-type EvalMode = "with_skill" | "without_skill";
-const MODES: EvalMode[] = ["with_skill", "without_skill"];
-const WORKSPACE_ROOT = resolve(process.cwd(), "evals", "workspace");
-const CASES_DIR = resolve(process.cwd(), "evals", "cases");
-const SKILLS_ROOT = resolve(process.cwd(), "skills");
-
-interface EvalCase {
-  id: number
-  prompt: string
-  expected_output?: string
-  files?: string[]
-  assertions?: string[]
-}
-
-interface EvalsFile {
-  skill_name: string
-  evals: EvalCase[]
-}
-
-interface GradeResult {
-  passed: number
-  total: number
-  details: { assertion: string, passed: boolean }[]
-}
-
-interface EntryStatus {
-  status: string
-  passed: number
-  total: number
-}
+import { gradeOutput, GRADING_VERSION, validateAssertions } from "./grading";
+import {
+  CASES_DIR,
+  DEFAULT_EXECUTOR,
+  MODES,
+  SKILLS_ROOT,
+  WORKSPACE_ROOT,
+} from "./targets";
+import type { EntryStatus, EvalCase, EvalMode, EvalsFile } from "./targets";
 
 function aggregatePass(items: EntryStatus[]): { passed: number, graded: number } {
   const graded = items.filter(i => i.total > 0);
   return {
     passed: graded.filter(i => i.passed === i.total).length,
     graded: graded.length,
-  };
-}
-
-export function gradeOutput(output: string, assertions: string[] | undefined): GradeResult {
-  const list = assertions ?? [];
-  if (list.length === 0) {
-    return { passed: 0, total: 0, details: [] };
-  }
-  const details = list.map(assertion => ({
-    assertion,
-    passed: output.toLowerCase().includes(assertion.toLowerCase()),
-  }));
-  return {
-    passed: details.filter(d => d.passed).length,
-    total: details.length,
-    details,
   };
 }
 
@@ -145,7 +108,6 @@ function runPrompt(command: string, args: string[], cwd: string, promptText: str
     });
   });
 }
-
 async function scaffold(
   skillDir: string,
   fixtureDir: string,
@@ -210,15 +172,32 @@ async function runEvals(options: {
     return;
   }
 
+  // Validate every case file before executing anything, so a malformed
+  // assertion cannot waste executor spend on a run that will grade wrong.
+  const validationErrors: string[] = [];
+  for (const file of files) {
+    const evalsFile = JSON.parse(await readFile(file, "utf-8")) as EvalsFile;
+    for (const evalCase of evalsFile.evals) {
+      validationErrors.push(...validateAssertions(evalCase.assertions, `${evalsFile.skill_name}#${evalCase.id}`));
+    }
+  }
+  if (validationErrors.length > 0) {
+    for (const err of validationErrors) {
+      consola.error(`invalid assertion: ${err}`);
+    }
+    process.exitCode = 1;
+    return;
+  }
+
   consola.info(`Workspace: ${WORKSPACE_ROOT}`);
   consola.info(`Iteration: ${options.iteration}${options.dryRun ? " (dry run)" : ""}`);
+  consola.info(`Grading:   assertion v${GRADING_VERSION} (LLM judge pending)`);
   if (!options.dryRun) {
     consola.info(`Executor:  ${execParts.join(" ")}`);
   }
 
   let total = 0;
   let failed = 0;
-
   for (const file of files) {
     const raw = await readFile(file, "utf-8");
     const evalsFile: EvalsFile = JSON.parse(raw) as EvalsFile;
@@ -298,7 +277,14 @@ async function runEvals(options: {
 
     await writeFile(
       join(iterationDir, "summary.json"),
-      JSON.stringify({ skill_name: skillName, iteration: options.iteration, entries, aggregate }, null, 2),
+      JSON.stringify({
+        skill_name: skillName,
+        iteration: options.iteration,
+        grading_version: GRADING_VERSION,
+        grading: "assertion",
+        entries,
+        aggregate,
+      }, null, 2),
       "utf-8",
     );
   }
@@ -339,6 +325,9 @@ const main = defineCommand({
   },
   run: async ({ args }) => {
     if (args.judge) {
+      // LLM-judge grading is planned (DECISIONS.md) but not wired yet. Fail
+      // loudly instead of silently falling back to assertion grading, which
+      // would produce results mistaken for judge-graded ones.
       consola.error("--judge is not implemented yet; deterministic assertion grading is used by default (see DECISIONS.md)");
       process.exitCode = 1;
       return;
@@ -346,7 +335,7 @@ const main = defineCommand({
     await runEvals({
       skill: args.skill as string | undefined,
       iteration: (args.iteration as string | undefined) ?? "1",
-      executor: (args.executor as string | undefined) ?? "opencode run --agent build --auto",
+      executor: (args.executor as string | undefined) ?? DEFAULT_EXECUTOR,
       dryRun: Boolean(args["dry-run"]),
       limit: Number(args.limit ?? 0) || 0,
       resume: Boolean(args.resume),

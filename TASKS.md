@@ -38,6 +38,12 @@ Roadmap and backlog for the agent-skills project.
 
 ### Planned
 
+- Vendor anthropics skill-creator and plugin-dev under `.agents/` and make eval tooling harness-agnostic (approved 2026-09-19, location confirmed by user: `.agents/skills/skill-creator/` and `.agents/plugins/plugin-dev/`):
+  - Fase 1: refactor `scripts/evals/` to `evals/src/` (run-evals.ts, grading.ts, targets.ts); update package.json, tsconfig include, test imports, docs. No behavior change. Done 2026-09-19: runner verified identical via dry-run, typecheck/lint/test all pass.
+  - Fase 2: vendor skill-creator (skills/skill-creator subtree: SKILL.md, scripts/, agents/, references/, eval-viewer/, assets/, LICENSE) to `.agents/skills/skill-creator/` and plugin-dev (README, agents/, commands/, skills/) to `.agents/plugins/plugin-dev/`; add `.agents/README.md` with upstream commit hashes; add executor shim (`claude -p` to `opencode run --model <pinned> --agent build --auto`); keep vendored grading logic untouched; gitignore `.agents/` from npm publish (dot-dir is already outside package.json `files`).
+  - Fase 3: complete per-mode artifacts in the TS runner per vendored references/schemas.md: `outputs/`, `timing.json`, `grading.json` per run dir; `benchmark.json` via aggregate_benchmark.py format; scaffold `feedback.json`; `history.json` for the improve loop.
+  - Fase 4: eval target agent support (`--target` flag, `target: "skill" | "agent"` in case files, default skill for backward compat; resolution: `agents/<name>.md` = agent, `skills/<name>/` = skill; with_agent/without_agent mode dirs).
+  - Fase 5: verification (typecheck, lint, test, evals --dry-run) plus smoke test of `generate_review.py --static` and `aggregate_benchmark.py` over an existing iteration workspace (offline, no executor spend).
 - Eval iteration-2 with fixed harness: re-run git-workflow, data-analysis, documentation, code-simplifier, design-md, project-lifecycle (`--iteration 2`); success criteria: git-workflow rises from 0/7 and clarify-pattern absent from outputs; consider DeepEval LLM-judge for wording-vs-quality failure separation
 
 ---
@@ -47,7 +53,8 @@ Roadmap and backlog for the agent-skills project.
 Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
 - [ ] Harden assertion grading (found in the iteration-2 review): `gradeOutput` compares with `toLowerCase()`, so the case-3 assertion `BREAKING CHANGE` passes for output that says `Breaking change:` even though Conventional Commits tokens are case-sensitive and the `!` marker was missing; add a case-sensitive option or `/regex/flags` support per assertion. Keyword assertions also pass outputs that only ask for missing input (`documentation-1` with_skill scored 2/3 on a pure clarifying question because the sentence contained "install" and "quickstart"), so add negative or anti-deferral assertions to cases whose deliverable must contain real content. Finally, the without_skill prompt is bare but the executor cwd is `.../<skill>/iteration-2/<skill>-N/without_skill`, so candidates mention a skill they never loaded; consider neutral case directory names.
-- [ ] Multi-runtime plugin manifest (.claude-plugin) for cross-harness distribution (AUDIT.md F5)
+- [ ] Multi-runtime plugin manifest (.claude-plugin) for cross-harness distribution (AUDIT.md F5); superseded in scope by the agent-agnostic layering decision (see DECISIONS.md): future harnesses get an integration-layer adapter, not a fork of the catalog
+- [ ] Integration-layer adapters for other agent runtimes (Claude Code, Codex CLI): agent format converter, plugin equivalent, installer target; catalog and eval tooling reused untouched
 - [ ] Implement DeepEval as the LLM-judge for catalog evals (chosen direction 2026-09-15, previously deferred 2026-09-08): new `evals/judge/` Python module (uv project, deps = deepeval) that reads `evals/workspace/<skill>/iteration-N/...` outputs and grades them with G-Eval/metrics; integrate the reserved `--judge` flag in `scripts/evals/run-evals.ts` to run prompts then spawn the judge, merging scores into `summary.json`. DECISIONS.md eval tooling entry updated to match: assertion-grading runner parked baseline-only, DeepEval is the next eval iteration. Prereq (sentralisasi eval cases) already done in PR #35.
 
 ---
@@ -56,6 +63,7 @@ Catatan personal yang belum dijadwalkan (bukan bagian dari roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-09-19 | Updated root docs (AGENTS, ARCHITECTURE, DECISIONS, PRD, SPEC, TASKS) for vendored skill-creator and plugin-dev under .agents/ and the agent-agnostic layering model: three layers (harness-neutral catalog, OpenCode integration, harness-neutral dev tooling), FR-8 eval tooling requirements, SPEC vendored-tooling and artifact-layout sections, TASKS Fase 1-5 plan, backlog item for future harness adapters |
 | 2026-09-17 | Eval iteration-1 baseline completed (33 skills, 79 cases, 158 runs): with_skill 49/79 vs without_skill 53/79; output diagnosis identified plan-mode candidate behavior, grading-key contamination (expected_output.txt in executor cwd), and clarify-deferral pattern (git-workflow 0/7); runner fixed (graded/ isolation, build agent default executor) and git-workflow revised to apply defaults instead of pausing with clarifying questions |
 | 2026-09-17 | Eval prompt wrapper fixed: skill instructions were injected before the task, causing small models to summarize the skill instead of doing the task (persisted even with build agent and revised git-workflow); wrapper now puts the task first with the skill as loaded context, verified by iteration-2 smoke test (git-workflow case 1: 0/2 to 2/2 with skill) |
 | 2026-09-15 | Parked the assertion-grading eval runner as baseline-only and chose DeepEval as the LLM-judge direction for the next eval iteration (evals/judge/ module, reserved --judge flag); runner and eval cases stay tracked as migration reference, decision recorded in DECISIONS.md |

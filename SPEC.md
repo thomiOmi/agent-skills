@@ -82,6 +82,45 @@ Run test cases in two configurations:
 
 ---
 
+## Vendored Eval Tooling (skill-creator)
+
+The anthropics skill-creator plugin is vendored at `.agents/skills/skill-creator/` (source: anthropics/claude-plugins-official, `plugins/skill-creator`) as development-only tooling. It is never published, never installed by the CLI, and excluded from tsc and ESLint scans. Status: planned (vendor step lands with the evals/src refactor).
+
+Contents used by this repo:
+
+| Upstream asset | Purpose here |
+|---|---|
+| `scripts/run_eval.py`, `run_loop.py` | Per-case eval execution and description-optimization loops (executor shim: `claude -p` becomes `opencode run --model <pinned> --agent build --auto`) |
+| `scripts/aggregate_benchmark.py` | Produces `benchmark.json` per iteration (mean and stddev of pass rate, time, tokens, plus delta) |
+| `scripts/generate_report.py`, `improve_description.py`, `package_skill.py`, `quick_validate.py` | Reporting, description improvement, packaging, validation |
+| `eval-viewer/generate_review.py` | Human review UI; run with `--static <output.html>` for a standalone file, emits `feedback.json` |
+| `agents/grader.md`, `comparator.md`, `analyzer.md` | Grading, blind A/B comparison, and post-hoc analysis subagent instructions |
+| `references/schemas.md` | Authoritative JSON schemas for evals.json, grading.json, benchmark.json, history.json, comparison.json, analysis.json |
+
+Case bridge: `evals/cases/<skill>.json` (this repo's centralized format) converts to skill-creator's per-skill `evals.json` on the fly. Field mapping: `assertions` becomes `expectations`, `expected_output` passes through verbatim, `files` references resolve relative to `evals/cases/<skill>.files/`.
+
+### Artifact Layout (target state)
+
+Per skill iteration under `evals/workspace/<skill>/iteration-N/`:
+
+```text
+iteration-N/
+├── with_skill/<case-id>/
+│   ├── prompt.txt
+│   ├── outputs/            # executor output files (target)
+│   ├── timing.json         # executor/grader/total durations (target)
+│   ├── grading.json        # expectations[] + summary (target)
+│   └── output.txt          # current raw executor output
+├── without_skill/<case-id>/  # same structure, bare prompt
+├── benchmark.json          # aggregate over cases (target)
+├── feedback.json           # human review scaffold (target)
+└── summary.json            # current aggregate (existing)
+```
+
+Items marked (target) close the gap against the vendored schemas.md; items marked (existing) are produced by the current runner. History tracking for improve mode (`history.json` with version, parent, expectation_pass_rate, grading_result, is_current_best) applies when the improve loop is adopted.
+
+---
+
 ## Validation Test Suite
 
 Run automated specification validation on all repository skills:
