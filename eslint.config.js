@@ -18,6 +18,8 @@ export default defineConfig([
     "**/bun.lock",
     "**/package-lock.json",
     "**/*.min.js",
+    ".agents/**",
+    "evals/workspace/**",
   ]),
 
   {
