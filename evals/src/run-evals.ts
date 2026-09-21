@@ -5,9 +5,13 @@
  * evals/workspace/<skill>/iteration-N/<skill>-<id>/with_skill and
  * without_skill subdirs with prompt.txt, output.txt (executor output), and a
  * graded/ subdir holding expected_output.txt (kept out of the executor cwd to
- * avoid leaking the grading key), plus summary.json. Executor default:
- * opencode run --agent build --auto (build agent so candidates execute the
- * task instead of answering in plan mode).
+ * avoid leaking the grading key), plus summary.json. Per run dir it also
+ * records graded/grading.json, graded/timing.json and outputs/output.txt in
+ * the vendored skill-creator schema shapes, and per skill iteration writes
+ * benchmark.json (eval-viewer compatible) and history.json (Improve-mode
+ * progression). Executor default:
+ * opencode run --model opencode/mimo-v2.5-free --agent build --auto (build
+ * agent so candidates execute the task instead of answering in plan mode).
  */
 import { defineCommand, runMain } from "citty";
 import { mkdir, readdir, readFile, writeFile, cp, stat } from "fs/promises";
@@ -16,6 +20,9 @@ import { spawn } from "child_process";
 import { consola } from "consola";
 
 import { gradeOutput, GRADING_VERSION, validateAssertions } from "./grading";
+import type { GradeResult } from "./grading";
+import { buildBenchmark, buildGrading, buildTiming, nextHistoryEntry } from "./artifacts";
+import type { BenchmarkRunInput, HistoryEntry, RunTiming } from "./artifacts";
 import {
   CASES_DIR,
   DEFAULT_EXECUTOR,
@@ -65,8 +72,14 @@ async function findEvalsFiles(): Promise<string[]> {
 
 const PROMPT_TIMEOUT_MS = 15 * 60 * 1000;
 
-function runPrompt(command: string, args: string[], cwd: string, promptText: string): Promise<string> {
+function runPrompt(
+  command: string,
+  args: string[],
+  cwd: string,
+  promptText: string,
+): Promise<{ output: string, startedAt: Date, endedAt: Date }> {
   return new Promise((resolvePromise, reject) => {
+    const startedAt = new Date();
     const proc = spawn(command, [...args, promptText], {
       cwd,
       shell: process.platform === "win32",
@@ -96,11 +109,12 @@ function runPrompt(command: string, args: string[], cwd: string, promptText: str
     });
     proc.on("close", (code) => {
       clearTimeout(timer);
+      const endedAt = new Date();
       if (timedOut) {
         reject(new Error(`executor timed out after ${PROMPT_TIMEOUT_MS / 60000} min (possible rate limit)`));
       }
       else if (code === 0) {
-        resolvePromise(stdout || stderr);
+        resolvePromise({ output: stdout || stderr, startedAt, endedAt });
       }
       else {
         reject(new Error(`executor exited ${code}: ${stderr.slice(0, 400)}`));
@@ -108,6 +122,33 @@ function runPrompt(command: string, args: string[], cwd: string, promptText: str
     });
   });
 }
+
+/**
+ * Persist per-run artifacts next to the graded key: grading.json and
+ * timing.json under graded/ (aggregate_benchmark.py reads grading.json and
+ * falls back to sibling timing.json), plus a copy of the executor output
+ * under outputs/ per the schemas.md layout.
+ */
+async function writeRunArtifacts(
+  caseDir: string,
+  output: string,
+  grade: GradeResult,
+  timing: RunTiming,
+  resumed = false,
+): Promise<void> {
+  const gradedDir = join(caseDir, "graded");
+  await mkdir(gradedDir, { recursive: true });
+  await writeFile(
+    join(gradedDir, "grading.json"),
+    JSON.stringify(buildGrading(grade, output, timing, resumed), null, 2),
+    "utf-8",
+  );
+  await writeFile(join(gradedDir, "timing.json"), JSON.stringify(timing, null, 2), "utf-8");
+  const outputsDir = join(caseDir, "outputs");
+  await mkdir(outputsDir, { recursive: true });
+  await writeFile(join(outputsDir, "output.txt"), output, "utf-8");
+}
+
 async function scaffold(
   skillDir: string,
   fixtureDir: string,
@@ -214,6 +255,7 @@ async function runEvals(options: {
       consola.info(`  limited to first ${cases.length} of ${evalsFile.evals.length} cases`);
     }
     const entries: { id: number, with_skill: EntryStatus, without_skill: EntryStatus }[] = [];
+    const benchmarkRuns: BenchmarkRunInput[] = [];
 
     for (const evalCase of cases) {
       const status: { with_skill: EntryStatus, without_skill: EntryStatus } = {
@@ -240,11 +282,15 @@ async function runEvals(options: {
             total: grade.total,
           };
           consola.log(`  ok  ${mode}: ${skillName}-${evalCase.id} assertions ${grade.passed}/${grade.total} (resumed)`);
+          // Executor wall time is unknown for resumed runs; grading and
+          // artifact structure stay valid, timing is recorded as unknown.
+          await writeRunArtifacts(caseDir, output, grade, buildTiming(new Date(), new Date(), true), true);
+          benchmarkRuns.push({ evalId: evalCase.id, configuration: mode, grade, timeSeconds: 0 });
           continue;
         }
         try {
           const promptText = await readFile(join(caseDir, "prompt.txt"), "utf-8");
-          const output = await runPrompt(execCmd, execArgs, caseDir, promptText);
+          const { output, startedAt, endedAt } = await runPrompt(execCmd, execArgs, caseDir, promptText);
           await writeFile(outputPath, output, "utf-8");
           const grade = gradeOutput(output, evalCase.assertions);
           status[mode] = {
@@ -252,6 +298,13 @@ async function runEvals(options: {
             passed: grade.passed,
             total: grade.total,
           };
+          await writeRunArtifacts(caseDir, output, grade, buildTiming(startedAt, endedAt));
+          benchmarkRuns.push({
+            evalId: evalCase.id,
+            configuration: mode,
+            grade,
+            timeSeconds: (endedAt.getTime() - startedAt.getTime()) / 1000,
+          });
           consola.log(`  ok  ${mode}: ${skillName}-${evalCase.id} assertions ${grade.passed}/${grade.total}`);
         }
         catch (err) {
@@ -287,6 +340,54 @@ async function runEvals(options: {
       }, null, 2),
       "utf-8",
     );
+
+    // Vendored-tooling artifacts. benchmark.json mirrors the shape
+    // aggregate_benchmark.py generates so the eval viewer can read it
+    // directly; history.json records the iteration in the Improve-mode
+    // progression format. Both are skipped on dry runs because no
+    // measurement exists yet.
+    if (!options.dryRun) {
+      await writeFile(
+        join(iterationDir, "benchmark.json"),
+        JSON.stringify(buildBenchmark({
+          skillName,
+          skillPath: join(SKILLS_ROOT, skillName),
+          executor: options.executor,
+          runs: benchmarkRuns,
+        }), null, 2),
+        "utf-8",
+      );
+
+      const historyPath = join(iterationDir, "history.json");
+      const history: {
+        started_at: string
+        skill_name: string
+        current_best: string
+        iterations: HistoryEntry[]
+      } = (await exists(historyPath))
+        ? JSON.parse(await readFile(historyPath, "utf-8"))
+        : { started_at: new Date().toISOString(), skill_name: skillName, current_best: "", iterations: [] };
+
+      // Expectation pass rate for the iteration: mean pass rate of graded
+      // with_skill runs (the skill-quality signal the improve loop tracks).
+      const gradedWithSkill = benchmarkRuns.filter(r => r.configuration === "with_skill" && r.grade.total > 0);
+      const iterationRate = gradedWithSkill.length > 0
+        ? gradedWithSkill.reduce((acc, r) => acc + r.grade.passed / r.grade.total, 0) / gradedWithSkill.length
+        : 0;
+
+      history.iterations = history.iterations.map(i => ({ ...i, is_current_best: false }));
+      const entry = nextHistoryEntry(history.iterations, `v${options.iteration}`, iterationRate);
+      history.iterations.push(entry);
+      history.current_best = entry.version;
+      await writeFile(historyPath, JSON.stringify(history, null, 2), "utf-8");
+
+      // feedback.json scaffold for the improve loop (schemas.md): populated by
+      // a future LLM-judge grading pass; never overwrite an existing one.
+      const feedbackPath = join(iterationDir, "feedback.json");
+      if (!(await exists(feedbackPath))) {
+        await writeFile(feedbackPath, JSON.stringify({ suggestions: [], overall: "" }, null, 2), "utf-8");
+      }
+    }
   }
 
   consola.log("\n==> Done");
