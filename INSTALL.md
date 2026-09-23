@@ -296,7 +296,7 @@ Every file and directory in this repo has a specific purpose when installed to `
 | `config/opencode.jsonc` | `opencode.jsonc` | **Global config** - default_agent, permissions, formatters, lsp. |
 | `config/tui.jsonc` | `tui.jsonc` | **TUI config** - theme, attention notifications. |
 | `agents/*.md` | `agents/*.md` | **16 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, etc. |
-| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **37 skill directories** - SKILL.md + references/. Auto-loaded per task. |
+| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
 | `tools/*.ts` | `tools/*.ts` | **2 custom tools** - task-decomposer.ts, quality-verifier.ts. |
 | `commands/*.md` | `commands/*.md` | **17 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
 | `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers custom tools, a compaction hook that preserves TASKS.md state across context compaction, and two tool guard hooks: secrets-scanner (blocks writing hardcoded secrets via write/edit) and tool-guardian (blocks destructive bash commands). |

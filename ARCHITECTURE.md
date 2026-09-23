@@ -26,37 +26,31 @@ flowchart TD
     User[User Input / Discussion] --> Plan[plan agent (built-in primary)]
     Plan --> Orchestrator[orchestrator subagent<br/>task decomposition]
 
-    Orchestrator --> SD[senior-developer<br/>code-style, testing, debugging]
-    Orchestrator --> PM[product-manager<br/>sdlc-documentation]
-    Orchestrator --> DA[data-analyst<br/>database, data-analysis]
-    Orchestrator --> UX[ui-ux<br/>ui-design]
-    Orchestrator --> MKT[marketing<br/>content-strategy]
-    Orchestrator --> QA[qa-engineer<br/>testing, debugging]
-    Orchestrator --> DO[devops<br/>devops-deployment]
-    Orchestrator --> SA[security-auditor<br/>security-review]
-    Orchestrator --> PJM[project-manager<br/>task-decomposition, planning]
-    Orchestrator --> RES[researcher<br/>research-methodology]
+    Orchestrator --> Eng[Engineering group<br/>frontend-developer, backend-developer,<br/>database-engineer, software-architect,<br/>ai-engineer, senior-developer]
+    Orchestrator --> Prod[Product and Planning group<br/>product-manager, project-manager, data-analyst]
+    Orchestrator --> QAG[Quality and Security group<br/>qa-engineer, security-auditor]
+    Orchestrator --> Ops[Delivery group<br/>devops, docs-writer]
+    Orchestrator --> Think[Reasoning and Content group<br/>brainstormer, deep-thinker, researcher,<br/>refactor-planner, marketing, ui-ux]
 
-    SD --> SkillCheck{Skill-level<br/>verification}
-    PM --> SkillCheck
-    DA --> SkillCheck
-    UX --> SkillCheck
-    MKT --> SkillCheck
-    QA --> SkillCheck
-    DO --> SkillCheck
-    SA --> SkillCheck
-    PJM --> SkillCheck
-    RES --> SkillCheck
+    Eng --> SkillCheck{Skill-level<br/>verification}
+    Prod --> SkillCheck
+    QAG --> SkillCheck
+    Ops --> SkillCheck
+    Think --> SkillCheck
 
     SkillCheck -- PASS --> CentralCheck{Centralized<br/>quality-verifier}
-    SkillCheck -- FAIL --> SD
+    SkillCheck -- FAIL --> Eng
 
     CentralCheck -- PASS --> Remember[TASKS.md & Context<br/>persistence]
-    CentralCheck -- FAIL < 3 retries --> SD
+    CentralCheck -- FAIL < 3 retries --> Eng
     CentralCheck -- FAIL exhausted --> Escalate[Escalate to user]
 
     Remember --> Return[Return to user]
 ```
+
+> Full detail for all 20 agents lives in the Agent Roster table below. The
+> diagram is deliberately grouped by domain so it does not need updating
+> every time the agent roster grows or shrinks.
 
 ---
 
@@ -65,6 +59,11 @@ flowchart TD
 | Agent | Mode | Role | Delegates To | Key Skills |
 |---|---|---|---|---|
 | **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, quality-verifier |
+| **frontend-developer** | subagent | UI implementation, components, client state, styling | - | ui-design, frontend-patterns, code-style, testing, debugging, git-workflow |
+| **backend-developer** | subagent | API endpoints, business logic, auth, server-side integration | - | api-conventions, backend-patterns, code-style, testing, debugging, git-workflow |
+| **software-architect** | subagent | System design, ADRs, trade-off analysis, architecture review | - | planning, architecture-decision, research-methodology, tech-debt |
+| **database-engineer** | subagent | Schema design, migrations, indexing, query performance | - | database, database-migration, data-analysis, api-conventions, testing |
+| **ai-engineer** | subagent | LLM prompt design, AI integration, RAG, structured output | - | prompt-design, structured-output, ai-integration, code-style, testing |
 | **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, planning, ai-integration |
 | **product-manager** | subagent | PRDs, feature specs, user stories, roadmap | - | sdlc-documentation, task-decomposition, documentation |
 | **project-manager** | subagent | Project planning, milestone tracking, risk management, status reporting | - | task-decomposition, planning, sdlc-documentation |

@@ -33,6 +33,7 @@ Skills are grouped by SDLC phase — pick the group that matches what you are do
 | `backend-patterns` | Backend structure: layering, transaction boundaries, jobs, idempotency |
 | `database-migration` | Safe schema migrations, expand-contract, backfills, rollback paths |
 | `design-md` | Design tokens, color palettes, dark mode themes, DESIGN.md specs |
+| `config-management` | App configuration: config files, env vars, feature flags, secrets, validation |
 
 ### 🤖 AI Integration & Context
 
@@ -160,7 +161,7 @@ agent-skills/
 ├── tools/             # Custom TypeScript tools
 ├── src/               # CLI installer tooling
 ├── tests/             # Test suites
-└── skills/            # 33 atomic domain skills
+└── skills/            # 34 atomic domain skills
 ```
 
 ---

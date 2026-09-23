@@ -91,7 +91,13 @@ The system provides the following agents:
 | Agent | Mode | Role |
 |---|---|---|
 | orchestrator | subagent | Task decomposition, delegation, verification, persistence |
+| frontend-developer | subagent | UI implementation, components, client state, styling, accessibility |
+| backend-developer | subagent | API endpoints, business logic, authentication, background jobs, server-side integration |
+| software-architect | subagent | System design, ADRs, trade-off analysis, architecture review |
+| database-engineer | subagent | Schema design, migrations, indexing, query performance, data integrity |
+| ai-engineer | subagent | LLM prompt design, AI integration, RAG systems, structured outputs, evaluation workflows |
 | senior-developer | subagent | Architecture, coding, refactoring |
+| product-manager | subagent | PRDs, feature specs, user stories, roadmap planning |
 | ui-ux | subagent | Design system, frontend, accessibility |
 | marketing | subagent | Content, SEO, copy, strategy |
 | qa-engineer | subagent | Test strategy, coverage, quality gates |
@@ -101,10 +107,14 @@ The system provides the following agents:
 | deep-thinker | subagent | Complex reasoning, root cause analysis |
 | researcher | subagent | Technical research, tool and library comparison, evidence-based recommendations |
 | project-manager | subagent | Project planning, milestone tracking, risk management, status reporting |
+| data-analyst | subagent | SQL query design, schema analysis, data modeling, reporting, query performance tuning |
 | docs-writer | subagent | Technical writing, documentation |
 | refactor-planner | subagent | Safe refactoring, migration planning |
 
 The orchestrator subagent has permission to delegate to all other subagents via the `task` tool. Self-delegation is denied to prevent circular loops.
+
+> This table must stay in sync with `AGENTS.md` -> Agent Orchestra, which is the
+> canonical source for the agent roster. If they diverge, `AGENTS.md` wins.
 
 ### FR-3: Skills
 
@@ -118,7 +128,7 @@ The system provides 34 skills covering code quality, testing, security, design, 
 
 | Tool | Purpose | Used By |
 |---|---|---|
-| task-decomposer | Break complex tasks into structured subtasks with agent inference | orchestrator |
+| task-decomposer | **Deprecated** (see DECISIONS.md) - do not use; agent routing stays hardcoded in the orchestrator prompt | - |
 | quality-verifier | Verify code quality: lint, typecheck, tests, debug statements, docstrings | orchestrator (via qa-engineer) |
 
 ### FR-5: Verification
@@ -161,9 +171,9 @@ Skill evaluation follows the anthropics skill-creator methodology, vendored at `
 
 ### In Scope
 
-- 16 specialized subagents with documented roles
+- 20 specialized subagents with documented roles
 - 34 skills with progressive disclosure and verification checklists
-- 2 custom tools: task-decomposer, quality-verifier
+- 1 active custom tool: quality-verifier (task-decomposer is deprecated - see DECISIONS.md)
 - 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
 - Plugin registration via OpenCode plugin API
 - File-based task tracking and persistence (`TASKS.md`)
@@ -176,6 +186,5 @@ Skill evaluation follows the anthropics skill-creator methodology, vendored at `
 - Instructions URL auto-write
 - Custom notification plugins
 - Custom chat export plugins
-- DESIGN.md support
 - Porting vendored Claude Code tooling to OpenCode format (plugin-dev stays as read-only reference; adaptation happens through shims and config, not rewrites)
 - Multi-harness integration adapters (Claude Code, Codex CLI) in the current milestone; they are a backlog direction after the OpenCode integration layer stabilizes
