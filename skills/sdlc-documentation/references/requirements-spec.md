@@ -1,4 +1,4 @@
-﻿
+
 # Requirements Specification (PRD & User Stories)
 
 Guidelines for defining feature specifications, user stories, and acceptance criteria.
@@ -13,7 +13,7 @@ A `PRD.md` defines product goals, target personas, user stories, functional requ
 ### When to create PRD.md
 - Starting a new feature set, epic, or project phase.
 - Maintained primarily by the `product-manager` agent.
-- Reference template available in `references/PRD_TEMPLATE.md`.
+- Reference template available in `references/prd.md`.
 
 ---
 

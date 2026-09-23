@@ -59,6 +59,9 @@ GET  /orders to { "errors": [{ "code": "NOT_FOUND", "message": "Order not found"
 - `references/websocket.md` - message envelope, auth, reconnection
 - `references/field-conventions.md` - response formats, date formats, naming clarification
 
+For OpenAPI spec generation, load the `documentation` skill - its OpenAPI
+reference defines the minimum spec requirements per endpoint.
+
 ---
 
 ## Review Checklist

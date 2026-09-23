@@ -15,13 +15,22 @@ Types:
 - `refactor/` - code restructuring without behavior change
 - `chore/` - maintenance, dependency updates, config changes
 - `docs/` - documentation only
+- `test/` - adding or updating tests only
+- `perf/` - performance improvement
+- `ci/` - CI/CD pipeline changes
+- `release/` - release preparation (GitFlow projects)
+
+The prefix mirrors the Conventional Commit type of the work on the branch. If
+you would commit it as `feat: ...`, the branch is `feature/...`.
 
 Rules:
 
 - Use kebab-case: `feature/user-password-reset` not `feature/UserPasswordReset`
+- Keep the description under 50 characters
 - Include ticket ID when available: `feature/AUTH-123-password-reset`
 - Keep it short and descriptive - avoid generic names like `feature/changes`
 - No personal names: `feature/johns-work` is not acceptable
+- One topic per branch - mixing a bug fix and a feature makes review and revert impossible
 
 ---
 

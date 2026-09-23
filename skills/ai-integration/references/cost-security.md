@@ -9,8 +9,8 @@ Before building any AI feature, estimate the cost:
 ```text
 MONTHLY COST ESTIMATE:
   tokens_per_request = input_tokens + output_tokens
-  daily_cost         = tokens_per_request Ã— price_per_token Ã— requests_per_day
-  monthly_cost       = daily_cost Ã— 30
+  daily_cost         = tokens_per_request x -  price_per_token x -  requests_per_day
+  monthly_cost       = daily_cost x -  30
 ```
 
 Run this for both the expected average case and the worst case (peak traffic).

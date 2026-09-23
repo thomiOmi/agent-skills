@@ -107,9 +107,9 @@ Task tree format:
 
 ```text
 TASK: [main task name]
-â”œâ”€â”€ SUB-TASK 1: [description] [S]
-â”œâ”€â”€ SUB-TASK 2: [description] [M] - depends on 1
-â””â”€â”€ SUB-TASK 3: [description] [S] - parallel with 2
+->”œ->”€->”€ SUB-TASK 1: [description] [S]
+->”œ->”€->”€ SUB-TASK 2: [description] [M] - depends on 1
+->””->”€->”€ SUB-TASK 3: [description] [S] - parallel with 2
 ```
 
 Required output:
@@ -249,7 +249,7 @@ In Progress:
 - In Progress PHASE 3: Sub-task 2/4 - [description]
 
 Waiting:
-- â³ PHASE 3: Sub-tasks 3, 4
+- ->³ PHASE 3: Sub-tasks 3, 4
 
 Blockers:
 - Blocked [description] - needs: [what is required]

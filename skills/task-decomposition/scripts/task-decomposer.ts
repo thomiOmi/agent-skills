@@ -40,21 +40,18 @@ export function decomposeTask(task: string, _context?: string): Subtask[] {
   const subtasks: Subtask[] = [];
   const lines = task.split("\n").filter(l => l.trim());
 
-  let currentId = "step-1";
-  for (const line of lines) {
+  lines.forEach((line, index) => {
     const trimmed = line.trim();
-    if (!trimmed) continue;
+    if (!trimmed) return;
 
+    const id = `step-${index + 1}`;
     subtasks.push({
-      id: currentId,
+      id,
       description: trimmed,
       suggestedAgent: inferAgent(trimmed),
-      dependencies: currentId === "step-1" ? [] : [String(Number(currentId.split("-")[1]) - 1)],
+      dependencies: index === 0 ? [] : [`step-${index}`],
     });
-
-    const num = Number(currentId.split("-")[1]) + 1;
-    currentId = `step-${num}`;
-  }
+  });
 
   return subtasks;
 }

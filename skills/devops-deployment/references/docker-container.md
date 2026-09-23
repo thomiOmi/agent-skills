@@ -1,4 +1,4 @@
-﻿
+
 # Docker & Containerization
 
 Guidelines for writing secure, small, and deterministic container images.

@@ -24,13 +24,13 @@ Use eager loading to fetch related data in one query instead of N queries.
 Wrong pattern:
   FETCH all orders
   FOR EACH order:
-    FETCH user for this order   â† 1 query per order = N+1
+    FETCH user for this order   ->† 1 query per order = N+1
 
 Right pattern:
-  FETCH all orders JOIN users   â† 1 query total
+  FETCH all orders JOIN users   ->† 1 query total
   OR
   FETCH all orders
-  FETCH all users WHERE id IN (order.user_ids)   â† 2 queries total
+  FETCH all users WHERE id IN (order.user_ids)   ->† 2 queries total
 ```
 
 ---
@@ -43,9 +43,9 @@ Run EXPLAIN (or EXPLAIN ANALYZE) on any slow query before optimizing.
 
 | Term                               | Meaning                      | Action                   |
 | ---------------------------------- | ---------------------------- | ------------------------ |
-| Sequential scan (Seq Scan)         | Reading the entire table     | Add an index             |
+| Sequential scan (Seq Scan)         | Reading the entire table     | Add an inde x            |
 | Index scan                         | Using an index efficiently   | Good                     |
-| Nested loop with high rows         | N+1 or missing join index    | Add index or restructure |
+| Nested loop with high rows         | N+1 or missing join inde x   | Add index or restructure |
 | Sort with high cost                | ORDER BY on unindexed column | Add index on sort column |
 | High actual rows vs estimated rows | Statistics out of date       | Run ANALYZE              |
 

@@ -21,4 +21,4 @@ Roadmap and active backlog tracking for this project.
 
 ## Done
 
-- [x] Completed task description — YYYY-MM-DD
+- [x] Completed task description  -  YYYY-MM-DD

@@ -43,7 +43,7 @@ When analyzing user feedback, support requests, or interview transcripts:
 ## 3. Backlog Prioritization (RICE Scoring)
 
 ```text
-RICE Score = (Reach × Impact × Confidence) / Effort
+RICE Score = (Reach x Impact x Confidence) / Effort
 
 - Reach: Number of users affected per quarter
 - Impact: 3 = Massive, 2 = High, 1 = Medium, 0.5 = Low
