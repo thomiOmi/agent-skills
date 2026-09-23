@@ -15,6 +15,7 @@ Agent Orchestra turns OpenCode into a multi-role development team. The primary `
 - **Subagents are focused** — each owns a domain (coding, product, data, QA, security, design, etc.)
 - **Verification before delivery** — every result is verified before returning to the user
 - **Progressive disclosure** — skills are loaded on-demand, not all at once
+- **Agent-agnostic by layering** - the catalog is harness-neutral; only the integration layer assumes OpenCode (see Layering below)
 
 ---
 
@@ -78,6 +79,47 @@ flowchart TD
 | **researcher** | subagent | Technical research, tool and library comparison, evidence-based recommendations | - | research-methodology, planning |
 | **docs-writer** | subagent | Technical writing, documentation | - | documentation, no-ai-slop, sdlc-documentation |
 | **refactor-planner** | subagent | Safe refactoring, migration planning | - | planning |
+
+---
+
+## Layering (Agent Agnostic)
+
+The project is structured in three layers so future harnesses other than OpenCode can be supported without forking the catalog:
+
+| Layer | Contents | Coupling |
+|---|---|---|
+| Catalog (harness-neutral) | `skills/*/SKILL.md` (open Agent Skills format per agentskills.io), skill scripts/references/assets, eval cases | No harness assumptions; portable to any agent runtime that reads SKILL.md |
+| Integration (OpenCode-specific) | `agents/*.md` (OpenCode agent format with XML markup), `tools/*.ts`, `plugin/` hooks, `config/*.jsonc`, `commands/`, installer (`src/`) | Assumes OpenCode v2 conventions; swappable per harness |
+| Dev tooling (harness-neutral) | `evals/` (runner, cases, workspace, judge), `.agents/` vendored skill-creator and plugin-dev | Executor and judge are selectable via flags; no grading logic assumes a specific agent binary |
+
+Adding support for a future harness (for example Claude Code, Codex CLI) means writing a new integration layer (agent format converter, plugin equivalent, installer target) while reusing the catalog and dev tooling untouched.
+
+---
+
+## Eval Pipeline
+
+The evaluation pipeline follows the anthropics skill-creator methodology, bridged to this repo's centralized case format:
+
+```mermaid
+flowchart LR
+    Cases[evals/cases/&lt;skill&gt;.json] --> Bridge[bridge: convert to per-skill evals.json]
+    Bridge --> Runner[evals/src/run-evals.ts<br/>executor shim: opencode run]
+    Runner --> WS[evals/workspace/&lt;skill&gt;/iteration-N/<br/>with_skill/ and without_skill/<br/>outputs/ - timing.json - grading.json]
+    WS --> Agg[aggregate_benchmark.py<br/>benchmark.json]
+    WS --> Review[generate_review.py --static<br/>review.html + feedback.json]
+    Agg --> Iterate[SKILL.md revision loop<br/>history.json tracks versions]
+    Review --> Iterate
+    Iterate --> Bridge
+```
+
+Key properties:
+
+- **Executor shim:** vendored skill-creator scripts invoke `claude -p`; a shim maps this to `opencode run --model <pinned> --agent build --auto`. Grading logic upstream is unmodified.
+- **Artifact contract** (per `references/schemas.md` in the vendored skill-creator):
+  - Per run dir: `outputs/`, `timing.json` (`executor_duration_seconds`, `grader_duration_seconds`, `total_duration_seconds`), `grading.json` (`expectations[]` with `text/passed/evidence`, `summary` with `passed/failed/total/pass_rate`)
+  - Per iteration: `benchmark.json` with exact field names `configuration.with_skill` / `configuration.without_skill`, each holding `pass_rate`, `time_seconds`, `tokens` objects with `mean` and `stddev`, plus `delta` strings; and scaffolded `feedback.json` for human review
+  - Improve mode: `history.json` tracks `version`, `parent`, `expectation_pass_rate`, `grading_result` (baseline/won/lost/tie), `is_current_best`
+- **Case mapping:** this repo's `assertions` map to skill-creator's `expectations`; `expected_output` maps to `expected_output` verbatim.
 
 ---
 

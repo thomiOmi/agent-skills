@@ -12,6 +12,8 @@ The agent-skills project enables OpenCode users to work with a curated collectio
 - Provide skills that support each agent role with domain-specific guidance
 - Provide custom tools for task decomposition and quality verification
 - Follow OpenCode v2 conventions: agents as markdown, skills as SKILL.md, custom tools as TypeScript or Python
+- Keep the skill catalog harness-neutral (open Agent Skills format) so future agent runtimes beyond OpenCode can adopt it via an integration-layer adapter
+- Vendor anthropics skill-creator and plugin-dev as development-only tooling under `.agents/` for eval-driven skill iteration
 - Enable non-developer users (vibe coders, sales, marketing, designers) to use the system effectively
 
 ## 3. Target Users
@@ -58,6 +60,7 @@ A developer who wants to add new agents, skills, or tools to this repository. Ne
 
 - As a contributor, I want SKILL.md and agent definition formats documented so I can add new skills and agents consistently.
 - As a contributor, I want documented conventions (permissions, checkpoint) so my additions follow the same patterns.
+- As a contributor, I want vendored skill-creator eval tooling under `.agents/` so I can iterate on skills with benchmark and human-review artifacts without reinventing the harness.
 
 ## 5. Functional Requirements
 
@@ -134,6 +137,16 @@ The system uses `TASKS.md` file-based tracking and working context documents for
 
 The plugin registers agents, skills, and tools via the OpenCode plugin API.
 
+### FR-8: Eval Tooling (Vendored skill-creator)
+
+Skill evaluation follows the anthropics skill-creator methodology, vendored at `.agents/skills/skill-creator/` (development-only, never published or installed):
+
+- Eval cases live in `evals/cases/<skill>.json`; a bridge converts them to skill-creator's per-skill `evals.json` format (`assertions` map to `expectations`)
+- The executor shim maps vendored scripts' `claude -p` calls to `opencode run --model <pinned> --agent build --auto`; vendored grading logic is unmodified
+- Each run directory carries `outputs/`, `timing.json`, and `grading.json` per the vendored `references/schemas.md`
+- Each iteration produces `benchmark.json` (mean and stddev of pass rate, time, and tokens for `with_skill` vs `without_skill`, plus delta) and a `feedback.json` scaffold for human review
+- Review uses `eval-viewer/generate_review.py --static`; improve-mode version progression is tracked in `history.json`
+
 ## 6. Non-Functional Requirements
 
 | Requirement | Description |
@@ -154,6 +167,7 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API.
 - 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
 - Plugin registration via OpenCode plugin API
 - File-based task tracking and persistence (`TASKS.md`)
+- Development-only vendored tooling under `.agents/`: skill-creator (Python eval harness, executor shim) and plugin-dev (authoring reference)
 - Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md, TASKS.md
 
 ### Out of Scope
@@ -163,3 +177,5 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API.
 - Custom notification plugins
 - Custom chat export plugins
 - DESIGN.md support
+- Porting vendored Claude Code tooling to OpenCode format (plugin-dev stays as read-only reference; adaptation happens through shims and config, not rewrites)
+- Multi-harness integration adapters (Claude Code, Codex CLI) in the current milestone; they are a backlog direction after the OpenCode integration layer stabilizes

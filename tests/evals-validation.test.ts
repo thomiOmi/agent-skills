@@ -7,11 +7,17 @@ interface EvalCase {
   prompt: string
   expected_output?: string
   files?: string[]
-  assertions?: string[]
+  // Plain string = case-insensitive substring match (legacy). Object form =
+  // regex / case-sensitive / negated assertion (run-evals.ts Assertion type).
+  assertions?: (string | Record<string, unknown>)[]
 }
 
 interface EvalsFile {
   skill_name: string
+  // "skill" (default) evaluates skills/<name>/SKILL.md with with_skill and
+  // without_skill modes; "agent" evaluates agents/<name>.md with with_agent
+  // and without_agent modes.
+  target?: string
   evals: EvalCase[]
 }
 
@@ -33,6 +39,9 @@ describe("Validate Eval Case Files (centralized)", () => {
       expect(evals.skill_name, `${file}: skill_name must match file stem`).toBe(expectedSkill);
       expect(Array.isArray(evals.evals), `${file}: evals must be an array`).toBe(true);
       expect(evals.evals.length, `${file}: at least one eval case`).toBeGreaterThan(0);
+      if (evals.target !== undefined) {
+        expect(["skill", "agent"], `${file}: target must be "skill" or "agent"`).toContain(evals.target);
+      }
 
       const ids = new Set<number>();
       for (const evalCase of evals.evals) {
@@ -50,7 +59,26 @@ describe("Validate Eval Case Files (centralized)", () => {
         if (evalCase.assertions !== undefined) {
           expect(Array.isArray(evalCase.assertions), `${file}: assertions must be an array`).toBe(true);
           for (const assertion of evalCase.assertions) {
-            expect(typeof assertion, `${file}: assertion must be a string`).toBe("string");
+            if (typeof assertion === "string") {
+              expect(assertion.length, `${file}: string assertion must not be empty`).toBeGreaterThan(0);
+              continue;
+            }
+            expect(typeof assertion, `${file}: assertion must be a string or an object`).toBe("object");
+            expect(typeof assertion.text, `${file}: object assertion needs a "text" string`).toBe("string");
+            expect((assertion.text as string).length, `${file}: object assertion "text" must not be empty`).toBeGreaterThan(0);
+            for (const flag of ["regex", "caseSensitive", "negate"]) {
+              if (assertion[flag] !== undefined) {
+                expect(typeof assertion[flag], `${file}: assertion.${flag} must be a boolean`).toBe("boolean");
+              }
+            }
+            if (assertion.regex === true) {
+              try {
+                new RegExp(assertion.text as string, assertion.caseSensitive ? "" : "i");
+              }
+              catch {
+                expect.unreachable(`${file}: assertion regex "${assertion.text as string}" does not compile`);
+              }
+            }
           }
         }
       }

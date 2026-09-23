@@ -1,0 +1,16 @@
+{
+  "skill_name": "security-auditor",
+  "target": "agent",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review this login endpoint for security vulnerabilities and report findings with severity ratings:\n\napp.post('/login', (req, res) => {\n  const user = db.query(\"SELECT * FROM users WHERE email = '\" + req.body.email + \"' AND password = '\" + req.body.password + \"'\");\n  if (user) {\n    res.cookie('session', req.body.email);\n    res.json({ token: Buffer.from(req.body.email).toString('base64') });\n  } else {\n    res.status(401).send('Invalid credentials');\n  }\n});",
+      "expected_output": "A security review listing findings with severity ratings, covering SQL injection in the query construction and insecure session or token handling.",
+      "assertions": [
+        "severity",
+        "injection",
+        "session"
+      ]
+    }
+  ]
+}

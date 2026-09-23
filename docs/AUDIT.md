@@ -61,7 +61,7 @@ Fix: append a checklist consistent with each skill's domain.
 
 ### F3: Eval coverage is 1 of 34 skills
 
-Only task-decomposition has evals/evals.json. The runner (scripts/evals/run-evals.ts) scaffolds baseline vs with_skill runs and stores outputs, but:
+Only task-decomposition has evals/evals.json. The runner (evals/src/run-evals.ts) scaffolds baseline vs with_skill runs and stores outputs, but:
 
 - No assertion grading step (outputs are stored, not scored)
 - No comparison report (baseline vs skill pass rate)
