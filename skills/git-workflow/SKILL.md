@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: 'Use this skill whenever you work with Git - branching, committing, reviewing PRs, resolving conflicts, or auditing Git conventions. Load this skill BEFORE creating branches, making commits, or opening pull requests to ensure consistent Git workflow across the project. Triggers include: "branch strategy", "create a branch", "branch naming", "conventional commit", "breaking change", "PR template", "commit convention", "merge conflict", "rebase", "squash", "review the PR", "audit commit history", "git workflow", "git init", "clone", "branch", "checkout", "commit", "push", "pull", "merge", "cherry-pick", "stash", "log", "diff", "status", "reset", "revert", "tag", "submodule", "gitignore", "gitattributes". Apply before creating branches or opening PRs. Enforces Conventional Commits standard for all commit messages.'
+description: 'Use this skill whenever you work with Git conventions - branching strategy, commit message format, PR templates, merge strategy, or auditing Git history against project standards. Load this skill BEFORE creating branches, making commits, or opening pull requests. Triggers include: "branch strategy", "branch naming", "conventional commit", "breaking change", "PR template", "commit convention", "merge conflict resolution strategy", "squash vs rebase", "audit commit history", "git workflow". Enforces Conventional Commits standard for all commit messages.'
 license: MIT
 metadata:
   version: "1.2.0"
@@ -35,17 +35,12 @@ defaults applied, never deferred with clarifying questions.
 
 ## References
 
-- `references/branching.md` - branch naming, strategy, and lifecycle
-- `references/commits.md` - Conventional Commits format, commit hygiene
+- `references/branching.md` - branch naming, prefixes, strategy, and lifecycle
+- `references/commits.md` - Conventional Commits format, types, footers, decision guide, hygiene
 - `references/pr-review.md` - PR description template, review checklist
 - `references/merge-strategy.md` - merge vs squash vs rebase
 
 See `assets/templates.md` for PR description and branch naming templates.
-
-Related deep-dive references:
-
-- `references/conventional-branch.md` - detailed branch naming rules, prefixes, and lifecycle
-- `references/conventional-commit.md` - detailed commit format, types, footers, and examples
 
 ---
 

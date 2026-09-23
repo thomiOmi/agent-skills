@@ -31,29 +31,6 @@ cp .env.example .env
 
 ## ADR Skeleton
 
-```markdown
-# ADR [NNN]: [Title]
-
-**Date:** YYYY-MM-DD
-**Status:** Proposed | Accepted | Deprecated
-
-## Context
-
-[What situation prompted this decision?]
-
-## Decision
-
-[What did we decide?]
-
-## Rationale
-
-[Why this option? What tradeoffs?]
-
-## Consequences
-
-[What becomes easier or harder?]
-
-## Alternatives Considered
-
-- [Option A] - rejected because [reason]
-```
+ADR tidak lagi memiliki skeleton terpisah di sini. Untuk ADR, load skill
+`architecture-decision` dan gunakan template `ADR_TEMPLATE.md` milik skill
+tersebut sebagai format resmi.

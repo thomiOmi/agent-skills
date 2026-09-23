@@ -42,10 +42,10 @@ function getUser(id: string) { ... }
 
 - `references/readme.md` - README structure, quick-start rules, what to document vs what not to
 - `references/changelog.md` - Keep a Changelog format with section types and examples
-- `references/adr.md` - Architecture Decision Record template and when to write one
+- `references/adr.md` - pointer ke skill `architecture-decision` (pemilik format ADR)
 - `references/openapi.md` - OpenAPI spec minimum requirements per endpoint
 
-See `assets/templates.md` for README skeleton, changelog entry, and ADR templates.
+See `assets/templates.md` for README skeleton and changelog entry templates.
 
 ---
 

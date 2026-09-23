@@ -1,35 +1,41 @@
 # Commits - Conventional Commits
 
+Format for commit messages that are readable by humans and machines. A good
+commit message lets changelogs generate themselves, enables semantic version
+bumps, and makes history searchable by type and scope.
+
 ## Format
 
 ```markdown
-type(scope): short description
+type(scope)!: subject
 
 [optional body]
-
-- detail 1
-- detail 2
 
 [optional footer]
 Resolves: #issue-number
 Breaking change: [description]
 ```
 
+Both scope and the exclamation mark are optional. The exclamation mark marks
+a breaking change.
+
 ---
 
 ## Types
 
-| Type       | When to use                                |
-| ---------- | ------------------------------------------ |
-| `feat`     | New feature or behavior                    |
-| `fix`      | Bug fix                                    |
-| `refactor` | Code restructuring without behavior change |
-| `test`     | Adding or updating tests                   |
-| `docs`     | Documentation only                         |
-| `chore`    | Build, config, dependency changes          |
-| `perf`     | Performance improvement                    |
-| `ci`       | CI/CD configuration changes                |
-| `revert`   | Reverting a previous commit                |
+| Type       | When to use                                | Version impact |
+| ---------- | ------------------------------------------ | -------------- |
+| `feat`     | New feature or behavior                    | MINOR          |
+| `fix`      | Bug fix                                    | PATCH          |
+| `perf`     | Performance improvement without behavior change | PATCH     |
+| `refactor` | Code restructuring without behavior change | none           |
+| `test`     | Adding or updating tests                   | none           |
+| `docs`     | Documentation only                         | none           |
+| `chore`    | Build, config, dependency changes          | none           |
+| `ci`       | CI/CD configuration changes                | none           |
+| `build`    | Build system or external dependency changes | none          |
+| `style`    | Formatting, whitespace, no logic change    | none           |
+| `revert`   | Reverting a previous commit                | varies         |
 
 ---
 
@@ -77,14 +83,51 @@ No secrets, credentials, or API keys
 
 ## Breaking Changes
 
-Document breaking changes in the commit footer:
+Document breaking changes with `!` after the type or a `BREAKING CHANGE:`
+footer (either drives MAJOR version bumps):
 
 ```markdown
-feat(api): remove deprecated v1 endpoints
+feat(api)!: remove deprecated v1 endpoints
 
 Removes /v1/users and /v1/orders endpoints that were
 deprecated in v2.0 and scheduled for removal in v3.0.
 
-Breaking change: clients using /v1/* must migrate to /v2/*
+BREAKING CHANGE: clients using /v1/* must migrate to /v2/*
 Resolves: #234
+```
+
+## Footers
+
+```text
+BREAKING CHANGE: clients using /v1/* must migrate to /v2/*
+Resolves: #234
+Refs: #101, #102
+Reviewed-by: Z
+```
+
+## Decision Guide
+
+```text
+Does it add user-facing behavior?          feat
+Does it fix broken behavior?               fix
+Does it make things faster?                perf
+Does it change code without behavior?      refactor
+Does it only touch tests, docs, CI?        test, docs, ci
+Is it releases, deps, config?              chore or build
+```
+
+If a commit mixes types, split it into multiple commits - one logical change
+per commit.
+
+## Checklist
+
+```markdown
+- [ ] Subject follows type(scope): subject format
+- [ ] Subject is imperative, lowercase, no trailing period, under 72 characters
+- [ ] Scope is consistent with previous commits in the project
+- [ ] Body explains why, separated by a blank line
+- [ ] Breaking changes marked with ! or BREAKING CHANGE footer
+- [ ] Issue references in footers (Resolves, Refs)
+- [ ] One logical change per commit
+- [ ] No secrets, debug code, or temporary files committed
 ```

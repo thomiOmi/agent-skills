@@ -42,7 +42,7 @@ FUNCTION call_with_retry(request, max_retries):
 
     CATCH client_error (status 4xx):
       log("Client error {status}. Not retrying.")
-      RAISE  â† do not retry client errors
+      RAISE  ->† do not retry client errors
 
   RAISE "API call failed after {max_retries} attempts"
 ```

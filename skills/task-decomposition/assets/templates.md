@@ -32,13 +32,13 @@
 ## Task Tree: [Task Name]
 
 TASK: [main task name]
-â”œâ”€â”€ SUB-TASK 1: [description] [S] - skill: code-style
-â”œâ”€â”€ SUB-TASK 2: [description] [M] - skill: api-conventions - depends on 1
-â”‚ â”œâ”€â”€ Step 2.1: [detail]
-â”‚ â””â”€â”€ Step 2.2: [detail]
-â””â”€â”€ SUB-TASK 3: [description] [S] - skill: testing - parallel with 2
+->”œ->”€->”€ SUB-TASK 1: [description] [S] - skill: code-style
+->”œ->”€->”€ SUB-TASK 2: [description] [M] - skill: api-conventions - depends on 1
+->”‚ ->”œ->”€->”€ Step 2.1: [detail]
+->”‚ ->””->”€->”€ Step 2.2: [detail]
+->””->”€->”€ SUB-TASK 3: [description] [S] - skill: testing - parallel with 2
 
-**Size guide:** S < 30 min Â· M 30 min-2 hr Â· L > 2 hr (must split before starting)
+**Size guide:** S < 30 min  -  M 30 min-2 hr  -  L > 2 hr (must split before starting)
 
 **Dependencies:**
 

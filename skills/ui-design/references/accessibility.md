@@ -1,4 +1,4 @@
-﻿
+
 # Web Accessibility (WCAG 2.1)
 
 Guidelines for building accessible user interfaces that work for all users.

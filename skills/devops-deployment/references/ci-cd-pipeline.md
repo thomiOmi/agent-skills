@@ -1,4 +1,4 @@
-﻿
+
 # CI/CD Pipeline Design
 
 Guidelines for designing fast, deterministic, and secure CI/CD workflows.
