@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { gradeOutput, validateAssertions } from "../evals/src/grading";
+import { modesForTarget, resolveEvalTarget } from "../evals/src/targets";
 
 describe("eval runner deterministic grading", () => {
   it("passes when all assertion keywords appear in the output", () => {
@@ -102,5 +103,23 @@ describe("eval runner assertion validation", () => {
   it("reports the context in validation errors", () => {
     const errors = validateAssertions([{ text: "" }], "git-workflow#3");
     expect(errors[0]).toContain("git-workflow#3");
+  });
+});
+
+describe("eval target resolution (Fase 4)", () => {
+  it("maps skill targets to skill mode pairs", () => {
+    expect(modesForTarget("skill")).toEqual(["with_skill", "without_skill"]);
+  });
+
+  it("maps agent targets to agent mode pairs", () => {
+    expect(modesForTarget("agent")).toEqual(["with_agent", "without_agent"]);
+  });
+
+  it("resolves skill targets to the skill directory", () => {
+    expect(resolveEvalTarget("code-style", "skill").replace(/\\/g, "/")).toContain("skills/code-style");
+  });
+
+  it("resolves agent targets to the agent markdown file", () => {
+    expect(resolveEvalTarget("security-auditor", "agent").replace(/\\/g, "/")).toContain("agents/security-auditor.md");
   });
 });

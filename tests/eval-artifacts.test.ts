@@ -136,4 +136,33 @@ describe("eval artifacts (vendored skill-creator schemas)", () => {
     expect(second.expectation_pass_rate).toBe(0.8);
     expect(second.is_current_best).toBe(true);
   });
+
+  it("builds benchmark.json for agent targets with with_agent/without_agent configs", () => {
+    const withAgent = gradeOutput("severity: high, sql injection found", ["severity", "injection"]);
+    const withoutAgent = gradeOutput("looks fine to me", ["severity", "injection"]);
+    const benchmark = buildBenchmark({
+      skillName: "security-auditor",
+      skillPath: "agents/security-auditor.md",
+      executor: "opencode run --model opencode/mimo-v2.5-free --agent build --auto",
+      runs: [
+        { evalId: 1, configuration: "with_agent", grade: withAgent, timeSeconds: 8 },
+        { evalId: 1, configuration: "without_agent", grade: withoutAgent, timeSeconds: 4 },
+      ],
+    }) as {
+      metadata: { skill_path: string }
+      runs: { configuration: string }[]
+      run_summary: {
+        with_agent: { pass_rate: { mean: number } }
+        without_agent: { pass_rate: { mean: number } }
+        delta: { pass_rate: string }
+      }
+    };
+
+    expect(benchmark.metadata.skill_path).toBe("agents/security-auditor.md");
+    expect(benchmark.runs.map(r => r.configuration)).toEqual(["with_agent", "without_agent"]);
+    expect(benchmark.run_summary.with_agent.pass_rate.mean).toBe(1);
+    expect(benchmark.run_summary.without_agent.pass_rate.mean).toBe(0);
+    // Delta mirrors aggregate_benchmark.py: first config minus second config.
+    expect(benchmark.run_summary.delta.pass_rate).toBe("+1.00");
+  });
 });

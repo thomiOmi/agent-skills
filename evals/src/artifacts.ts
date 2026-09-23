@@ -116,9 +116,38 @@ export function calculateStats(values: number[]): { mean: number, stddev: number
 }
 export interface BenchmarkRunInput {
   evalId: number
-  configuration: "with_skill" | "without_skill"
+  /** A/B mode name: with_skill/without_skill (skills) or with_agent/without_agent (agents). */
+  configuration: string
   grade: GradeResult
   timeSeconds: number
+}
+
+/** Per-configuration aggregate stats (calculateStats per metric). */
+interface ConfigStats {
+  pass_rate: { mean: number }
+  time_seconds: { mean: number }
+  tokens: { mean: number }
+}
+
+/** run_summary keyed by configuration in first-seen order plus the delta block (first config minus second), matching aggregate_benchmark.py. */
+function buildRunSummary(
+  configNames: string[],
+  statsByConfig: Map<string, ConfigStats>,
+  delta: (a: number, b: number, digits: number) => string,
+): Record<string, unknown> {
+  const summary: Record<string, unknown> = {};
+  for (const [config, stats] of statsByConfig) {
+    summary[config] = stats;
+  }
+  const [primaryConfig, baselineConfig] = configNames;
+  const primaryStats = primaryConfig !== undefined ? statsByConfig.get(primaryConfig) : undefined;
+  const baselineStats = baselineConfig !== undefined ? statsByConfig.get(baselineConfig) : undefined;
+  summary.delta = {
+    pass_rate: delta(primaryStats?.pass_rate.mean ?? 0, baselineStats?.pass_rate.mean ?? 0, 2),
+    time_seconds: delta(primaryStats?.time_seconds.mean ?? 0, baselineStats?.time_seconds.mean ?? 0, 1),
+    tokens: delta(primaryStats?.tokens.mean ?? 0, baselineStats?.tokens.mean ?? 0, 0),
+  };
+  return summary;
 }
 
 /**
@@ -157,7 +186,7 @@ export function buildBenchmark(options: {
     };
   });
 
-  const summarize = (config: "with_skill" | "without_skill") => {
+  const summarize = (config: string) => {
     const configRuns = options.runs.filter(r => r.configuration === config);
     return {
       pass_rate: calculateStats(configRuns.map(r => (r.grade.total > 0 ? r.grade.passed / r.grade.total : 0))),
@@ -169,8 +198,8 @@ export function buildBenchmark(options: {
     const d = a - b;
     return `${d >= 0 ? "+" : ""}${d.toFixed(digits)}`;
   };
-  const withStats = summarize("with_skill");
-  const withoutStats = summarize("without_skill");
+  const configNames = [...new Set(options.runs.map(r => r.configuration))];
+  const statsByConfig = new Map(configNames.map(config => [config, summarize(config)]));
 
   return {
     metadata: {
@@ -183,15 +212,7 @@ export function buildBenchmark(options: {
       runs_per_configuration: 1,
     },
     runs,
-    run_summary: {
-      with_skill: withStats,
-      without_skill: withoutStats,
-      delta: {
-        pass_rate: delta(withStats.pass_rate.mean, withoutStats.pass_rate.mean, 2),
-        time_seconds: delta(withStats.time_seconds.mean, withoutStats.time_seconds.mean, 1),
-        tokens: delta(withStats.tokens.mean, withoutStats.tokens.mean, 0),
-      },
-    },
+    run_summary: buildRunSummary(configNames, statsByConfig, delta),
     notes: [],
   };
 }

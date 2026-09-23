@@ -1,9 +1,9 @@
 ﻿/**
  * Eval runner for agent skills (agentskills.io eval pattern).
  *
- * Reads eval case definitions from evals/cases/<skill>.json, scaffolds
- * evals/workspace/<skill>/iteration-N/<skill>-<id>/with_skill and
- * without_skill subdirs with prompt.txt, output.txt (executor output), and a
+ * Reads eval case definitions from evals/cases/<name>.json, scaffolds
+ * evals/workspace/<name>/iteration-N/<name>-<id>/{with,without}_{skill,agent}
+ * subdirs with prompt.txt, output.txt (executor output), and a
  * graded/ subdir holding expected_output.txt (kept out of the executor cwd to
  * avoid leaking the grading key), plus summary.json. Per run dir it also
  * records graded/grading.json, graded/timing.json and outputs/output.txt in
@@ -26,11 +26,11 @@ import type { BenchmarkRunInput, HistoryEntry, RunTiming } from "./artifacts";
 import {
   CASES_DIR,
   DEFAULT_EXECUTOR,
-  MODES,
-  SKILLS_ROOT,
   WORKSPACE_ROOT,
+  modesForTarget,
+  resolveEvalTarget,
 } from "./targets";
-import type { EntryStatus, EvalCase, EvalMode, EvalsFile } from "./targets";
+import type { EntryStatus, EvalCase, EvalTarget, EvalsFile, RunMode } from "./targets";
 
 function aggregatePass(items: EntryStatus[]): { passed: number, graded: number } {
   const graded = items.filter(i => i.total > 0);
@@ -150,24 +150,30 @@ async function writeRunArtifacts(
 }
 
 async function scaffold(
-  skillDir: string,
+  targetPath: string,
   fixtureDir: string,
-  skillName: string,
+  targetName: string,
+  target: EvalTarget,
   evalCase: EvalCase,
-  mode: EvalMode,
+  mode: RunMode,
   iterationDir: string,
 ): Promise<string> {
-  const caseDir = join(iterationDir, `${skillName}-${evalCase.id}`, mode);
+  const caseDir = join(iterationDir, `${targetName}-${evalCase.id}`, mode);
   await mkdir(caseDir, { recursive: true });
 
-  const skillFile = join(skillDir, "SKILL.md");
+  // Skills load SKILL.md from the target dir; an agent target is the file
+  // itself (agents/<name>.md).
+  const targetFile = target === "agent" ? targetPath : join(targetPath, "SKILL.md");
   let body: string | null = null;
-  if (await exists(skillFile)) {
-    body = await readFile(skillFile, "utf-8");
+  if (await exists(targetFile)) {
+    body = await readFile(targetFile, "utf-8");
   }
 
-  const prompt = mode === "with_skill" && body
-    ? `TASK: ${evalCase.prompt}\n\nYou have the following skill loaded. Follow it while completing the task above.\n\n--- SKILL ${skillName} START ---\n${body}\n--- SKILL ${skillName} END ---\n\nRespond with the deliverable the task asks for. Do not summarize the skill and do not ask what the task is.`
+  const hasTargetContext = body !== null && (mode === "with_skill" || mode === "with_agent");
+  const prompt = hasTargetContext && body
+    ? target === "agent"
+      ? `TASK: ${evalCase.prompt}\n\nYou are operating with the following agent definition. Adopt its role and follow it while completing the task above.\n\n--- AGENT ${targetName} START ---\n${body}\n--- AGENT ${targetName} END ---\n\nRespond with the deliverable the task asks for. Do not summarize the agent definition and do not ask what the task is.`
+      : `TASK: ${evalCase.prompt}\n\nYou have the following skill loaded. Follow it while completing the task above.\n\n--- SKILL ${targetName} START ---\n${body}\n--- SKILL ${targetName} END ---\n\nRespond with the deliverable the task asks for. Do not summarize the skill and do not ask what the task is.`
     : evalCase.prompt;
 
   await writeFile(join(caseDir, "prompt.txt"), prompt, "utf-8");
@@ -193,6 +199,7 @@ async function scaffold(
 
 async function runEvals(options: {
   skill?: string
+  target?: EvalTarget
   iteration: string
   executor: string
   dryRun: boolean
@@ -218,6 +225,13 @@ async function runEvals(options: {
   const validationErrors: string[] = [];
   for (const file of files) {
     const evalsFile = JSON.parse(await readFile(file, "utf-8")) as EvalsFile;
+    // Fail before any executor spend when the target definition is missing
+    // (wrong target type or name): an A/B pair without a real difference
+    // would silently measure nothing.
+    const declaredTarget: EvalTarget = evalsFile.target ?? "skill";
+    if (!(await exists(resolveEvalTarget(evalsFile.skill_name, declaredTarget)))) {
+      validationErrors.push(`${evalsFile.skill_name}: target not found for type "${declaredTarget}" (agents/<name>.md for agent, skills/<name>/ for skill)`);
+    }
     for (const evalCase of evalsFile.evals) {
       validationErrors.push(...validateAssertions(evalCase.assertions, `${evalsFile.skill_name}#${evalCase.id}`));
     }
@@ -242,31 +256,40 @@ async function runEvals(options: {
   for (const file of files) {
     const raw = await readFile(file, "utf-8");
     const evalsFile: EvalsFile = JSON.parse(raw) as EvalsFile;
-    const skillName = evalsFile.skill_name;
-    const skillDir = join(SKILLS_ROOT, skillName);
-    const fixtureDir = join(CASES_DIR, `${skillName}.files`);
+    const targetName = evalsFile.skill_name;
+    const target: EvalTarget = evalsFile.target ?? "skill";
+    // --target filters by the declared target type instead of forcing one, so
+    // a full run with --target agent skips skill case files instead of
+    // failing validation on them.
+    if (options.target !== undefined && options.target !== target) {
+      consola.info(`Skipping ${targetName} (case target "${target}" does not match --target ${options.target})`);
+      continue;
+    }
+    const targetPath = resolveEvalTarget(targetName, target);
+    const fixtureDir = join(CASES_DIR, `${targetName}.files`);
 
-    consola.log(`\n==> ${skillName} (${evalsFile.evals.length} cases)`);
-    const iterationDir = join(WORKSPACE_ROOT, skillName, `iteration-${options.iteration}`);
+    consola.log(`\n==> ${targetName} (${evalsFile.evals.length} cases, target: ${target})`);
+    const iterationDir = join(WORKSPACE_ROOT, targetName, `iteration-${options.iteration}`);
     await mkdir(iterationDir, { recursive: true });
 
     const cases = options.limit > 0 ? evalsFile.evals.slice(0, options.limit) : evalsFile.evals;
     if (cases.length < evalsFile.evals.length) {
       consola.info(`  limited to first ${cases.length} of ${evalsFile.evals.length} cases`);
     }
-    const entries: { id: number, with_skill: EntryStatus, without_skill: EntryStatus }[] = [];
+    const entries: { id: number, [key: string]: EntryStatus | number }[] = [];
     const benchmarkRuns: BenchmarkRunInput[] = [];
 
+    const modes = modesForTarget(target);
     for (const evalCase of cases) {
-      const status: { with_skill: EntryStatus, without_skill: EntryStatus } = {
-        with_skill: { status: "pending", passed: 0, total: 0 },
-        without_skill: { status: "pending", passed: 0, total: 0 },
-      };
+      const status: Record<string, EntryStatus> = {};
+      for (const mode of modes) {
+        status[mode] = { status: "pending", passed: 0, total: 0 };
+      }
 
-      for (const mode of MODES) {
-        const caseDir = await scaffold(skillDir, fixtureDir, skillName, evalCase, mode, iterationDir);
+      for (const mode of modes) {
+        const caseDir = await scaffold(targetPath, fixtureDir, targetName, target, evalCase, mode, iterationDir);
         if (options.dryRun) {
-          consola.log(`  [dry-run] ${mode}: ${skillName}-${evalCase.id}`);
+          consola.log(`  [dry-run] ${mode}: ${targetName}-${evalCase.id}`);
           continue;
         }
         const outputPath = join(caseDir, "output.txt");
@@ -281,7 +304,7 @@ async function runEvals(options: {
             passed: grade.passed,
             total: grade.total,
           };
-          consola.log(`  ok  ${mode}: ${skillName}-${evalCase.id} assertions ${grade.passed}/${grade.total} (resumed)`);
+          consola.log(`  ok  ${mode}: ${targetName}-${evalCase.id} assertions ${grade.passed}/${grade.total} (resumed)`);
           // Executor wall time is unknown for resumed runs; grading and
           // artifact structure stay valid, timing is recorded as unknown.
           await writeRunArtifacts(caseDir, output, grade, buildTiming(new Date(), new Date(), true), true);
@@ -305,7 +328,7 @@ async function runEvals(options: {
             grade,
             timeSeconds: (endedAt.getTime() - startedAt.getTime()) / 1000,
           });
-          consola.log(`  ok  ${mode}: ${skillName}-${evalCase.id} assertions ${grade.passed}/${grade.total}`);
+          consola.log(`  ok  ${mode}: ${targetName}-${evalCase.id} assertions ${grade.passed}/${grade.total}`);
         }
         catch (err) {
           const message = err instanceof Error ? err.message : String(err);
@@ -319,24 +342,24 @@ async function runEvals(options: {
       entries.push({ id: evalCase.id, ...status });
     }
 
-    const aggregate = {
-      with_skill: aggregatePass(entries.map(e => e.with_skill)),
-      without_skill: aggregatePass(entries.map(e => e.without_skill)),
-    };
+    const modeStats = modes.map(mode => ({
+      mode,
+      ...aggregatePass(entries.map(e => e[mode] as EntryStatus)),
+    }));
     consola.log(
-      `  pass rate (assertion-graded cases): with_skill ${aggregate.with_skill.passed}/${aggregate.with_skill.graded}`
-      + `, without_skill ${aggregate.without_skill.passed}/${aggregate.without_skill.graded}`,
+      `  pass rate (assertion-graded cases): ${modeStats.map(s => `${s.mode} ${s.passed}/${s.graded}`).join(", ")}`,
     );
 
     await writeFile(
       join(iterationDir, "summary.json"),
       JSON.stringify({
-        skill_name: skillName,
+        skill_name: targetName,
+        target,
         iteration: options.iteration,
         grading_version: GRADING_VERSION,
         grading: "assertion",
         entries,
-        aggregate,
+        aggregate: Object.fromEntries(modeStats.map(s => [s.mode, { passed: s.passed, graded: s.graded }])),
       }, null, 2),
       "utf-8",
     );
@@ -350,8 +373,8 @@ async function runEvals(options: {
       await writeFile(
         join(iterationDir, "benchmark.json"),
         JSON.stringify(buildBenchmark({
-          skillName,
-          skillPath: join(SKILLS_ROOT, skillName),
+          skillName: targetName,
+          skillPath: targetPath,
           executor: options.executor,
           runs: benchmarkRuns,
         }), null, 2),
@@ -366,13 +389,15 @@ async function runEvals(options: {
         iterations: HistoryEntry[]
       } = (await exists(historyPath))
         ? JSON.parse(await readFile(historyPath, "utf-8"))
-        : { started_at: new Date().toISOString(), skill_name: skillName, current_best: "", iterations: [] };
+        : { started_at: new Date().toISOString(), skill_name: targetName, current_best: "", iterations: [] };
 
       // Expectation pass rate for the iteration: mean pass rate of graded
-      // with_skill runs (the skill-quality signal the improve loop tracks).
-      const gradedWithSkill = benchmarkRuns.filter(r => r.configuration === "with_skill" && r.grade.total > 0);
-      const iterationRate = gradedWithSkill.length > 0
-        ? gradedWithSkill.reduce((acc, r) => acc + r.grade.passed / r.grade.total, 0) / gradedWithSkill.length
+      // runs in the primary A/B mode (with_skill or with_agent, the signal
+      // the improve loop tracks).
+      const primaryMode = modes[0];
+      const gradedPrimary = benchmarkRuns.filter(r => r.configuration === primaryMode && r.grade.total > 0);
+      const iterationRate = gradedPrimary.length > 0
+        ? gradedPrimary.reduce((acc, r) => acc + r.grade.passed / r.grade.total, 0) / gradedPrimary.length
         : 0;
 
       history.iterations = history.iterations.map(i => ({ ...i, is_current_best: false }));
@@ -407,6 +432,10 @@ const main = defineCommand({
   },
   args: {
     "skill": { type: "string" as const, description: "Only eval this skill directory" },
+    "target": {
+      type: "string" as const,
+      description: "Only run case files with this target type: skill or agent",
+    },
     "iteration": { type: "string" as const, description: "Iteration number (default: 1)" },
     "executor": { type: "string" as const, description: "Shell command to run each prompt" },
     "dry-run": { type: "boolean" as const, description: "Scaffold without executing prompts" },
@@ -433,8 +462,15 @@ const main = defineCommand({
       process.exitCode = 1;
       return;
     }
+    const targetArg = args.target as string | undefined;
+    if (targetArg !== undefined && targetArg !== "skill" && targetArg !== "agent") {
+      consola.error(`--target must be "skill" or "agent", got "${targetArg}"`);
+      process.exitCode = 1;
+      return;
+    }
     await runEvals({
       skill: args.skill as string | undefined,
+      target: targetArg as EvalTarget | undefined,
       iteration: (args.iteration as string | undefined) ?? "1",
       executor: (args.executor as string | undefined) ?? DEFAULT_EXECUTOR,
       dryRun: Boolean(args["dry-run"]),

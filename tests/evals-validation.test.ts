@@ -14,6 +14,10 @@ interface EvalCase {
 
 interface EvalsFile {
   skill_name: string
+  // "skill" (default) evaluates skills/<name>/SKILL.md with with_skill and
+  // without_skill modes; "agent" evaluates agents/<name>.md with with_agent
+  // and without_agent modes.
+  target?: string
   evals: EvalCase[]
 }
 
@@ -35,6 +39,9 @@ describe("Validate Eval Case Files (centralized)", () => {
       expect(evals.skill_name, `${file}: skill_name must match file stem`).toBe(expectedSkill);
       expect(Array.isArray(evals.evals), `${file}: evals must be an array`).toBe(true);
       expect(evals.evals.length, `${file}: at least one eval case`).toBeGreaterThan(0);
+      if (evals.target !== undefined) {
+        expect(["skill", "agent"], `${file}: target must be "skill" or "agent"`).toContain(evals.target);
+      }
 
       const ids = new Set<number>();
       for (const evalCase of evals.evals) {
