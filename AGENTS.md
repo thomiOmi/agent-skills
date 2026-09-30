@@ -3,6 +3,23 @@
 Project-level agent instructions for the agent-skills project.
 Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md`.
 
+## Document Map
+
+Each root document owns a distinct kind of fact. If two documents seem to
+disagree, the owner listed here wins - the other document should only
+cross-reference it, not repeat the details.
+
+| File | Owns | Read this to find out... |
+|---|---|---|
+| `README.md` | Public overview, quick install | What this project is and how to install it |
+| `INSTALL.md` | Full install/deploy reference | Every install option, deployment map, per-agent model overrides |
+| `AGENTS.md` (this file) | Canonical agent roster, commands, boundaries, formatting rules | Which agents exist, what commands to run, what an agent must never do |
+| `PRD.md` | Product goals, personas, requirements, scope | Why this project exists and what is in or out of scope |
+| `ARCHITECTURE.md` | System design, diagrams, eval pipeline, plugin hooks | How the pieces fit together technically |
+| `TASKS.md` | Live state: what is done, in progress, planned, and backlogged | What is already shipped and what is next |
+| `DECISIONS.md` | Historical record of architectural choices | Why something was built this way instead of another way |
+| `SPEC.md` | Agent Skills format spec, eval tooling mechanics | How to author a new skill, how skill evaluation works |
+
 Priority order (highest to lowest):
 
 ```text
@@ -152,7 +169,7 @@ Rules:
 - No em dashes (--) or en dashes (-) - use regular hyphen (-) instead
 - No decorative formatting (ASCII art, banners, separator lines with special chars)
 - No right arrow (->) or other arrows - use words like "to" or "becomes"
-- No checkmark/cross symbols (like [x], (v), etc.) in markdown - use text like "Done" or "Failed"
+- No decorative checkmark or cross glyphs inline in prose (a checkmark or cross character used as a symbol, not as text) - use text like "Done" or "Failed". This does NOT apply to standard GFM task-list checkboxes (`- [ ]` and `- [x]`) used for checklists throughout this repo; those are intentional and stay.
 
 ## Project Context
 

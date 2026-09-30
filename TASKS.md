@@ -11,22 +11,22 @@ Roadmap and backlog for the agent-skills project.
 - Eval harness validity fixes: grading key isolated from executor cwd (`graded/expected_output.txt`), default executor `opencode run --agent build --auto` so candidates execute instead of answering in plan mode - 2026-09-17
 - git-workflow 1.2.0: "Defaults Before Clarification" replaces "Clarify Before Acting" (iteration-1 diagnosis: model deferred specific tasks with clarifying questions, 0/7 with vs 7/7 without) - 2026-09-17
 - Eval iteration-1 baseline batch: all 33 skills, 79 cases, 158 runs via resumable lane, zero retries (~4.5 hrs); aggregate with_skill 49/79 vs without_skill 53/79; failure causes classified (plan-mode behavior, grading-key contamination, clarify-pattern) - 2026-09-17
-- Agent Orchestra rewrite with verification loop — 2026-07-25
-- 11 specialized agents with routing in orchestrator prompt — 2026-07-25
+- Agent Orchestra rewrite with verification loop - 2026-07-25
+- 11 specialized agents with routing in orchestrator prompt - 2026-07-25
   - orchestrator, senior-developer, ui-ux, marketing, qa-engineer, devops, security-auditor, brainstormer, deep-thinker, docs-writer, refactor-planner
-- 15 skills covering code, testing, security, design, devops, AI, planning, documentation — 2026-07-26
-- 2 custom tools: task-decomposer.ts, quality-verifier.ts — 2026-07-26
-- 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security — 2026-07-26
-- Plugin registration (agent-skills.ts) for OpenCode v2 — 2026-07-26
-- Clean em dash/emoji/arrow characters across 100+ files — 2026-07-29
-- Formatting rules and Boundaries section in AGENTS.md — 2026-07-29
-- Move DECISIONS.md to root, add ARCHITECTURE.md + TASKS.md — 2026-07-29
-- GitHub Actions improvements: CI concurrency + bun cache, commitlint job — 2026-08-28
-- Release tooling: changelogen (bun run release / bun run changelog), CHANGELOG.md baseline, git hooks (simple-git-hooks + lint-staged + commitlint) — 2026-08-28
-- Agent expansion: researcher + project-manager with research-methodology skill — 2026-08-28
+- 15 skills covering code, testing, security, design, devops, AI, planning, documentation - 2026-07-26
+- 2 custom tools: task-decomposer.ts, quality-verifier.ts - 2026-07-26
+- 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security - 2026-07-26
+- Plugin registration (agent-skills.ts) for OpenCode v2 - 2026-07-26
+- Clean em dash/emoji/arrow characters across 100+ files - 2026-07-29
+- Formatting rules and Boundaries section in AGENTS.md - 2026-07-29
+- Move DECISIONS.md to root, add ARCHITECTURE.md + TASKS.md - 2026-07-29
+- GitHub Actions improvements: CI concurrency + bun cache, commitlint job - 2026-08-28
+- Release tooling: changelogen (bun run release / bun run changelog), CHANGELOG.md baseline, git hooks (simple-git-hooks + lint-staged + commitlint) - 2026-08-28
+- Agent expansion: researcher + project-manager with research-methodology skill - 2026-08-28
   - Note: data-analyst and product-manager from the original plan already existed in the roster
-- Eval coverage: evals.json for 5 skills (task-decomposition, code-style, testing, security-review, git-workflow) with assertion grading in run-evals.ts — 2026-08-30
-- no-ai-slop skill: remove 20+ AI slop patterns from prose while preserving voice (edit + detect modes), adapted from petergyang/no-ai-slop (MIT) — 2026-09-04
+- Eval coverage: evals.json for 5 skills (task-decomposition, code-style, testing, security-review, git-workflow) with assertion grading in run-evals.ts - 2026-08-30
+- no-ai-slop skill: remove 20+ AI slop patterns from prose while preserving voice (edit + detect modes), adapted from petergyang/no-ai-slop (MIT) - 2026-09-04
 - Plugin guard hooks: secrets-scanner (blocks hardcoded secrets in write and edit) and tool-guardian (blocks destructive bash commands) in the plugin harness - 2026-09-06
 - Conventional git skills: conventional-branch and conventional-commit, deep-dives under git-workflow, wired to senior-developer - 2026-09-06
 - debugging skill 2.3.0: Reproduce Before Fix section with bug reproduction brief template - 2026-09-06

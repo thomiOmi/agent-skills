@@ -69,18 +69,18 @@ A developer who wants to add new agents, skills, or tools to this repository. Ne
 The system follows this workflow for every task:
 
 ```text
-discussion -> plan -> orchestrator -> test -> implement -> review -> verify -> remember -> improve
+discussion to plan to orchestrator to test to implement to review to verify to remember to improve
 ```
 
-1. **Discussion** — user and agent interact to clarify requirements and confirm assumptions
-2. **Plan** — built-in primary `plan` agent analyzes the request and creates a structured plan
-3. **Orchestrator** — `orchestrator` subagent decomposes the plan into subtasks and delegates to specialized subagents
-4. **Test** — tests are written first (TDD approach)
-5. **Implement** — code is implemented to pass the tests
-6. **Review** — implementation is reviewed against requirements
-7. **Verify** — quality verification runs (lint, typecheck, tests, debug statements, docstrings)
-8. **Remember** — key decisions, progress, and learnings saved to `TASKS.md` and working context for cross-session persistence
-9. **Improve** — final polish and optimization after verification passes
+1. **Discussion** - user and agent interact to clarify requirements and confirm assumptions
+2. **Plan** - built-in primary `plan` agent analyzes the request and creates a structured plan
+3. **Orchestrator** - `orchestrator` subagent decomposes the plan into subtasks and delegates to specialized subagents
+4. **Test** - tests are written first (TDD approach)
+5. **Implement** - code is implemented to pass the tests
+6. **Review** - implementation is reviewed against requirements
+7. **Verify** - quality verification runs (lint, typecheck, tests, debug statements, docstrings)
+8. **Remember** - key decisions, progress, and learnings saved to `TASKS.md` and working context for cross-session persistence
+9. **Improve** - final polish and optimization after verification passes
 
 If verification fails, the system retries from the implement step using the resumable `task_id` (max 3 retries before escalation).
 
@@ -113,8 +113,8 @@ The system provides the following agents:
 
 The orchestrator subagent has permission to delegate to all other subagents via the `task` tool. Self-delegation is denied to prevent circular loops.
 
-> This table must stay in sync with `AGENTS.md` -> Agent Orchestra, which is the
-> canonical source for the agent roster. If they diverge, `AGENTS.md` wins.
+> This table must stay in sync with the Agent Orchestra table in `AGENTS.md`, which
+> is the canonical source for the agent roster. If they diverge, `AGENTS.md` wins.
 
 ### FR-3: Skills
 
@@ -137,8 +137,8 @@ Tool history: `task-decomposer` was deprecated and removed (see DECISIONS.md); a
 Every skill includes a domain-specific verification checklist at the end of its SKILL.md. The orchestrator runs the skill-level checklist before the centralized quality-verifier tool.
 
 Dual-layer verification:
-1. **Skill-level** — domain-specific checks (e.g., security checks for auth, coverage checks for tests)
-2. **Centralized** — cross-cutting checks (typecheck, lint, tests, debug statements, docstrings)
+1. **Skill-level** - domain-specific checks (e.g., security checks for auth, coverage checks for tests)
+2. **Centralized** - cross-cutting checks (typecheck, lint, tests, debug statements, docstrings)
 
 ### FR-6: Persistence & Task Tracking
 

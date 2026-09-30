@@ -6,7 +6,7 @@ Global AGENTS.md, Agents, and Skills collection for [OpenCode CLI](https://openc
 
 ## Skills
 
-Skills are grouped by SDLC phase — pick the group that matches what you are doing right now.
+Skills are grouped by SDLC phase - pick the group that matches what you are doing right now.
 
 ### 📋 Plan & Architect
 

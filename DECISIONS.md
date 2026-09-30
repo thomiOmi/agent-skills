@@ -1,4 +1,4 @@
-﻿# DECISIONS.md
+# DECISIONS.md
 
 Architectural decisions, conventions, and known issues for the agent-skills project.
 

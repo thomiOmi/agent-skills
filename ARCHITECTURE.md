@@ -10,11 +10,11 @@ Agent Orchestra turns OpenCode into a multi-role development team. The primary `
 
 **Key principles:**
 
-- **Primary plan agent for user interaction** — default primary agent is `plan`
-- **Orchestrator as coordinator** — delegates, does not do domain work directly
-- **Subagents are focused** — each owns a domain (coding, product, data, QA, security, design, etc.)
-- **Verification before delivery** — every result is verified before returning to the user
-- **Progressive disclosure** — skills are loaded on-demand, not all at once
+- **Primary plan agent for user interaction** - default primary agent is `plan`
+- **Orchestrator as coordinator** - delegates, does not do domain work directly
+- **Subagents are focused** - each owns a domain (coding, product, data, QA, security, design, etc.)
+- **Verification before delivery** - every result is verified before returning to the user
+- **Progressive disclosure** - skills are loaded on-demand, not all at once
 - **Agent-agnostic by layering** - the catalog is harness-neutral; only the integration layer assumes OpenCode (see Layering below)
 
 ---
@@ -56,9 +56,13 @@ flowchart TD
 
 ## Agent Roster
 
+> Canonical source: this table must list the same agents as the Agent Orchestra
+> table in `AGENTS.md`. If they diverge, `AGENTS.md` wins - see the
+> documentation-audit entry in DECISIONS.md.
+
 | Agent | Mode | Role | Delegates To | Key Skills |
 |---|---|---|---|---|
-| **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, quality-verifier |
+| **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, project-lifecycle, planning, code-review, testing |
 | **frontend-developer** | subagent | UI implementation, components, client state, styling | - | ui-design, frontend-patterns, code-style, testing, debugging, git-workflow |
 | **backend-developer** | subagent | API endpoints, business logic, auth, server-side integration | - | api-conventions, backend-patterns, code-style, testing, debugging, git-workflow |
 | **software-architect** | subagent | System design, ADRs, trade-off analysis, architecture review | - | planning, architecture-decision, research-methodology, tech-debt |
@@ -124,15 +128,15 @@ Key properties:
 
 ## Verification Loop
 
-Workflow: `discussion -> plan -> orchestrator -> test -> implement -> review -> verify -> remember -> improve`
+Workflow: `discussion to plan to orchestrator to test to implement to review to verify to remember to improve`
 
-1. **Discussion** — user and agent clarify goals and requirements
-2. **Plan** — built-in primary `plan` agent analyzes the request and creates a plan
-3. **Decompose** — `orchestrator` subagent breaks down tasks into `TASKS.md`
-4. **Delegate** — subtasks dispatched to specialized subagents via `task` tool
-5. **Verify** — dual-layer quality gates (skill-level + centralized quality verifier)
-6. **Remember** — progress and decisions persisted to `TASKS.md`
-7. **Return** — verified results delivered to user
+1. **Discussion** - user and agent clarify goals and requirements
+2. **Plan** - built-in primary `plan` agent analyzes the request and creates a plan
+3. **Decompose** - `orchestrator` subagent breaks down tasks into `TASKS.md`
+4. **Delegate** - subtasks dispatched to specialized subagents via `task` tool
+5. **Verify** - dual-layer quality gates (skill-level + centralized quality verifier)
+6. **Remember** - progress and decisions persisted to `TASKS.md`
+7. **Return** - verified results delivered to user
 
 ---
 
