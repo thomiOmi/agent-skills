@@ -1,5 +1,4 @@
 import type { Plugin } from "@opencode-ai/plugin";
-import taskDecomposer from "../tools/task-decomposer";
 import qualityVerifier from "../tools/quality-verifier";
 import { CompactionPlugin } from "./compaction";
 import { SecretsScannerPlugin } from "./secrets-scanner";
@@ -12,7 +11,6 @@ export const AgentSkillsPlugin: Plugin = async (ctx) => {
 
   return {
     "tool": {
-      "task-decomposer": taskDecomposer,
       "quality-verifier": qualityVerifier,
     },
     ...compaction,

@@ -63,6 +63,12 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("rm -rf .")).toMatch(/Recursive force delete/);
     expect(findDangerousCommand("rm -rf *")).toMatch(/Recursive force delete/);
     expect(findDangerousCommand("Remove-Item -Recurse -Force C:\\")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm --recursive --force /")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm --recursive --force ~")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm --recursive --force .")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm --recursive --force *")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -r --force /")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm --recursive -f /")).toMatch(/Recursive force delete/);
   });
 
   it("allows specific-path deletes", () => {
@@ -70,6 +76,8 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("rm -rf ~/projects/demo")).toBeNull();
     expect(findDangerousCommand("rm src/old.ts")).toBeNull();
     expect(findDangerousCommand("Remove-Item -Recurse -Force .\\dist\\cache")).toBeNull();
+    expect(findDangerousCommand("rm --recursive --force node_modules")).toBeNull();
+    expect(findDangerousCommand("rm --recursive --force ./build/cache")).toBeNull();
   });
 
   it("blocks force push but allows force-with-lease", () => {

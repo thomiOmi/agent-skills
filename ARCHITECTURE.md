@@ -163,21 +163,19 @@ Workflow: `discussion -> plan -> orchestrator -> test -> implement -> review -> 
 
 ## Custom Tools
 
-### task-decomposer.ts
+### task-decomposer.ts (removed)
 
-Breaks a complex task description into structured subtasks.
-
-- **Input:** `task` (string), optional `context` (string)
-- **Output:** Array of `{id, description, suggestedAgent, dependencies}`
-- **Agent inference:** keyword matching on description
-- **Used by:** orchestrator agent
+Deprecated and deleted after the root-docs audit: its `inferAgent()` keyword routing covered only 5 of the 20 agents, which violates the hardcoded-routing-in-the-orchestrator-prompt decision. The underlying `skills/task-decomposition/scripts/task-decomposer.ts` remains as part of the skill.
 
 ### quality-verifier.ts
 
-Verifies code quality against defined criteria.
+Verifies code quality against defined criteria by executing the checks, not by returning optimistic stubs.
 
 - **Input:** `files` (string[]), optional boolean flags: `checkLint`, `checkTypecheck`, `checkTests`, `checkNoDebug`, `checkDocstrings`
 - **Output:** `{pass: boolean, details: {criterion, passed, message}[]}`
+- **Script checks:** run the matching `package.json` script through the detected package manager (bun when a bun lockfile exists, otherwise npm); `typecheck` falls back to the locally installed TypeScript compiler
+- **File checks:** line-by-line scan for debug statements (`console.log`, `debugger`, `print(`) and for exports missing a docstring
+- **Skip semantics:** a check with no runnable target (no script, no installed compiler) passes with an explicit "skipped" message; only a check that ran and failed clears the aggregate `pass`
 - **Used by:** orchestrator agent (via qa-engineer subagent)
 
 ---
@@ -196,4 +194,4 @@ Blocks write/edit tool calls whose string arguments contain likely secrets (AWS,
 
 ### tool-guardian.ts
 
-Blocks irreversible destructive bash commands via `tool.execute.before`: recursive force deletes of filesystem roots, home, or wildcards; git force push (except `--force-with-lease`); mkfs/fdisk/dd to devices/format; DROP TABLE/DATABASE/SCHEMA; chmod -R 777 on / or ~. Specific-path deletes and recoverable operations are allowed. Escape hatch: `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.
+Blocks irreversible destructive bash commands via `tool.execute.before`: recursive force deletes of filesystem roots, home, or wildcards (both short flags like `-rf` and GNU long forms like `--recursive --force`); git force push (except `--force-with-lease`); mkfs/fdisk/dd to devices/format; DROP TABLE/DATABASE/SCHEMA; chmod -R 777 on / or ~. Specific-path deletes and recoverable operations are allowed. Escape hatch: `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.

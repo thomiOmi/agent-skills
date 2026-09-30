@@ -10,7 +10,7 @@ The agent-skills project enables OpenCode users to work with a curated collectio
 - Provide an `orchestrator` subagent that coordinates multi-step workflows
 - Ship specialized agents for coding, testing, security, design, content, DevOps, documentation, brainstorming, planning, and refactoring
 - Provide skills that support each agent role with domain-specific guidance
-- Provide custom tools for task decomposition and quality verification
+- Provide a custom tool for quality verification
 - Follow OpenCode v2 conventions: agents as markdown, skills as SKILL.md, custom tools as TypeScript or Python
 - Keep the skill catalog harness-neutral (open Agent Skills format) so future agent runtimes beyond OpenCode can adopt it via an integration-layer adapter
 - Vendor anthropics skill-creator and plugin-dev as development-only tooling under `.agents/` for eval-driven skill iteration
@@ -128,8 +128,9 @@ The system provides 34 skills covering code quality, testing, security, design, 
 
 | Tool | Purpose | Used By |
 |---|---|---|
-| task-decomposer | **Deprecated** (see DECISIONS.md) - do not use; agent routing stays hardcoded in the orchestrator prompt | - |
 | quality-verifier | Verify code quality: lint, typecheck, tests, debug statements, docstrings | orchestrator (via qa-engineer) |
+
+Tool history: `task-decomposer` was deprecated and removed (see DECISIONS.md); agent routing stays hardcoded in the orchestrator prompt.
 
 ### FR-5: Verification
 
@@ -173,7 +174,7 @@ Skill evaluation follows the anthropics skill-creator methodology, vendored at `
 
 - 20 specialized subagents with documented roles
 - 34 skills with progressive disclosure and verification checklists
-- 1 active custom tool: quality-verifier (task-decomposer is deprecated - see DECISIONS.md)
+- 1 active custom tool: quality-verifier (task-decomposer was deprecated and removed - see DECISIONS.md)
 - 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
 - Plugin registration via OpenCode plugin API
 - File-based task tracking and persistence (`TASKS.md`)

@@ -25,8 +25,8 @@ function isRecursiveForceDelete(command: string): boolean {
   if (!/\brm\b|\bremove-item\b/i.test(command)) {
     return false;
   }
-  const hasRecursive = /(^|\s)-\w*[rR]/.test(command) || /(^|\s)-recurse\b/i.test(command);
-  const hasForce = /(^|\s)-\w*f/.test(command) || /(^|\s)-force\b/i.test(command);
+  const hasRecursive = /(^|\s)-\w*[rR]/.test(command) || /(^|\s)(--recursive|-recurse)\b/i.test(command);
+  const hasForce = /(^|\s)-\w*f/.test(command) || /(^|\s)(--force|-force)\b/i.test(command);
   if (!hasRecursive || !hasForce) {
     return false;
   }
