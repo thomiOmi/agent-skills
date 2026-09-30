@@ -61,6 +61,11 @@ describe("verifyQuality (real verification)", () => {
     }
   });
 
+  // Spawning a package-manager script costs about a second on Windows and can
+  // spike on a loaded machine, so these two cases get an explicit budget
+  // instead of the 5s default.
+  const SPAWN_TIMEOUT_MS = 30_000;
+
   it("runs a failing script check and reports its output", () => {
     // A script that always exits 1 simulates lint/typecheck/test failure
     // without depending on any real toolchain in the temp project.
@@ -75,7 +80,7 @@ describe("verifyQuality (real verification)", () => {
     finally {
       rmSync(dir, { recursive: true, force: true });
     }
-  });
+  }, SPAWN_TIMEOUT_MS);
 
   it("runs a passing script check", () => {
     const script = process.platform === "win32" ? "node -e \"process.exit(0)\"" : "exit 0";
@@ -90,7 +95,7 @@ describe("verifyQuality (real verification)", () => {
     finally {
       rmSync(dir, { recursive: true, force: true });
     }
-  });
+  }, SPAWN_TIMEOUT_MS);
 
   it("skips script checks explicitly when the script does not exist", () => {
     const dir = makeProject({});

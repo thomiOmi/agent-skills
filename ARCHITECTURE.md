@@ -59,29 +59,32 @@ flowchart TD
 > Canonical source: this table must list the same agents as the Agent Orchestra
 > table in `AGENTS.md`. If they diverge, `AGENTS.md` wins - see the
 > documentation-audit entry in DECISIONS.md.
+>
+> Key Skills per agent live in `AGENTS.md` only. This table does not repeat
+> them, because a second copy can silently go stale.
 
-| Agent | Mode | Role | Delegates To | Key Skills |
-|---|---|---|---|---|
-| **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool | task-decomposition, project-lifecycle, planning, code-review, testing |
-| **frontend-developer** | subagent | UI implementation, components, client state, styling | - | ui-design, frontend-patterns, code-style, testing, debugging, git-workflow |
-| **backend-developer** | subagent | API endpoints, business logic, auth, server-side integration | - | api-conventions, backend-patterns, code-style, testing, debugging, git-workflow |
-| **software-architect** | subagent | System design, ADRs, trade-off analysis, architecture review | - | planning, architecture-decision, research-methodology, tech-debt |
-| **database-engineer** | subagent | Schema design, migrations, indexing, query performance | - | database, database-migration, data-analysis, api-conventions, testing |
-| **ai-engineer** | subagent | LLM prompt design, AI integration, RAG, structured output | - | prompt-design, structured-output, ai-integration, code-style, testing |
-| **senior-developer** | subagent | Architecture, coding, refactoring | - | code-style, debugging, testing, api-conventions, database, git-workflow, planning, ai-integration |
-| **product-manager** | subagent | PRDs, feature specs, user stories, roadmap | - | sdlc-documentation, task-decomposition, documentation |
-| **project-manager** | subagent | Project planning, milestone tracking, risk management, status reporting | - | task-decomposition, planning, sdlc-documentation |
-| **data-analyst** | subagent | SQL queries, schema analysis, data modeling | - | database, data-analysis, code-style |
-| **ui-ux** | subagent | Design system, frontend, accessibility | - | ui-design |
-| **marketing** | subagent | Content, SEO, copy, strategy | - | content-strategy, no-ai-slop |
-| **qa-engineer** | subagent | Test strategy, coverage, quality gates | - | testing, debugging |
-| **devops** | subagent | CI/CD, deployment, infrastructure | - | devops-deployment |
-| **security-auditor** | subagent | Security review, auth, vulnerability assessment | - | security-review |
-| **brainstormer** | subagent | Creative ideation, solution exploration | - | (none) |
-| **deep-thinker** | subagent | Complex reasoning, root cause analysis | - | (none) |
-| **researcher** | subagent | Technical research, tool and library comparison, evidence-based recommendations | - | research-methodology, planning |
-| **docs-writer** | subagent | Technical writing, documentation | - | documentation, no-ai-slop, sdlc-documentation |
-| **refactor-planner** | subagent | Safe refactoring, migration planning | - | planning |
+| Agent | Mode | Role | Delegates To |
+|---|---|---|---|
+| **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool |
+| **frontend-developer** | subagent | UI implementation, components, client state, styling | - |
+| **backend-developer** | subagent | API endpoints, business logic, auth, server-side integration | - |
+| **software-architect** | subagent | System design, ADRs, trade-off analysis, architecture review | - |
+| **database-engineer** | subagent | Schema design, migrations, indexing, query performance | - |
+| **ai-engineer** | subagent | Prompt engineering, AI integration, RAG, structured output | - |
+| **senior-developer** | subagent | Tech lead: cross-domain review, standards, glue work, hard debugging | - |
+| **product-manager** | subagent | PRDs, feature specs, user stories, roadmap | - |
+| **project-manager** | subagent | Project planning, milestone tracking, risk, status reports | - |
+| **data-analyst** | subagent | SQL analysis, reporting, data profiling | - |
+| **ui-ux** | subagent | Design system, frontend, accessibility | - |
+| **marketing** | subagent | Content, SEO, copy, strategy | - |
+| **qa-engineer** | subagent | Test strategy, coverage, quality gates | - |
+| **devops** | subagent | CI/CD, deployment, infrastructure | - |
+| **security-auditor** | subagent | Security review, auth, vulnerability assessment | - |
+| **brainstormer** | subagent | Creative ideation, solution exploration | - |
+| **deep-thinker** | subagent | Complex reasoning, root cause analysis | - |
+| **researcher** | subagent | Technical research, comparisons, evidence-based recommendations | - |
+| **docs-writer** | subagent | Technical writing, documentation | - |
+| **refactor-planner** | subagent | Safe refactoring, legacy code migration | - |
 
 ---
 

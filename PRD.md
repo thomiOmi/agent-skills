@@ -90,14 +90,14 @@ The system provides the following agents:
 
 | Agent | Mode | Role |
 |---|---|---|
-| orchestrator | subagent | Task decomposition, delegation, verification, persistence |
-| frontend-developer | subagent | UI implementation, components, client state, styling, accessibility |
-| backend-developer | subagent | API endpoints, business logic, authentication, background jobs, server-side integration |
+| orchestrator | subagent | Task decomposition, delegation, verification |
+| frontend-developer | subagent | UI implementation, components, client state, styling |
+| backend-developer | subagent | API endpoints, business logic, auth, server-side integration |
 | software-architect | subagent | System design, ADRs, trade-off analysis, architecture review |
-| database-engineer | subagent | Schema design, migrations, indexing, query performance, data integrity |
-| ai-engineer | subagent | LLM prompt design, AI integration, RAG systems, structured outputs, evaluation workflows |
-| senior-developer | subagent | Architecture, coding, refactoring |
-| product-manager | subagent | PRDs, feature specs, user stories, roadmap planning |
+| database-engineer | subagent | Schema design, migrations, indexing, query performance |
+| ai-engineer | subagent | Prompt engineering, AI integration, RAG, structured output |
+| senior-developer | subagent | Tech lead: cross-domain review, standards, glue work, hard debugging |
+| product-manager | subagent | PRDs, feature specs, user stories, roadmap |
 | ui-ux | subagent | Design system, frontend, accessibility |
 | marketing | subagent | Content, SEO, copy, strategy |
 | qa-engineer | subagent | Test strategy, coverage, quality gates |
@@ -105,11 +105,11 @@ The system provides the following agents:
 | security-auditor | subagent | Security review, auth, vulnerability assessment |
 | brainstormer | subagent | Creative ideation, solution exploration |
 | deep-thinker | subagent | Complex reasoning, root cause analysis |
-| researcher | subagent | Technical research, tool and library comparison, evidence-based recommendations |
-| project-manager | subagent | Project planning, milestone tracking, risk management, status reporting |
-| data-analyst | subagent | SQL query design, schema analysis, data modeling, reporting, query performance tuning |
+| researcher | subagent | Technical research, comparisons, evidence-based recommendations |
+| project-manager | subagent | Project planning, milestone tracking, risk, status reports |
+| data-analyst | subagent | SQL analysis, reporting, data profiling |
 | docs-writer | subagent | Technical writing, documentation |
-| refactor-planner | subagent | Safe refactoring, migration planning |
+| refactor-planner | subagent | Safe refactoring, legacy code migration |
 
 The orchestrator subagent has permission to delegate to all other subagents via the `task` tool. Self-delegation is denied to prevent circular loops.
 
