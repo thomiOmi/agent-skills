@@ -1,4 +1,4 @@
 # PRD Template
 
-Dipindah ke `references/prd.md` (sumber tunggal untuk PRD).
-File ini disimpan sebagai alias supaya tautan lama tidak putus.
+Moved to `references/prd.md` (single source for PRD).
+This file is kept as an alias so old links do not break.

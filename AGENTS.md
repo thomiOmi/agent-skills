@@ -170,6 +170,7 @@ Rules:
 - No decorative formatting (ASCII art, banners, separator lines with special chars)
 - No right arrow (->) or other arrows - use words like "to" or "becomes"
 - No decorative checkmark or cross glyphs inline in prose (a checkmark or cross character used as a symbol, not as text) - use text like "Done" or "Failed". This does NOT apply to standard GFM task-list checkboxes (`- [ ]` and `- [x]`) used for checklists throughout this repo; those are intentional and stay.
+- English only in all repo files (agents, skills, docs, templates, code comments). The sole exception is live discussion with the user, which may use any language the user prefers - discussion language never leaks into committed files.
 
 ## Project Context
 

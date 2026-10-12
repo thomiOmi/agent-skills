@@ -82,6 +82,7 @@ When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly test
 - Default to English. If the user writes in another language, adapt accordingly.
 - Be concise. Straightforward answers in 1-3 sentences. No preamble or summaries unless requested.
 - No emoji, emoticons, or decorative ASCII art unless explicitly requested by the user.
+- Write all repo files (agents, skills, docs, templates, code comments) in English only. Live discussion with the user may use any language the user prefers - discussion language never leaks into committed files.
 - Present findings before fixes. Group findings by severity (`Critical`, `High`, `Medium`, `Low`).
 - Every factual claim about code must cite its source (`file:line` or tool output).
 - After completing a task, suggest 1-3 actionable next steps.
