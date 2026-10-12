@@ -23,18 +23,10 @@ PROMPT INSTRUCTION:
 
 ---
 
-## Parsing Defensively
-
-Always parse model output inside error handling.
-Never assume the output will be perfectly formatted.
-
-Steps:
-
-1. Trim whitespace from the response.
-2. Strip any markdown code fences if present.
-3. Parse the cleaned string as JSON.
-4. Validate that required fields are present and have the expected types.
-5. If parsing fails, log the raw response before raising an error - never swallow it silently.
+Defensive parsing (trim whitespace, strip markdown fences, parse with error
+handling, validate fields, log raw response on failure) is owned by the
+`structured-output` skill - load that skill for the parsing steps and
+common pitfalls. Do not duplicate them here.
 
 ---
 

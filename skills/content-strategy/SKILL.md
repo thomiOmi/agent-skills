@@ -38,26 +38,7 @@ For meta tags, heading structure, and keyword research, load `seo-optimization`.
 
 ---
 
-## SEO Checklist
-
-```markdown
-- [ ] Primary keyword in title tag (front-loaded)
-- [ ] Meta description under 160 chars with keyword and CTA
-- [ ] URL is short and includes primary keyword
-- [ ] H1 contains primary keyword (only one H1)
-- [ ] H2-H3 structure with secondary keywords where natural
-- [ ] Image alt text includes relevant keywords
-- [ ] Internal links to 2-3 related pages
-- [ ] External links to 1-2 authoritative sources
-- [ ] Content is comprehensive (covers topic fully, not thin)
-- [ ] Mobile-friendly formatting (short paragraphs, bullet points)
-```
-
----
-
 ## References
-
-- `references/copywriting.md` - copywriting formulas, tone adjustment, audience analysis
 
 See `assets/templates.md` for blog post, landing page, and email campaign templates.
 For deeper SEO work, load the `seo-optimization` skill.

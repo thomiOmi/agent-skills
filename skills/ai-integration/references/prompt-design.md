@@ -1,41 +1,10 @@
 # Prompt Design
 
-## Structure
-
-A well-structured prompt has these sections in this order:
-
-```text
-ROLE (optional)
-  Describe the persona the model should adopt.
-  Use when tone, domain expertise, or communication style matters.
-
-TASK
-  One clear description of what the model must do.
-  Be specific. Vague tasks produce vague output.
-  State the action, the subject, and the format of the result.
-
-CONTEXT
-  All information the model needs to complete the task.
-  Include only what is relevant.
-  Use variables for dynamic content: {user_input}, {document}, {history}
-
-CONSTRAINTS
-  What the model must not do, or limits it must respect.
-  Examples:
-  - Respond only in the language of the user's message
-  - Keep the response under 150 words
-  - Do not include information not present in the provided context
-
-OUTPUT FORMAT
-  The exact structure of the expected response.
-  For JSON: provide the schema with field names and types.
-  For structured text: provide a template with placeholders.
-  Always say: "Respond with valid JSON only. No explanation. No markdown fences."
-
-EXAMPLES (optional)
-  One or two input/output pairs demonstrating the expected behavior.
-  Use when the output format is non-obvious or precision is critical.
-```
+Prompt structure (ROLE/TASK/CONTEXT/CONSTRAINTS/OUTPUT FORMAT/EXAMPLES
+layout) is owned by the `prompt-design` skill - load that skill for the
+canonical structure (XML tag standard) and examples. Do not duplicate
+the template here; the sections below are ai-integration-specific
+additions on top of it.
 
 ---
 
