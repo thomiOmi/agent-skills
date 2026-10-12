@@ -1,6 +1,6 @@
 ---
 name: database
-description: 'Use this skill whenever you design schemas, write migrations, review queries, or optimize database performance. Works with any relational database - PostgreSQL, MySQL, SQLite, MariaDB. Load this skill proactively when the user mentions database design, SQL queries, performance issues, schema changes, or data modeling - even if they phrase it informally. Triggers include: "desain schema", "optimasi query", "migration", "tambah index", "N+1", "slow query", "database design", "review schema", "audit queries", "foreign key", "normalization", "table design", "column type", "index", "join", "subquery", "transaction", "connection pool", "connection timeout", "query plan", "EXPLAIN", "deadlock", "race condition", "data integrity", "constraint". Do not write DDL, DML, or query-related code without this skill loaded.'
+description: 'Use this skill whenever you design schemas, write migrations, review queries, or optimize database performance. Works with any relational database - PostgreSQL, MySQL, SQLite, MariaDB. Load this skill proactively when the user mentions database design, SQL queries, performance issues, schema changes, or data modeling - even if they phrase it informally. Triggers include: "schema design", "query optimization", "migration", "add index", "N+1", "slow query", "database design", "review schema", "audit queries", "foreign key", "normalization", "table design", "column type", "index", "join", "subquery", "transaction", "connection pool", "connection timeout", "query plan", "EXPLAIN", "deadlock", "race condition", "data integrity", "constraint". Do not write DDL, DML, or query-related code without this skill loaded.'
 license: MIT
 metadata:
   version: "1.0.0"
@@ -54,9 +54,13 @@ ALTER TABLE users ALTER COLUMN stripe_subscription_id SET NOT NULL;
 ## References
 
 - `references/schema-design.md` - normalization, naming, key types, common patterns
-- `references/migrations.md` - migration checklist, rollback strategy, zero-downtime
+- `references/migrations.md` - pointer to the `database-migration` skill, which owns migration execution
 - `references/query-optimization.md` - N+1 detection, EXPLAIN, query patterns
 - `references/indexing.md` - when to index, index types, composite indexes
+
+For planning or running a schema migration (rollback, zero-downtime,
+backfills), load `database-migration` instead - this skill covers schema
+design and query performance.
 
 See `assets/templates.md` for migration and query review templates.
 
@@ -65,9 +69,6 @@ See `assets/templates.md` for migration and query review templates.
 ## Hard Rules
 
 ```text
-Never modify a migration file after it has been run in any environment
-   Why: Team members who already ran the migration locally will have diverging schemas. In CI/CD, a modified migration re-runs and may silently destroy or corrupt data.
-
 Never drop a column or table without a deprecation period in production
    Why: Deployed code may still reference the column. Dropping immediately causes runtime errors. Deprecate first, remove after confirming zero references.
 
@@ -77,20 +78,11 @@ Never store monetary values as float - use integer cents
 Never store multiple values in one column - normalize instead
    Why: Arrays or comma-separated values in a single column break joins, indexes, constraints, and queryability. Normalization ensures referential integrity.
 
-Never skip a migration rollback plan
-   Why: A failed migration without a rollback path can leave the database in an inconsistent state, requiring manual intervention or restore from backup.
-
-Every migration must be reversible (or document why it cannot be)
-   Why: Irreversible migrations block rollbacks and create downtime risk. If truly irreversible, document the manual steps.
-
 Add indexes on all foreign key columns
    Why: Foreign key columns are used in JOINs and cascading operations. Without indexes, every FK operation triggers a full table scan.
 
 Use transactions for multi-step data operations
    Why: Without transactions, a partial failure leaves data inconsistent. Transactions ensure atomicity - all steps succeed or none are applied.
-
-Test migrations on a copy of production data before running in production
-   Why: Migrations that pass on an empty local database often fail on production data volume and distribution. Testing on a production copy catches slow queries, locks, and data type issues.
 ```
 
 ---
@@ -106,13 +98,6 @@ Schema design:
 - [ ] Correct data types used (no float for money, no varchar for IDs if UUID)
 - [ ] NOT NULL constraints applied where field is always required
 - [ ] Unique constraints applied for business uniqueness requirements
-
-Migrations:
-
-- [ ] Migration is reversible (down/rollback method exists)
-- [ ] No data loss in migration without explicit confirmation
-- [ ] Large table migrations are zero-downtime safe
-- [ ] Migration tested in staging before production
 
 Queries:
 

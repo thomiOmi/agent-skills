@@ -89,3 +89,6 @@ The contract step happens only after the expanded version has run in production 
 - For schema design and normalization decisions: use `database`
 - For query performance after the migration: use `database`
 - For the deployment sequencing around migrations: use `devops-deployment`
+
+`database/references/migrations.md` now points back here - this skill is
+the single source for migration execution patterns.
