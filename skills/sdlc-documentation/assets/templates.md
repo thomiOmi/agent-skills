@@ -4,7 +4,7 @@ For full templates see references/prd.md, references/sdd.md, etc.
 
 ## PRD Skeleton
 
-Untuk PRD, lihat references/prd.md - jangan gunakan skeleton terpisah.
+For PRD, see references/prd.md - do not use a separate skeleton.
 
 ## SDD Skeleton
 

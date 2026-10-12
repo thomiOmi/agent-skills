@@ -1,7 +1,7 @@
 # Architecture Decision Records (ADR)
 
-ADR dimiliki oleh skill `architecture-decision` - jangan duplikasi template di sini.
+ADR is owned by the `architecture-decision` skill - do not duplicate the template here.
 
-Load skill `architecture-decision` dan gunakan template `ADR_TEMPLATE.md` milik
-skill tersebut untuk format resmi (Status / Context / Decision / Consequences).
+Load the `architecture-decision` skill and use its `ADR_TEMPLATE.md` for
+the official format (Status / Context / Decision / Consequences).
 

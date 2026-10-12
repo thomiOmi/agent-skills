@@ -31,6 +31,6 @@ cp .env.example .env
 
 ## ADR Skeleton
 
-ADR tidak lagi memiliki skeleton terpisah di sini. Untuk ADR, load skill
-`architecture-decision` dan gunakan template `ADR_TEMPLATE.md` milik skill
-tersebut sebagai format resmi.
+ADR no longer has a separate skeleton here. For ADRs, load the
+`architecture-decision` skill and use its `ADR_TEMPLATE.md` as the
+official format.
