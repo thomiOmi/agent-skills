@@ -48,7 +48,12 @@ Every request is classified as Analysis, Implementation, or Both at the start. A
 
 Initially shipped as standalone skills (`conventional-branch`, `conventional-commit`) positioned as deep-dives under the `git-workflow` umbrella. Later merged into git-workflow as `references/conventional-branch.md` and `references/conventional-commit.md` after a collision audit showed a single git action lit up three skills at once. The merge rule applied across the catalog: one skill per agent moment, thin overlapping skills become references of the parent that owns the trigger surface.
 
-### Eval tooling: assertion grading parked, DeepEval chosen for LLM-judge
+### Eval tooling (removed)
+
+Eval support was removed from this project: the assertion-grading runner
+(`evals/`), the vendored skill-creator harness under `.agents/`, and the
+related eval unit tests were deleted. The entries below are historical
+record only - they describe tooling that no longer exists.
 
 Evaluated external eval libraries (Vercel evalite-style runners, DeepEval, Harbor, G-Eval implementations) and decided none is needed: `scripts/evals/run-evals.ts` grades with assertion matching, which is deterministic and free. LLM-judge grading (via `opencode run` in G-Eval style) is recognized as the future pattern but is deferred until skill development stabilizes.
 
@@ -76,7 +81,7 @@ anthropics/claude-code `plugins/plugin-dev` (7 authoring skills, 3 agents, 1 com
 
 ### Agent-agnostic by layering (catalog vs integration vs dev tooling)
 
-The catalog (skills in open Agent Skills format, eval cases) carries no harness assumptions; the integration layer (agents/*.md markup, plugin hooks, tools, config, installer) is OpenCode-specific and swappable; dev tooling (eval runner, vendored skill-creator) is harness-neutral with selectable executor and judge. Future support for other agent runtimes (Claude Code, Codex CLI, etc.) is an integration-layer adapter only, catalog and eval tooling are reused untouched. Consequence for authoring: new skills must not assume OpenCode-specific behavior in SKILL.md bodies; harness-specific instructions belong in the integration layer (agent files, plugin).
+The catalog (skills in open Agent Skills format) carries no harness assumptions; the integration layer (agents/*.md markup, plugin hooks, tools, config, installer) is OpenCode-specific and swappable. Future support for other agent runtimes (Claude Code, Codex CLI, etc.) is an integration-layer adapter only. Consequence for authoring: new skills must not assume OpenCode-specific behavior in SKILL.md bodies; harness-specific instructions belong in the integration layer (agent files, plugin).
 
 ### Release notes: changelogen emoji headings kept, bodies applied via notes-file
 
