@@ -116,24 +116,6 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 
 ---
 
-## Vendored Tooling
-
-Development-only tooling forked from Anthropic upstreams, pinned under `.agents/` (dot-prefixed, so it is excluded from npm publish, tsc, and ESLint scans, and never installed by the CLI).
-
-| Path | Source | Purpose |
-|---|---|---|
-| `.agents/skills/skill-creator/` | anthropics/claude-plugins-official, `plugins/skill-creator` (skills/skill-creator subtree) | Python eval harness: `run_eval.py`, `run_loop.py`, `aggregate_benchmark.py`, `generate_report.py`, `improve_description.py`, `package_skill.py`, `quick_validate.py`, `eval-viewer/generate_review.py`, `agents/` (grader, comparator, analyzer), `references/schemas.md` |
-| `.agents/plugins/plugin-dev/` | anthropics/claude-code, `plugins/plugin-dev` | Reference material for plugin, agent, and command authoring (7 skills, 3 agents, 1 command). Kept in Claude Code format; not ported to OpenCode format |
-
-Rules:
-
-- Never edit vendored grading or eval logic in place. Adaptation happens through the executor shim (`claude -p` becomes `opencode run`) and small config flags only.
-- Eval cases stay centralized in `evals/cases/<skill>.json`; a bridge converts them to the per-skill `evals.json` format that skill-creator expects.
-- When syncing a new upstream version, re-apply the executor shim and record the upstream commit hash in `.agents/README.md`.
-- Review UI and benchmark aggregation run with Python: `python .agents/skills/skill-creator/eval-viewer/generate_review.py --static <output.html>` and `python .agents/skills/skill-creator/scripts/aggregate_benchmark.py`.
-
----
-
 ## Boundaries
 
 ### Always do
@@ -182,9 +164,8 @@ Rules:
 **Linter / formatter:** ESLint + typescript-eslint + @stylistic
 **Main branch:** main
 **CI:** GitHub Actions (validate-skills.yml)
-**Key directories:** agents/ - skills/ - tools/ - plugin/ - tests/ - src/ - config/ - evals/ - .agents/
+**Key directories:** agents/ - skills/ - tools/ - plugin/ - tests/ - src/ - config/
 **Do NOT touch:** node_modules/ - dist/
-**Vendored dev tooling:** .agents/skills/skill-creator/ and .agents/plugins/plugin-dev/ (forked from anthropics/claude-plugins-official and anthropics/claude-code; development-only, never published or installed)
 **Agent files:** agents/*.md (source - installed to ~/.config/opencode/agents/)
 **Skill files:** skills/*/SKILL.md (source - installed to ~/.config/opencode/skills/)
 **Custom tools:** tools/*.ts (source - installed to ~/.config/opencode/tools/)

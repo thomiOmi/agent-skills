@@ -5,4 +5,3 @@ build
 *.log
 .DS_Store
 .agentskills.local
-evals/workspace
