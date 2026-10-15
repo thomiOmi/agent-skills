@@ -10,6 +10,7 @@ import json from "@eslint/json";
 import opencodeFrontmatter from "./scripts/opencode-frontmatter.js";
 
 export default defineConfig([
+
   globalIgnores([
     "**/node_modules/**",
     "**/dist/**",
@@ -21,10 +22,43 @@ export default defineConfig([
   ]),
 
   {
+    name: "agent-skills/stylistic",
+    extends: [stylistic.configs.recommended],
+    rules: {
+      "@stylistic/max-len": [
+        "warn",
+        {
+          code: 120,
+          ignoreUrls: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
+          ignoreComments: true,
+        },
+      ],
+      "@stylistic/quotes": [
+        "error",
+        "double",
+        { avoidEscape: true },
+      ],
+      "@stylistic/semi": [
+        "error",
+        "always",
+      ],
+      "@stylistic/comma-dangle": [
+        "error",
+        "always-multiline",
+      ],
+    },
+  },
+
+  {
     name: "agent-skills/typescript",
     files: ["**/*.{ts,mts,cts}"],
-    extends: [js.configs.recommended, tseslint.configs.strict,
-      tseslint.configs.stylistic, stylistic.configs.recommended],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.strict,
+      tseslint.configs.stylistic,
+    ],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
@@ -37,23 +71,11 @@ export default defineConfig([
       },
     },
     rules: {
-      "@stylistic/max-len": [
-        "warn",
-        {
-          code: 120,
-          ignoreUrls: true,
-          ignoreStrings: true,
-          ignoreTemplateLiterals: true,
-          ignoreComments: true,
-        },
-      ],
-      "@stylistic/quotes": ["error", "double", { avoidEscape: true }],
-      "@stylistic/semi": ["error", "always"],
-      "@stylistic/comma-dangle": ["error", "always-multiline"],
 
       "@typescript-eslint/consistent-type-imports": [
         "error",
-        { prefer: "type-imports", fixStyle: "inline-type-imports" },
+        { prefer: "type-imports",
+          fixStyle: "inline-type-imports" },
       ],
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -71,7 +93,9 @@ export default defineConfig([
   {
     name: "agent-skills/javascript",
     files: ["**/*.{js,mjs,cjs}"],
-    extends: [js.configs.recommended, stylistic.configs.recommended],
+    extends: [
+      js.configs.recommended,
+    ],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
@@ -90,16 +114,29 @@ export default defineConfig([
           ignoreComments: true,
         },
       ],
-      "@stylistic/quotes": ["error", "double", { avoidEscape: true }],
-      "@stylistic/semi": ["error", "always"],
-      "@stylistic/comma-dangle": ["error", "always-multiline"],
+      "@stylistic/quotes": [
+        "error",
+        "double",
+        { avoidEscape: true },
+      ],
+      "@stylistic/semi": [
+        "error",
+        "always",
+      ],
+      "@stylistic/comma-dangle": [
+        "error",
+        "always-multiline",
+      ],
     },
   },
 
   {
     name: "agent-skills/json",
     files: ["**/*.json"],
-    ignores: ["package-lock.json", "bun.lock", "**/tsconfig*.json"],
+    ignores: [
+      "package-lock.json",
+      "bun.lock",
+    ],
     plugins: { json },
     language: "json/json",
     extends: ["json/recommended"],
@@ -107,7 +144,23 @@ export default defineConfig([
 
   {
     name: "agent-skills/jsonc",
-    files: ["**/*.jsonc"],
+    files: [
+      "**/*.jsonc",
+      "**/tsconfig.json",
+      ".vscode/*.json",
+    ],
+    plugins: { json },
+    language: "json/jsonc",
+    extends: ["json/recommended"],
+  },
+
+  {
+    name: "agent-skills/jsonc-config",
+    files: [
+      "**/tsconfig.json",
+      ".vscode/*.json",
+      "config/*.jsonc",
+    ],
     plugins: { json },
     language: "json/jsonc",
     languageOptions: {
@@ -136,7 +189,10 @@ export default defineConfig([
       frontmatter: "yaml",
       math: true,
     },
-    extends: ["markdown/recommended", "opencode/recommended"],
+    extends: [
+      "markdown/recommended",
+      "opencode/recommended",
+    ],
     rules: {
       "markdown/fenced-code-language": "warn", // MD040 - warn only; many pre-existing bare fences in skill refs
       "markdown/heading-increment": "warn",
