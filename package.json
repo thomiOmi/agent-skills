@@ -61,7 +61,7 @@
     "*.{js,mjs,cjs,ts,mts,cts}": [
       "eslint --fix"
     ],
-    "*.{md,json,jsonc}": [
+    "*.{md,json,jsonc,json5}": [
       "eslint --fix"
     ]
   },

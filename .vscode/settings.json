@@ -15,7 +15,10 @@
     "typescript",
     "html",
     "markdown",
-    "json", "jsonc", "json5",
+    "json",
+    "jsonc",
+
+    "json5",
     "yaml",
     "toml"
   ]

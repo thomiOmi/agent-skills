@@ -7,6 +7,7 @@ import stylistic from "@stylistic/eslint-plugin";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import json from "@eslint/json";
+import jsonFormatting from "./scripts/eslint-json-formatting.js";
 import opencodeFrontmatter from "./scripts/opencode-frontmatter.js";
 
 export default defineConfig([
@@ -175,6 +176,19 @@ export default defineConfig([
     plugins: { json },
     language: "json/json5",
     extends: ["json/recommended"],
+  },
+
+  {
+    name: "agent-skills/json-line-hygiene",
+    files: ["**/*.json", "**/*.jsonc", "**/*.json5"],
+    plugins: { "json-formatting": jsonFormatting },
+    rules: {
+      // @stylistic rules are no-ops on JSON (Document root, no Program node), so
+      // blank-line runs, trailing spaces, and final newlines are covered here.
+      "json-formatting/multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
+      "json-formatting/trailing-spaces": "error",
+      "json-formatting/eol-last": "error",
+    },
   },
 
   {
