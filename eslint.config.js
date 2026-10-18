@@ -1,30 +1,42 @@
 // @ts-check
 
-import { defineConfig, globalIgnores } from "eslint/config";
-import js from "@eslint/js";
-import markdown from "@eslint/markdown";
-import stylistic from "@stylistic/eslint-plugin";
-import globals from "globals";
-import tseslint from "typescript-eslint";
-import json from "@eslint/json";
+import antfu from "@antfu/eslint-config";
 import jsonFormatting from "./scripts/eslint-json-formatting.js";
 import opencodeFrontmatter from "./scripts/opencode-frontmatter.js";
 
-export default defineConfig([
-
-  globalIgnores([
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/build/**",
-    "**/.cache/**",
-    "**/bun.lock",
-    "**/package-lock.json",
-    "**/*.min.js",
-  ]),
-
+export default antfu(
   {
-    name: "agent-skills/stylistic",
-    extends: [stylistic.configs.recommended],
+    ignores: [
+      "**/.cache/**",
+      "**/*.min.js",
+      "**/bun.lock",
+      "**/package-lock.json",
+      // Markdown code blocks are documentation snippets (often pseudo-code
+      // with placeholders) and are not lintable source files; only the
+      // markdown text itself is linted, matching the pre-antfu behavior.
+      "**/*.md/**",
+    ],
+    // Preserve the repo's established style instead of the antfu defaults
+    // (single quotes, no semicolons).
+    stylistic: {
+      indent: 2,
+      quotes: "double",
+      semi: true,
+    },
+    // Drop the "antfu" opinions the codebase does not follow (top-level
+    // function declarations, if-newline placement).
+    lessOpinionated: true,
+    markdown: {
+      overridesMarkdown: {
+        "markdown/fenced-code-language": "warn", // MD040 - warn only; pre-existing bare fences in skill refs
+        "markdown/heading-increment": "warn",
+        "markdown/no-duplicate-headings": "warn", // MD024 (all headings; no siblings_only)
+        "markdown/no-html": "off", // allow occasional HTML in docs
+        "markdown/no-multiple-h1": "off", // MD041 was disabled
+        "markdown/no-missing-label-refs": "off", // noisy on template/placeholder content
+        "markdown/no-missing-link-fragments": "warn", // many internal anchors in long docs
+      },
+    },
     rules: {
       "@stylistic/max-len": [
         "warn",
@@ -36,48 +48,11 @@ export default defineConfig([
           ignoreComments: true,
         },
       ],
-      "@stylistic/quotes": [
-        "error",
-        "double",
-        { avoidEscape: true },
-      ],
-      "@stylistic/semi": [
-        "error",
-        "always",
-      ],
-      "@stylistic/comma-dangle": [
-        "error",
-        "always-multiline",
-      ],
     },
   },
-
   {
-    name: "agent-skills/typescript",
     files: ["**/*.{ts,mts,cts}"],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.strict,
-      tseslint.configs.stylistic,
-    ],
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: {
-        ...globals.node,
-      },
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
     rules: {
-
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        { prefer: "type-imports",
-          fixStyle: "inline-type-imports" },
-      ],
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -88,103 +63,21 @@ export default defineConfig([
       ],
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/require-await": "off",
-    },
-  },
-
-  {
-    name: "agent-skills/javascript",
-    files: ["**/*.{js,mjs,cjs}"],
-    extends: [
-      js.configs.recommended,
-    ],
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: {
-        ...globals.node,
-      },
-    },
-    rules: {
-      "@stylistic/max-len": [
-        "warn",
-        {
-          code: 120,
-          ignoreUrls: true,
-          ignoreStrings: true,
-          ignoreTemplateLiterals: true,
-          ignoreComments: true,
-        },
-      ],
-      "@stylistic/quotes": [
+      "@typescript-eslint/consistent-type-imports": [
         "error",
-        "double",
-        { avoidEscape: true },
-      ],
-      "@stylistic/semi": [
-        "error",
-        "always",
-      ],
-      "@stylistic/comma-dangle": [
-        "error",
-        "always-multiline",
+        { prefer: "type-imports", fixStyle: "inline-type-imports" },
       ],
     },
   },
 
-  {
-    name: "agent-skills/json",
-    files: ["**/*.json"],
-    ignores: [
-      "package-lock.json",
-      "bun.lock",
-    ],
-    plugins: { json },
-    language: "json/json",
-    extends: ["json/recommended"],
-  },
-
-  {
-    name: "agent-skills/jsonc",
-    files: [
-      "**/*.jsonc",
-      "**/tsconfig.json",
-      ".vscode/*.json",
-    ],
-    plugins: { json },
-    language: "json/jsonc",
-    extends: ["json/recommended"],
-  },
-
-  {
-    name: "agent-skills/jsonc-config",
-    files: [
-      "**/tsconfig.json",
-      ".vscode/*.json",
-      "config/*.jsonc",
-    ],
-    plugins: { json },
-    language: "json/jsonc",
-    languageOptions: {
-      allowTrailingCommas: true,
-    },
-    extends: ["json/recommended"],
-  },
-
-  {
-    name: "agent-skills/json5",
-    files: ["**/*.json5"],
-    plugins: { json },
-    language: "json/json5",
-    extends: ["json/recommended"],
-  },
-
+  // @stylistic rules are no-ops on JSON (Document root, no Program node) and
+  // eslint-plugin-jsonc has no blank-line or trailing-whitespace rules, so
+  // JSON line hygiene needs this local plugin.
   {
     name: "agent-skills/json-line-hygiene",
     files: ["**/*.json", "**/*.jsonc", "**/*.json5"],
     plugins: { "json-formatting": jsonFormatting },
     rules: {
-      // @stylistic rules are no-ops on JSON (Document root, no Program node), so
-      // blank-line runs, trailing spaces, and final newlines are covered here.
       "json-formatting/multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
       "json-formatting/trailing-spaces": "error",
       "json-formatting/eol-last": "error",
@@ -192,29 +85,13 @@ export default defineConfig([
   },
 
   {
-    name: "agent-skills/markdown",
+    name: "agent-skills/opencode-frontmatter",
     files: ["**/*.md"],
-    plugins: {
-      markdown,
-      opencode: opencodeFrontmatter,
-    },
-    language: "markdown/gfm",
-    languageOptions: {
-      frontmatter: "yaml",
-      math: true,
-    },
-    extends: [
-      "markdown/recommended",
-      "opencode/recommended",
-    ],
+    plugins: { opencode: opencodeFrontmatter },
     rules: {
-      "markdown/fenced-code-language": "warn", // MD040 - warn only; many pre-existing bare fences in skill refs
-      "markdown/heading-increment": "warn",
-      "markdown/no-duplicate-headings": "warn", // MD024 (all headings; no siblings_only)
-      "markdown/no-html": "off", // allow occasional HTML in docs
-      "markdown/no-multiple-h1": "off", // MD041 was disabled
-      "markdown/no-missing-label-refs": "off", // noisy on template/placeholder content
-      "markdown/no-missing-link-fragments": "warn", // many internal anchors in long docs
+      "opencode/valid-skill-frontmatter": "error",
+      "opencode/valid-agent-frontmatter": "error",
+      "opencode/description-length": "warn",
     },
   },
 
@@ -226,4 +103,4 @@ export default defineConfig([
       "markdown/no-duplicate-headings": "off",
     },
   },
-]);
+);
