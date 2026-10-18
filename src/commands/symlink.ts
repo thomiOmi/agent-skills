@@ -1,10 +1,11 @@
-import { mkdir, cp, readdir, stat, symlink, rm } from "fs/promises";
-import { join } from "pathe";
-import { tmpdir } from "os";
+import { cp, mkdir, readdir, rm, stat, symlink } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import process from "node:process";
 import { consola } from "consola";
-import { getGlobalRoot, getGlobalAgentsRoot, repoSubdir } from "../lib/paths";
+import { join } from "pathe";
 import { backupGlobal } from "../lib/backup";
-import { buildConfig, writeConfig, buildTuiConfig, writeTuiConfig } from "../lib/config";
+import { buildConfig, buildTuiConfig, writeConfig, writeTuiConfig } from "../lib/config";
+import { getGlobalAgentsRoot, getGlobalRoot, repoSubdir } from "../lib/paths";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -17,13 +18,15 @@ async function exists(path: string): Promise<boolean> {
 }
 
 export interface SymlinkOptions {
-  dryRun?: boolean
-  targetDir?: string
-  repoRoot?: string
+  dryRun?: boolean;
+  targetDir?: string;
+  repoRoot?: string;
 }
 
 async function canCreateSymlinks(): Promise<boolean> {
-  if (process.platform !== "win32") return true;
+  if (process.platform !== "win32") {
+    return true;
+  }
   const testDir = join(tmpdir(), "opencode-symlink-test");
   try {
     await symlink(tmpdir(), testDir, "junction");
@@ -36,7 +39,9 @@ async function canCreateSymlinks(): Promise<boolean> {
 }
 
 async function ensureDir(path: string, dry: boolean): Promise<void> {
-  if (await exists(path)) return;
+  if (await exists(path)) {
+    return;
+  }
   if (dry) {
     consola.log(`  [dry-run] mkdir ${path}`);
   }
@@ -71,12 +76,17 @@ async function safeLink(path: string, target: string, label: string, dry: boolea
 }
 
 async function linkItems(
-  srcDir: string, dstDir: string, name: string,
-  useSymlinks: boolean, dry: boolean,
+  srcDir: string,
+  dstDir: string,
+  name: string,
+  useSymlinks: boolean,
+  dry: boolean,
 ): Promise<void> {
   consola.log(`\n==> Linking ${name}`);
   await ensureDir(dstDir, dry);
-  if (!(await exists(srcDir))) return;
+  if (!(await exists(srcDir))) {
+    return;
+  }
 
   const items = await readdir(srcDir);
   const tasks = items.map(async (item) => {
@@ -123,11 +133,19 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   consola.info(`Global:     ${dstRoot}`);
   consola.info(`Agents:     ${agentsRoot}`);
   consola.info(`Symlinks:   ${symLabel}`);
-  if (opts.dryRun) consola.info("Mode:       DRY RUN");
+  if (opts.dryRun) {
+    consola.info("Mode:       DRY RUN");
+  }
 
-  if (!(await exists(repoAgents))) throw new Error(`Missing source: ${repoAgents}`);
-  if (!(await exists(repoSkills))) throw new Error(`Missing source: ${repoSkills}`);
-  if (!(await exists(repoAgentsMd))) throw new Error(`Missing source: ${repoAgentsMd}`);
+  if (!(await exists(repoAgents))) {
+    throw new Error(`Missing source: ${repoAgents}`);
+  }
+  if (!(await exists(repoSkills))) {
+    throw new Error(`Missing source: ${repoSkills}`);
+  }
+  if (!(await exists(repoAgentsMd))) {
+    throw new Error(`Missing source: ${repoAgentsMd}`);
+  }
 
   // Backup (sequential)
   const backupPath = await backupGlobal({ dryRun: opts.dryRun ?? false, targetDir: opts.targetDir });
@@ -167,7 +185,9 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
 
   // Summary
   consola.log("\n==> Done");
-  if (backupPath) consola.info(`Backup:  ${backupPath}`);
+  if (backupPath) {
+    consola.info(`Backup:  ${backupPath}`);
+  }
   if (useSymlinks) {
     consola.log("Symlinks created - edit files in repo and changes are live.");
   }

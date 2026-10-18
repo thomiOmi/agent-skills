@@ -1,11 +1,11 @@
+import { readdir, readFile, stat } from "node:fs/promises";
 import { describe, expect, it } from "bun:test";
-import { readdir, readFile, stat } from "fs/promises";
 import { join } from "pathe";
 import parseYaml from "yaml";
 
 describe("Validate Skills (Agent Skills Specification)", () => {
   const skillsDir = join(import.meta.dir, "..", "skills");
-  const nameRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+  const nameRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const allowedFrontmatterKeys = new Set([
     "name",
     "description",
@@ -23,7 +23,9 @@ describe("Validate Skills (Agent Skills Specification)", () => {
     for (const entry of entries) {
       const skillDirPath = join(skillsDir, entry);
       const s = await stat(skillDirPath);
-      if (!s.isDirectory()) continue;
+      if (!s.isDirectory()) {
+        continue;
+      }
 
       // 1. Directory & SKILL.md Existence
       const skillFilePath = join(skillDirPath, "SKILL.md");
@@ -76,7 +78,7 @@ describe("Validate Skills (Agent Skills Specification)", () => {
       expect(bodyLines.length).toBeLessThanOrEqual(500);
 
       // 8. Validate internal references point to files that actually exist
-      const refMatches = [...content.matchAll(/`((?:references|assets)\/[A-Za-z0-9_.-]+\.md)`/g)];
+      const refMatches = [...content.matchAll(/`((?:references|assets)\/[\w.-]+\.md)`/g)];
       totalRefCount += refMatches.length;
 
       for (const match of refMatches) {

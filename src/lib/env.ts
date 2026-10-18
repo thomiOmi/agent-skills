@@ -1,4 +1,4 @@
-import { isCI, provider, platform } from "std-env";
+import { isCI, platform, provider } from "std-env";
 
 export const env = {
   ci: isCI,

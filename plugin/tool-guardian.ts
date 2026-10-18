@@ -1,4 +1,5 @@
 import type { Plugin } from "@opencode-ai/plugin";
+import process from "node:process";
 
 /**
  * Tool Guardian - blocks irreversible destructive bash commands.
@@ -19,14 +20,14 @@ import type { Plugin } from "@opencode-ai/plugin";
  * Escape hatch: set AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1 to disable.
  */
 
-const DELETE_TARGET = /(?:^|\s)(\/|~\/?|\$HOME\/?|\*|\.\.?\/?|C:[\\/]?)(?:\s|$)/;
+const DELETE_TARGET = /(?:^|\s)(?:\/|~\/?|\$HOME\/?|\*|\.\.?\/?|C:[\\/]?)(?:\s|$)/;
 
 function isRecursiveForceDelete(command: string): boolean {
   if (!/\brm\b|\bremove-item\b/i.test(command)) {
     return false;
   }
-  const hasRecursive = /(^|\s)-\w*[rR]/.test(command) || /(^|\s)(--recursive|-recurse)\b/i.test(command);
-  const hasForce = /(^|\s)-\w*f/.test(command) || /(^|\s)(--force|-force)\b/i.test(command);
+  const hasRecursive = /(?:^|\s)-\w*r/i.test(command) || /(?:^|\s)(?:--recursive|-recurse)\b/i.test(command);
+  const hasForce = /(?:^|\s)-\w*f/.test(command) || /(?:^|\s)(?:--force|-force)\b/i.test(command);
   if (!hasRecursive || !hasForce) {
     return false;
   }
@@ -45,14 +46,14 @@ function isForcePush(command: string): boolean {
 
 const DISK_DESTROY: RegExp[] = [
   /\bmkfs(\.\w+)?\b/,
-  /\bdd\b[^;&|]*\bof=\/dev\//,
+  /\bdd\b[^;&|]+\bof=\/dev\//,
   /\bfdisk\b/,
   /\bformat\s+[a-z]:/i,
 ];
 
-const SQL_DROP = /\bdrop\s+(table|database|schema)\b/i;
+const SQL_DROP = /\bdrop\s+(?:table|database|schema)\b/i;
 
-const CHMOD_ROOT = /\bchmod\s+-R\s+777\s+(\/|~)(\s|$)/;
+const CHMOD_ROOT = /\bchmod\s+-R\s+777\s+(?:\/|~)(?:\s|$)/;
 
 export function findDangerousCommand(command: string): string | null {
   if (isRecursiveForceDelete(command)) {

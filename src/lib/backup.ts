@@ -1,7 +1,7 @@
-import { mkdir, readdir, stat, cp, writeFile } from "fs/promises";
-import { join } from "pathe";
+import { cp, mkdir, readdir, stat, writeFile } from "node:fs/promises";
 import { consola } from "consola";
-import { getGlobalRoot, getBackupRoot, getTimestamp } from "./paths";
+import { join } from "pathe";
+import { getBackupRoot, getGlobalRoot, getTimestamp } from "./paths";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -14,10 +14,10 @@ async function exists(path: string): Promise<boolean> {
 }
 
 export interface BackupOptions {
-  dryRun?: boolean
-  skip?: boolean
-  backupPath?: string
-  targetDir?: string
+  dryRun?: boolean;
+  skip?: boolean;
+  backupPath?: string;
+  targetDir?: string;
 }
 
 export async function backupGlobal(opts: BackupOptions = {}): Promise<string | null> {

@@ -1,10 +1,10 @@
-import { mkdir, cp, readdir, rm, stat } from "fs/promises";
-import { join } from "pathe";
+import { cp, mkdir, readdir, rm, stat } from "node:fs/promises";
 import { consola } from "consola";
-import { getGlobalRoot, getGlobalAgentsRoot, repoSubdir } from "../lib/paths";
-import { normalizeCommand } from "../lib/naming";
+import { join } from "pathe";
 import { backupGlobal } from "../lib/backup";
-import { buildConfig, writeConfig, buildTuiConfig, writeTuiConfig } from "../lib/config";
+import { buildConfig, buildTuiConfig, writeConfig, writeTuiConfig } from "../lib/config";
+import { normalizeCommand } from "../lib/naming";
+import { getGlobalAgentsRoot, getGlobalRoot, repoSubdir } from "../lib/paths";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -17,15 +17,17 @@ async function exists(path: string): Promise<boolean> {
 }
 
 export interface DeployOptions {
-  dryRun?: boolean
-  skipBackup?: boolean
-  backupPath?: string
-  targetDir?: string
-  repoRoot?: string
+  dryRun?: boolean;
+  skipBackup?: boolean;
+  backupPath?: string;
+  targetDir?: string;
+  repoRoot?: string;
 }
 
 async function ensureDir(path: string, dry: boolean): Promise<void> {
-  if (await exists(path)) return;
+  if (await exists(path)) {
+    return;
+  }
   if (dry) {
     consola.log(`  [dry-run] mkdir ${path}`);
   }
@@ -35,8 +37,11 @@ async function ensureDir(path: string, dry: boolean): Promise<void> {
 }
 
 async function overwriteDir(
-  src: string, dst: string, label: string,
-  labelFn: (n: string) => string, dry: boolean,
+  src: string,
+  dst: string,
+  label: string,
+  labelFn: (n: string) => string,
+  dry: boolean,
 ): Promise<void> {
   consola.log(`\n==> Overwriting ${label}`);
   if (!dry) {
@@ -65,13 +70,17 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
 
   const sources = [repoAgents, repoSkills, repoTools, repoCommands, repoPlugin, repoAgentsMd];
   for (const p of sources) {
-    if (!(await exists(p))) throw new Error(`Missing source: ${p}`);
+    if (!(await exists(p))) {
+      throw new Error(`Missing source: ${p}`);
+    }
   }
 
   consola.info(`Repo:   ${repoRoot}`);
   consola.info(`Global: ${dstRoot}`);
   consola.info(`Agents: ${agentsRoot}`);
-  if (opts.dryRun) consola.info("Mode:   DRY RUN");
+  if (opts.dryRun) {
+    consola.info("Mode:   DRY RUN");
+  }
 
   await ensureDir(dstRoot, opts.dryRun ?? false);
   await ensureDir(agentsRoot, opts.dryRun ?? false);
@@ -115,7 +124,9 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
 
   // Summary
   consola.log("\n==> Done");
-  if (backupPath) consola.info(`Backup:  ${backupPath}`);
+  if (backupPath) {
+    consola.info(`Backup:  ${backupPath}`);
+  }
   consola.log("Deployed agents / skills / tools / plugins / commands / AGENTS.md / opencode.jsonc / tui.jsonc");
   consola.log("Also synced skills to ~/.agents/skills/ for OpenCode agent-compatible discovery.");
   consola.log("Restart OpenCode (or open a new session) to load the new global setup.");

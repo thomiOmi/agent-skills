@@ -12,7 +12,7 @@
 /**
  * Split raw text into lines with exact offsets, handling CRLF and LF.
  * @param {string} text - full file text
- * @returns {Array<{ text: string, start: number, end: number, eolEnd: number }>}
+ * @returns {Array<{ text: string, start: number, end: number, eolEnd: number }>} Line records with exact offsets.
  */
 function buildLines(text) {
   const lines = [];
@@ -30,7 +30,9 @@ function buildLines(text) {
       eolEnd = nl + 1;
     }
     lines.push({ text: text.slice(pos, nl), start: pos, end: nl, eolEnd });
-    if (nl >= text.length) break;
+    if (nl >= text.length) {
+      break;
+    }
     pos = eolEnd;
   }
   return lines;
@@ -41,7 +43,7 @@ function buildLines(text) {
  * @param {ReturnType<typeof buildLines>} lines
  * @param {number} index - index of the line to remove
  * @param {number} textLength - total text length, for the final line
- * @returns {[number, number]}
+ * @returns {[number, number]} Range covering the line and its line terminator.
  */
 function lineRange(lines, index, textLength) {
   const nextStart = index + 1 < lines.length ? lines[index + 1].start : textLength;
@@ -76,7 +78,9 @@ const multipleEmptyLines = {
     return {
       Document() {
         const text = context.sourceCode.text;
-        if (!text) return;
+        if (!text) {
+          return;
+        }
         const lines = buildLines(text);
         const real = lines.at(-1)?.start === text.length ? lines.slice(0, -1) : lines;
         let lastContent = -1;
@@ -86,7 +90,9 @@ const multipleEmptyLines = {
             break;
           }
         }
-        if (lastContent === -1) return;
+        if (lastContent === -1) {
+          return;
+        }
         const report = (index, limit) => {
           const line = real[index];
           context.report({
@@ -106,7 +112,9 @@ const multipleEmptyLines = {
             continue;
           }
           let j = i;
-          while (j <= lastContent && real[j].text.trim() === "") j++;
+          while (j <= lastContent && real[j].text.trim() === "") {
+            j++;
+          }
           const allowed = i === 0 ? maxBOF : max;
           for (let k = i + allowed; k < j; k++) {
             report(k, allowed);
@@ -136,11 +144,15 @@ const trailingSpaces = {
     return {
       Document() {
         const text = context.sourceCode.text;
-        if (!text) return;
+        if (!text) {
+          return;
+        }
         const lines = buildLines(text);
         for (const [index, line] of lines.entries()) {
           const trimmed = line.text.trimEnd();
-          if (trimmed.length === line.text.length) continue;
+          if (trimmed.length === line.text.length) {
+            continue;
+          }
           context.report({
             loc: {
               start: { line: index + 1, column: trimmed.length + 1 },
@@ -169,7 +181,9 @@ const eolLast = {
     return {
       Document() {
         const text = context.sourceCode.text;
-        if (!text || /[\r\n]$/.test(text)) return;
+        if (!text || /[\r\n]$/.test(text)) {
+          return;
+        }
         const lines = buildLines(text);
         const last = lines.at(-1);
         context.report({

@@ -1,9 +1,8 @@
-import { describe, expect, it, beforeEach, afterEach } from "bun:test";
-import { mkdtemp, rm, readdir, readFile, stat, writeFile } from "fs/promises";
+import { mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { join } from "pathe";
-import { tmpdir } from "os";
-import { installCommand } from "../src/commands/install";
-import { describeSource } from "../src/commands/install";
+import { describeSource, installCommand } from "../src/commands/install";
 
 describe("Installer Commands", () => {
   let tempDir: string;

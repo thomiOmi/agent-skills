@@ -1,7 +1,7 @@
-import { mkdir, readdir, cp, stat } from "fs/promises";
-import { join } from "pathe";
+import { cp, mkdir, readdir, stat } from "node:fs/promises";
 import { consola } from "consola";
-import { getGlobalRoot, getGlobalAgentsRoot, repoSubdir } from "../lib/paths";
+import { join } from "pathe";
+import { getGlobalAgentsRoot, getGlobalRoot, repoSubdir } from "../lib/paths";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -14,9 +14,9 @@ async function exists(path: string): Promise<boolean> {
 }
 
 export interface SyncOptions {
-  dryRun?: boolean
-  targetDir?: string
-  repoRoot?: string
+  dryRun?: boolean;
+  targetDir?: string;
+  repoRoot?: string;
 }
 
 export async function syncCommand(opts: SyncOptions): Promise<void> {
@@ -33,7 +33,7 @@ export async function syncCommand(opts: SyncOptions): Promise<void> {
     }
   }
 
-  const sections: { name: string, src: string, dst: string, type: "file" | "dir" }[] = [
+  const sections: { name: string; src: string; dst: string; type: "file" | "dir" }[] = [
     { name: "agents", src: join(repoRoot, "agents"), dst: join(globalRoot, "agents"), type: "file" as const },
     { name: "skills", src: join(repoRoot, "skills"), dst: join(globalRoot, "skills"), type: "dir" as const },
     { name: "agent-skills (~/.agents/skills)", src: join(repoRoot, "skills"), dst: join(agentsRoot, "skills"), type: "dir" as const },

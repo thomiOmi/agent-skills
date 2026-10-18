@@ -1,5 +1,5 @@
 import type { Plugin } from "@opencode-ai/plugin";
-import { readFile, stat } from "fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { join } from "pathe";
 
 const MAX_CONTEXT_CHARS = 4000;

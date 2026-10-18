@@ -2,23 +2,37 @@ import { parse as parseYaml } from "yaml";
 
 const VALID_MODES = ["primary", "subagent", "all"];
 const VALID_COLORS = ["primary", "accent", "warning", "error", "info", "success", "secondary"];
-const HEX_COLOR_RE = /^#[0-9A-Fa-f]{6}$/;
+const HEX_COLOR_RE = /^#[0-9A-F]{6}$/i;
 const VALID_ACTIONS = ["allow", "ask", "deny"];
-const MODEL_ID_RE = /^[^\s]+\/[^\s]+$/;
-const ALLOWED_TOOLS_RE = /^[A-Za-z][A-Za-z0-9]*(?:\([^)]+\))?$/;
+const MODEL_ID_RE = /^\S[^\s/]*\/\S+$/;
+const ALLOWED_TOOLS_RE = /^[A-Z][A-Z0-9]*(?:\([^)]+\))?$/i;
 const VALID_PERMISSION_KEYS = [
-  "read", "edit", "glob", "grep", "list", "bash", "task",
-  "external_directory", "todowrite", "webfetch", "websearch",
-  "lsp", "skill", "question", "doom_loop",
+  "read",
+  "edit",
+  "glob",
+  "grep",
+  "list",
+  "bash",
+  "task",
+  "external_directory",
+  "todowrite",
+  "webfetch",
+  "websearch",
+  "lsp",
+  "skill",
+  "question",
+  "doom_loop",
 ];
-const SKILL_NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SKILL_NAME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SKILL_NAME_MAX = 64;
 const COMPATIBILITY_MAX = 500;
 const DESCRIPTION_WARN_LIMIT = 1024;
 
 function extractFrontmatter(text) {
-  const match = text.match(/^---\s*\n([\s\S]*?)\n?---\s*\n/);
-  if (!match) return null;
+  const match = text.match(/^---[ \t]*\n([\s\S]*?)\n?---\s*\n/);
+  if (!match) {
+    return null;
+  }
   try {
     return parseYaml(match[1]);
   }
@@ -69,9 +83,13 @@ const validSkillFrontmatter = {
   create(context) {
     const text = context.sourceCode.getText();
     const filename = context.filename;
-    if (!isSkillFile(filename)) return {};
+    if (!isSkillFile(filename)) {
+      return {};
+    }
     const expectedName = getExpectedName(filename);
-    if (!expectedName) return {};
+    if (!expectedName) {
+      return {};
+    }
     const frontmatter = extractFrontmatter(text);
     if (!frontmatter) {
       return {
@@ -169,9 +187,13 @@ const validAgentFrontmatter = {
   create(context) {
     const text = context.sourceCode.getText();
     const filename = context.filename;
-    if (!isAgentFile(filename)) return {};
+    if (!isAgentFile(filename)) {
+      return {};
+    }
     const expectedName = getExpectedName(filename);
-    if (!expectedName) return {};
+    if (!expectedName) {
+      return {};
+    }
     const frontmatter = extractFrontmatter(text);
     if (!frontmatter) {
       return {
@@ -304,10 +326,16 @@ const descriptionLength = {
   create(context) {
     const text = context.sourceCode.getText();
     const filename = context.filename;
-    if (!isAgentFile(filename) && !isSkillFile(filename)) return {};
+    if (!isAgentFile(filename) && !isSkillFile(filename)) {
+      return {};
+    }
     const frontmatter = extractFrontmatter(text);
-    if (!frontmatter || !frontmatter.description || typeof frontmatter.description !== "string") return {};
-    if (frontmatter.description.length <= DESCRIPTION_WARN_LIMIT) return {};
+    if (!frontmatter || !frontmatter.description || typeof frontmatter.description !== "string") {
+      return {};
+    }
+    if (frontmatter.description.length <= DESCRIPTION_WARN_LIMIT) {
+      return {};
+    }
     return {
       Program(node) {
         context.report({

@@ -1,4 +1,5 @@
 import type { Plugin } from "@opencode-ai/plugin";
+import process from "node:process";
 
 /**
  * Secrets Scanner - blocks tool calls that would write hardcoded secrets.
@@ -16,20 +17,20 @@ import type { Plugin } from "@opencode-ai/plugin";
  */
 
 interface SecretPattern {
-  name: string
-  pattern: RegExp
+  name: string;
+  pattern: RegExp;
 }
 
 const SECRET_PATTERNS: SecretPattern[] = [
   { name: "AWS access key", pattern: /\bAKIA[0-9A-Z]{16}\b/ },
   {
     name: "AWS secret access key",
-    pattern: /\baws.{0,30}?secret.{0,30}?[A-Za-z0-9/+=]{32,}/i,
+    pattern: /\baws.{0,30}?secret.{0,30}?[A-Z0-9/+=]{32,}/i,
   },
   { name: "GitHub token", pattern: /\bgh[pousr]_[A-Za-z0-9]{36,}\b/ },
-  { name: "OpenAI or Anthropic API key", pattern: /\bsk-(ant-)?[A-Za-z0-9_-]{20,}\b/ },
+  { name: "OpenAI or Anthropic API key", pattern: /\bsk-[\w-]{20,}\b/ },
   { name: "Stripe API key", pattern: /\bsk_(live|test)_[A-Za-z0-9]{16,}\b/ },
-  { name: "Google API key", pattern: /\bAIza[0-9A-Za-z_-]{35,}/ },
+  { name: "Google API key", pattern: /\bAIza[\w-]{35,}/ },
   { name: "Slack token", pattern: /\bxox[baprs]-[A-Za-z0-9-]{10,}\b/ },
   {
     name: "Private key block",
@@ -40,12 +41,12 @@ const SECRET_PATTERNS: SecretPattern[] = [
 const CREDENTIAL_FIELDS
   = "api[_-]?key|api[_-]?secret|secret[_-]?key|access[_-]?token|auth[_-]?token|client[_-]?secret|password";
 const CREDENTIAL_ASSIGNMENT = new RegExp(
-  `\\b(${CREDENTIAL_FIELDS})\\b\\s*[:=]\\s*["']([^"']{12,})["']`,
+  `\\b(${CREDENTIAL_FIELDS})\\s*[:=]\\s*["']([^"']{12,})["']`,
   "gi",
 );
 
 const PLACEHOLDER_VALUE
-  = /^(\$\{|<|%[A-Z_]+%|your|example|sample|placeholder|changeme|dummy|xxx|\*+|x{3,}|test[-_]?key|insert|replace)/i;
+  = /^(?:\$\{|<|%[A-Z_]+%|your|example|sample|placeholder|changeme|dummy|xxx|\*+|test[-_]?key|insert|replace)/i;
 
 const MAX_SCAN_CHARS = 100_000;
 const MAX_DEPTH = 4;
@@ -65,12 +66,13 @@ export function scanForSecrets(text: string): string | null {
     }
   }
   CREDENTIAL_ASSIGNMENT.lastIndex = 0;
-  let assignment: RegExpExecArray | null;
-  while ((assignment = CREDENTIAL_ASSIGNMENT.exec(text)) !== null) {
+  let assignment: RegExpExecArray | null = CREDENTIAL_ASSIGNMENT.exec(text);
+  while (assignment !== null) {
     const value = assignment[2] ?? "";
     if (!PLACEHOLDER_VALUE.test(value)) {
       return `Hardcoded credential assignment: ${assignment[1]} = ${mask(value)}`;
     }
+    assignment = CREDENTIAL_ASSIGNMENT.exec(text);
   }
   return null;
 }

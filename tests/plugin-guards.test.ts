@@ -1,5 +1,5 @@
-import { describe, expect, it } from "bun:test";
 import type { Plugin } from "@opencode-ai/plugin";
+import { describe, expect, it } from "bun:test";
 import { AgentSkillsPlugin } from "../plugin/agent-skills";
 import { guardToolCall, scanForSecrets, SecretsScannerPlugin } from "../plugin/secrets-scanner";
 import { findDangerousCommand, guardBashCommand } from "../plugin/tool-guardian";
@@ -10,7 +10,7 @@ function harnessCtx(): Parameters<Plugin>[0] {
 
 describe("Secrets Scanner", () => {
   it("detects known secret formats", () => {
-    expect(scanForSecrets('key = "AKIAIOSFODNN7EXAMPLE" and more')).toMatch(/AWS access key/);
+    expect(scanForSecrets("key = \"AKIAIOSFODNN7EXAMPLE\" and more")).toMatch(/AWS access key/);
     expect(scanForSecrets("token: ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm")).toMatch(/GitHub token/);
     expect(scanForSecrets("Bearer sk-proj-abcdefghij01234567890ABCDE")).toMatch(/OpenAI or Anthropic/);
     expect(scanForSecrets("pk=sk_live_abcdefghijklmnop")).toMatch(/Stripe API key/);

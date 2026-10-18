@@ -1,30 +1,30 @@
-import { mkdtemp, rm } from "fs/promises";
-import { join, resolve, basename } from "pathe";
-import { tmpdir } from "os";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { consola } from "consola";
 import { downloadTemplate } from "giget";
+import { basename, join, resolve } from "pathe";
 import { parseURL } from "ufo";
 import { env } from "../lib/env";
 import { repoSubdir } from "../lib/paths";
 import { deployCommand } from "./deploy";
-import { syncCommand } from "./sync";
 import { symlinkCommand } from "./symlink";
+import { syncCommand } from "./sync";
 
 export type InstallMode = "copy" | "symlink" | "merge";
 
 export interface InstallOptions {
-  mode?: InstallMode
-  source?: string
-  dryRun?: boolean
-  skipBackup?: boolean
-  backupPath?: string
-  targetDir?: string
+  mode?: InstallMode;
+  source?: string;
+  dryRun?: boolean;
+  skipBackup?: boolean;
+  backupPath?: string;
+  targetDir?: string;
 }
 
 const MODES: InstallMode[] = ["copy", "symlink", "merge"];
 
 function isRemoteSource(source: string): boolean {
-  if (/^(github|gh|git|gitlab|bitbucket):/.test(source)) {
+  if (/^(?:github|gh|git|gitlab|bitbucket):/.test(source)) {
     return true;
   }
   const { protocol } = parseURL(source);
@@ -33,7 +33,7 @@ function isRemoteSource(source: string): boolean {
 
 async function resolveRepoRoot(
   source: string | undefined,
-): Promise<{ repoRoot: string, cleanup?: () => Promise<void> }> {
+): Promise<{ repoRoot: string; cleanup?: () => Promise<void> }> {
   const defaultRoot = repoSubdir(".");
   if (!source) {
     return { repoRoot: defaultRoot };
