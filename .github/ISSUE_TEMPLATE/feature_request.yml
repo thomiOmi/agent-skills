@@ -44,4 +44,3 @@ body:
       options:
         - label: I searched existing issues and pull requests for duplicates.
           required: true
-

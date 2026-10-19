@@ -67,4 +67,3 @@ body:
           required: true
         - label: This is not a security vulnerability.
           required: true
-

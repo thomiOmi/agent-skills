@@ -3,4 +3,3 @@ contact_links:
   - name: Security vulnerability
     url: https://github.com/thomiOmi/agent-skills/security/advisories/new
     about: Report security vulnerabilities privately. Do not open a public issue.
-
