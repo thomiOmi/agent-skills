@@ -66,9 +66,9 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
   const repoCommands = join(repoRoot, "commands");
   const repoTools = join(repoRoot, "tools");
   const repoPlugin = join(repoRoot, "plugin");
-  const repoAgentsMd = join(repoRoot, "AGENTS.md");
+  const repoGlobalAgentsMd = join(repoRoot, "instructions", "AGENTS.md");
 
-  const sources = [repoAgents, repoSkills, repoTools, repoCommands, repoPlugin, repoAgentsMd];
+  const sources = [repoAgents, repoSkills, repoTools, repoCommands, repoPlugin, repoGlobalAgentsMd];
   for (const p of sources) {
     if (!(await exists(p))) {
       throw new Error(`Missing source: ${p}`);
@@ -108,7 +108,7 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
         consola.log("  [dry-run] AGENTS.md");
       }
       else {
-        await cp(repoAgentsMd, agentsMdDst);
+        await cp(repoGlobalAgentsMd, agentsMdDst);
         consola.log("  ok  AGENTS.md");
       }
     })(),

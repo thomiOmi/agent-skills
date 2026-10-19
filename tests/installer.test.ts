@@ -26,6 +26,7 @@ describe("Installer Commands", () => {
     const commandsExists = await stat(join(tempDir, "commands")).then(() => true).catch(() => false);
     const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
     const tuiConfigExists = await stat(join(tempDir, "tui.jsonc")).then(() => true).catch(() => false);
+    const globalAgentsContent = await readFile(join(tempDir, "AGENTS.md"), "utf-8");
 
     expect(agentsExists).toBe(true);
     expect(skillsExists).toBe(true);
@@ -34,9 +35,12 @@ describe("Installer Commands", () => {
     expect(commandsExists).toBe(true);
     expect(configExists).toBe(true);
     expect(tuiConfigExists).toBe(true);
+    expect(globalAgentsContent).toContain("Global rules for all AI coding agents.");
+    expect(globalAgentsContent).not.toContain("Project-level agent instructions for the agent-skills project.");
 
     const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
-    expect(configContent).toContain("plan");
+    expect(configContent).toContain("\"instructions\": [\n    \"AGENTS.md\"\n  ]");
+    expect(configContent).not.toContain("OPENCODE.md");
   });
 
   it("should default to copy mode when no mode is given", async () => {
@@ -80,10 +84,12 @@ describe("Installer Commands", () => {
     const agents = await readdir(join(tempDir, "agents"));
     const skills = await readdir(join(tempDir, "skills"));
     const agentSkills = await readdir(join(tempDir, "..", ".agents", "skills"));
+    const globalAgentsContent = await readFile(join(tempDir, "AGENTS.md"), "utf-8");
 
     expect(agents.length).toBeGreaterThan(0);
     expect(skills.length).toBeGreaterThan(0);
     expect(agentSkills.length).toBeGreaterThan(0);
+    expect(globalAgentsContent).toContain("Global rules for all AI coding agents.");
   });
 
   it("should symlink or copy files to target directory with symlink mode", async () => {

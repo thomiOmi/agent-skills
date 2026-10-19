@@ -33,8 +33,7 @@ Roadmap and backlog for the agent-skills project.
 
 ### In Progress
 
-- Eval batch (2026-09-11, updated 2026-09-15): validation subset passed and valid - task-decomposition 2/2, testing 2/2 (with and without_skill). Full batch of 31 remaining skills failed twice because the free OpenCode Zen model quota (`muse-spark-*-contributor-free`) ran out: 4/107 executions exited, summary notdone. Lesson: 2 parallel lanes + 158-execution pressure triggers rate limits; always sequential.
-- Relaunch prep (2026-09-15): resumable lane script v2 ready at `evals/workspace/rec-lane.ps1` - per-skill resume check (skip if summary.json is valid and all statuses done), 3 retries per skill with 5-minute gaps, 15-second delay between skills, lock guard, log `evals/workspace/recovery.status` (tested: skip logic passes). User decision: manual launch tomorrow morning after quota reset via `powershell -NoProfile -ExecutionPolicy Bypass -File evals/workspace/rec-lane.ps1` (estimated 1.5-2 hours). This is the last baseline run of the assertion-grading runner: 2026-09-15 decision parks the runner (baseline-only), DeepEval is the direction for the next eval iteration (see DECISIONS.md). The vercel-labs/agent-eval library was evaluated and not adopted (not an LLM-judge, opencode only via Vercel AI Gateway, vitest sandbox architecture unsuitable for text-based skill A/B; LLM-judge later via DeepEval or a custom judge step). After COMPLETE: `evals/workspace/aggregate.ps1`, pass-rate synthesis, re-run failed skills via `--iteration 2`, Fase 3 (new-skill decisions + SKILL.md revisions), then PR hygiene (TASKS.md + F1 double-space + routing memory-management).
+- PR 2: separate contributor and global instruction sources; deploy `instructions/AGENTS.md` as global `AGENTS.md`, remove `OPENCODE.md` from the global instruction list, repair copy/symlink/merge installer paths, and synchronize installation documentation.
 
 ### Planned
 
