@@ -60,7 +60,4 @@
   //     "enabled": true
   //   }
   // },
-
-  // npm plugins (optional). Requires the package to be published to npm.
-  // "plugin": ["@thomiomi/agent-skills"]
 }

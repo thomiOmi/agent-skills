@@ -4,6 +4,23 @@ Setup guide for humans. Not read by AI agents.
 
 ---
 
+## Current Install Path
+
+The supported distribution path is a local clone of this public repository
+followed by the installer:
+
+```bash
+git clone https://github.com/thomiOmi/agent-skills.git
+cd agent-skills
+bun run setup
+```
+
+Use `bun run setup:symlink` for live development or `bun run setup:merge` to
+preserve global-only items. Package registry distribution and remote source
+installation are deferred.
+
+---
+
 ## Quick Install
 
 ### Option A - Symlink (recommended for local dev)
@@ -68,61 +85,6 @@ bun run setup:merge
 ```
 
 Copies repo files over the global config without wiping existing custom items and without rewriting `opencode.jsonc` or `tui.jsonc`.
-
----
-
-### Install via bunx (after npm publish)
-
-Once the package is published to npm, install without cloning this repo:
-
-```bash
-bunx @thomiomi/agent-skills@latest install
-bunx @thomiomi/agent-skills@latest install --mode symlink
-bunx @thomiomi/agent-skills@latest install --mode merge
-```
-
-Install from a specific source (local path, git URL, or giget template):
-
-```bash
-bunx @thomiomi/agent-skills@latest install --source github:thomiOmi/agent-skills
-```
-
-Check the installed version:
-
-```bash
-bunx @thomiomi/agent-skills@latest --version
-```
-
-Publishing is manual: run `bun run release` to bump the version and tag, then `npm publish --access public`.
-
----
-
-## Plugin (npm package)
-
-Distribution status:
-
-1. **Local clone (active)** - the primary install path. Clone this repo and run
-   `bun run setup` (or `setup:symlink` for live editing). Everything works:
-   agents, skills, tools, commands, and the plugin guards.
-2. **GitHub source (requires public repo)** - `install --source github:thomiOmi/agent-skills`
-   downloads via the GitHub tarball API without auth, so it only works if the
-   repo is public. It currently returns 404 because the repo is private.
-3. **npm (not published yet)** - `bunx @thomiomi/agent-skills@latest install`
-   and the `"plugin": ["@thomiomi/agent-skills"]` config entry activate only
-   after the package owner runs `bun publish` (npm login + 2FA required).
-
-Until npm publish happens, always install from a local clone.
-
-Install as an OpenCode plugin (after publish):
-
-```jsonc
-{
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@thomiomi/agent-skills"]
-}
-```
-
-See [OpenCode Plugins docs](https://opencode.ai/docs/plugins) for details.
 
 ---
 
@@ -270,21 +232,6 @@ Uncommented example (disabled by default):
 
 MCP servers add to context - enable only what you need.
 See [MCP docs](https://opencode.ai/docs/mcp-servers/) for all options.
-
-### Plugin from npm
-
-Once the package is published, plugins load automatically from your config:
-
-```jsonc
-{
-  "plugin": ["@thomiomi/agent-skills"]
-}
-```
-
-The package owner publishes with `bun publish` (releases stop at changelog and
-tag otherwise).
-
----
 
 ## Deployment Map
 
