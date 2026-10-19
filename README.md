@@ -174,3 +174,10 @@ agent-skills/
 | `bun run typecheck` | Run TypeScript compiler type checking |
 | `bun test` | Run unit test suites |
 | `bun run setup` | Backup and install to global OpenCode configuration (copy mode) |
+
+## Community
+
+- [Contributing guide](./CONTRIBUTING.md)
+- [Security policy](./SECURITY.md)
+- [Code of conduct](./CODE_OF_CONDUCT.md)
+- [License](./LICENSE)
