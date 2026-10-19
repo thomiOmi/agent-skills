@@ -317,7 +317,7 @@ Every file and directory in this repo has a specific purpose when installed to `
 # AGENTS.md
 
 **Project:** my-app
-**Stack:** Node.js 22 · TypeScript · PostgreSQL · Next.js 15
+**Stack:** Node.js 22 - TypeScript - PostgreSQL - Next.js 15
 **Package manager:** bun
 **Test runner:** bun test
 **Linter / formatter:** ESLint + typescript-eslint + @stylistic

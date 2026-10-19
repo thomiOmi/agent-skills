@@ -13,10 +13,11 @@ Evaluating skills: <https://agentskills.io/skill-creation/evaluating-skills>
 
 ```text
 skill-name/
-├── SKILL.md          # Required: metadata + instructions (YAML frontmatter + Markdown)
-├── scripts/          # Optional: executable code/utilities
-├── references/       # Optional: detailed documentation loaded on-demand
-└── assets/           # Optional: templates, schemas, resources
+|-- SKILL.md          # Required: metadata + instructions (YAML frontmatter + Markdown)
+|-- scripts/          # Optional: executable code/utilities
+|-- references/       # Optional: detailed documentation loaded on-demand
+|-- assets/           # Optional: templates, schemas, resources
+└── ...               # Any additional files or directories
 ```
 
 ### Frontmatter Schema

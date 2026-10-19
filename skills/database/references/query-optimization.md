@@ -24,13 +24,13 @@ Use eager loading to fetch related data in one query instead of N queries.
 Wrong pattern:
   FETCH all orders
   FOR EACH order:
-    FETCH user for this order   ->† 1 query per order = N+1
+    FETCH user for this order   NOTE: 1 query per order = N+1
 
 Right pattern:
-  FETCH all orders JOIN users   ->† 1 query total
+  FETCH all orders JOIN users   NOTE: 1 query total
   OR
   FETCH all orders
-  FETCH all users WHERE id IN (order.user_ids)   ->† 2 queries total
+  FETCH all users WHERE id IN (order.user_ids)   NOTE: 2 queries total
 ```
 
 ---
