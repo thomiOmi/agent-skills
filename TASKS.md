@@ -33,7 +33,7 @@ Roadmap and backlog for the agent-skills project.
 
 ### In Progress
 
-- PR 7: complete dependency, configuration, and stub cleanup; the audit found no unused declared dependency or active stub safe to remove, but identified stale eval/vendor roadmap entries that need archival.
+- No active audit PR.
 
 ### Planned
 
@@ -44,8 +44,8 @@ Roadmap and backlog for the agent-skills project.
   - PR 4 - Documentation and source-of-truth alignment. Reviewed and merged as PR #54.
   - PR 5 - Contribution and agent-rule alignment. Reviewed and merged as PR #55.
   - PR 6 - Language and encoding consistency. Reviewed and merged as PR #56.
-  - PR 7 - Dependency, configuration, and stub cleanup. Audit complete: all declared dependencies have active imports or script usage, installer configuration is synchronized, and no active stub was confirmed. This cleanup is being recorded in the current task.
-  - PR 8 - Issue and pull-request hygiene. Recheck open issues and pull requests for stale, duplicate, superseded, or ownerless work; link each actionable item to the relevant roadmap task and close or label items only after human confirmation.
+  - PR 7 - Dependency, configuration, and stub cleanup. Reviewed and merged as PR #57; all declared dependencies have active imports or script usage, installer configuration is synchronized, and no active stub was confirmed.
+  - PR 8 - Issue and pull-request hygiene. Audit complete: no open issues or pull requests were found, so there were no stale, duplicate, superseded, or ownerless items to link, close, label, or assign.
 - Archived eval/vendor plan (removed tooling; retained for historical traceability, not active work):
   - Vendor anthropics skill-creator and plugin-dev under `.agents/` and make eval tooling harness-agnostic (approved 2026-09-19, location confirmed by user: `.agents/skills/skill-creator/` and `.agents/plugins/plugin-dev/`):
     - Fase 1: refactor `scripts/evals/` to `evals/src/` (run-evals.ts, grading.ts, targets.ts); update package.json, tsconfig include, test imports, docs. No behavior change. Done 2026-09-19: runner verified identical via dry-run, typecheck/lint/test all pass.
@@ -78,6 +78,7 @@ Unscheduled personal notes (not part of the roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-10-20 | PR 8 issue and pull-request hygiene audit: no open issues or pull requests found; no GitHub metadata changes were needed |
 | 2026-10-20 | PR 7 dependency/configuration/stub audit: all declared dependencies have active imports or script usage; installer and generated configuration are synchronized; no active stub was confirmed; stale eval/vendor plans were archived in this file |
 | 2026-09-30 | Deleted docs/AUDIT.md (point-in-time audit of 2026-08-29 plus 2026-09-08 update): findings F1/F2/F4/F6/F7 already closed, F3 eval coverage obsolete after the eval harness removal; the one still-open item (F5) keeps its rationale inline in the Backlog, and the domain-gap candidates (observability, performance, frontend state, accessibility) were migrated to the Backlog before deletion |
 | 2026-09-30 | Code pass from the root-docs audit: quality-verifier.ts reimplemented to actually execute its checks (package manager scripts, local tsc fallback, per-line debug and docstring scans, explicit skip semantics) with new tests/quality-verifier.test.ts; tool-guardian.ts isRecursiveForceDelete() now blocks GNU long-form `rm --recursive --force` with long-form cases added to plugin-guards.test.ts; deprecated tools/task-decomposer.ts and its plugin registration deleted (skill script and its tests untouched); PRD FR-4 and Scope, ARCHITECTURE custom tools and tool-guardian sections, INSTALL (1 custom tool), DECISIONS and TASKS synced |
