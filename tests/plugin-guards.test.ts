@@ -71,6 +71,29 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("rm --recursive -f /")).toMatch(/Recursive force delete/);
   });
 
+  it("blocks glob, quoted, and traversal variants of catastrophic targets", () => {
+    expect(findDangerousCommand("rm -rf /*")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -fr /*")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf /* --no-preserve-root")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf ~/*")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf $HOME/*")).toMatch(/Recursive force delete/);
+    // eslint-disable-next-line no-template-curly-in-string -- literal shell string under test
+    expect(findDangerousCommand("rm -rf ${HOME}/*")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf \"$HOME\"")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf /.")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf /..")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -r -f /tmp/..")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf /home/../")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("Remove-Item -Recurse -Force C:\\*")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("Remove-Item -Recurse -Force \"$env:USERPROFILE\"")).toMatch(/Recursive force delete/);
+  });
+
+  it("blocks Windows-native recursive quiet deletes of drive roots", () => {
+    expect(findDangerousCommand("del /s /q C:\\")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rmdir /s /q C:\\")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("del /s /f C:\\*")).toMatch(/Recursive force delete/);
+  });
+
   it("allows specific-path deletes", () => {
     expect(findDangerousCommand("rm -rf node_modules")).toBeNull();
     expect(findDangerousCommand("rm -rf ~/projects/demo")).toBeNull();
@@ -78,12 +101,16 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("Remove-Item -Recurse -Force .\\dist\\cache")).toBeNull();
     expect(findDangerousCommand("rm --recursive --force node_modules")).toBeNull();
     expect(findDangerousCommand("rm --recursive --force ./build/cache")).toBeNull();
+    expect(findDangerousCommand("rm -rf /tmp/build")).toBeNull();
+    expect(findDangerousCommand("rm -rf ./build/*")).toBeNull();
+    expect(findDangerousCommand("del /s /q C:\\temp\\cache")).toBeNull();
   });
 
   it("blocks force push but allows force-with-lease", () => {
     expect(findDangerousCommand("git push --force origin main")).toMatch(/force push/);
     expect(findDangerousCommand("git push -f")).toMatch(/force push/);
     expect(findDangerousCommand("git push --force-with-lease origin main")).toBeNull();
+    expect(findDangerousCommand("git push --force-if-includes origin main")).toBeNull();
     expect(findDangerousCommand("git push origin main")).toBeNull();
   });
 
