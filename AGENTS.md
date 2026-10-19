@@ -166,11 +166,10 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 **Linter / formatter:** ESLint + typescript-eslint + @stylistic
 **Main branch:** main
 **CI:** GitHub Actions (validate-skills.yml)
-**Key directories:** agents/ - skills/ - tools/ - plugin/ - tests/ - src/ - config/
+**Key directories:** agents/ - skills/ - plugin/ - tests/ - src/ - config/
 **Do NOT touch:** node_modules/ - dist/
 **Agent files:** agents/*.md (source - installed to ~/.config/opencode/agents/)
 **Skill files:** skills/*/SKILL.md (source - installed to ~/.config/opencode/skills/)
-**Custom tools:** tools/*.ts (source - installed to ~/.config/opencode/tools/)
 **Global rules:** instructions/AGENTS.md (source of truth - deployed to ~/.config/opencode/AGENTS.md)
 **Global config:** config/opencode.jsonc - config/tui.jsonc (templates - deployed with config merge)
 **CLI installer:** src/ (TypeScript + citty - not deployed, runs locally)

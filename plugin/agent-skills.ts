@@ -1,5 +1,4 @@
 import type { Plugin } from "@opencode-ai/plugin";
-import qualityVerifier from "../tools/quality-verifier";
 import { CompactionPlugin } from "./compaction";
 import { SecretsScannerPlugin } from "./secrets-scanner";
 import { ToolGuardianPlugin } from "./tool-guardian";
@@ -10,9 +9,6 @@ export const AgentSkillsPlugin: Plugin = async (ctx) => {
   const toolGuardian = await ToolGuardianPlugin(ctx);
 
   return {
-    "tool": {
-      "quality-verifier": qualityVerifier,
-    },
     ...compaction,
     // Compose both tool guards into one hook: each module owns a check,
     // this entry runs them in sequence. OpenCode runs hooks from all

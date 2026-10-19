@@ -152,7 +152,6 @@ agent-skills/
 |-- config/            # Global opencode.jsonc and tui.jsonc templates
 |-- instructions/      # Global AGENTS.md source
 |-- plugin/            # OpenCode plugin entrypoint
-|-- tools/             # Custom TypeScript tools
 |-- src/               # CLI installer tooling
 |-- tests/             # Test suites
 \-- skills/            # 34 atomic domain skills

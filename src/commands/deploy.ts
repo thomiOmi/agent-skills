@@ -64,11 +64,10 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
   const repoAgents = join(repoRoot, "agents");
   const repoSkills = join(repoRoot, "skills");
   const repoCommands = join(repoRoot, "commands");
-  const repoTools = join(repoRoot, "tools");
   const repoPlugin = join(repoRoot, "plugin");
   const repoGlobalAgentsMd = join(repoRoot, "instructions", "AGENTS.md");
 
-  const sources = [repoAgents, repoSkills, repoTools, repoCommands, repoPlugin, repoGlobalAgentsMd];
+  const sources = [repoAgents, repoSkills, repoCommands, repoPlugin, repoGlobalAgentsMd];
   for (const p of sources) {
     if (!(await exists(p))) {
       throw new Error(`Missing source: ${p}`);
@@ -98,7 +97,6 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
     overwriteDir(repoAgents, join(dstRoot, "agents"), "agents", name => `agent ${name}`, opts.dryRun ?? false),
     overwriteDir(repoSkills, join(dstRoot, "skills"), "skills", name => `skill ${name}`, opts.dryRun ?? false),
     overwriteDir(repoSkills, join(agentsRoot, "skills"), "agent-compatible skills (~/.agents/skills)", name => `skill ${name}`, opts.dryRun ?? false),
-    overwriteDir(repoTools, join(dstRoot, "tools"), "tools", name => `tool ${name}`, opts.dryRun ?? false),
     overwriteDir(repoPlugin, join(dstRoot, "plugins"), "plugins", name => `plugin ${name}`, opts.dryRun ?? false),
     overwriteDir(repoCommands, join(dstRoot, "commands"), "commands", name => `command ${normalizeCommand(name)}`, opts.dryRun ?? false),
     (async () => {
@@ -127,7 +125,7 @@ export async function deployCommand(opts: DeployOptions): Promise<void> {
   if (backupPath) {
     consola.info(`Backup:  ${backupPath}`);
   }
-  consola.log("Deployed agents / skills / tools / plugins / commands / AGENTS.md / opencode.jsonc / tui.jsonc");
+  consola.log("Deployed agents / skills / plugins / commands / AGENTS.md / opencode.jsonc / tui.jsonc");
   consola.log("Also synced skills to ~/.agents/skills/ for OpenCode agent-compatible discovery.");
   consola.log("Restart OpenCode (or open a new session) to load the new global setup.");
 }

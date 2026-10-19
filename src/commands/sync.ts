@@ -39,7 +39,6 @@ export async function syncCommand(opts: SyncOptions): Promise<void> {
     { name: "agents", src: join(repoRoot, "agents"), dst: join(globalRoot, "agents"), type: "directory" },
     { name: "skills", src: join(repoRoot, "skills"), dst: join(globalRoot, "skills"), type: "directory" },
     { name: "agent-skills (~/.agents/skills)", src: join(repoRoot, "skills"), dst: join(agentsRoot, "skills"), type: "directory" },
-    { name: "tools", src: join(repoRoot, "tools"), dst: join(globalRoot, "tools"), type: "directory" },
     { name: "commands", src: join(repoRoot, "commands"), dst: join(globalRoot, "commands"), type: "directory" },
   ];
 

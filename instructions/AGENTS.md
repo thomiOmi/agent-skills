@@ -54,7 +54,7 @@ All code implementation tasks MUST follow the verification workflow:
 
 1. **Plan & Test First (RED)**: Write or update unit/integration tests before writing implementation code. Run the tests to verify they fail for the expected reason.
 2. **Implement (GREEN)**: Write the minimum required code to pass the tests.
-3. **Verify**: Run `quality-verifier` or automated test/lint/typecheck commands.
+3. **Verify**: Run the project's own automated test, lint, and typecheck commands.
 4. **Refactor & Polish (REFACTOR)**: Clean up implementation without breaking passing tests.
 5. **Quality Verification**: Ensure zero lint errors, zero typecheck errors, zero passing debug statements (`console.log`, `debugger`, `print`), and 100% test pass rate.
 

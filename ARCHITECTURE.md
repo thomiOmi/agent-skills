@@ -38,7 +38,7 @@ flowchart TD
     Ops --> SkillCheck
     Think --> SkillCheck
 
-    SkillCheck -- PASS --> CentralCheck{"Centralized<br/>quality-verifier"}
+    SkillCheck -- PASS --> CentralCheck{"Project quality gate<br/>own lint / typecheck / tests"}
     SkillCheck -- FAIL --> Eng
 
     CentralCheck -- PASS --> Remember["TASKS.md & Context<br/>persistence"]
@@ -142,20 +142,15 @@ Workflow: `discussion to plan to orchestrator to test to implement to review to 
 
 ## Custom Tools
 
+The project currently ships no custom tools; the plugin registers only hooks (see Plugin Hooks below). Tool history:
+
 ### task-decomposer.ts (removed)
 
 Deprecated and deleted after the root-docs audit: its `inferAgent()` keyword routing covered only 5 of the 20 agents, which violates the hardcoded-routing-in-the-orchestrator-prompt decision. The underlying `skills/task-decomposition/scripts/task-decomposer.ts` remains as part of the skill.
 
-### quality-verifier.ts
+### quality-verifier.ts (removed)
 
-Verifies code quality against defined criteria by executing the checks, not by returning optimistic stubs.
-
-- **Input:** `files` (string[]), optional boolean flags: `checkLint`, `checkTypecheck`, `checkTests`, `checkNoDebug`, `checkDocstrings`
-- **Output:** `{pass: boolean, details: {criterion, passed, message}[]}`
-- **Script checks:** run the matching `package.json` script through the detected package manager (bun when a bun lockfile exists, otherwise npm); `typecheck` falls back to the locally installed TypeScript compiler
-- **File checks:** line-by-line scan for debug statements (`console.log`, `debugger`, `print(`) and for exports missing a docstring
-- **Skip semantics:** a check with no runnable target (no script, no installed compiler) passes with an explicit "skipped" message; only a check that ran and failed clears the aggregate `pass`
-- **Used by:** orchestrator agent (via qa-engineer subagent)
+Removed on 2026-10-20: its file-level checks were language-specific (debug-statement scan for `console.log`/`debugger`/`print`, JSDoc-on-exports docstring scan, package.json plus bun/npm script checks) while the agent and skill catalog is advertised as language-agnostic, so every additional language would add patterns and false-positive tuning forever; each language's own tooling already does this better (eslint no-console, ruff, clippy, golangci-lint). The centralized verification layer now means the agent runs the project's own lint, typecheck, and test commands (see PRD FR-5). The wrapper `tools/quality-verifier.ts` and `tests/quality-verifier.test.ts` were deleted with it, and the installer no longer ships a `tools/` directory.
 
 ---
 
@@ -173,4 +168,4 @@ Blocks write/edit tool calls whose string arguments contain likely secrets (AWS,
 
 ### tool-guardian.ts
 
-Blocks irreversible destructive bash commands via `tool.execute.before`: recursive force deletes of filesystem roots, home, or wildcards (both short flags like `-rf` and GNU long forms like `--recursive --force`); git force push (except `--force-with-lease`); mkfs/fdisk/dd to devices/format; DROP TABLE/DATABASE/SCHEMA; chmod -R 777 on / or ~. Specific-path deletes and recoverable operations are allowed. Escape hatch: `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.
+Blocks irreversible destructive bash commands via `tool.execute.before`: recursive force deletes targeting filesystem roots, home, or wildcards - including glob forms (`rm -rf /*`, `~/*`, `$HOME/*`, `C:\*`), quoted home vars (`"$HOME"`, `"$env:USERPROFILE"`), and traversal forms that resolve to a root (`/.`, `/..`, `/tmp/..`) - in both short flags like `-rf` and GNU long forms like `--recursive --force`; Windows-native `del` / `rmdir` with `/s` plus `/q` or `/f` against those same targets; git force push (except `--force-with-lease` and safe variants like `--force-if-includes`); mkfs/fdisk/dd to devices/format; DROP TABLE/DATABASE/SCHEMA; chmod -R 777 on / or ~. Specific-path deletes and recoverable operations are allowed. Escape hatch: `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.

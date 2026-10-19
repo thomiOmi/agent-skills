@@ -18,7 +18,6 @@ describe("Package distribution", () => {
       "plugin",
       "skills",
       "src",
-      "tools",
       "AGENTS.md",
     ];
 
