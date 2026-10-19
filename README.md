@@ -99,22 +99,16 @@ bun run setup:merge
 Dry run options are available for all modes:
 `bun run setup --dry-run` or `bun run setup --target ./test-dir`
 
-### Install via bunx (after npm publish)
+Clone the repository and run the installer locally:
 
 ```bash
-bunx @thomiomi/agent-skills@latest install
+git clone https://github.com/thomiOmi/agent-skills.git
+cd agent-skills
+bun run setup
 ```
 
-### OpenCode Plugin Registration
-
-Add to your `~/.config/opencode/opencode.jsonc`:
-
-```jsonc
-{
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@thomiomi/agent-skills"]
-}
-```
+See [INSTALL.md](./INSTALL.md) for symlink, merge, dry-run, and restore
+options. Package registry distribution is deferred.
 
 ---
 
