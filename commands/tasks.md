@@ -7,6 +7,7 @@ Manage tasks in TASKS.md: $ARGUMENTS
 
 Workflow:
 1. Read `TASKS.md` in the current working directory.
-2. If `TASKS.md` does not exist, initialize it with Active, Waiting On, Someday, and Done sections.
-3. Summarize active tasks, pending blockers, and completed items.
-4. Add, update, or complete tasks based on $ARGUMENTS.
+2. If `TASKS.md` does not exist, ask before creating it because the project may define a different task document.
+3. Treat `Roadmap` as the canonical top-level section, with `Done`, `In Progress`, and `Planned` subsections, plus a separate `Backlog` section for unscheduled work.
+4. Summarize active tasks, pending blockers, and completed items using the existing headings.
+5. Add, update, or complete tasks based on $ARGUMENTS without replacing unrelated roadmap or backlog entries.
