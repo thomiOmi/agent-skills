@@ -50,14 +50,14 @@ Run these from the project root. Never run `npm publish` locally.
 | `bun run test` | Run all tests (bun test tests/) |
 | `bun test tests/<path>` | Single test file |
 | `bun run changelog` | Regenerate CHANGELOG.md from conventional commits (changelogen, no version bump) |
-| `bun run release` | Release: bump version, update CHANGELOG.md, create release commit and tag (changelogen) |
+| `bun run release` | Prepare a release: bump version, update CHANGELOG.md, create a release commit and tag (changelogen) |
 | `bun run setup` | Install agents/skills/tools/commands/config to ~/.config/opencode/ (backup, overwrite, config merge) |
 | `bun run setup:symlink` | Install via symlinks for live editing |
 | `bun run setup:merge` | Install without wiping global-only items |
-| `bun run cli` | Run the installer CLI directly (same as bunx agent-skills after publish) |
+| `bun run cli` | Run the installer CLI directly from the cloned repository |
 
 **Never run locally:**
-- `npm publish` - publishing is not automated yet; releases stop at changelog and tag (via `bun run release`)
+- Package registry publication is deferred.
 - `bun run setup` without `--dry-run` first
 
 **Git hooks (simple-git-hooks):** pre-commit runs lint-staged, commit-msg runs commitlint, pre-push runs typecheck and tests. If hooks are missing after cloning, run `bunx simple-git-hooks`.
@@ -141,7 +141,8 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 - Modify `node_modules/` or `dist/`
 - Add emoji, em dashes, or decorative text to any file
 - Skip verification (typecheck + lint + test) before marking a task done
-- Change version in `package.json` manually (use `bun run release` so version bump, CHANGELOG.md, release commit, and tag stay consistent)
+- Do not change the package version manually; use `bun run release` so the
+  version, CHANGELOG.md, release commit, and tag stay consistent.
 
 ---
 

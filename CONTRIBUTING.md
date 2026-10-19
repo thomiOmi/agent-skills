@@ -30,8 +30,9 @@ bun run typecheck
 bun test tests/
 ```
 
-Do not run `npm publish` locally. Release preparation uses the project
-release scripts and is performed by maintainers.
+Package registry distribution is deferred. Do not publish the project package
+while the supported workflow is cloning the repository and running the local
+installer.
 
 ## Making changes
 
@@ -68,4 +69,3 @@ changes, generated artifacts, secrets, credentials, or personal data.
 
 Maintainers may request changes, squash commits, or close work that is out of
 scope or duplicates an existing effort.
-
