@@ -33,10 +33,22 @@ Roadmap and backlog for the agent-skills project.
 
 ### In Progress
 
-- PR 2: separate contributor and global instruction sources; deploy `instructions/AGENTS.md` as global `AGENTS.md`, remove `OPENCODE.md` from the global instruction list, repair copy/symlink/merge installer paths, and synchronize installation documentation.
+- PR 3: restore the complete repository-audit roadmap and make this file the live tracking source for the agreed small-PR sequence.
 
 ### Planned
 
+- Repository-audit follow-up sequence (audit findings and evidence are recorded in the prior review discussion):
+  - PR 1 - Package distribution and installer validation. Include every installer source in `package.json.files` and add a regression test for the published file set. Reviewed and merged as PR #51.
+  - PR 2 - Canonical global instruction source. Deploy `instructions/AGENTS.md` as the user-level `AGENTS.md`, keep the root `AGENTS.md` for repository contributors, stop loading `OPENCODE.md` automatically, and test copy, symlink, and merge modes. Reviewed and merged as PR #52.
+  - PR 3 - Roadmap and backlog recovery. Preserve the complete audit plan, distinguish active work from historical decisions, and remove stale status claims without changing implementation. This is the current task.
+  - PR 4 - Documentation and source-of-truth alignment. Reconcile README, INSTALL, PRD, ARCHITECTURE, DECISIONS, SPEC, AGENTS, and configuration references; document which file owns each fact; remove duplicate or contradictory instructions; verify every referenced module, feature, and dependency against the repository.
+  - PR 5 - Contribution and agent-rule alignment. Compare human contributor rules, AI instructions, agent definitions, skills, commands, and hooks; remove overlapping or contradictory rules; add or update checks where a repository rule is currently only prose.
+  - PR 6 - Language and encoding consistency. Audit code comments, templates, agent files, skills, and documentation for non-English repository content, invalid encoding, decorative Unicode, and inconsistent terminology; repair only confirmed findings and keep live user discussion language-independent from committed files.
+  - PR 7 - Dependency, configuration, and stub cleanup. Trace declared dependencies, installer configuration, generated configuration, deprecated tools, and placeholder implementations; remove or document only items confirmed unused, with tests for retained compatibility behavior.
+  - PR 8 - Issue and pull-request hygiene. Recheck open issues and pull requests for stale, duplicate, superseded, or ownerless work; link each actionable item to the relevant roadmap task and close or label items only after human confirmation.
+- Human decisions still required before implementation:
+  - Confirm whether stale eval/vendor notes should be archived in change history or retained as active backlog items.
+  - Confirm ownership and priority for the issue and pull-request cleanup pass.
 - Vendor anthropics skill-creator and plugin-dev under `.agents/` and make eval tooling harness-agnostic (approved 2026-09-19, location confirmed by user: `.agents/skills/skill-creator/` and `.agents/plugins/plugin-dev/`):
   - Fase 1: refactor `scripts/evals/` to `evals/src/` (run-evals.ts, grading.ts, targets.ts); update package.json, tsconfig include, test imports, docs. No behavior change. Done 2026-09-19: runner verified identical via dry-run, typecheck/lint/test all pass.
   - Fase 2: vendor skill-creator (skills/skill-creator subtree: SKILL.md, scripts/, agents/, references/, eval-viewer/, assets/, LICENSE) to `.agents/skills/skill-creator/` and plugin-dev (README, agents/, commands/, skills/) to `.agents/plugins/plugin-dev/`; add `.agents/README.md` with upstream commit hashes; add executor shim (`claude -p` to `opencode run --model <pinned> --agent build --auto`); keep vendored grading logic untouched; gitignore `.agents/` from npm publish (dot-dir is already outside package.json `files`). Done 2026-09-21: vendored at upstream c447c32 (skill-creator) and bf7d404 (plugin-dev); shim at `.agents/claude-shim.py` (stream-json forwarding plus text mode, exe resolution for Windows, env override via AGENT_SKILLS_OPENCODE_BIN/AGENT/MODEL); shim text mode verified live; generate_review.py --static and aggregate_benchmark.py smoke-tested offline; .agents/ and evals/workspace added to ESLint globalIgnores; typecheck/lint/test all pass.
