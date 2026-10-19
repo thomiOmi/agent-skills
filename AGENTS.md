@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Project-level agent instructions for the agent-skills project.
-Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md`.
+Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, `instructions/AGENTS.md`, `instructions/OPENCODE.md` and `SPEC.md`.
 
 ## Document Map
 

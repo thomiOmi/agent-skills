@@ -147,7 +147,7 @@ agent-skills/
 ├── INSTALL.md          # Full install and deploy reference
 ├── LICENSE
 ├── PRD.md              # Product goals, requirements, scope
-├── README.md
+├── README.md           # Repo overview, skill list, install instructions
 ├── SECURITY.md
 ├── SPEC.md             # Agent Skills format spec
 ├── TASKS.md            # Live state: roadmap, changelog, backlog
@@ -164,7 +164,7 @@ agent-skills/
 ├── agents/             # 20 specialized subagents (*.md)
 ├── commands/           # 17 slash commands (*.md)
 ├── config/             # Global opencode.jsonc and tui.jsonc templates
-├── instructions/       # Global AGENTS.md source
+├── instructions/       # Global AGENTS.md + OPENCODE.md source
 ├── plugin/             # OpenCode plugin entrypoint + hooks
 │   ├── agent-skills.ts   # Plugin registration (hooks, no custom tools)
 │   ├── compaction.ts     # TASKS.md state into compaction prompt
@@ -173,6 +173,8 @@ agent-skills/
 ├── scripts/            # ESLint and frontmatter dev utilities
 ├── skills/             # 34 atomic domain skills (SKILL.md + resources)
 ├── src/                # CLI installer tooling (copy/symlink/merge)
+└── tests/              # Test suites (bun test)
+```
 └── tests/              # Test suites (bun test)
 ```
 
