@@ -1,9 +1,5 @@
-import { mkdtemp, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
 import { consola } from "consola";
-import { downloadTemplate } from "giget";
-import { basename, join, resolve } from "pathe";
-import { parseURL } from "ufo";
+import { resolve } from "pathe";
 import { env } from "../lib/env";
 import { repoSubdir } from "../lib/paths";
 import { deployCommand } from "./deploy";
@@ -24,37 +20,23 @@ export interface InstallOptions {
 const MODES: InstallMode[] = ["copy", "symlink", "merge"];
 
 function isRemoteSource(source: string): boolean {
-  if (/^(?:github|gh|git|gitlab|bitbucket):/.test(source)) {
-    return true;
-  }
-  const { protocol } = parseURL(source);
-  return protocol === "https:" || protocol === "http:";
+  return /^(?:github|gh|git|gitlab|bitbucket):/.test(source)
+    || /^https?:\/\//i.test(source);
 }
 
-async function resolveRepoRoot(
-  source: string | undefined,
-): Promise<{ repoRoot: string; cleanup?: () => Promise<void> }> {
+function resolveRepoRoot(source: string | undefined): string {
   const defaultRoot = repoSubdir(".");
   if (!source) {
-    return { repoRoot: defaultRoot };
+    return defaultRoot;
   }
 
-  if (!isRemoteSource(source)) {
-    const abs = resolve(source);
-    consola.info(`Source: ${abs} (local path)`);
-    return { repoRoot: abs };
+  if (isRemoteSource(source)) {
+    throw new Error("Remote source installation is not supported. Clone the repository and provide a local path.");
   }
 
-  const dir = await mkdtemp(join(tmpdir(), "agent-skills-source-"));
-  consola.info(`Source: ${source} (remote template)`);
-  const res = await downloadTemplate(source, { dir, force: true });
-  consola.info(`Downloaded to: ${res.dir}`);
-  return {
-    repoRoot: res.dir,
-    cleanup: async () => {
-      await rm(dir, { recursive: true, force: true });
-    },
-  };
+  const abs = resolve(source);
+  consola.info(`Source: ${abs} (local path)`);
+  return abs;
 }
 
 export async function installCommand(opts: InstallOptions = {}): Promise<void> {
@@ -64,45 +46,38 @@ export async function installCommand(opts: InstallOptions = {}): Promise<void> {
     throw new Error(`Unknown install mode: ${mode}. Use one of: ${MODES.join(", ")}.`);
   }
 
-  const { repoRoot, cleanup } = await resolveRepoRoot(opts.source);
+  const repoRoot = resolveRepoRoot(opts.source);
   consola.info(
     `Environment: ${env.platform}${env.ci ? `, CI: ${env.provider}` : ""}`,
   );
 
-  try {
-    switch (mode) {
-      case "copy":
-        consola.info("Install mode: copy (backup, overwrite, config merge)");
-        await deployCommand({
-          repoRoot,
-          dryRun: opts.dryRun,
-          skipBackup: opts.skipBackup,
-          backupPath: opts.backupPath,
-          targetDir: opts.targetDir,
-        });
-        break;
-      case "symlink":
-        consola.info("Install mode: symlink (live editing via links)");
-        await symlinkCommand({
-          repoRoot,
-          dryRun: opts.dryRun,
-          targetDir: opts.targetDir,
-        });
-        break;
-      case "merge":
-        consola.info("Install mode: merge (copy over, preserve global-only items)");
-        await syncCommand({
-          repoRoot,
-          dryRun: opts.dryRun,
-          targetDir: opts.targetDir,
-        });
-        break;
-    }
-  }
-  finally {
-    if (cleanup) {
-      await cleanup();
-    }
+  switch (mode) {
+    case "copy":
+      consola.info("Install mode: copy (backup, overwrite, config merge)");
+      await deployCommand({
+        repoRoot,
+        dryRun: opts.dryRun,
+        skipBackup: opts.skipBackup,
+        backupPath: opts.backupPath,
+        targetDir: opts.targetDir,
+      });
+      break;
+    case "symlink":
+      consola.info("Install mode: symlink (live editing via links)");
+      await symlinkCommand({
+        repoRoot,
+        dryRun: opts.dryRun,
+        targetDir: opts.targetDir,
+      });
+      break;
+    case "merge":
+      consola.info("Install mode: merge (copy over, preserve global-only items)");
+      await syncCommand({
+        repoRoot,
+        dryRun: opts.dryRun,
+        targetDir: opts.targetDir,
+      });
+      break;
   }
 }
 
@@ -110,5 +85,5 @@ export function describeSource(source: string | undefined): string {
   if (!source) {
     return "local repo (default)";
   }
-  return isRemoteSource(source) ? `remote template ${basename(source)}` : `local path ${resolve(source)}`;
+  return `local path ${resolve(source)}`;
 }

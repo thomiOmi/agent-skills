@@ -14,8 +14,8 @@ const installArgs = {
   },
   "source": {
     type: "string" as const,
-    description: "Source repo: local path or giget template (e.g. github:thomiOmi/agent-skills)",
-    valueHint: "path|github:user/repo",
+    description: "Source repository path (defaults to the cloned repository)",
+    valueHint: "path",
   },
   "dry-run": {
     type: "boolean" as const,
