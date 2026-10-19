@@ -128,7 +128,7 @@ Or create `AGENTS.md` manually at the project root:
 # AGENTS.md
 
 **Project:** my-app
-**Stack:** Node.js 22 · TypeScript · PostgreSQL · Next.js 15
+**Stack:** Node.js 22 - TypeScript - PostgreSQL - Next.js 15
 **Package manager:** bun
 **Test runner:** bun test
 **Linter / formatter:** ESLint + typescript-eslint + @stylistic
@@ -143,25 +143,25 @@ Or create `AGENTS.md` manually at the project root:
 
 ```text
 agent-skills/
-├── README.md
-├── INSTALL.md
-├── PRD.md
-├── SPEC.md
-├── AGENTS.md
-├── DECISIONS.md
-├── ARCHITECTURE.md
-├── TASKS.md
-├── package.json
-├── tsconfig.json
-├── agents/            # 20 specialized subagents
-├── commands/          # 17 slash commands
-├── config/            # Global opencode.jsonc & tui.jsonc templates
-├── instructions/      # Global AGENTS.md source
-├── plugin/            # OpenCode plugin entrypoint
-├── tools/             # Custom TypeScript tools
-├── src/               # CLI installer tooling
-├── tests/             # Test suites
-└── skills/            # 34 atomic domain skills
+|-- README.md
+|-- INSTALL.md
+|-- PRD.md
+|-- SPEC.md
+|-- AGENTS.md
+|-- DECISIONS.md
+|-- ARCHITECTURE.md
+|-- TASKS.md
+|-- package.json
+|-- tsconfig.json
+|-- agents/            # 20 specialized subagents
+|-- commands/          # 17 slash commands
+|-- config/            # Global opencode.jsonc and tui.jsonc templates
+|-- instructions/      # Global AGENTS.md source
+|-- plugin/            # OpenCode plugin entrypoint
+|-- tools/             # Custom TypeScript tools
+|-- src/               # CLI installer tooling
+|-- tests/             # Test suites
+\-- skills/            # 34 atomic domain skills
 ```
 
 ---

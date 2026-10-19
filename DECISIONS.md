@@ -87,7 +87,7 @@ The catalog (skills in open Agent Skills format) carries no harness assumptions;
 
 
 
-changelogen emits emoji section headings such as (🚀 Enhancements, 🩹 Fixes, 💅 Refactors, 📖 Documentation, 🏡 Chore) into CHANGELOG.md and release output. They are kept as-is - the changelog is already the documented exception to the no-emoji rule, so v0.3.0 and v0.4.0 lacking emoji headings was not a regression to fix. Separately, GitHub Release bodies created with inline shell interpolation (`bun -e`, PowerShell strings) were silently truncated at the first `#` character, cutting off the first emoji heading. Practice: extract the version section from CHANGELOG.md into a temporary file and apply it with `gh release create/edit --notes-file <file>`, then verify the body via `gh release view --json body` before moving on.
+changelogen emits named section headings such as Enhancements, Fixes, Refactors, Documentation, and Chore into CHANGELOG.md and release output. CHANGELOG.md is the documented exception to the no-emoji rule. GitHub Release bodies created with inline shell interpolation (`bun -e`, PowerShell strings) were silently truncated at the first `#` character. Practice: extract the version section from CHANGELOG.md into a temporary file and apply it with `gh release create/edit --notes-file <file>`, then verify the body via `gh release view --json body` before moving on.
 
 ### Agent file markup: XML tags retained (evaluated against modern conventions)
 
