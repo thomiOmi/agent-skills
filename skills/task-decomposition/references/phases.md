@@ -109,7 +109,9 @@ Task tree format:
 TASK: [main task name]
 |-- SUB-TASK 1: [description] [S]
 |-- SUB-TASK 2: [description] [M] - depends on 1
-\-- SUB-TASK 3: [description] [S] - parallel with 2
+|   |-- Step 2.1: [detail]
+|   |-- Step 2.2: [detail]
+|-- SUB-TASK 3: [description] [S] - parallel with 2
 ```
 
 Required output:

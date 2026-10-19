@@ -35,8 +35,8 @@ TASK: [main task name]
 |-- SUB-TASK 1: [description] [S] - skill: code-style
 |-- SUB-TASK 2: [description] [M] - skill: api-conventions - depends on 1
 |   |-- Step 2.1: [detail]
-|   \-- Step 2.2: [detail]
-\-- SUB-TASK 3: [description] [S] - skill: testing - parallel with 2
+|   |-- Step 2.2: [detail]
+|-- SUB-TASK 3: [description] [S] - skill: testing - parallel with 2
 
 **Size guide:** S < 30 min  -  M 30 min-2 hr  -  L > 2 hr (must split before starting)
 

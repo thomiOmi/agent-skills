@@ -3,15 +3,15 @@
 ```text
 docs/
 |-- prd/
-|   \-- YYYY-MM-feature-name.md
+|   |-- YYYY-MM-feature-name.md
 |-- sdd/
-|   \-- YYYY-MM-feature-name.md
+|   |-- YYYY-MM-feature-name.md
 |-- adr/
-|   \-- NNN-decision-title.md
+|   |-- NNN-decision-title.md
 |-- test-plans/
-|   \-- YYYY-MM-feature-name.md
-\-- release-notes/
-    \-- vX.Y.Z.md
+|   |-- YYYY-MM-feature-name.md
+|-- release-notes/
+    |-- vX.Y.Z.md
 ```
 
 ## Naming Rules
