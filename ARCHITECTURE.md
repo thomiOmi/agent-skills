@@ -42,7 +42,7 @@ flowchart TD
     SkillCheck -- FAIL --> Eng
 
     CentralCheck -- PASS --> Remember[TASKS.md & Context<br/>persistence]
-    CentralCheck -- FAIL < 3 retries --> Eng
+    CentralCheck -- "FAIL &lt; 3 retries" --> Eng
     CentralCheck -- FAIL exhausted --> Escalate[Escalate to user]
 
     Remember --> Return[Return to user]
