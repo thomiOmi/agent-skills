@@ -23,29 +23,29 @@ Agent Orchestra turns OpenCode into a multi-role development team. The primary `
 
 ```mermaid
 flowchart TD
-    User[User Input / Discussion] --> Plan[plan agent (built-in primary)]
-    Plan --> Orchestrator[orchestrator subagent<br/>task decomposition]
+    User["User Input / Discussion"] --> Plan["plan agent (built-in primary)"]
+    Plan --> Orchestrator["orchestrator subagent<br/>task decomposition"]
 
-    Orchestrator --> Eng[Engineering group<br/>frontend-developer, backend-developer,<br/>database-engineer, software-architect,<br/>ai-engineer, senior-developer]
-    Orchestrator --> Prod[Product and Planning group<br/>product-manager, project-manager, data-analyst]
-    Orchestrator --> QAG[Quality and Security group<br/>qa-engineer, security-auditor]
-    Orchestrator --> Ops[Delivery group<br/>devops, docs-writer]
-    Orchestrator --> Think[Reasoning and Content group<br/>brainstormer, deep-thinker, researcher,<br/>refactor-planner, marketing, ui-ux]
+    Orchestrator --> Eng["Engineering group<br/>frontend-developer, backend-developer,<br/>database-engineer, software-architect,<br/>ai-engineer, senior-developer"]
+    Orchestrator --> Prod["Product and Planning group<br/>product-manager, project-manager, data-analyst"]
+    Orchestrator --> QAG["Quality and Security group<br/>qa-engineer, security-auditor"]
+    Orchestrator --> Ops["Delivery group<br/>devops, docs-writer"]
+    Orchestrator --> Think["Reasoning and Content group<br/>brainstormer, deep-thinker, researcher,<br/>refactor-planner, marketing, ui-ux"]
 
-    Eng --> SkillCheck{Skill-level<br/>verification}
+    Eng --> SkillCheck{"Skill-level<br/>verification"}
     Prod --> SkillCheck
     QAG --> SkillCheck
     Ops --> SkillCheck
     Think --> SkillCheck
 
-    SkillCheck -- PASS --> CentralCheck{Centralized<br/>quality-verifier}
+    SkillCheck -- PASS --> CentralCheck{"Centralized<br/>quality-verifier"}
     SkillCheck -- FAIL --> Eng
 
-    CentralCheck -- PASS --> Remember[TASKS.md & Context<br/>persistence]
+    CentralCheck -- PASS --> Remember["TASKS.md & Context<br/>persistence"]
     CentralCheck -- "FAIL &lt; 3 retries" --> Eng
-    CentralCheck -- FAIL exhausted --> Escalate[Escalate to user]
+    CentralCheck -- FAIL exhausted --> Escalate["Escalate to user"]
 
-    Remember --> Return[Return to user]
+    Remember --> Return["Return to user"]
 ```
 
 > Full detail for all 20 agents lives in the Agent Roster table below. The
