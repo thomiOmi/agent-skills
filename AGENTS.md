@@ -28,8 +28,8 @@ Priority order (highest to lowest):
 3. Subdir AGENTS.md - scoped overrides for a subtree
 ```
 
-This file configures agent behavior **within this project only**.
-When agents are installed to `~/.config/opencode/agents/`, the global AGENTS.md handles cross-project rules. See [OpenCode docs](https://opencode.ai/docs/rules) for details.
+This file configures contributor and agent behavior **within this project only**.
+The deployed `instructions/AGENTS.md` configures cross-project global rules; this file adds repository-specific context and boundaries. See [OpenCode docs](https://opencode.ai/docs/rules) for details.
 
 All global rules (Role & Identity, Anti-Hallucination, Communication, Code Quality, Security, Analysis & Review, Testing, Commits) apply automatically from `instructions/AGENTS.md` - they are not duplicated here.
 
