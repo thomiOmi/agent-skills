@@ -93,7 +93,9 @@ Check the installed version:
 bunx @thomiomi/agent-skills@latest --version
 ```
 
-Publishing is manual: run `bun run release` to bump the version and tag, then `npm publish --access public`.
+Publishing is maintainer-only: `bun run release` prepares the version, changelog,
+release commit, and tag. After review, the package owner publishes it with
+`bun publish`.
 
 ---
 
