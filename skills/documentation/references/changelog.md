@@ -28,7 +28,7 @@ Update on every PR that changes behavior.
 
 ### Security
 
-- Upgraded `jsonwebtoken` to address CVE-2024-XXXXX
+- Upgraded `jsonwebtoken` to address `[CVE identifier]`
 ```
 
 Valid sections: `Added`  -  `Changed`  -  `Fixed`  -  `Deprecated`  -  `Removed`  -  `Security`

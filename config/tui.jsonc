@@ -7,7 +7,7 @@
 
   "attention": {
     "enabled": true
-    // TODO: customize attention sounds. See https://opencode.ai/docs/tui/#attention
+    // Keep the default attention sounds. Customize them here if project requirements change.
     // Example:
     //   "sounds": {
     //     "error": "./sounds/error.mp3",
