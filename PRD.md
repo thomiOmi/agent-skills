@@ -10,7 +10,8 @@ The agent-skills project enables OpenCode users to work with a curated collectio
 - Provide an `orchestrator` subagent that coordinates multi-step workflows
 - Ship specialized agents for coding, testing, security, design, content, DevOps, documentation, brainstorming, planning, and refactoring
 - Provide skills that support each agent role with domain-specific guidance
-- Follow OpenCode v2 conventions: agents as markdown, skills as SKILL.md, custom tools as TypeScript or Python
+- Follow OpenCode v2 conventions: agents as markdown, skills as SKILL.md
+- Ship a harness-neutral skill catalog that needs no agent-side custom tools
 - Keep the skill catalog harness-neutral (open Agent Skills format) so future agent runtimes beyond OpenCode can adopt it via an integration-layer adapter
 - Follow the Agent Skills specification and repository authoring conventions
 - Enable non-developer users (vibe coders, sales, marketing, designers) to use the system effectively
@@ -31,7 +32,7 @@ A senior engineer who reviews agent output before it reaches production. Needs v
 
 ### Persona D - Contributor
 
-A developer who wants to add new agents, skills, or tools to this repository. Needs documented conventions, consistent formats, and clear contribution guidelines.
+A contributor who wants to add new agents or skills to this repository. Needs documented conventions, consistent formats, and clear contribution guidelines.
 
 ## 4. User Stories
 
@@ -142,7 +143,7 @@ The system uses `TASKS.md` file-based tracking and working context documents for
 
 ### FR-7: Plugin
 
-The plugin registers agents, skills, and tools via the OpenCode plugin API.
+The plugin registers agents and skills via the OpenCode plugin API.
 
 ## 6. Non-Functional Requirements
 

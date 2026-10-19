@@ -51,7 +51,7 @@ Run these from the project root. Never run `npm publish` locally.
 | `bun test tests/<path>` | Single test file |
 | `bun run changelog` | Regenerate CHANGELOG.md from conventional commits (changelogen, no version bump) |
 | `bun run release` | Prepare a release: bump version, update CHANGELOG.md, create a release commit and tag (changelogen) |
-| `bun run setup` | Install agents/skills/tools/commands/config to ~/.config/opencode/ (backup, overwrite, config merge) |
+| `bun run setup` | Install agents/skills/commands/config to ~/.config/opencode/ (backup, overwrite, config merge) |
 | `bun run setup:symlink` | Install via symlinks for live editing |
 | `bun run setup:merge` | Install without wiping global-only items |
 | `bun run cli` | Run the installer CLI directly from the cloned repository |
