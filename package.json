@@ -55,8 +55,6 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "fmt": "eslint . --fix",
-    "fmt:check": "eslint .",
     "test": "bun test tests/",
     "changelog": "changelogen --output CHANGELOG.md",
     "release": "changelogen --release",
