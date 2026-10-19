@@ -48,6 +48,8 @@ export default antfu(
           ignoreComments: true,
         },
       ],
+      // @returns prose is churn on internal helpers; tags-with-types is enough.
+      "jsdoc/require-returns-description": "off",
     },
   },
   {

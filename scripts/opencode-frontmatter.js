@@ -117,10 +117,8 @@ const validSkillFrontmatter = {
             context.report({ node, messageId: "nameTooLong", data: { actual: frontmatter.name, max: SKILL_NAME_MAX } });
           }
         }
-        if (frontmatter.description !== undefined) {
-          if (typeof frontmatter.description !== "string" || frontmatter.description.trim().length === 0) {
-            context.report({ node, messageId: "descriptionEmpty" });
-          }
+        if (frontmatter.description !== undefined && typeof frontmatter.description !== "string") {
+          context.report({ node, messageId: "descriptionEmpty" });
         }
         if (frontmatter.license !== undefined && typeof frontmatter.license !== "string") {
           context.report({ node, messageId: "licenseNotString" });
@@ -213,10 +211,8 @@ const validAgentFrontmatter = {
         if (frontmatter.name && frontmatter.name !== expectedName) {
           context.report({ node, messageId: "nameMismatch", data: { actual: frontmatter.name, expected: expectedName } });
         }
-        if (frontmatter.description !== undefined) {
-          if (typeof frontmatter.description !== "string" || frontmatter.description.trim().length === 0) {
-            context.report({ node, messageId: "descriptionEmpty" });
-          }
+        if (frontmatter.description !== undefined && typeof frontmatter.description !== "string") {
+          context.report({ node, messageId: "descriptionEmpty" });
         }
         if (frontmatter.mode && !VALID_MODES.includes(frontmatter.mode)) {
           context.report({ node, messageId: "invalidMode", data: { actual: frontmatter.mode, expected: VALID_MODES.join(", ") } });
