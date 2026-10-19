@@ -120,9 +120,17 @@ describe("Installer Commands", () => {
     expect(agentsExists).toBe(true);
   });
 
+  it("should reject remote source URLs", async () => {
+    await expect(installCommand({
+      source: "github:thomiOmi/agent-skills",
+      mode: "copy",
+      targetDir: tempDir,
+      skipBackup: true,
+    })).rejects.toThrow("Remote source installation is not supported");
+  });
+
   it("should describe sources", () => {
     expect(describeSource(undefined)).toContain("local repo");
-    expect(describeSource("github:thomiOmi/agent-skills")).toContain("remote template");
     expect(describeSource("C:/some/path")).toContain("local path");
   });
 });

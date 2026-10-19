@@ -17,7 +17,7 @@ bun run setup
 
 Use `bun run setup:symlink` for live development or `bun run setup:merge` to
 preserve global-only items. Package registry distribution and remote source
-installation are deferred.
+installation are not supported.
 
 ---
 
