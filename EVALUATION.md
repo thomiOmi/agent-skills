@@ -1,4 +1,9 @@
-# Evaluation & Audit Report: Agent Skills & Orchestra System
+# Historical Evaluation & Audit Report: Agent Skills & Orchestra System
+
+> Historical snapshot, not the current project status. This report records an
+> earlier static evaluation and audit. Current requirements, architecture,
+> decisions, and roadmap status are maintained in `PRD.md`, `ARCHITECTURE.md`,
+> `DECISIONS.md`, and `TASKS.md`.
 
 **Evaluator:** Jules (Senior Software Engineer / Agent Quality Auditor)
 **Target Repository:** `@thomiomi/agent-skills` (OpenCode Agent Orchestra)
