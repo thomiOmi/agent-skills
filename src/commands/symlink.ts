@@ -122,7 +122,6 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   const agentsRoot = getGlobalAgentsRoot(opts.targetDir);
   const repoAgents = join(repoRoot, "agents");
   const repoSkills = join(repoRoot, "skills");
-  const repoTools = join(repoRoot, "tools");
   const repoCommands = join(repoRoot, "commands");
   const repoGlobalAgentsMd = join(repoRoot, "instructions", "AGENTS.md");
 
@@ -155,7 +154,6 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
     linkItems(repoAgents, join(dstRoot, "agents"), "agents", useSymlinks, opts.dryRun ?? false),
     linkItems(repoSkills, join(dstRoot, "skills"), "skills", useSymlinks, opts.dryRun ?? false),
     linkItems(repoSkills, join(agentsRoot, "skills"), "agent-skills (~/.agents/skills)", useSymlinks, opts.dryRun ?? false),
-    linkItems(repoTools, join(dstRoot, "tools"), "tools", useSymlinks, opts.dryRun ?? false),
     linkItems(repoCommands, join(dstRoot, "commands"), "commands", useSymlinks, opts.dryRun ?? false),
   ]);
 

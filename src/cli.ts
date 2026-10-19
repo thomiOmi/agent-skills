@@ -74,7 +74,7 @@ const main = defineCommand({
     install: defineCommand({
       meta: {
         name: "install",
-        description: "Install agents, skills, tools, commands, plugin, and config into OpenCode global config",
+        description: "Install agents, skills, commands, plugin, and config into OpenCode global config",
       },
       args: installArgs,
       run: async ({ args }) => {

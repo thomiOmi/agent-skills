@@ -16,9 +16,13 @@ OpenCode built-in `plan` and `build` agents serve as the primary user interface.
 
 Task to agent mapping is hardcoded in the orchestrator prompt, not a custom tool. Provides full control and reliability.
 
-### Quality verification: dual-layer (skill-level + centralized)
+### Quality verification: dual-layer (skill-level + project quality gate)
 
-Verification has two layers: (1) domain-specific checklist in each SKILL.md executed by the subagent, (2) centralized quality-verifier tool executed by qa-engineer. qa-engineer has access to run tests, typecheck, lint.
+Verification has two layers: (1) domain-specific checklist in each SKILL.md executed by the subagent, (2) a project quality gate where the agent runs the project's own lint, typecheck, and test commands. qa-engineer has access to run tests, typecheck, lint.
+
+### quality-verifier removed: language-specific checks do not belong in the catalog
+
+The custom quality-verifier tool (tools/ wrapper, skills/testing/scripts/quality-verifier.ts implementation, and its tests) was removed on 2026-10-20. Its file-level checks only understood one language family - console.log/debugger/print for debug statements, JSDoc comments on exports for docstrings, package.json plus bun/npm for script checks - while the agent and skill catalog is advertised as language-agnostic, so every additional language would mean new patterns and false-positive tuning forever; each language's own tooling already does this better (eslint no-console, ruff, clippy, golangci-lint). The centralized verification layer now delegates to the project's own quality commands in whatever language the project uses; the orchestration flow (skill checklist first, then project commands, retry via task_id) is unchanged. The installer no longer ships a tools/ directory; existing installs can delete the stale ~/.config/opencode/tools/quality-verifier.ts on next setup. Follows the same removal pattern as task-decomposer. Source: development-tools audit 2026-10-20.
 
 ### Resumable Subagent Task Recovery (`task_id`)
 
@@ -43,6 +47,8 @@ Every request is classified as Analysis, Implementation, or Both at the start. A
 ### Tool guard hooks: throw-to-block in `tool.execute.before`
 
 `secrets-scanner` and `tool-guardian` are sibling modules in `plugin/` registered by the harness in `plugin/agent-skills.ts` (composed into one `tool.execute.before` hook). They block by throwing an error from the hook, the official OpenCode pattern. Scope: secrets-scanner inspects write/edit string args only; tool-guardian inspects bash commands only. Specific-path deletes (`rm -rf node_modules`), `git reset --hard`, and `--force-with-lease` are deliberately allowed; guards are a safety net, not a permission system. Escape hatch env vars: `AGENT_SKILLS_DISABLE_SECRETS_SCANNER=1`, `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.
+
+A 2026-10-20 development-tools audit closed token-level gaps in the delete guard: the old single `DELETE_TARGET` regex missed glob targets (`rm -rf /*`, `~/*`, `$HOME/*`, `C:\*`), quoted home vars (`"$HOME"`, `"$env:USERPROFILE"`), traversal forms that resolve to a root (`/.`, `/..`, `/tmp/..`), and Windows-native `del` / `rmdir` with `/s` plus `/q` or `/f`. Detection is now token-based: each operand is quote-stripped and slash-normalized, then checked against root, home, and drive-root predicates with lexical resolution, so `rm -rf /*` is blocked while `rm -rf ./build/*` stays allowed. `git push --force-if-includes` is no longer blocked as a force-push false positive. Regression cases live in `tests/plugin-guards.test.ts`.
 
 ### Conventional git skills as references under git-workflow
 

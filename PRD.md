@@ -2,7 +2,7 @@
 
 ## 1. Problem Statement
 
-The agent-skills project enables OpenCode users to work with a curated collection of specialized agents, skills, and custom tools. The current implementation uses OpenCode's built-in `plan` and `build` agents as the primary interface, with a dedicated `orchestrator` subagent that handles task decomposition, delegation, and verification.
+The agent-skills project enables OpenCode users to work with a curated collection of specialized agents and skills. The current implementation uses OpenCode's built-in `plan` and `build` agents as the primary interface, with a dedicated `orchestrator` subagent that handles task decomposition, delegation, and verification.
 
 ## 2. Goals
 
@@ -10,7 +10,6 @@ The agent-skills project enables OpenCode users to work with a curated collectio
 - Provide an `orchestrator` subagent that coordinates multi-step workflows
 - Ship specialized agents for coding, testing, security, design, content, DevOps, documentation, brainstorming, planning, and refactoring
 - Provide skills that support each agent role with domain-specific guidance
-- Provide a custom tool for quality verification
 - Follow OpenCode v2 conventions: agents as markdown, skills as SKILL.md, custom tools as TypeScript or Python
 - Keep the skill catalog harness-neutral (open Agent Skills format) so future agent runtimes beyond OpenCode can adopt it via an integration-layer adapter
 - Follow the Agent Skills specification and repository authoring conventions
@@ -125,19 +124,17 @@ The system provides 34 skills covering code quality, testing, security, design, 
 
 ### FR-4: Custom Tools
 
-| Tool | Purpose | Used By |
-|---|---|---|
-| quality-verifier | Verify code quality: lint, typecheck, tests, debug statements, docstrings | orchestrator (via qa-engineer) |
+The system ships no custom tools. Verification and agent routing rely on the agents' own commands and prompts, which stay language-agnostic.
 
-Tool history: `task-decomposer` was deprecated and removed (see DECISIONS.md); agent routing stays hardcoded in the orchestrator prompt.
+Tool history: `quality-verifier` was removed on 2026-10-20 (its file-level checks were language-specific and a maintenance burden - see DECISIONS.md); `task-decomposer` was deprecated and removed earlier (see DECISIONS.md), agent routing stays hardcoded in the orchestrator prompt.
 
 ### FR-5: Verification
 
-Every skill includes a domain-specific verification checklist at the end of its SKILL.md. The orchestrator runs the skill-level checklist before the centralized quality-verifier tool.
+Every skill includes a domain-specific verification checklist at the end of its SKILL.md. The orchestrator runs the skill-level checklist before the project quality gate.
 
 Dual-layer verification:
 1. **Skill-level** - domain-specific checks (e.g., security checks for auth, coverage checks for tests)
-2. **Centralized** - cross-cutting checks (typecheck, lint, tests, debug statements, docstrings)
+2. **Project quality gate** - the agent runs the project's own cross-cutting commands (lint, typecheck, tests), whatever the language or framework
 
 ### FR-6: Persistence & Task Tracking
 
@@ -163,7 +160,7 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API.
 
 - 20 specialized subagents with documented roles
 - 34 skills with progressive disclosure and verification checklists
-- 1 active custom tool: quality-verifier (task-decomposer was deprecated and removed - see DECISIONS.md)
+- No custom tools (quality-verifier and task-decomposer were removed - see DECISIONS.md)
 - 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
 - Plugin registration via OpenCode plugin API
 - File-based task tracking and persistence (`TASKS.md`)

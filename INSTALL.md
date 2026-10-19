@@ -41,7 +41,7 @@ bun run setup:symlink --dry-run
 What it does:
 
 1. Backs up `~/.config/opencode` to `~/.config/opencode-backups/<timestamp>/`
-2. Creates symlinks for `agents/`, `skills/`, `tools/`, `commands/`, and the global `AGENTS.md` sourced from `instructions/AGENTS.md`
+2. Creates symlinks for `agents/`, `skills/`, `commands/`, and the global `AGENTS.md` sourced from `instructions/AGENTS.md`
 3. Also syncs skills to `~/.agents/skills/` for OpenCode agent-compatible discovery
 4. Writes `opencode.jsonc` with `default_agent: plan`
 5. Writes `tui.jsonc` with theme and notification settings
@@ -65,7 +65,7 @@ bun run setup --dry-run
 What it does:
 
 1. Full backup to `~/.config/opencode-backups/<timestamp>/` (excludes `node_modules` and `backups`)
-2. Overwrites `agents/`, `skills/`, `tools/`, `commands/`, and global `AGENTS.md` sourced from `instructions/AGENTS.md`
+2. Overwrites `agents/`, `skills/`, `commands/`, and global `AGENTS.md` sourced from `instructions/AGENTS.md`
 3. Syncs skills to `~/.agents/skills/`
 4. Writes `opencode.jsonc` with `default_agent: plan` and merges user settings
 5. Writes `tui.jsonc` (merged with existing TUI settings)
@@ -244,9 +244,8 @@ Every file and directory in this repo has a specific purpose when installed to `
 | `config/tui.jsonc` | `tui.jsonc` | **TUI config** - theme, attention notifications. |
 | `agents/*.md` | `agents/*.md` | **20 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, and domain specialists. |
 | `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
-| `tools/*.ts` | `tools/*.ts` | **1 custom tool** - quality-verifier.ts. |
 | `commands/*.md` | `commands/*.md` | **17 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
-| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers custom tools, a compaction hook that preserves TASKS.md state across context compaction, and two tool guard hooks: secrets-scanner (blocks writing hardcoded secrets via write/edit) and tool-guardian (blocks destructive bash commands). |
+| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers a compaction hook that preserves TASKS.md state across context compaction, and two tool guard hooks: secrets-scanner (blocks writing hardcoded secrets via write/edit) and tool-guardian (blocks destructive bash commands). |
 
 ---
 

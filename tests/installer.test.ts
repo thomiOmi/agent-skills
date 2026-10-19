@@ -22,7 +22,6 @@ describe("Installer Commands", () => {
     const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
     const skillsExists = await stat(join(tempDir, "skills")).then(() => true).catch(() => false);
     const agentSkillsExists = await stat(join(tempDir, "..", ".agents", "skills")).then(() => true).catch(() => false);
-    const toolsExists = await stat(join(tempDir, "tools")).then(() => true).catch(() => false);
     const commandsExists = await stat(join(tempDir, "commands")).then(() => true).catch(() => false);
     const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
     const tuiConfigExists = await stat(join(tempDir, "tui.jsonc")).then(() => true).catch(() => false);
@@ -31,7 +30,6 @@ describe("Installer Commands", () => {
     expect(agentsExists).toBe(true);
     expect(skillsExists).toBe(true);
     expect(agentSkillsExists).toBe(true);
-    expect(toolsExists).toBe(true);
     expect(commandsExists).toBe(true);
     expect(configExists).toBe(true);
     expect(tuiConfigExists).toBe(true);

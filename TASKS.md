@@ -84,6 +84,7 @@ Unscheduled personal notes (not part of the roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-10-20 | Development-tools audit fixes and custom-tool removal: tool-guardian delete guard rebuilt token-based (now blocks glob targets `/*`, `~/*`, `$HOME/*`, `C:\*`, quoted home vars, traversal forms `/.` `/..` `/tmp/..`, and Windows-native `del`/`rmdir` `/s` `/q`), `git push --force-if-includes` false positive cleared; quality-verifier removed as a custom tool (file-level checks were language-specific and conflicted with the language-agnostic catalog; centralized verification now runs the project's own quality commands), with its tools/ wrapper, skill script, tests, plugin registration, and installer tools/ section deleted; PRD FR-4/FR-5/Scope, ARCHITECTURE, INSTALL, DECISIONS, AGENTS.md synced |
 | 2026-10-20 | Archived the obsolete eval iteration-2 and assertion-grading follow-up plans because their eval runner and workspace were removed; any future evaluation work requires a separately approved redesign |
 | 2026-10-20 | PR 8 issue and pull-request hygiene audit: no open issues or pull requests found; no GitHub metadata changes were needed |
 | 2026-10-20 | PR 7 dependency/configuration/stub audit: all declared dependencies have active imports or script usage; installer and generated configuration are synchronized; no active stub was confirmed; stale eval/vendor plans were archived in this file |
