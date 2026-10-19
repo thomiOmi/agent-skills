@@ -1,4 +1,4 @@
-import { cp, mkdir, readdir, stat } from "node:fs/promises";
+import { cp, mkdir, stat } from "node:fs/promises";
 import { consola } from "consola";
 import { join } from "pathe";
 import { getGlobalAgentsRoot, getGlobalRoot, repoSubdir } from "../lib/paths";
@@ -23,6 +23,7 @@ export async function syncCommand(opts: SyncOptions): Promise<void> {
   const repoRoot = opts.repoRoot ?? repoSubdir(".");
   const globalRoot = getGlobalRoot(opts.targetDir);
   const agentsRoot = getGlobalAgentsRoot(opts.targetDir);
+  const globalAgentsFile = join(repoRoot, "instructions", "AGENTS.md");
 
   if (!(await exists(globalRoot))) {
     if (opts.dryRun) {
@@ -33,12 +34,13 @@ export async function syncCommand(opts: SyncOptions): Promise<void> {
     }
   }
 
-  const sections: { name: string; src: string; dst: string; type: "file" | "dir" }[] = [
-    { name: "agents", src: join(repoRoot, "agents"), dst: join(globalRoot, "agents"), type: "file" as const },
-    { name: "skills", src: join(repoRoot, "skills"), dst: join(globalRoot, "skills"), type: "dir" as const },
-    { name: "agent-skills (~/.agents/skills)", src: join(repoRoot, "skills"), dst: join(agentsRoot, "skills"), type: "dir" as const },
-    { name: "tools", src: join(repoRoot, "tools"), dst: join(globalRoot, "tools"), type: "file" as const },
-    { name: "commands", src: join(repoRoot, "commands"), dst: join(globalRoot, "commands"), type: "file" as const },
+  const sections: { name: string; src: string; dst: string; type: "file" | "directory" }[] = [
+    { name: "AGENTS.md", src: globalAgentsFile, dst: join(globalRoot, "AGENTS.md"), type: "file" },
+    { name: "agents", src: join(repoRoot, "agents"), dst: join(globalRoot, "agents"), type: "directory" },
+    { name: "skills", src: join(repoRoot, "skills"), dst: join(globalRoot, "skills"), type: "directory" },
+    { name: "agent-skills (~/.agents/skills)", src: join(repoRoot, "skills"), dst: join(agentsRoot, "skills"), type: "directory" },
+    { name: "tools", src: join(repoRoot, "tools"), dst: join(globalRoot, "tools"), type: "directory" },
+    { name: "commands", src: join(repoRoot, "commands"), dst: join(globalRoot, "commands"), type: "directory" },
   ];
 
   consola.info(`Repo:   ${repoRoot}`);
@@ -47,46 +49,36 @@ export async function syncCommand(opts: SyncOptions): Promise<void> {
   consola.log("");
 
   for (const section of sections) {
-    await mkdir(section.dst, { recursive: true });
+    if (section.type === "directory") {
+      await mkdir(section.dst, { recursive: true });
+    }
+    else {
+      await mkdir(join(section.dst, ".."), { recursive: true });
+    }
 
     if (!(await exists(section.src))) {
       consola.warn(`source not found: ${section.src}`);
       continue;
     }
 
-    const entries = await readdir(section.src, { withFileTypes: true });
+    if (section.type === "file") {
+      if (opts.dryRun) {
+        consola.log(`  [dry-run] copy ${section.name}`);
+      }
+      else {
+        await cp(section.src, section.dst);
+        consola.log(`  ok  ${section.name}`);
+      }
+      consola.log("");
+      continue;
+    }
 
-    if (section.type === "dir") {
-      const dirs = entries.filter(e => e.isDirectory()).map(e => e.name);
-      consola.log(`Syncing ${dirs.length} ${section.name}...`);
-      const tasks = dirs.map(async (name) => {
-        const src = join(section.src, name);
-        const dst = join(section.dst, name);
-        if (opts.dryRun) {
-          consola.log(`  [dry-run] ${section.name.slice(0, -1)} ${name}`);
-        }
-        else {
-          await cp(src, dst, { recursive: true, force: true });
-          consola.log(`  ok  ${section.name.slice(0, -1)} ${name}`);
-        }
-      });
-      await Promise.all(tasks);
+    if (opts.dryRun) {
+      consola.log(`  [dry-run] sync ${section.name}`);
     }
     else {
-      const files = entries.filter(e => e.isFile()).map(e => e.name);
-      consola.log(`Syncing ${files.length} ${section.name}...`);
-      const tasks = files.map(async (name) => {
-        const src = join(section.src, name);
-        const dst = join(section.dst, name);
-        if (opts.dryRun) {
-          consola.log(`  [dry-run] ${section.name.slice(0, -1)} ${name}`);
-        }
-        else {
-          await cp(src, dst);
-          consola.log(`  ok  ${section.name.slice(0, -1)} ${name}`);
-        }
-      });
-      await Promise.all(tasks);
+      await cp(section.src, section.dst, { recursive: true, force: true });
+      consola.log(`  ok  ${section.name}`);
     }
     consola.log("");
   }
