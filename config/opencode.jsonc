@@ -9,8 +9,7 @@
   "subagent_depth": 2,
 
   "instructions": [
-    "AGENTS.md",
-    "OPENCODE.md"
+    "AGENTS.md"
   ],
 
   "formatter": true,

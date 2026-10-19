@@ -124,7 +124,7 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   const repoSkills = join(repoRoot, "skills");
   const repoTools = join(repoRoot, "tools");
   const repoCommands = join(repoRoot, "commands");
-  const repoAgentsMd = join(repoRoot, "AGENTS.md");
+  const repoGlobalAgentsMd = join(repoRoot, "instructions", "AGENTS.md");
 
   const useSymlinks = await canCreateSymlinks();
   const symLabel = useSymlinks ? "available" : "NOT available - falling back to copy";
@@ -143,8 +143,8 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   if (!(await exists(repoSkills))) {
     throw new Error(`Missing source: ${repoSkills}`);
   }
-  if (!(await exists(repoAgentsMd))) {
-    throw new Error(`Missing source: ${repoAgentsMd}`);
+  if (!(await exists(repoGlobalAgentsMd))) {
+    throw new Error(`Missing source: ${repoGlobalAgentsMd}`);
   }
 
   // Backup (sequential)
@@ -163,14 +163,14 @@ export async function symlinkCommand(opts: SymlinkOptions): Promise<void> {
   consola.log("\n==> Linking AGENTS.md");
   const agentsMdDst = join(dstRoot, "AGENTS.md");
   if (useSymlinks) {
-    await safeLink(agentsMdDst, repoAgentsMd, "AGENTS.md", opts.dryRun ?? false);
+    await safeLink(agentsMdDst, repoGlobalAgentsMd, "AGENTS.md", opts.dryRun ?? false);
   }
   else {
     if (opts.dryRun) {
       consola.log("  [dry-run] copy AGENTS.md");
     }
     else {
-      await cp(repoAgentsMd, agentsMdDst);
+      await cp(repoGlobalAgentsMd, agentsMdDst);
       consola.log("  copy AGENTS.md");
     }
   }

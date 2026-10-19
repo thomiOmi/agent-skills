@@ -84,7 +84,7 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
     ...template,
     $schema: "https://opencode.ai/config.json",
     default_agent: "plan",
-    instructions: template.instructions ?? ["AGENTS.md", "OPENCODE.md"],
+    instructions: template.instructions ?? ["AGENTS.md"],
     small_model: "opencode/deepseek-v4-flash-free",
   };
 
