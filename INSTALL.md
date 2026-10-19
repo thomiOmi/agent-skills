@@ -104,14 +104,15 @@ Distribution status:
 1. **Local clone (active)** - the primary install path. Clone this repo and run
    `bun run setup` (or `setup:symlink` for live editing). Everything works:
    agents, skills, tools, commands, and the plugin guards.
-2. **GitHub source (requires public repo)** - `install --source github:thomiOmi/agent-skills`
-   downloads via the GitHub tarball API without auth, so it only works if the
-   repo is public. It currently returns 404 because the repo is private.
+2. **GitHub source (active)** - `install --source github:thomiOmi/agent-skills`
+   downloads via the GitHub tarball API without auth. The repository is public,
+   so this source works without GitHub credentials.
 3. **npm (not published yet)** - `bunx @thomiomi/agent-skills@latest install`
    and the `"plugin": ["@thomiomi/agent-skills"]` config entry activate only
    after the package owner runs `bun publish` (npm login + 2FA required).
 
-Until npm publish happens, always install from a local clone.
+Until npm publish happens, install from a local clone or the public GitHub
+source.
 
 Install as an OpenCode plugin (after publish):
 
