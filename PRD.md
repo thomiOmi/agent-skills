@@ -13,7 +13,7 @@ The agent-skills project enables OpenCode users to work with a curated collectio
 - Provide a custom tool for quality verification
 - Follow OpenCode v2 conventions: agents as markdown, skills as SKILL.md, custom tools as TypeScript or Python
 - Keep the skill catalog harness-neutral (open Agent Skills format) so future agent runtimes beyond OpenCode can adopt it via an integration-layer adapter
-- Vendor anthropics plugin-dev as development-only authoring reference
+- Follow the Agent Skills specification and repository authoring conventions
 - Enable non-developer users (vibe coders, sales, marketing, designers) to use the system effectively
 
 ## 3. Target Users
@@ -167,7 +167,7 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API.
 - 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
 - Plugin registration via OpenCode plugin API
 - File-based task tracking and persistence (`TASKS.md`)
-- Development-only authoring reference: plugin-dev
+- Authoring standards: agentskills.io for skills and OpenCode conventions for integration files
 - Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md, TASKS.md
 
 ### Out of Scope
@@ -176,5 +176,5 @@ The plugin registers agents, skills, and tools via the OpenCode plugin API.
 - Instructions URL auto-write
 - Custom notification plugins
 - Custom chat export plugins
-- Porting vendored Claude Code tooling to OpenCode format (plugin-dev stays as read-only reference; adaptation happens through shims and config, not rewrites)
+- Porting external harness tooling into the current milestone; future harness support belongs in integration-layer adapters
 - Multi-harness integration adapters (Claude Code, Codex CLI) in the current milestone; they are a backlog direction after the OpenCode integration layer stabilizes
