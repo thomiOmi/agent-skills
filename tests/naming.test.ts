@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { normalizeCommand, isValidSlug } from "../src/lib/naming";
+import { isValidSlug, normalizeCommand } from "../src/lib/naming";
 
 describe("Lib Naming (scule)", () => {
   it("normalizes command file names to slash commands", () => {

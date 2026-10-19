@@ -1,9 +1,10 @@
-import { readFile, writeFile, stat } from "fs/promises";
-import { join, resolve } from "pathe";
-import { parseJSONC, stringifyJSONC } from "confbox";
-import { defu } from "defu";
+import { readFile, stat, writeFile } from "node:fs/promises";
+import process from "node:process";
 import { loadConfig } from "c12";
+import { parseJSONC, stringifyJSONC } from "confbox";
 import { consola } from "consola";
+import { defu } from "defu";
+import { join, resolve } from "pathe";
 import { getGlobalRoot, repoSubdir } from "./paths";
 
 async function exists(path: string): Promise<boolean> {
@@ -35,38 +36,38 @@ function asRecord(value: object): Record<string, unknown> {
 }
 
 export interface MergeConfigOptions {
-  dryRun?: boolean
-  backupPath?: string | null
-  targetDir?: string
-  repoRoot?: string
+  dryRun?: boolean;
+  backupPath?: string | null;
+  targetDir?: string;
+  repoRoot?: string;
 }
 
 export interface OpenCodeConfig {
-  $schema: string
-  default_agent: string
-  shell?: string
-  subagent_depth: number
-  small_model?: string
-  model?: string
-  permission?: Record<string, unknown>
-  instructions?: string[]
-  formatter?: unknown
-  lsp?: unknown
-  watcher?: unknown
-  mcp?: Record<string, unknown>
-  provider?: Record<string, unknown>
-  plugin?: string[]
+  $schema: string;
+  default_agent: string;
+  shell?: string;
+  subagent_depth: number;
+  small_model?: string;
+  model?: string;
+  permission?: Record<string, unknown>;
+  instructions?: string[];
+  formatter?: unknown;
+  lsp?: unknown;
+  watcher?: unknown;
+  mcp?: Record<string, unknown>;
+  provider?: Record<string, unknown>;
+  plugin?: string[];
 }
 
 export interface OpenCodeTuiConfig {
-  $schema?: string
-  theme?: string
-  keybinds?: Record<string, unknown>
-  attention?: Record<string, unknown>
-  cursor?: Record<string, unknown>
-  diff_style?: string
-  scroll_speed?: number
-  [key: string]: unknown
+  $schema?: string;
+  theme?: string;
+  keybinds?: Record<string, unknown>;
+  attention?: Record<string, unknown>;
+  cursor?: Record<string, unknown>;
+  diff_style?: string;
+  scroll_speed?: number;
+  [key: string]: unknown;
 }
 
 export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeConfig> {
@@ -130,14 +131,30 @@ export async function buildConfig(opts: MergeConfigOptions): Promise<OpenCodeCon
 
       if (old) {
         const oldSelected: Record<string, unknown> = {};
-        if (typeof old.small_model === "string") oldSelected.small_model = old.small_model;
-        if (typeof old.model === "string") oldSelected.model = old.model;
-        if (typeof old.shell === "string") oldSelected.shell = old.shell;
-        if (old.lsp !== undefined) oldSelected.lsp = old.lsp;
-        if (old.formatter !== undefined) oldSelected.formatter = old.formatter;
-        if (old.provider !== undefined) oldSelected.provider = old.provider;
-        if (old.permission !== undefined) oldSelected.permission = old.permission;
-        if (Array.isArray(old.plugin)) oldSelected.plugin = old.plugin;
+        if (typeof old.small_model === "string") {
+          oldSelected.small_model = old.small_model;
+        }
+        if (typeof old.model === "string") {
+          oldSelected.model = old.model;
+        }
+        if (typeof old.shell === "string") {
+          oldSelected.shell = old.shell;
+        }
+        if (old.lsp !== undefined) {
+          oldSelected.lsp = old.lsp;
+        }
+        if (old.formatter !== undefined) {
+          oldSelected.formatter = old.formatter;
+        }
+        if (old.provider !== undefined) {
+          oldSelected.provider = old.provider;
+        }
+        if (old.permission !== undefined) {
+          oldSelected.permission = old.permission;
+        }
+        if (Array.isArray(old.plugin)) {
+          oldSelected.plugin = old.plugin;
+        }
         if (old.mcp !== undefined && typeof old.mcp === "object" && old.mcp !== null) {
           oldSelected.mcp = old.mcp;
           const names = Object.keys(old.mcp).join(", ");

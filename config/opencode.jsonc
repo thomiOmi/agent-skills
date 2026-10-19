@@ -39,7 +39,7 @@
       ".env.local",
       ".env.*.local"
     ]
-  },
+  }
 
   // Skill loading permissions (wildcard patterns). Uncomment and adapt.
   // "permission": {

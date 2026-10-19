@@ -1,9 +1,10 @@
+import type { InstallMode } from "./commands/install";
 import { defineCommand, runMain } from "citty";
-import { resolve } from "pathe";
 import { consola } from "consola";
+import { resolve } from "pathe";
 import { readPackageJSON } from "pkg-types";
+import { installCommand } from "./commands/install";
 import { getRepoRoot } from "./lib/paths";
-import { installCommand, type InstallMode } from "./commands/install";
 
 const installArgs = {
   "mode": {

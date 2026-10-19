@@ -1,38 +1,39 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import process from "node:process";
 
 export interface VerificationDetail {
-  criterion: string
-  passed: boolean
-  message: string
+  criterion: string;
+  passed: boolean;
+  message: string;
 }
 
 export interface VerificationOptions {
-  checkLint?: boolean
-  checkTypecheck?: boolean
-  checkTests?: boolean
-  checkNoDebug?: boolean
-  checkDocstrings?: boolean
+  checkLint?: boolean;
+  checkTypecheck?: boolean;
+  checkTests?: boolean;
+  checkNoDebug?: boolean;
+  checkDocstrings?: boolean;
   /** Project root used to resolve package.json scripts and relative file paths. Defaults to process.cwd(). */
-  cwd?: string
+  cwd?: string;
 }
 
 export interface VerificationResult {
-  pass: boolean
-  details: VerificationDetail[]
+  pass: boolean;
+  details: VerificationDetail[];
 }
 
-const DEBUG_PATTERN = /\bconsole\.(log|debug|info|warn|error)\s*\(|\bdebugger\b|^\s*print\s*\(/;
+const DEBUG_PATTERN = /\bconsole\.(?:log|debug|info|warn|error)\s*\(|\bdebugger\b|^\s*print\s*\(/;
 const EXPORT_DECLARATION
-  = /^\s*export\s+(?:default\s+)?(?:async\s+)?(?:function\s*\*?|class|const|let|var)\s+[A-Za-z_$][\w$]*/;
+  = /^\s*export\s+(?:default\s+)?(?:async\s+)?(?:function\*?|class|const|let|var)\s+[A-Za-z_$][\w$]*/;
 const DOCSTRING_MARK = /\/\*\*/;
 const DOCSTRING_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"];
 const MAX_LISTED = 5;
 
 interface CommandOutcome {
-  passed: boolean
-  message: string
+  passed: boolean;
+  message: string;
 }
 
 function runCommand(command: string, args: string[], cwd: string, useShell: boolean): CommandOutcome {

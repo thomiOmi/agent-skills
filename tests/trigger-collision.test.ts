@@ -1,11 +1,11 @@
+import { readdir, readFile, stat } from "node:fs/promises";
 import { describe, expect, it } from "bun:test";
-import { readdir, readFile, stat } from "fs/promises";
 import { join } from "pathe";
 import parseYaml from "yaml";
 
 interface SkillInfo {
-  name: string
-  description: string
+  name: string;
+  description: string;
 }
 
 const skillsDir = join(import.meta.dir, "..", "skills");
@@ -28,10 +28,12 @@ async function loadSkills(): Promise<SkillInfo[]> {
   for (const entry of entries) {
     const skillFilePath = join(skillsDir, entry, "SKILL.md");
     const exists = await stat(skillFilePath).then(() => true).catch(() => false);
-    if (!exists) continue;
+    if (!exists) {
+      continue;
+    }
     const content = await readFile(skillFilePath, "utf-8");
     const frontmatterRaw = content.split("---")[1] ?? "";
-    const frontmatter = parseYaml.parse(frontmatterRaw) as { name?: string, description?: string };
+    const frontmatter = parseYaml.parse(frontmatterRaw) as { name?: string; description?: string };
     if (typeof frontmatter.name === "string" && typeof frontmatter.description === "string") {
       skills.push({ name: frontmatter.name, description: frontmatter.description });
     }
@@ -85,7 +87,9 @@ describe("Skill Catalog Routing Health", () => {
       const seen = new Set<string>();
       for (const raw of extractQuotedPhrases(skill.description)) {
         const trigger = normalizeTrigger(raw);
-        if (trigger.length === 0) continue;
+        if (trigger.length === 0) {
+          continue;
+        }
         if (seen.has(trigger)) {
           duplicates.push(`${skill.name}: duplicate trigger "${trigger}"`);
         }
@@ -99,7 +103,7 @@ describe("Skill Catalog Routing Health", () => {
   it("descriptions reference other skills by name, never by file path", async () => {
     const skills = await loadSkills();
     const violations: string[] = [];
-    const pathPattern = /(?:skills\/|references\/|assets\/|SKILL\.md)/i;
+    const pathPattern = /skills\/|references\/|assets\/|SKILL\.md/i;
 
     for (const skill of skills) {
       if (pathPattern.test(skill.description)) {
