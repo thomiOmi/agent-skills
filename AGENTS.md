@@ -1,7 +1,8 @@
 # AGENTS.md
 
 Project-level agent instructions for the agent-skills project.
-Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, `instructions/AGENTS.md`, `instructions/OPENCODE.md` and `SPEC.md`.
+Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md`.
+`instructions/AGENTS.md` (global agent rules) and `instructions/OPENCODE.md` (OpenCode built-in tools reference) are available as needed; they are not auto-loaded by the installer and do not need to be read at the start of every session.
 
 ## Document Map
 
