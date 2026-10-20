@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Project-level agent instructions for the agent-skills project.
-Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md`.
+Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, `instructions/AGENTS.md`, `instructions/OPENCODE.md` and `SPEC.md`.
 
 ## Document Map
 
@@ -15,10 +15,10 @@ cross-reference it, not repeat the details.
 | `INSTALL.md` | Full install/deploy reference | Every install option, deployment map, per-agent model overrides |
 | `AGENTS.md` (this file) | Canonical agent roster, commands, boundaries, formatting rules | Which agents exist, what commands to run, what an agent must never do |
 | `PRD.md` | Product goals, personas, requirements, scope | Why this project exists and what is in or out of scope |
-| `ARCHITECTURE.md` | System design, diagrams, eval pipeline, plugin hooks | How the pieces fit together technically |
+| `ARCHITECTURE.md` | System design, diagrams, plugin hooks | How the pieces fit together technically |
 | `TASKS.md` | Live state: what is done, in progress, planned, and backlogged | What is already shipped and what is next |
 | `DECISIONS.md` | Historical record of architectural choices | Why something was built this way instead of another way |
-| `SPEC.md` | Agent Skills format spec, eval tooling mechanics | How to author a new skill, how skill evaluation works |
+| `SPEC.md` | Agent Skills format spec | How to author a new skill; how skill specification validation works |
 | `EVALUATION.md` | Historical static evaluation and audit snapshot | What an earlier audit assessed; not current project status |
 
 Priority order (highest to lowest):
@@ -51,7 +51,7 @@ Run these from the project root. Never run `npm publish` locally.
 | `bun test tests/<path>` | Single test file |
 | `bun run changelog` | Regenerate CHANGELOG.md from conventional commits (changelogen, no version bump) |
 | `bun run release` | Prepare a release: bump version, update CHANGELOG.md, create a release commit and tag (changelogen) |
-| `bun run setup` | Install agents/skills/tools/commands/config to ~/.config/opencode/ (backup, overwrite, config merge) |
+| `bun run setup` | Install agents/skills/commands/config to ~/.config/opencode/ (backup, overwrite, config merge) |
 | `bun run setup:symlink` | Install via symlinks for live editing |
 | `bun run setup:merge` | Install without wiping global-only items |
 | `bun run cli` | Run the installer CLI directly from the cloned repository |
