@@ -2,13 +2,23 @@
 name: docs-writer
 description: Technical writer - documentation, API specs, READMEs, SDLC docs, guides, and changelogs.
 mode: subagent
-temperature: 0.2
 color: primary
-permission:
-  read: allow
-  edit: allow
-  bash: ask
-  skill: allow
+request:
+  body:
+    temperature: 0.2
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

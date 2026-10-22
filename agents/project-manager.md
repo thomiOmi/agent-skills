@@ -2,13 +2,23 @@
 name: project-manager
 description: Project manager - project planning, milestone tracking, risk management, status reporting, and cross-team coordination.
 mode: subagent
-temperature: 0.3
 color: secondary
-permission:
-  read: allow
-  edit: allow
-  bash: ask
-  skill: allow
+request:
+  body:
+    temperature: 0.3
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

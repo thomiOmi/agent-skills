@@ -2,13 +2,23 @@
 name: backend-developer
 description: Backend developer - API endpoints, business logic, authentication, background jobs, and server-side integration in existing codebases.
 mode: subagent
-temperature: 0.2
 color: accent
-permission:
-  read: allow
-  edit: allow
-  bash: allow
-  skill: allow
+request:
+  body:
+    temperature: 0.2
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

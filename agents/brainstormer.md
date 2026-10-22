@@ -2,13 +2,23 @@
 name: brainstormer
 description: Creative ideation specialist - explores solution space, generates alternatives, challenges assumptions.
 mode: subagent
-temperature: 0.8
 color: "#FF00FF"
-permission:
-  read: allow
-  edit: deny
-  bash: ask
-  skill: allow
+request:
+  body:
+    temperature: 0.8
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

@@ -2,15 +2,26 @@
 name: orchestrator
 description: Task decomposition, delegation, and verification across specialized subagents. Coordinates multi-step workflows with quality gates, resumable task IDs, and TASKS.md checkpointing.
 mode: subagent
-temperature: 0.2
 color: primary
-permission:
-  read: allow
-  edit: allow
-  bash: allow
-  task:
-    "*": allow
-    orchestrator: deny
+request:
+  body:
+    temperature: 0.2
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: orchestrator
+    effect: deny
 ---
 
 <role>

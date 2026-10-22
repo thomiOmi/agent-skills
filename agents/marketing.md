@@ -2,13 +2,23 @@
 name: marketing
 description: Marketing content specialist - technical copywriting, content strategy, blog posts, release announcements, and SEO.
 mode: subagent
-temperature: 0.4
 color: secondary
-permission:
-  read: allow
-  edit: allow
-  bash: ask
-  skill: allow
+request:
+  body:
+    temperature: 0.4
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

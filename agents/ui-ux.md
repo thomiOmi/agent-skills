@@ -2,13 +2,23 @@
 name: ui-ux
 description: UI/UX engineer - design system, frontend components, accessibility (a11y), responsive layout, and UI polish.
 mode: subagent
-temperature: 0.3
 color: accent
-permission:
-  read: allow
-  edit: allow
-  bash: ask
-  skill: allow
+request:
+  body:
+    temperature: 0.3
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

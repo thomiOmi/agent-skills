@@ -2,13 +2,23 @@
 name: software-architect
 description: Software architect - system design, architecture diagrams, ADRs, trade-off analysis, and architecture reviews before and during implementation.
 mode: subagent
-temperature: 0.3
 color: primary
-permission:
-  read: allow
-  edit: ask
-  bash: allow
-  skill: allow
+request:
+  body:
+    temperature: 0.3
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

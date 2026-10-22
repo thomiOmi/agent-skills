@@ -2,13 +2,23 @@
 name: data-analyst
 description: Data analyst - SQL query design, schema analysis, data modeling, reporting, and query performance tuning.
 mode: subagent
-temperature: 0.2
 color: secondary
-permission:
-  read: allow
-  edit: allow
-  bash: ask
-  skill: allow
+request:
+  body:
+    temperature: 0.2
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

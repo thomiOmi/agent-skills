@@ -2,18 +2,35 @@
 name: deep-thinker
 description: Complex reasoning specialist - root cause analysis, trade-off analysis, verification, and deep research.
 mode: subagent
-temperature: 0.1
 color: primary
-permission:
-  read: allow
-  edit: deny
-  bash:
-    "*": ask
-    "bun test*": allow
-    "npm test*": allow
-  skill: allow
-  webfetch: allow
-  websearch: allow
+request:
+  body:
+    temperature: 0.1
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: bun test*
+    effect: allow
+  - action: shell
+    resource: npm test*
+    effect: allow
+  - action: skill
+    resource: "*"
+    effect: allow
+  - action: webfetch
+    resource: "*"
+    effect: allow
+  - action: websearch
+    resource: "*"
+    effect: allow
 ---
 
 <role>
