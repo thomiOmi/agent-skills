@@ -2,13 +2,23 @@
 name: security-auditor
 description: Security auditor - auth review, OWASP Top 10, vulnerability assessment, data exposure, injection risks.
 mode: subagent
-temperature: 0.1
 color: error
-permission:
-  read: allow
-  edit: deny
-  bash: deny
-  skill: allow
+request:
+  body:
+    temperature: 0.1
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

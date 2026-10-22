@@ -2,13 +2,23 @@
 name: product-manager
 description: Product manager - PRDs, feature specs, user stories, acceptance criteria, and roadmap planning.
 mode: subagent
-temperature: 0.3
 color: secondary
-permission:
-  read: allow
-  edit: allow
-  bash: ask
-  skill: allow
+request:
+  body:
+    temperature: 0.3
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 <role>

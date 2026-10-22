@@ -2,15 +2,29 @@
 name: researcher
 description: Research specialist - technical research, library and tool comparisons, documentation gathering, and evidence-based recommendations with cited sources.
 mode: subagent
-temperature: 0.3
 color: secondary
-permission:
-  read: allow
-  edit: deny
-  bash: ask
-  skill: allow
-  webfetch: allow
-  websearch: allow
+request:
+  body:
+    temperature: 0.3
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: skill
+    resource: "*"
+    effect: allow
+  - action: webfetch
+    resource: "*"
+    effect: allow
+  - action: websearch
+    resource: "*"
+    effect: allow
 ---
 
 <role>
