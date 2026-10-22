@@ -74,6 +74,7 @@ When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly test
 
 - For multi-step tasks, maintain progress in a shared `TASKS.md` file in the working directory (`## Active`, `## Waiting On`, `## Done`).
 - Keep task progress transparent, human-readable, and scannable across sessions.
+- When a task adds, removes, or renames files or directories, review the README Structure section and update its tree and counts if they drifted.
 
 ---
 

@@ -83,7 +83,7 @@ Skills are grouped by SDLC phase - pick the group that matches what you are doin
 
 ### Quick Install
 
-Install agents, skills, commands, tools, and configuration into your global OpenCode setup (`~/.config/opencode/` and `~/.agents/skills/`):
+Install agents, skills, commands, and configuration into your global OpenCode setup (`~/.config/opencode/` and `~/.agents/skills/`):
 
 ```bash
 # Option A: Symlink install (recommended for development)
@@ -137,24 +137,45 @@ Or create `AGENTS.md` manually at the project root:
 
 ```text
 agent-skills/
-|-- README.md
-|-- INSTALL.md
-|-- PRD.md
-|-- SPEC.md
-|-- AGENTS.md
-|-- DECISIONS.md
-|-- ARCHITECTURE.md
-|-- TASKS.md
-|-- package.json
-|-- tsconfig.json
-|-- agents/            # 20 specialized subagents
-|-- commands/          # 17 slash commands
-|-- config/            # Global opencode.jsonc and tui.jsonc templates
-|-- instructions/      # Global AGENTS.md source
-|-- plugin/            # OpenCode plugin entrypoint
-|-- src/               # CLI installer tooling
-|-- tests/             # Test suites
-\-- skills/            # 34 atomic domain skills
+├── AGENTS.md           # Contributor + agent instructions (project context)
+├── ARCHITECTURE.md     # System design, diagrams, plugin hooks
+├── CHANGELOG.md        # Generated release history (changelogen)
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── DECISIONS.md        # Architectural decisions and audit history
+├── EVALUATION.md       # Historical eval snapshot (not current status)
+├── INSTALL.md          # Full install and deploy reference
+├── LICENSE
+├── PRD.md              # Product goals, requirements, scope
+├── README.md           # Repo overview, skill list, install instructions
+├── SECURITY.md
+├── SPEC.md             # Agent Skills format spec
+├── TASKS.md            # Live state: roadmap, changelog, backlog
+├── bun.lock
+├── commitlint.config.mjs
+├── eslint.config.js
+├── opencode.jsonc      # Global config template
+├── package.json
+├── tsconfig.json
+├── .editorconfig
+├── .gitignore
+├── .github/            # CI workflows, issue and PR templates, dependabot
+├── .vscode/            # Editor settings and extension recommendations
+├── agents/             # 20 specialized subagents (*.md)
+├── commands/           # 17 slash commands (*.md)
+├── config/             # Global opencode.jsonc and tui.jsonc templates
+├── instructions/       # Global AGENTS.md + OPENCODE.md source
+├── plugin/             # OpenCode plugin entrypoint + hooks
+│   ├── agent-skills.ts   # Plugin registration (hooks, no custom tools)
+│   ├── compaction.ts     # TASKS.md state into compaction prompt
+│   ├── secrets-scanner.ts # Blocks writes containing secrets
+│   └── tool-guardian.ts  # Blocks destructive bash commands
+├── scripts/            # ESLint and frontmatter dev utilities
+├── skills/             # 34 atomic domain skills (SKILL.md + resources)
+├── src/                # CLI installer tooling (copy/symlink/merge)
+└── tests/              # Test suites (bun test)
+```
+└── tests/              # Test suites (bun test)
 ```
 
 ---
