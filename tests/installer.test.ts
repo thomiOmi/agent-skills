@@ -1,133 +1,204 @@
-import { mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import type { ConfigEnvironmentSnapshot, InstallerFixture } from "./installer-fixture";
+import { readFile } from "node:fs/promises";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
+import { parseJSONC } from "confbox";
 import { join } from "pathe";
 import { describeSource, installCommand } from "../src/commands/install";
+import { pathExists } from "../src/lib/install/utils";
+import {
+  createInstallerFixture,
+  isolateConfigEnvironment,
+  removeInstallerFixture,
+  writeFixtureFile,
+} from "./installer-fixture";
 
-describe("Installer Commands", () => {
-  let tempDir: string;
+const fixtures: InstallerFixture[] = [];
+const environmentSnapshots: ConfigEnvironmentSnapshot[] = [];
 
-  beforeEach(async () => {
-    tempDir = await mkdtemp(join(tmpdir(), "opencode-installer-test-"));
-  });
+beforeEach(() => {
+  environmentSnapshots.push(isolateConfigEnvironment());
+});
 
-  afterEach(async () => {
-    await rm(tempDir, { recursive: true, force: true });
-    delete process.env.OPENCODE_CONFIG;
-  });
+afterEach(async () => {
+  environmentSnapshots.pop()?.restore();
+  await Promise.all(fixtures.splice(0).map(removeInstallerFixture));
+});
 
-  it("should install files, opencode.jsonc, tui.jsonc, and ~/.agents/skills with copy mode", async () => {
-    await installCommand({ mode: "copy", targetDir: tempDir, skipBackup: true });
+async function createFixture(): Promise<InstallerFixture> {
+  const fixture = await createInstallerFixture();
+  fixtures.push(fixture);
+  return fixture;
+}
 
-    const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
-    const skillsExists = await stat(join(tempDir, "skills")).then(() => true).catch(() => false);
-    const agentSkillsExists = await stat(join(tempDir, "..", ".agents", "skills")).then(() => true).catch(() => false);
-    const commandsExists = await stat(join(tempDir, "commands")).then(() => true).catch(() => false);
-    const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
-    const tuiConfigExists = await stat(join(tempDir, "tui.jsonc")).then(() => true).catch(() => false);
-    const globalAgentsContent = await readFile(join(tempDir, "AGENTS.md"), "utf-8");
+async function readConfig(root: string): Promise<Record<string, unknown>> {
+  const raw = await readFile(join(root, "opencode.jsonc"), "utf-8");
+  return parseJSONC(raw) as Record<string, unknown>;
+}
 
-    expect(agentsExists).toBe(true);
-    expect(skillsExists).toBe(true);
-    expect(agentSkillsExists).toBe(true);
-    expect(commandsExists).toBe(true);
-    expect(configExists).toBe(true);
-    expect(tuiConfigExists).toBe(true);
-    expect(globalAgentsContent).toContain("Global rules for all AI coding agents.");
-    expect(globalAgentsContent).not.toContain("Project-level agent instructions for the agent-skills project.");
+describe("Installer commands", () => {
+  it("defaults to merge mode and writes files, config, and a manifest", async () => {
+    const fixture = await createFixture();
 
-    const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
-    expect(configContent).toContain("\"instructions\": [\n    \"AGENTS.md\"\n  ]");
-    expect(configContent).not.toContain("OPENCODE.md");
-  });
-
-  it("should default to copy mode when no mode is given", async () => {
-    await installCommand({ targetDir: tempDir, skipBackup: true });
-
-    const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
-    expect(configExists).toBe(true);
-  });
-
-  it("should detect existing opencode.json or opencode.jsonc and merge settings", async () => {
-    const existingOpencodeJson = join(tempDir, "opencode.json");
-    await writeFile(existingOpencodeJson, JSON.stringify({
-      model: "custom/model-id",
-      mcp: { myMcp: { enabled: true } },
-    }));
-
-    await installCommand({ mode: "copy", targetDir: tempDir, skipBackup: true });
-
-    const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
-    expect(configContent).toContain("custom/model-id");
-    expect(configContent).toContain("myMcp");
-  });
-
-  it("should respect OPENCODE_CONFIG env var for custom config discovery", async () => {
-    const customConfigPath = join(tempDir, "custom-opencode.json");
-    await writeFile(customConfigPath, JSON.stringify({
-      model: "custom-env/model-id",
-    }));
-
-    process.env.OPENCODE_CONFIG = customConfigPath;
-
-    await installCommand({ mode: "copy", targetDir: tempDir, skipBackup: true });
-
-    const configContent = await readFile(join(tempDir, "opencode.jsonc"), "utf-8");
-    expect(configContent).toContain("custom-env/model-id");
-  });
-
-  it("should merge files into target directory with merge mode", async () => {
-    await installCommand({ mode: "merge", targetDir: tempDir });
-
-    const agents = await readdir(join(tempDir, "agents"));
-    const skills = await readdir(join(tempDir, "skills"));
-    const agentSkills = await readdir(join(tempDir, "..", ".agents", "skills"));
-    const globalAgentsContent = await readFile(join(tempDir, "AGENTS.md"), "utf-8");
-
-    expect(agents.length).toBeGreaterThan(0);
-    expect(skills.length).toBeGreaterThan(0);
-    expect(agentSkills.length).toBeGreaterThan(0);
-    expect(globalAgentsContent).toContain("Global rules for all AI coding agents.");
-  });
-
-  it("should symlink or copy files to target directory with symlink mode", async () => {
-    await installCommand({ mode: "symlink", targetDir: tempDir });
-
-    const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
-    const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
-    const tuiConfigExists = await stat(join(tempDir, "tui.jsonc")).then(() => true).catch(() => false);
-
-    expect(agentsExists).toBe(true);
-    expect(configExists).toBe(true);
-    expect(tuiConfigExists).toBe(true);
-  });
-
-  it("should reject unknown install modes", async () => {
-    await installCommand({ mode: "deploy" as never, targetDir: tempDir }).catch((err: Error) => {
-      expect(err.message).toContain("Unknown install mode");
-    });
-  });
-
-  it("should install from a local source path", async () => {
-    const repoRoot = join(import.meta.dir, "..");
-    await installCommand({ source: repoRoot, mode: "copy", targetDir: tempDir, skipBackup: true });
-
-    const configExists = await stat(join(tempDir, "opencode.jsonc")).then(() => true).catch(() => false);
-    const agentsExists = await stat(join(tempDir, "agents")).then(() => true).catch(() => false);
-    expect(configExists).toBe(true);
-    expect(agentsExists).toBe(true);
-  });
-
-  it("should reject remote source URLs", async () => {
-    await expect(installCommand({
-      source: "github:thomiOmi/agent-skills",
-      mode: "copy",
-      targetDir: tempDir,
+    const result = await installCommand({
+      source: fixture.repo,
+      targetDir: fixture.target,
       skipBackup: true,
-    })).rejects.toThrow("Remote source installation is not supported");
+    });
+
+    expect(result.mode).toBe("merge");
+    expect(await pathExists(join(fixture.target, "agents"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "skills"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "commands"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "plugins"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "AGENTS.md"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "opencode.jsonc"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "tui.jsonc"))).toBe(true);
+    expect(await pathExists(join(fixture.target, ".agent-skills-manifest.json")))
+      .toBe(true);
+
+    const config = await readConfig(fixture.target);
+    expect(config.instructions).toEqual(["AGENTS.md"]);
+    expect(config.experimental).toEqual({ subagent_depth: 2 });
+    expect(config.OPENCODE).toBeUndefined();
+
+    const manifest = JSON.parse(
+      await readFile(join(fixture.target, ".agent-skills-manifest.json"), "utf-8"),
+    ) as { schemaVersion: number; packageVersion: string; files: Record<string, unknown> };
+    expect(manifest.schemaVersion).toBe(1);
+    expect(manifest.packageVersion).toBe("9.9.9");
+    expect(Object.keys(manifest.files).length).toBeGreaterThan(0);
   });
 
-  it("should describe sources", () => {
+  it("preserves global-only files and settings in merge mode", async () => {
+    const fixture = await createFixture();
+    await writeFixtureFile(fixture.target, "agents/global-only.md", "global agent");
+    await writeFixtureFile(fixture.target, "skills/global-only/SKILL.md", "global skill");
+    await writeFixtureFile(fixture.target, "plugins/global-only.ts", "export default {};");
+    await writeFixtureFile(
+      fixture.target,
+      "opencode.json",
+      JSON.stringify({ default_agent: "build", model: "custom/model" }, null, 2),
+    );
+
+    await installCommand({
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+
+    expect(await readFile(join(fixture.target, "agents/global-only.md"), "utf-8"))
+      .toBe("global agent");
+    expect(await readFile(join(fixture.target, "skills/global-only/SKILL.md"), "utf-8"))
+      .toBe("global skill");
+    expect(await readFile(join(fixture.target, "plugins/global-only.ts"), "utf-8"))
+      .toBe("export default {};");
+
+    const config = parseJSONC(
+      await readFile(join(fixture.target, "opencode.json"), "utf-8"),
+    ) as Record<string, unknown>;
+    expect(config.default_agent).toBe("build");
+    expect(config.model).toBe("custom/model");
+    expect(config.instructions).toEqual(["AGENTS.md"]);
+    expect(await pathExists(join(fixture.target, "opencode.jsonc"))).toBe(false);
+  });
+
+  it("uses OPENCODE_CONFIG as a config source", async () => {
+    const fixture = await createFixture();
+    const externalPath = await writeFixtureFile(
+      fixture.sandbox,
+      "external.jsonc",
+      JSON.stringify({ model: "custom-env/model" }, null, 2),
+    );
+    process.env.OPENCODE_CONFIG = externalPath;
+
+    await installCommand({
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+
+    const config = await readConfig(fixture.target);
+    expect(config.model).toBe("custom-env/model");
+    expect(config.instructions).toEqual(["AGENTS.md"]);
+  });
+
+  it("creates files in symlink mode with a copy fallback", async () => {
+    const fixture = await createFixture();
+
+    await installCommand({
+      mode: "symlink",
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+
+    expect(await readFile(join(fixture.target, "agents/orchestrator.md"), "utf-8"))
+      .toContain("Fixture orchestrator");
+    expect(await readFile(join(fixture.target, "skills/alpha/SKILL.md"), "utf-8"))
+      .toContain("Alpha fixture skill");
+    expect(await pathExists(join(fixture.target, "opencode.jsonc"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "tui.jsonc"))).toBe(true);
+  });
+
+  it("accepts copy as a deprecated alias for replace", async () => {
+    const fixture = await createFixture();
+
+    const result = await installCommand({
+      mode: "copy",
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+
+    expect(result.mode).toBe("replace");
+    expect(await pathExists(join(fixture.target, "agents/orchestrator.md"))).toBe(true);
+  });
+
+  it("is idempotent on a second merge run", async () => {
+    const fixture = await createFixture();
+    const first = await installCommand({
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+
+    const second = await installCommand({
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+
+    expect(second.created).toBe(0);
+    expect(second.updated).toBe(0);
+    expect(second.kept).toBe(0);
+    expect(second.deleted).toBe(0);
+    expect(second.unchanged).toBe(first.created);
+  });
+
+  it("rejects unknown install modes", async () => {
+    const fixture = await createFixture();
+
+    await expect(
+      installCommand({
+        mode: "deploy" as never,
+        source: fixture.repo,
+        targetDir: fixture.target,
+      }),
+    ).rejects.toThrow("Unknown install mode");
+  });
+
+  it("rejects remote source URLs", async () => {
+    const fixture = await createFixture();
+
+    await expect(
+      installCommand({
+        source: "github:thomiOmi/agent-skills",
+        targetDir: fixture.target,
+      }),
+    ).rejects.toThrow("Remote source installation is not supported");
+  });
+
+  it("describes sources", () => {
     expect(describeSource(undefined)).toContain("local repo");
     expect(describeSource("C:/some/path")).toContain("local path");
   });

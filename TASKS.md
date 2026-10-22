@@ -8,6 +8,10 @@ Roadmap and backlog for the agent-skills project.
 
 ### Done
 
+- Installer refactor 0.5.0: ownership-aware plan/execute (`src/lib/install/`), SHA-256 manifest at `<configRoot>/.agent-skills-manifest.json`, merge as the default with explicit replace and symlink modes plus a copy alias, config-root-only backups, deep config merge (user values win, arrays atomic, V2 and unknown keys preserved, `instructions` append, `experimental.subagent_depth` migration, strict JSONC errors), no `~/.agents` writes, and deletion of the separate deploy/sync/symlink commands - 2026-10-23
+- P0 installer regression tests: plan classification, config merge, safety (third-party and modified file preservation, replace force and backup, invalid config and corrupt manifest force behavior, dry run, no sibling `.agents`), agent V2 permissions, and docs consistency; suite at 85 tests across 12 files - 2026-10-23
+- Agent alignment: all 20 agents on the V2 `permissions` array, orchestrator/qa-engineer/deep-thinker quality commands are language-agnostic, and AGENTS.md Key Skills match each agent's `skills_to_load` - 2026-10-23
+- Docs and metadata: DECISIONS, ARCHITECTURE, PRD, README, INSTALL, AGENTS, SECURITY, package description, and dependencies (`c12`/`defu` removed) updated for the installer refactor - 2026-10-23
 - Eval harness validity fixes: grading key isolated from executor cwd (`graded/expected_output.txt`), default executor `opencode run --agent build --auto` so candidates execute instead of answering in plan mode - 2026-09-17
 - git-workflow 1.2.0: "Defaults Before Clarification" replaces "Clarify Before Acting" (iteration-1 diagnosis: model deferred specific tasks with clarifying questions, 0/7 with vs 7/7 without) - 2026-09-17
 - Eval iteration-1 baseline batch: all 33 skills, 79 cases, 158 runs via resumable lane, zero retries (~4.5 hrs); aggregate with_skill 49/79 vs without_skill 53/79; failure causes classified (plan-mode behavior, grading-key contamination, clarify-pattern) - 2026-09-17
@@ -33,10 +37,11 @@ Roadmap and backlog for the agent-skills project.
 
 ### In Progress
 
-- No active audit PR.
+- No active implementation work. The installer refactor is complete and awaiting merge.
 
 ### Planned
 
+- Release 0.5.0: after the installer refactor merges to `main`, run `bun run release` to bump the version, update `CHANGELOG.md`, and create the release commit and tag. Do not edit the version manually.
 - Repository-audit follow-up sequence (audit findings and evidence are recorded in the prior review discussion):
   - PR 1 - Package distribution and installer validation. Include every installer source in `package.json.files` and add a regression test for the published file set. Reviewed and merged as PR #51.
   - PR 2 - Canonical global instruction source. Deploy `instructions/AGENTS.md` as the user-level `AGENTS.md`, keep the root `AGENTS.md` for repository contributors, stop loading `OPENCODE.md` automatically, and test copy, symlink, and merge modes. Reviewed and merged as PR #52.
@@ -84,7 +89,8 @@ Unscheduled personal notes (not part of the roadmap):
 
 | Date | Change |
 |---|---|
-| 2026-10-22 | OpenCode v2 documentation audit: INSTALL.md model and permission examples corrected to V2 shapes (`model: provider/model#variant`, provider options under `request.body`, ordered `permissions` array with `shell`/`subagent` actions, `agents` map), the `cline/*` example IDs replaced with built-in provider IDs, `config/opencode.jsonc` comment example updated; ARCHITECTURE.md and PRD.md no longer claim native v2 conventions while the 20 agent files still use the V1 permission map, which is now recorded as a known gap in DECISIONS.md |
+| 2026-10-23 | Installer refactor for 0.5.0: ownership-aware planner/executor with a SHA-256 manifest, merge as the default mode, explicit replace and symlink modes, copy as a deprecated replace alias, config-root-only backups, deep config merge with strict JSONC errors and `experimental.subagent_depth` migration, no `~/.agents` writes, and removal of the separate deploy/sync/symlink commands; added P0 tests for planning, config merge, safety, agent V2 permissions, and docs consistency (85 tests across 12 files); updated DECISIONS, ARCHITECTURE, PRD, README, INSTALL, AGENTS, SECURITY, TASKS, package description, and removed the unused `c12`/`defu` dependencies |
+| 2026-10-22 | OpenCode v2 documentation audit: INSTALL.md model and permission examples corrected to V2 shapes (`model: provider/model#variant`, provider options under `request.body`, ordered `permissions` array with `shell`/`subagent` actions, `agents` map), the `cline/*` example IDs replaced with built-in provider IDs, `config/opencode.jsonc` comment example updated; ARCHITECTURE.md and PRD.md no longer claim native v2 conventions while the 20 agent files still use the V1 permission map, which is now recorded as a known gap in DECISIONS.md (closed on 2026-10-23 when all agents moved to V2 permissions) |
 | 2026-10-20 | Development-tools audit fixes and custom-tool removal: tool-guardian delete guard rebuilt token-based (now blocks glob targets `/*`, `~/*`, `$HOME/*`, `C:\*`, quoted home vars, traversal forms `/.` `/..` `/tmp/..`, and Windows-native `del`/`rmdir` `/s` `/q`), `git push --force-if-includes` false positive cleared; quality-verifier removed as a custom tool (file-level checks were language-specific and conflicted with the language-agnostic catalog; centralized verification now runs the project's own quality commands), with its tools/ wrapper, skill script, tests, plugin registration, and installer tools/ section deleted; PRD FR-4/FR-5/Scope, ARCHITECTURE, INSTALL, DECISIONS, AGENTS.md synced |
 | 2026-10-20 | Archived the obsolete eval iteration-2 and assertion-grading follow-up plans because their eval runner and workspace were removed; any future evaluation work requires a separately approved redesign |
 | 2026-10-20 | PR 8 issue and pull-request hygiene audit: no open issues or pull requests found; no GitHub metadata changes were needed |

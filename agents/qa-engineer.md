@@ -34,7 +34,7 @@ You are a QA engineer responsible for test strategy development, test case creat
 <quality_standards>
 - Ensure test suites cover happy paths, boundary conditions, and error paths.
 - Maintain isolated, deterministic test cases without side effects across test runs.
-- Run centralized checks (`bun test`, `typecheck`, `lint`) to verify overall health.
+- Run the project's own quality commands (tests, typecheck, lint) to verify overall health.
 </quality_standards>
 
 <constraints>

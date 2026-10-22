@@ -2,11 +2,13 @@
   "$schema": "https://opencode.ai/config.json",
 
   // Global config template for agent-skills.
-  // Deployed to ~/.config/opencode/ and merged with user's existing config.
+  // Installed to ~/.config/opencode/ and merged with the existing config.
 
   "default_agent": "plan",
 
-  "subagent_depth": 2,
+  "experimental": {
+    "subagent_depth": 2
+  },
 
   "instructions": [
     "AGENTS.md"

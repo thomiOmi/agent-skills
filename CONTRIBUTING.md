@@ -44,7 +44,7 @@ installer.
 6. Open a pull request using the repository template.
 
 Do not edit installed files under `~/.config/opencode/` directly. Update the
-repository sources and use the installer when testing deployment behavior.
+repository sources and use the installer when testing installation behavior.
 
 ## Adding repository components
 

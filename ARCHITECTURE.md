@@ -95,7 +95,7 @@ The project is structured in three layers so future harnesses other than OpenCod
 | Layer | Contents | Coupling |
 |---|---|---|
 | Catalog (harness-neutral) | `skills/*/SKILL.md` (open Agent Skills format per agentskills.io), skill scripts/references/assets | No harness assumptions; portable to any agent runtime that reads SKILL.md |
-| Integration (OpenCode-specific) | `agents/*.md` (OpenCode agent format with XML markup), `plugin/` hooks, `config/*.jsonc`, `commands/`, installer (`src/`) | Assumes OpenCode conventions (agent frontmatter still uses the V1 permission map; see DECISIONS.md); swappable per harness |
+| Integration (OpenCode-specific) | `agents/*.md` (OpenCode agent format with XML markup and V2 `permissions` arrays), `plugin/` hooks, `config/*.jsonc`, `commands/`, installer (`src/`) | Assumes OpenCode conventions; swappable per harness |
 
 Adding support for a future harness (for example Claude Code, Codex CLI) means writing a new integration layer (agent format converter, plugin equivalent, installer target) while reusing the catalog untouched.
 
@@ -115,28 +115,50 @@ Workflow: `discussion to plan to orchestrator to test to implement to review to 
 
 ---
 
+## Installer Architecture
+
+The installer converts this repository into a global OpenCode setup without
+overwriting third-party files or user edits. It is OpenCode-only and writes
+under the config root (default `~/.config/opencode/`). It never writes
+`~/.agents/`.
+
+```mermaid
+flowchart LR
+    Repo["Repository source<br/>agents, skills, commands,<br/>plugin, instructions, config"] --> Scan["scan.ts<br/>source mounts + SHA-256"]
+    Scan --> Plan["plan.ts<br/>create / update / delete / keep"]
+    Manifest["manifest.ts<br/>owned paths + hashes"] --> Plan
+    Plan --> Execute["execute.ts<br/>backup, write, config, manifest"]
+    Config["config-merge.ts<br/>strict JSONC + deep merge"] --> Execute
+    Backup["backup.ts<br/>config-root backup"] --> Execute
+    Execute --> Target["~/.config/opencode"]
+    Execute --> Manifest
+```
+
+| Module | Responsibility |
+|---|---|
+| `src/lib/install/scan.ts` | Maps repository sources to install paths, walks directories, and hashes file contents |
+| `src/lib/install/targets.ts` | Resolves config and backup roots and enforces path containment |
+| `src/lib/install/manifest.ts` | Validates, reads, and atomically writes `.agent-skills-manifest.json` |
+| `src/lib/install/plan.ts` | Classifies each path as create, update, delete, or keep and reports conflicts |
+| `src/lib/install/config-merge.ts` | Parses JSONC strictly, deep-merges config defaults, wires instructions, and migrates `subagent_depth` |
+| `src/lib/install/execute.ts` | Runs the plan, writes configs, persists the manifest, and reports counts |
+
+The planner never writes. `installCommand` aborts before execution when
+replace or symlink mode sees an unmanaged conflict without `--force`, or when
+a config cannot be parsed without `--force`. Backups run only when the plan
+contains changes, and the manifest is written atomically after the files.
+
+Config sources are the config-root files plus `OPENCODE_CONFIG` and
+`OPENCODE_TUI_CONFIG`. Project-local cwd configs are not merged into the
+global config. An existing `opencode.json` or `tui.json` is updated in place.
+
+---
+
 ## Skills to Agent Mapping
 
-| Skill | Used By | Purpose |
-|---|---|---|
-| task-decomposition | orchestrator | Breaking down complex tasks and TASKS.md tracking |
-| code-style | senior-developer | Code quality conventions |
-| testing | senior-developer, qa-engineer | Test writing conventions |
-| debugging | senior-developer, qa-engineer | Bug diagnosis workflow |
-| api-conventions | senior-developer | API design consistency |
-| database | senior-developer, data-analyst | Schema, queries, optimization |
-| data-analysis | data-analyst | SQL queries, data modeling, dataset analysis |
-| research-methodology | researcher | Technical research, comparisons, evidence-based recommendations |
-| git-workflow | senior-developer | Git conventions, branch naming, Conventional Commits |
-| ai-integration | senior-developer | LLM/API integration |
-| ui-design | ui-ux | Design system, frontend, accessibility |
-| content-strategy | marketing | Content, SEO, copy, strategy |
-| no-ai-slop | marketing, docs-writer | Removing AI slop patterns from prose while preserving voice |
-| devops-deployment | devops | CI/CD, deployment, infrastructure |
-| security-review | security-auditor | Security audit checklist |
-| documentation | all | Writing docs |
-| planning | all | System design, ERD, flows, diagrams |
-| sdlc-documentation | product-manager, docs-writer | PRD, SDD, requirements, test plans |
+The canonical per-agent assignment is the Key Skills column in the Agent Orchestra table in `AGENTS.md`. `tests/docs-consistency.test.ts` verifies that every agent's `<skills_to_load>` block matches that column and that every referenced skill directory exists.
+
+This section deliberately does not repeat the mapping. A second copy would silently drift as agents and skills evolve; skill grouping by SDLC phase lives in `README.md`, and per-agent assignment lives only in `AGENTS.md`.
 
 ---
 
