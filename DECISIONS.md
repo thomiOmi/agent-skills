@@ -32,6 +32,8 @@ OpenCode surfaces failed subagent tool calls with a resumable `task_id`. If a su
 
 `instructions/AGENTS.md` is deliberately concise (~800 tokens) with intent-based rules. Domain detail lives in SKILL.md (progressive disclosure).
 
+`instructions/OPENCODE.md` documents OpenCode built-in tools and model-execution guidelines. It is NOT auto-loaded by the installer (PR #52: "stop loading OPENCODE.md automatically"); `config/opencode.jsonc` loads only `AGENTS.md`. Consult `OPENCODE.md` on demand as a reference when working with OpenCode built-in tools.
+
 ### Priority Ladder
 
 Rules have explicit priority order when they conflict: Anti-Hallucination > Security > Testing > Code Quality > Evidence & Source Citation > Self-Correction > Task Recovery > Communication > Chain of Thought > Decision-Making > Context Awareness > Final Recommendation.

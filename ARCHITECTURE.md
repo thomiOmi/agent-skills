@@ -95,7 +95,7 @@ The project is structured in three layers so future harnesses other than OpenCod
 | Layer | Contents | Coupling |
 |---|---|---|
 | Catalog (harness-neutral) | `skills/*/SKILL.md` (open Agent Skills format per agentskills.io), skill scripts/references/assets | No harness assumptions; portable to any agent runtime that reads SKILL.md |
-| Integration (OpenCode-specific) | `agents/*.md` (OpenCode agent format with XML markup), `tools/*.ts`, `plugin/` hooks, `config/*.jsonc`, `commands/`, installer (`src/`) | Assumes OpenCode v2 conventions; swappable per harness |
+| Integration (OpenCode-specific) | `agents/*.md` (OpenCode agent format with XML markup), `plugin/` hooks, `config/*.jsonc`, `commands/`, installer (`src/`) | Assumes OpenCode v2 conventions; swappable per harness |
 
 Adding support for a future harness (for example Claude Code, Codex CLI) means writing a new integration layer (agent format converter, plugin equivalent, installer target) while reusing the catalog untouched.
 
@@ -109,7 +109,7 @@ Workflow: `discussion to plan to orchestrator to test to implement to review to 
 2. **Plan** - built-in primary `plan` agent analyzes the request and creates a plan
 3. **Decompose** - `orchestrator` subagent breaks down tasks into `TASKS.md`
 4. **Delegate** - subtasks dispatched to specialized subagents via `task` tool
-5. **Verify** - dual-layer quality gates (skill-level + centralized quality verifier)
+5. **Verify** - dual-layer quality gates (skill-level + project quality gate)
 6. **Remember** - progress and decisions persisted to `TASKS.md`
 7. **Return** - verified results delivered to user
 

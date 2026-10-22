@@ -1,7 +1,8 @@
 # AGENTS.md
 
 Project-level agent instructions for the agent-skills project.
-Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, `instructions/AGENTS.md`, `instructions/OPENCODE.md` and `SPEC.md`.
+Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md`.
+`instructions/AGENTS.md` (global agent rules) and `instructions/OPENCODE.md` (OpenCode built-in tools reference) are available as needed; they are not auto-loaded by the installer and do not need to be read at the start of every session.
 
 ## Document Map
 
@@ -15,10 +16,10 @@ cross-reference it, not repeat the details.
 | `INSTALL.md` | Full install/deploy reference | Every install option, deployment map, per-agent model overrides |
 | `AGENTS.md` (this file) | Canonical agent roster, commands, boundaries, formatting rules | Which agents exist, what commands to run, what an agent must never do |
 | `PRD.md` | Product goals, personas, requirements, scope | Why this project exists and what is in or out of scope |
-| `ARCHITECTURE.md` | System design, diagrams, eval pipeline, plugin hooks | How the pieces fit together technically |
+| `ARCHITECTURE.md` | System design, diagrams, plugin hooks | How the pieces fit together technically |
 | `TASKS.md` | Live state: what is done, in progress, planned, and backlogged | What is already shipped and what is next |
 | `DECISIONS.md` | Historical record of architectural choices | Why something was built this way instead of another way |
-| `SPEC.md` | Agent Skills format spec, eval tooling mechanics | How to author a new skill, how skill evaluation works |
+| `SPEC.md` | Agent Skills format spec | How to author a new skill; how skill specification validation works |
 | `EVALUATION.md` | Historical static evaluation and audit snapshot | What an earlier audit assessed; not current project status |
 
 Priority order (highest to lowest):
