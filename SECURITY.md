@@ -41,9 +41,8 @@ request a coordinated disclosure date after a mitigation is available.
 
 Reports may concern:
 
-- installer path or configuration handling;
-- plugin hooks and custom tools;
-- secret detection or destructive-command guards;
+- installer path containment, ownership manifest, backup, and configuration merge handling;
+- plugin hooks for secret detection and destructive-command guarding;
 - package contents or release artifacts;
 - dependency vulnerabilities introduced by this project; and
 - documentation or examples that cause unsafe behavior.

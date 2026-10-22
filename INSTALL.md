@@ -7,7 +7,8 @@ Setup guide for humans. Not read by AI agents.
 ## Current Install Path
 
 The supported distribution path is a local clone of this public repository
-followed by the installer:
+followed by the installer. The installer writes only to the OpenCode global
+config root (`~/.config/opencode/`). It does not write to `~/.agents/`.
 
 ```bash
 git clone https://github.com/thomiOmi/agent-skills.git
@@ -15,93 +16,149 @@ cd agent-skills
 bun run setup
 ```
 
-Use `bun run setup:symlink` for live development or `bun run setup:merge` to
-preserve global-only items. Package registry distribution and remote source
-installation are not supported.
+`bun run setup` uses merge mode by default. It reads an ownership manifest,
+preserves user-modified and unmanaged files, backs up the config root before
+writing, and merges `opencode.jsonc` and `tui.jsonc` without discarding your
+settings.
+
+Package registry distribution and remote source installation are not
+supported.
 
 ---
 
-## Quick Install
+## Install Modes
 
-### Option A - Symlink (recommended for local dev)
+| Mode | Command | Behavior |
+|---|---|---|
+| merge | `bun run setup` | Default. Updates managed files, preserves modified and unmanaged files, and deletes stale managed files only when they are unmodified. |
+| replace | `bun run src/cli.ts install --mode replace` | Overwrites managed files. Unmanaged paths abort the install unless `--force` is set. |
+| symlink | `bun run setup:symlink` | Links repository files into the config root for live editing. Falls back to a copy when symlinks are unavailable. |
+| copy | `bun run src/cli.ts install --mode copy` | Deprecated alias for replace. Emits a warning. |
 
-Create symbolic links from the repo into your global OpenCode config (`~/.config/opencode/` and `~/.agents/skills/`).
-Changes in the repo are instantly reflected - no re-install needed.
-
-```bash
-bun run setup:symlink
-```
-
-Dry run:
-
-```bash
-bun run setup:symlink --dry-run
-```
-
-What it does:
-
-1. Backs up `~/.config/opencode` to `~/.config/opencode-backups/<timestamp>/`
-2. Creates symlinks for `agents/`, `skills/`, `commands/`, and the global `AGENTS.md` sourced from `instructions/AGENTS.md`
-3. Also syncs skills to `~/.agents/skills/` for OpenCode agent-compatible discovery
-4. Writes `opencode.jsonc` with `default_agent: plan`
-5. Writes `tui.jsonc` with theme and notification settings
+Add `--dry-run` to plan without writing. Add `--force` to replace or symlink
+mode to overwrite paths the installer does not own. Add `--skip-backup` to
+disable the backup, or `--backup-path <dir>` to write the timestamped backup
+inside a custom root.
 
 ---
 
-### Option B - Full install (copy-based)
+## Installer Options and Environment
 
-Backup your current global OpenCode config, then overwrite it from this repo:
+| Option | Description |
+|---|---|
+| `--mode <merge\|replace\|symlink\|copy>` | Install mode. Defaults to merge. `copy` is a deprecated alias for replace. |
+| `--dry-run` | Print the plan without writing. Shows creates, updates, deletes, keeps, conflicts, and warnings. |
+| `--force` | Overwrite unmanaged paths in replace or symlink mode, proceed on a corrupt manifest, or replace an unparseable config. |
+| `--target <dir>` | Install into a different config root. Used for testing; the real config root is untouched. |
+| `--source <dir>` | Read from a different local clone. Remote sources are rejected. |
+| `--skip-backup` | Do not create a backup. Use only when you already have one. |
+| `--backup-path <dir>` | Create the timestamped backup directory inside this root. |
+| `--version` | Print the package version. |
 
-```bash
-bun run setup
-```
+Environment overrides:
 
-Dry run:
+- `OPENCODE_CONFIG_DIR` sets the config root when `--target` is absent.
+- `OPENCODE_BACKUP_DIR` sets the backup root when `--target` is absent.
+- `OPENCODE_CONFIG` and `OPENCODE_TUI_CONFIG` are read as config merge sources.
+  The installer still writes to the config root.
 
-```bash
-bun run setup --dry-run
-```
-
-What it does:
-
-1. Full backup to `~/.config/opencode-backups/<timestamp>/` (excludes `node_modules` and `backups`)
-2. Overwrites `agents/`, `skills/`, `commands/`, and global `AGENTS.md` sourced from `instructions/AGENTS.md`
-3. Syncs skills to `~/.agents/skills/`
-4. Writes `opencode.jsonc` with `default_agent: plan` and merges user settings
-5. Writes `tui.jsonc` (merged with existing TUI settings)
-
-Restore a backup:
-
-```bash
-cp -r ~/.config/opencode-backups/<timestamp>/* ~/.config/opencode/
-```
+`--target` also places the default backup under `<target>/backups/` unless
+`--backup-path` is given. Nothing outside the target directory is written.
 
 ---
 
-### Option C - Merge install (preserve global-only items)
+## What the Installer Manages
+
+| Source (repo) | Destination (`~/.config/opencode/`) |
+|---|---|
+| `instructions/AGENTS.md` | `AGENTS.md` |
+| `config/opencode.jsonc` | `opencode.jsonc` or an existing `opencode.json` |
+| `config/tui.jsonc` | `tui.jsonc` or an existing `tui.json` |
+| `agents/*.md` | `agents/*.md` |
+| `skills/*/` | `skills/*/` |
+| `commands/*.md` | `commands/*.md` |
+| `plugin/` | `plugins/` |
+| ownership metadata | `.agent-skills-manifest.json` |
+
+`~/.agents/skills/` is not managed. Copies left by older installer versions
+are untouched. Remove them manually if you no longer need the compatibility
+path.
+
+---
+
+## Ownership Manifest
+
+The installer records every file it owns in
+`~/.config/opencode/.agent-skills-manifest.json`. The manifest stores the
+SHA-256 hash, install mode, and install timestamp for each managed path.
+
+- First run without a manifest: existing files at shipped paths are adopted,
+  updated, and recorded. A backup runs first.
+- Later runs: files that match the manifest are updated. Files modified by you
+  are preserved in merge mode and become conflicts in replace mode.
+- Stale files: a managed file that is no longer shipped is deleted only when
+  its content still matches the manifest. Modified stale files are preserved.
+- Unmanaged files at shipped paths: preserved in merge mode. Replace and
+  symlink modes abort unless `--force` is set.
+- A corrupt manifest aborts the install unless `--force` is set.
+
+---
+
+## Backups
+
+Before the first write, the installer copies the config root to
+`~/.config/opencode-backups/<timestamp>/`. The backup includes the previous
+manifest so the installation can be restored. It excludes `node_modules` and
+`backups`.
 
 ```bash
-bun run setup:merge
+cp -r ~/.config/opencode-backups/<timestamp>/. ~/.config/opencode/
 ```
 
-Copies repo files over the global config without wiping existing custom items and without rewriting `opencode.jsonc` or `tui.jsonc`.
+Use `--backup-path <dir>` to create the timestamped directory under a custom
+root instead. Use `--skip-backup` only when you already have a backup.
+
+---
+
+## Config Merge
+
+`opencode.jsonc` and `tui.jsonc` are deep-merged with the templates:
+
+- Your values win. Template values fill only missing keys.
+- Arrays are atomic. The installer never merges two arrays element by element.
+- Unknown keys and V2 keys such as `permissions`, `plugins`, `providers`,
+  `agents`, `mcp`, and `watcher` are preserved.
+- `default_agent` and `small_model` are never forced. If you set them, they
+  stay as set.
+- `instructions` keeps your entries and appends `AGENTS.md` only when missing.
+- A top-level `subagent_depth` is migrated to `experimental.subagent_depth`.
+- An existing `opencode.json` or `tui.json` is updated in place instead of
+  creating a duplicate `.jsonc` file.
+- Comments in JSONC files are not preserved when a rewrite is required. The
+  installer warns before dropping them.
+- An invalid existing config aborts in merge mode unless `--force` is set.
+
+`OPENCODE_CONFIG` and `OPENCODE_TUI_CONFIG` are read as merge sources when set.
+The installer still writes to the config root.
 
 ---
 
 ## opencode.jsonc Template
 
-Full reference template deployed by installer:
+Reference template installed by the installer. The actual template also
+contains a `watcher.ignore` list and commented examples for permissions and MCP
+servers.
 
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-
   "default_agent": "plan",
-  "subagent_depth": 2,
-
+  "experimental": {
+    "subagent_depth": 2
+  },
+  "instructions": ["AGENTS.md"],
   "formatter": true,
   "lsp": true,
-
   "permissions": [
     { "action": "edit", "resource": "*", "effect": "ask" },
     { "action": "shell", "resource": "*", "effect": "ask" }
@@ -261,12 +318,16 @@ Every file and directory in this repo has a specific purpose when installed to `
 | Source (repo) | Destination (`~/.config/opencode/`) | Purpose |
 |---|---|---|
 | `instructions/AGENTS.md` | `AGENTS.md` | **Global agent rules** - read by the agent every session. Root `AGENTS.md` remains contributor guidance for this repository. |
-| `config/opencode.jsonc` | `opencode.jsonc` | **Global config** - default_agent, permissions, formatters, lsp. |
-| `config/tui.jsonc` | `tui.jsonc` | **TUI config** - theme, attention notifications. |
+| `config/opencode.jsonc` | `opencode.jsonc` or existing `opencode.json` | **Global config** - default_agent, experimental.subagent_depth, instructions, permissions, formatters, lsp, watcher. |
+| `config/tui.jsonc` | `tui.jsonc` or existing `tui.json` | **TUI config** - theme, attention notifications. |
 | `agents/*.md` | `agents/*.md` | **20 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, and domain specialists. |
-| `skills/*/` | `skills/*/` & `~/.agents/skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
+| `skills/*/` | `skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
 | `commands/*.md` | `commands/*.md` | **17 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
 | `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers a compaction hook that preserves TASKS.md state across context compaction, and two tool guard hooks: secrets-scanner (blocks writing hardcoded secrets via write/edit) and tool-guardian (blocks destructive bash commands). |
+| ownership metadata | `.agent-skills-manifest.json` | **Install manifest** - SHA-256 hashes, modes, and timestamps that drive safe updates and stale-file cleanup. |
+
+The installer does not write `~/.agents/skills/`. Older installs may still have
+copies there; they are untouched and can be removed manually.
 
 ---
 
@@ -307,3 +368,30 @@ Every file and directory in this repo has a specific purpose when installed to `
 
 1. Check `instructions` field in `opencode.jsonc` or `AGENTS.md` at project root
 2. Run `/init` inside OpenCode to regenerate project instructions
+
+**A file I edited was skipped:**
+
+Merge mode preserves files modified after install. Run with `--dry-run` to
+confirm the plan. If you want the shipped version, back up first and run
+`bun run src/cli.ts install --mode replace --force`.
+
+**My config comments disappeared:**
+
+JSONC comments are not preserved when the installer rewrites a config. The
+installer warns before doing it. Keep a backup or use `--dry-run` to inspect
+the plan first.
+
+**Config merge was skipped:**
+
+An invalid `opencode.jsonc` or `opencode.json` aborts merge mode. Fix the
+syntax, or pass `--force` to replace it with the merged template after a
+backup.
+
+**I want to see what will change:**
+
+```bash
+bun run src/cli.ts install --dry-run
+```
+
+The dry run prints creates, updates, deletes, keeps, conflicts, and warnings
+without writing anything.

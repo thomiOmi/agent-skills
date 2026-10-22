@@ -13,7 +13,7 @@ cross-reference it, not repeat the details.
 | File | Owns | Read this to find out... |
 |---|---|---|
 | `README.md` | Public overview, quick install | What this project is and how to install it |
-| `INSTALL.md` | Full install/deploy reference | Every install option, deployment map, per-agent model overrides |
+| `INSTALL.md` | Full install reference | Every install mode, deployment map, manifest, config merge rules, per-agent model overrides |
 | `AGENTS.md` (this file) | Canonical agent roster, commands, boundaries, formatting rules | Which agents exist, what commands to run, what an agent must never do |
 | `PRD.md` | Product goals, personas, requirements, scope | Why this project exists and what is in or out of scope |
 | `ARCHITECTURE.md` | System design, diagrams, plugin hooks | How the pieces fit together technically |
@@ -31,7 +31,7 @@ Priority order (highest to lowest):
 ```
 
 This file configures contributor and agent behavior **within this project only**.
-The deployed `instructions/AGENTS.md` configures cross-project global rules; this file adds repository-specific context and boundaries. See [OpenCode docs](https://opencode.ai/docs/rules) for details.
+The installed `instructions/AGENTS.md` configures cross-project global rules; this file adds repository-specific context and boundaries. See [OpenCode docs](https://opencode.ai/docs/rules) for details.
 
 All global rules (Role & Identity, Anti-Hallucination, Communication, Code Quality, Security, Analysis & Review, Testing, Commits) apply automatically from `instructions/AGENTS.md` - they are not duplicated here.
 
@@ -52,9 +52,10 @@ Run these from the project root. Never run `npm publish` locally.
 | `bun test tests/<path>` | Single test file |
 | `bun run changelog` | Regenerate CHANGELOG.md from conventional commits (changelogen, no version bump) |
 | `bun run release` | Prepare a release: bump version, update CHANGELOG.md, create a release commit and tag (changelogen) |
-| `bun run setup` | Install agents/skills/commands/config to ~/.config/opencode/ (backup, overwrite, config merge) |
+| `bun run setup` | Merge install to ~/.config/opencode/ (default; backup, manifest, config merge) |
 | `bun run setup:symlink` | Install via symlinks for live editing |
-| `bun run setup:merge` | Install without wiping global-only items |
+| `bun run setup:merge` | Explicit merge install (same behavior as setup) |
+| `bun run src/cli.ts install --mode replace` | Replace managed files; aborts on unmanaged paths unless `--force` |
 | `bun run cli` | Run the installer CLI directly from the cloned repository |
 
 **Never run locally:**
@@ -77,12 +78,12 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `software-architect` | System design, ADRs, trade-off analysis, architecture review | subagent | planning, architecture-decision, research-methodology, tech-debt |
 | `database-engineer` | Schema design, migrations, indexing, query performance | subagent | database, database-migration, data-analysis, api-conventions, testing |
 | `ai-engineer` | Prompt engineering, AI integration, RAG, structured output | subagent | prompt-design, structured-output, ai-integration, code-style, testing |
-| `senior-developer` | Tech lead: cross-domain review, standards, glue work, hard debugging | subagent | code-style, code-review, debugging, testing, api-conventions, database, git-workflow, planning |
+| `senior-developer` | Tech lead: cross-domain review, standards, glue work, hard debugging | subagent | code-style, code-review, debugging, testing, api-conventions, database, git-workflow, planning, prompt-design, structured-output |
 | `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | sdlc-documentation, task-decomposition |
 | `project-manager` | Project planning, milestone tracking, risk, status reports | subagent | task-decomposition, planning, sdlc-documentation |
 | `data-analyst` | SQL analysis, reporting, data profiling | subagent | database, data-analysis, code-style |
 | `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, test-planning, debugging |
-| `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review |
+| `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review, code-style |
 | `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment |
 | `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-md |
 | `docs-writer` | Technical writing, documentation | subagent | documentation, no-ai-slop, sdlc-documentation |
@@ -133,12 +134,12 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 - Adding new dependencies (npm, bun)
 - Schema changes or migrations
 - Modifying CI/CD pipeline
-- Changing deploy process or config structure
+- Changing installer modes, config merge behavior, or the install target layout
 - Deleting files or directories
 
 ### Never do
-- Edit files in `~/.config/opencode/` directly (they are overwritten by deploy)
-  Reason: Source of truth is in this repo; deploy copies from here.
+- Edit files in `~/.config/opencode/` directly (the installer manages them)
+  Reason: Source of truth is in this repo; the ownership manifest tracks installed files.
 - Modify `node_modules/` or `dist/`
 - Add emoji, em dashes, or decorative text to any file
 - Skip verification (typecheck + lint + test) before marking a task done
@@ -171,6 +172,7 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 **Do NOT touch:** node_modules/ - dist/
 **Agent files:** agents/*.md (source - installed to ~/.config/opencode/agents/)
 **Skill files:** skills/*/SKILL.md (source - installed to ~/.config/opencode/skills/)
-**Global rules:** instructions/AGENTS.md (source of truth - deployed to ~/.config/opencode/AGENTS.md)
-**Global config:** config/opencode.jsonc - config/tui.jsonc (templates - deployed with config merge)
-**CLI installer:** src/ (TypeScript + citty - not deployed, runs locally)
+**Global rules:** instructions/AGENTS.md (source of truth - installed to ~/.config/opencode/AGENTS.md)
+**Global config:** config/opencode.jsonc - config/tui.jsonc (templates - installed with config merge)
+**Installer modes:** merge (default), replace, symlink; copy is a deprecated alias for replace
+**CLI installer:** src/ (TypeScript + citty - not deployed, runs locally; writes only to the OpenCode config root)

@@ -14,6 +14,7 @@ The agent-skills project enables OpenCode users to work with a curated collectio
 - Ship a harness-neutral skill catalog that needs no agent-side custom tools
 - Keep the skill catalog harness-neutral (open Agent Skills format) so future agent runtimes beyond OpenCode can adopt it via an integration-layer adapter
 - Follow the Agent Skills specification and repository authoring conventions
+- Provide a safe ownership-aware installer that preserves user configuration and third-party files
 - Enable non-developer users (vibe coders, sales, marketing, designers) to use the system effectively
 
 ## 3. Target Users
@@ -77,7 +78,7 @@ discussion to plan to orchestrator to test to implement to review to verify to r
 4. **Test** - tests are written first (TDD approach)
 5. **Implement** - code is implemented to pass the tests
 6. **Review** - implementation is reviewed against requirements
-7. **Verify** - quality verification runs (lint, typecheck, tests, debug statements, docstrings)
+7. **Verify** - quality verification runs the project's own lint, typecheck, and test commands plus the skill-level checklist
 8. **Remember** - key decisions, progress, and learnings saved to `TASKS.md` and working context for cross-session persistence
 9. **Improve** - final polish and optimization after verification passes
 
@@ -110,7 +111,7 @@ The system provides the following agents:
 | docs-writer | subagent | Technical writing, documentation |
 | refactor-planner | subagent | Safe refactoring, legacy code migration |
 
-The orchestrator subagent has permission to delegate to all other subagents via the `task` tool. Self-delegation is denied to prevent circular loops.
+The orchestrator subagent has permission to delegate to all other subagents via the `subagent` permission action. Self-delegation is denied to prevent circular loops.
 
 > This table must stay in sync with the Agent Orchestra table in `AGENTS.md`, which
 > is the canonical source for the agent roster. If they diverge, `AGENTS.md` wins.
@@ -143,7 +144,23 @@ The system uses `TASKS.md` file-based tracking and working context documents for
 
 ### FR-7: Plugin
 
-The plugin registers agents and skills via the OpenCode plugin API.
+The plugin registers lifecycle hooks via the OpenCode plugin API: compaction state injection, secret scanning, and destructive-command guarding. Agents, skills, and commands are discovered from the installed directories rather than registered by the plugin.
+
+### FR-8: Installer
+
+The installer deploys agents, skills, commands, plugin hooks, global instructions, and config templates into the OpenCode global config root.
+
+- Default mode is merge: update managed files, preserve user-modified and unmanaged files, and delete stale managed files only when unmodified.
+- Replace mode is explicit and aborts on unmanaged conflicts unless `--force` is set.
+- Symlink mode remains available for live development and falls back to a copy when symlinks are unavailable.
+- Copy mode is a deprecated alias for replace.
+- The ownership manifest at `<configRoot>/.agent-skills-manifest.json` records SHA-256 hashes and drives create, update, delete, and keep decisions.
+- The first run without a manifest adopts existing files at shipped paths and backs them up first.
+- The installer writes only under the OpenCode config root. It never writes `~/.agents/`.
+- Config merge preserves user values, unknown keys, and V2 keys; arrays are atomic; `default_agent` and `small_model` are never forced; `instructions` appends `AGENTS.md` only when missing; a top-level `subagent_depth` migrates to `experimental.subagent_depth`.
+- Invalid config aborts in merge mode unless `--force` is set.
+- Backups cover the config root and run only when files or configs will change.
+- Path containment rejects source paths that escape the config root.
 
 ## 6. Non-Functional Requirements
 
@@ -154,6 +171,8 @@ The plugin registers agents and skills via the OpenCode plugin API.
 | NFR-3: Retry limit | Max 3 retry iterations per subtask before escalation |
 | NFR-4: Cross-platform | Works on Windows, Linux, and macOS |
 | NFR-5: Progressive disclosure | Skills load full body on activation only, not at startup |
+| NFR-6: Install safety | Default merge preserves user-modified and third-party files; unmanaged conflicts require explicit `--force` |
+| NFR-7: Install determinism | Identical repository and config inputs produce the same plan and manifest, with sorted paths and content hashes |
 
 ## 7. Scope
 
@@ -164,12 +183,16 @@ The plugin registers agents and skills via the OpenCode plugin API.
 - No custom tools (quality-verifier and task-decomposer were removed - see DECISIONS.md)
 - 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
 - Plugin registration via OpenCode plugin API
+- Ownership-aware installer with merge, replace, and symlink modes, a manifest, config merge, backups, and config-root-only writes
 - File-based task tracking and persistence (`TASKS.md`)
 - Authoring standards: agentskills.io for skills and OpenCode conventions for integration files
 - Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md, TASKS.md
 
 ### Out of Scope
 
+- Writing `~/.agents/` compatibility copies
+- Uninstall and automated restore commands in the current milestone; backups are restored manually
+- Comment-preserving JSONC rewrites; comments are lost with a warning when a rewrite is required
 - opencode.jsonc permissions auto-write
 - Instructions URL auto-write
 - Custom notification plugins

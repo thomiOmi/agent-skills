@@ -1,77 +1,79 @@
 import { cp, mkdir, readdir, stat, writeFile } from "node:fs/promises";
 import { consola } from "consola";
 import { join } from "pathe";
-import { getBackupRoot, getGlobalRoot, getTimestamp } from "./paths";
-
-async function exists(path: string): Promise<boolean> {
-  try {
-    await stat(path);
-    return true;
-  }
-  catch {
-    return false;
-  }
-}
+import { pathExists } from "./install/utils";
+import { getTimestamp } from "./paths";
 
 export interface BackupOptions {
+  configRoot: string;
+  backupRoot: string;
   dryRun?: boolean;
   skip?: boolean;
   backupPath?: string;
-  targetDir?: string;
 }
 
-export async function backupGlobal(opts: BackupOptions = {}): Promise<string | null> {
-  if (opts.skip && !opts.backupPath) {
+/**
+ * Copies the OpenCode config root into a timestamped backup directory.
+ *
+ * Only the config root is backed up. Compatibility locations such as
+ * ~/.agents are not managed by the installer and are therefore untouched.
+ *
+ * @param opts Backup inputs.
+ * @returns Backup directory path, or null when the backup was skipped or
+ * there was nothing to back up.
+ */
+export async function backupGlobal(opts: BackupOptions): Promise<string | null> {
+  if (opts.skip) {
+    consola.log("  backup skipped (--skip-backup)");
     return null;
   }
 
-  const globalRoot = getGlobalRoot(opts.targetDir);
-
-  if (opts.backupPath) {
-    if (!(await exists(opts.backupPath))) {
-      throw new Error(`Backup path not found: ${opts.backupPath}`);
-    }
-    return opts.backupPath;
-  }
-
   const stamp = getTimestamp();
-  const backupDir = join(getBackupRoot(opts.targetDir), stamp);
+  const backupDir = opts.backupPath
+    ? join(opts.backupPath, stamp)
+    : join(opts.backupRoot, stamp);
 
   if (opts.dryRun) {
-    consola.log(`  [dry-run] backup to ${backupDir}`);
+    consola.log(`  [dry-run] backup ${opts.configRoot} to ${backupDir}`);
     return backupDir;
+  }
+
+  if (!(await pathExists(opts.configRoot))) {
+    consola.warn(`Nothing to back up: ${opts.configRoot}`);
+    return null;
   }
 
   await mkdir(backupDir, { recursive: true });
 
-  if (await exists(globalRoot)) {
-    const items = await readdir(globalRoot);
-    const copies = items
+  const items = await readdir(opts.configRoot);
+  await Promise.all(
+    items
       .filter(item => item !== "node_modules" && item !== "backups")
       .map(async (item) => {
-        const src = join(globalRoot, item);
-        const dst = join(backupDir, item);
-        if ((await stat(src)).isDirectory()) {
-          await cp(src, dst, { recursive: true });
+        const sourcePath = join(opts.configRoot, item);
+        const destinationPath = join(backupDir, item);
+        const itemInfo = await stat(sourcePath);
+        if (itemInfo.isDirectory()) {
+          await cp(sourcePath, destinationPath, { recursive: true });
         }
         else {
-          await cp(src, dst);
+          await cp(sourcePath, destinationPath);
         }
-      });
-    await Promise.all(copies);
-  }
+      }),
+  );
 
   const now = new Date().toISOString().replace("T", " ").slice(0, 19);
   const manifest = [
-    "# OpenCode Global Config Backup",
+    "# OpenCode Config Backup",
     `Created: ${now}`,
-    `Source: ${globalRoot}`,
+    `Source: ${opts.configRoot}`,
     `Backup: ${backupDir}`,
     "Excluded: node_modules, backups",
     "",
     "## Restore",
+    "Copy the backup contents back into the config root:",
     "```bash",
-    `cp -r "${backupDir}"/* "${globalRoot}/"`,
+    `cp -r "${backupDir}/." "${opts.configRoot}/"`,
     "```",
     "",
   ].join("\n");

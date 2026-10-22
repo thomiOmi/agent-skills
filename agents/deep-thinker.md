@@ -16,12 +16,6 @@ permissions:
   - action: shell
     resource: "*"
     effect: ask
-  - action: shell
-    resource: bun test*
-    effect: allow
-  - action: shell
-    resource: npm test*
-    effect: allow
   - action: skill
     resource: "*"
     effect: allow

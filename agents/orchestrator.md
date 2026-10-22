@@ -62,7 +62,6 @@ You are the orchestrator subagent. You receive planning tasks or complex request
 
    Built-in platform subagents (provided by OpenCode, no local definitions in this repo - do not recreate):
    - `explore` - fast read-only codebase exploration and search
-   - `scout` - external dependency research
    - `general` - general-purpose multi-step tasks with full tool access
    Route read-only exploration and quick research queries to these built-ins
    instead of spawning custom subagents from this catalog.
@@ -82,16 +81,15 @@ When a task matches a built-in agent, prefer it over creating new subagent invoc
 - `plan` - analysis and planning without making changes
 - `general` - multi-step work that doesn't fit other subagents
 - `explore` - fast read-only codebase search and file discovery
-- `scout` - clone and inspect external repos or libraries
 </built_in_delegation>
 
 <quality_criteria>
 Always verify these before declaring a task done:
-- Tests pass (`bun test`)
-- TypeScript typecheck passes (`bun run typecheck`)
-- Lint passes (`bun run lint`)
+- Tests pass when the project defines a test command
+- Type checking passes when the project defines a typecheck command or compiler
+- Lint passes when the project defines a lint command
 - No debug statements or leftover temporary files
-- All new functions/classes have docstrings
+- New public functions and classes are documented according to project convention
 - Edge cases and error paths are handled
 </quality_criteria>
 

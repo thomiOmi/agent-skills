@@ -81,25 +81,9 @@ Skills are grouped by SDLC phase - pick the group that matches what you are doin
 
 ## Install
 
-### Quick Install
-
-Install agents, skills, commands, and configuration into your global OpenCode setup (`~/.config/opencode/` and `~/.agents/skills/`):
-
-```bash
-# Option A: Symlink install (recommended for development)
-bun run setup:symlink
-
-# Option B: Copy install (backup, overwrite, config merge)
-bun run setup
-
-# Option C: Merge install (preserve global-only items)
-bun run setup:merge
-```
-
-Dry run options are available for all modes:
-`bun run setup --dry-run` or `bun run setup --target ./test-dir`
-
-Clone the repository and run the installer locally:
+Install agents, skills, commands, and configuration into your global OpenCode
+setup. The installer writes only to `~/.config/opencode/`; it does not write
+`~/.agents/`.
 
 ```bash
 git clone https://github.com/thomiOmi/agent-skills.git
@@ -107,8 +91,32 @@ cd agent-skills
 bun run setup
 ```
 
-See [INSTALL.md](./INSTALL.md) for symlink, merge, dry-run, and restore
-options. Package registry distribution is deferred.
+`bun run setup` uses merge mode by default. It keeps your existing config
+values, preserves files you modified and third-party files, backs up the
+config root before writing, and records ownership in
+`~/.config/opencode/.agent-skills-manifest.json`.
+
+Other modes:
+
+```bash
+# Replace managed files (aborts on unmanaged paths unless --force)
+bun run src/cli.ts install --mode replace
+
+# Symlink for live development
+bun run setup:symlink
+
+# Deprecated alias for replace
+bun run src/cli.ts install --mode copy
+```
+
+Preview any mode with `--dry-run`:
+
+```bash
+bun run src/cli.ts install --dry-run
+```
+
+See [INSTALL.md](./INSTALL.md) for modes, the ownership manifest, config merge
+rules, backups, and restore. Package registry distribution is deferred.
 
 ---
 
@@ -144,7 +152,7 @@ agent-skills/
 ├── CONTRIBUTING.md
 ├── DECISIONS.md        # Architectural decisions and audit history
 ├── EVALUATION.md       # Historical eval snapshot (not current status)
-├── INSTALL.md          # Full install and deploy reference
+├── INSTALL.md          # Full install and manifest reference
 ├── LICENSE
 ├── PRD.md              # Product goals, requirements, scope
 ├── README.md           # Repo overview, skill list, install instructions
@@ -154,7 +162,7 @@ agent-skills/
 ├── bun.lock
 ├── commitlint.config.mjs
 ├── eslint.config.js
-├── opencode.jsonc      # Global config template
+├── opencode.jsonc      # Root OpenCode config for this repository
 ├── package.json
 ├── tsconfig.json
 ├── .editorconfig
@@ -172,7 +180,7 @@ agent-skills/
 │   └── tool-guardian.ts  # Blocks destructive bash commands
 ├── scripts/            # ESLint and frontmatter dev utilities
 ├── skills/             # 34 atomic domain skills (SKILL.md + resources)
-├── src/                # CLI installer tooling (copy/symlink/merge)
+├── src/                # CLI installer (plan/execute, manifest, config merge)
 └── tests/              # Test suites (bun test)
 ```
 
@@ -185,7 +193,8 @@ agent-skills/
 | `bun run lint` | Run ESLint to check for code and markdown formatting issues |
 | `bun run typecheck` | Run TypeScript compiler type checking |
 | `bun test` | Run unit test suites |
-| `bun run setup` | Backup and install to global OpenCode configuration (copy mode) |
+| `bun run setup` | Merge install to global OpenCode configuration (default) |
+| `bun run setup:symlink` | Symlink install for live development |
 
 ## Community
 

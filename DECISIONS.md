@@ -22,7 +22,7 @@ Verification has two layers: (1) domain-specific checklist in each SKILL.md exec
 
 ### quality-verifier removed: language-specific checks do not belong in the catalog
 
-The custom quality-verifier tool (tools/ wrapper, skills/testing/scripts/quality-verifier.ts implementation, and its tests) was removed on 2026-10-20. Its file-level checks only understood one language family - console.log/debugger/print for debug statements, JSDoc comments on exports for docstrings, package.json plus bun/npm for script checks - while the agent and skill catalog is advertised as language-agnostic, so every additional language would mean new patterns and false-positive tuning forever; each language's own tooling already does this better (eslint no-console, ruff, clippy, golangci-lint). The centralized verification layer now delegates to the project's own quality commands in whatever language the project uses; the orchestration flow (skill checklist first, then project commands, retry via task_id) is unchanged. The installer no longer ships a tools/ directory; existing installs can delete the stale ~/.config/opencode/tools/quality-verifier.ts on next setup. Follows the same removal pattern as task-decomposer. Source: development-tools audit 2026-10-20.
+The custom quality-verifier tool (tools/ wrapper, skills/testing/scripts/quality-verifier.ts implementation, and its tests) was removed on 2026-10-20. Its file-level checks only understood one language family - console.log/debugger/print for debug statements, JSDoc comments on exports for docstrings, package.json plus bun/npm for script checks - while the agent and skill catalog is advertised as language-agnostic, so every additional language would mean new patterns and false-positive tuning forever; each language's own tooling already does this better (eslint no-console, ruff, clippy, golangci-lint). The centralized verification layer now delegates to the project's own quality commands in whatever language the project uses; the orchestration flow (skill checklist first, then project commands, retry via task_id) is unchanged. The installer no longer ships a tools/ directory; existing installs can delete the stale ~/.config/opencode/tools/quality-verifier.ts manually, because the manifest does not own that legacy path. Follows the same removal pattern as task-decomposer. Source: development-tools audit 2026-10-20.
 
 ### Resumable Subagent Task Recovery (`task_id`)
 
@@ -52,9 +52,11 @@ Every request is classified as Analysis, Implementation, or Both at the start. A
 
 A 2026-10-20 development-tools audit closed token-level gaps in the delete guard: the old single `DELETE_TARGET` regex missed glob targets (`rm -rf /*`, `~/*`, `$HOME/*`, `C:\*`), quoted home vars (`"$HOME"`, `"$env:USERPROFILE"`), traversal forms that resolve to a root (`/.`, `/..`, `/tmp/..`), and Windows-native `del` / `rmdir` with `/s` plus `/q` or `/f`. Detection is now token-based: each operand is quote-stripped and slash-normalized, then checked against root, home, and drive-root predicates with lexical resolution, so `rm -rf /*` is blocked while `rm -rf ./build/*` stays allowed. `git push --force-if-includes` is no longer blocked as a force-push false positive. Regression cases live in `tests/plugin-guards.test.ts`.
 
-### Agent frontmatter still uses the V1 permission map (known gap)
+### Agent frontmatter uses the V2 permissions array
 
-The OpenCode v2 docs (https://opencode.ai/v2/docs/agents and /v2/docs/migrate-v1) mark `permission`, `bash`, `task`, `tools`, and top-level `temperature` as legacy V1 fields; V2 expects an ordered `permissions` array of `{action, resource, effect}` (with `shell` and `subagent` replacing `bash` and `task`) plus provider options under `request.body`. All 20 agent files in this repository still use the V1 shape, so the catalog targets OpenCode conventions rather than native V2 fields. The mismatch is deliberate for now: the repository pins `@opencode-ai/plugin` 1.x, and the migration touches 20 agent files at once. INSTALL.md documents the V2 shapes so contributors can adopt them when overriding models or permissions. Migrating the agent files is a separate, explicitly approved step.
+All 20 agent files use the OpenCode V2 `permissions` array of `{action, resource, effect}` entries, with `shell` and `subagent` replacing the V1 `bash` and `task` maps. Provider options such as temperature live under `request.body`; top-level `temperature`, `permission`, `bash`, `task`, and `tools` keys are not used. `tests/agent-permissions.test.ts` enforces the shape, the read permission, orchestrator delegation plus self-delegation deny, and the absence of language-specific shell resources. This closes the V1 known gap recorded in the 2026-10-22 audit.
+
+### Conventional git skills merged into git-workflow
 
 Initially shipped as standalone skills (`conventional-branch`, `conventional-commit`) positioned as deep-dives under the `git-workflow` umbrella. Later merged into git-workflow as `references/conventional-branch.md` and `references/conventional-commit.md` after a collision audit showed a single git action lit up three skills at once. The merge rule applied across the catalog: one skill per agent moment, thin overlapping skills become references of the parent that owns the trigger surface.
 
@@ -91,7 +93,26 @@ The anthropic plugin-dev reference was previously vendored in its original Claud
 
 ### Agent-agnostic by layering (catalog vs integration vs dev tooling)
 
-The catalog (skills in open Agent Skills format) carries no harness assumptions; the integration layer (agents/*.md markup, plugin hooks, tools, config, installer) is OpenCode-specific and swappable. Future support for other agent runtimes (Claude Code, Codex CLI, etc.) is an integration-layer adapter only. Consequence for authoring: new skills must not assume OpenCode-specific behavior in SKILL.md bodies; harness-specific instructions belong in the integration layer (agent files, plugin).
+The catalog (skills in open Agent Skills format) carries no harness assumptions; the integration layer (agents/*.md markup, plugin hooks, config, installer) is OpenCode-specific and swappable. Future support for other agent runtimes (Claude Code, Codex CLI, etc.) is an integration-layer adapter only. Consequence for authoring: new skills must not assume OpenCode-specific behavior in SKILL.md bodies; harness-specific instructions belong in the integration layer (agent files, plugin).
+
+### Installer: ownership-aware plan/execute with a manifest
+
+The installer is OpenCode-only and writes only under the OpenCode global config root (`~/.config/opencode/`). It never writes `~/.agents/`; that path is a compatibility location used by other tools, and copies left by older installer versions are untouched.
+
+Installation is split into a planner (`src/lib/install/plan.ts`) and an executor (`src/lib/install/execute.ts`). The planner scans the repository, hashes every source file with SHA-256, reads the ownership manifest, and classifies each path as create, update, delete, or keep before any write. The executor performs the plan, writes the manifest atomically, and runs only when the plan contains changes.
+
+The manifest at `<configRoot>/.agent-skills-manifest.json` is the ownership source of truth. It records the SHA-256 hash, install mode, and install timestamp per managed path. Managed files that still match their recorded hash are updated or deleted; files modified by the user and unmanaged third-party files are preserved. The first run without a manifest adopts existing files at shipped paths and backs up the config root before updating. This replaced the previous copy-and-overwrite deploy, sync, and symlink commands, which were deleted and consolidated into `install`.
+
+`--target` escapes are rejected by path containment checks, so a crafted source path cannot write outside the config root. Only the config root is backed up; `--backup-path` is a custom backup root, not a merge source.
+
+### Install modes: merge by default, replace explicit, symlink for development
+
+`merge` is the default. It updates managed files, preserves user-modified and unmanaged files, and deletes stale managed files only when unmodified. `replace` is explicit and aborts on unmanaged conflicts unless `--force` is set. `symlink` remains for live development and falls back to a copy when symlinks are unavailable. `copy` is accepted as a deprecated alias for `replace` and emits a warning. This keeps the safe path as the default while preserving an explicit escape hatch.
+
+### Config merge: user values win, unknown keys survive
+
+`opencode.jsonc` and `tui.jsonc` are deep-merged with the repository templates. User values win, template values fill only missing keys, arrays are atomic, and unknown keys plus V2 keys (`permissions`, `plugins`, `providers`, `agents`, `mcp`, `watcher`) are preserved. `default_agent` and `small_model` are never forced; `instructions` keeps user entries and appends `AGENTS.md` only when missing; a top-level `subagent_depth` is migrated to `experimental.subagent_depth`. An existing `opencode.json` or `tui.json` is updated in place instead of creating a duplicate `.jsonc` file. Config sources are config-root files plus `OPENCODE_CONFIG`/`OPENCODE_TUI_CONFIG`; project-local cwd configs are not merged into the global config. Invalid config aborts in merge mode unless `--force` is set. JSONC comments are not preserved across a rewrite; the installer warns instead of adding a comment-preserving dependency.
+
 
 ### Release notes: changelogen emoji headings kept, bodies applied via notes-file
 
@@ -121,9 +142,12 @@ Separately flagged in the same audit, both resolved in the follow-up code pass:
 
 ## Conventions
 
-### Agent Permission Convention
-- Every agent must have explicit `read: allow`
-- `edit: deny` and `bash: deny` as safe defaults for read-only agents
-- Only agents that need to run tests get `bash: allow` without restriction
-- Content and planning agents (docs, product, marketing, data, design, devops) get `bash: ask` - usable with user confirmation, never silent
-- orchestrator and senior-developer - full bash access
+### Agent Permission Convention (V2)
+- Every agent must declare `permissions` as an ordered array of `{action, resource, effect}` entries
+- Every agent must grant `read` on `*`
+- No agent may use the legacy `permission`, `bash`, `task`, or `tools` maps
+- Read-only agents deny `edit` and ask for `shell`
+- Agents that run verification may allow `shell` on `*`
+- Content and planning agents use `shell: ask` - usable with user confirmation, never silent
+- Only `orchestrator` receives `subagent: allow` on `*` plus `subagent: deny` on `orchestrator`; no agent uses top-level `task`
+- Temperature belongs under `request.body.temperature`, not at the top level

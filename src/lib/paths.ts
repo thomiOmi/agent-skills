@@ -19,16 +19,6 @@ export function getGlobalRoot(targetOverride?: string): string {
   return join(homedir(), ".config", "opencode");
 }
 
-export function getGlobalAgentsRoot(targetOverride?: string): string {
-  if (targetOverride) {
-    return resolve(targetOverride, "..", ".agents");
-  }
-  if (process.env.OPENCODE_AGENTS_DIR) {
-    return resolve(process.env.OPENCODE_AGENTS_DIR);
-  }
-  return join(homedir(), ".agents");
-}
-
 export function getBackupRoot(targetOverride?: string): string {
   if (targetOverride) {
     return resolve(targetOverride, "backups");
