@@ -95,7 +95,7 @@ The project is structured in three layers so future harnesses other than OpenCod
 | Layer | Contents | Coupling |
 |---|---|---|
 | Catalog (harness-neutral) | `skills/*/SKILL.md` (open Agent Skills format per agentskills.io), skill scripts/references/assets | No harness assumptions; portable to any agent runtime that reads SKILL.md |
-| Integration (OpenCode-specific) | `agents/*.md` (OpenCode agent format with XML markup), `plugin/` hooks, `config/*.jsonc`, `commands/`, installer (`src/`) | Assumes OpenCode v2 conventions; swappable per harness |
+| Integration (OpenCode-specific) | `agents/*.md` (OpenCode agent format with XML markup), `plugin/` hooks, `config/*.jsonc`, `commands/`, installer (`src/`) | Assumes OpenCode conventions (agent frontmatter still uses the V1 permission map; see DECISIONS.md); swappable per harness |
 
 Adding support for a future harness (for example Claude Code, Codex CLI) means writing a new integration layer (agent format converter, plugin equivalent, installer target) while reusing the catalog untouched.
 
