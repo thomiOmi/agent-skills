@@ -102,10 +102,10 @@ Full reference template deployed by installer:
   "formatter": true,
   "lsp": true,
 
-  "permission": {
-    "edit": "ask",
-    "bash": "ask"
-  }
+  "permissions": [
+    { "action": "edit", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "*", "effect": "ask" }
+  ]
 }
 ```
 
@@ -115,6 +115,8 @@ Full reference template deployed by installer:
 
 Each agent can run on a different model with provider-specific options.
 Overrides work in agent markdown frontmatter or in `opencode.jsonc`.
+No agent in this repository pins a model today, so every agent inherits the
+session model unless you add an override.
 
 ### In agent frontmatter (agents/*.md)
 
@@ -123,28 +125,37 @@ Overrides work in agent markdown frontmatter or in `opencode.jsonc`.
 name: deep-thinker
 description: Complex reasoning specialist
 mode: subagent
-temperature: 0.1
-model: cline/claude-sonnet-4.5
-reasoningEffort: high
+model: anthropic/claude-sonnet-4-5#high
+request:
+  body:
+    temperature: 0.1
 ---
 ```
 
-- `model` uses the `provider/model-id` format. Omit it to use the session model.
-- Any other frontmatter key (for example `reasoningEffort`, `textVerbosity`,
-  `top_p`) is passed through to the provider as a model option.
+- `model` uses the `provider/model` format with an optional `#variant`
+  suffix. Omit it to use the session model.
+- The provider must be available in the current project. Built-in provider
+  IDs include `anthropic`, `openai`, and `opencode`; a custom provider is
+  added under `providers` in `opencode.jsonc` and referenced by its own ID.
+- Provider options such as `temperature` and `top_p` belong under
+  `request.body`. OpenCode v2 does not accept them as top-level agent fields.
 - OpenCode lists available models with `opencode models`.
 
 ### In opencode.jsonc (including built-in agents)
 
 ```jsonc
 {
-  "agent": {
+  "agents": {
     "deep-thinker": {
-      "model": "cline/claude-sonnet-4.5",
-      "reasoningEffort": "high"
+      "model": "anthropic/claude-sonnet-4-5#high",
+      "request": {
+        "body": {
+          "temperature": 0.1
+        }
+      }
     },
     "plan": {
-      "model": "cline/claude-haiku-4.5"
+      "model": "anthropic/claude-haiku-4-5"
     }
   }
 }
@@ -159,6 +170,9 @@ reasoningEffort: high
 | `senior-developer` | Strong coding model - architecture and implementation |
 | `qa-engineer` | Strong coding model - writes and audits tests |
 | `marketing`, `docs-writer` | Mid-tier model - prose quality matters less than speed and cost |
+
+Pick the concrete `provider/model` id from `opencode models` on your machine;
+the table above describes the tier, not a fixed id.
 
 Keep cost down: give the heavy reasoning model only to `deep-thinker` and the
 strong coding model to `senior-developer` and `qa-engineer`. Everything else
@@ -175,35 +189,38 @@ Control which skills agents can load with wildcard patterns in `opencode.jsonc`
 
 ```jsonc
 {
-  "permission": {
-    "skill": {
-      "*": "allow",
-      "internal-*": "deny",
-      "experimental-*": "ask"
-    }
-  }
+  "permissions": [
+    { "action": "skill", "resource": "*", "effect": "allow" },
+    { "action": "skill", "resource": "internal-*", "effect": "deny" },
+    { "action": "skill", "resource": "experimental-*", "effect": "ask" }
+  ]
 }
 ```
 
 - `allow` - skill loads immediately
 - `deny` - skill hidden from the agent entirely
 - `ask` - user prompted before the skill loads
+- Rules run in order and the last matching rule wins
 
-You can also disable the skill tool for a specific agent:
+You can also deny the skill action for a specific agent:
 
 ```jsonc
 {
-  "agent": {
-    "build": { "tools": { "skill": false } }
+  "agents": {
+    "build": {
+      "permissions": [
+        { "action": "skill", "resource": "*", "effect": "deny" }
+      ]
+    }
   }
 }
 ```
 
 ### MCP servers
 
-Add local or remote MCP servers under `mcp`. Tools register as
-`<server-name>_*` so you can disable them per agent with glob patterns.
-Uncommented example (disabled by default):
+Add local or remote MCP servers under `mcp`. Their tools register under the
+normalized `<server-name>_<tool>` name, so they can be denied per agent with
+a permission action. Uncommented example (disabled by default):
 
 ```jsonc
 {
@@ -221,11 +238,15 @@ Uncommented example (disabled by default):
       }
     }
   },
-  "tools": {
-    "my-local-server_*": false
-  },
-  "agent": {
-    "senior-developer": { "tools": { "my-local-server_*": true } }
+  "permissions": [
+    { "action": "my-local-server_*", "resource": "*", "effect": "deny" }
+  ],
+  "agents": {
+    "senior-developer": {
+      "permissions": [
+        { "action": "my-local-server_*", "resource": "*", "effect": "allow" }
+      ]
+    }
   }
 }
 ```

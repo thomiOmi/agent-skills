@@ -41,14 +41,13 @@
   }
 
   // Skill loading permissions (wildcard patterns). Uncomment and adapt.
-  // "permission": {
-  //   "skill": {
-  //     "*": "allow",
-  //     "experimental-*": "ask"
-  //   }
-  // },
+  // "permissions": [
+  //   { "action": "skill", "resource": "*", "effect": "allow" },
+  //   { "action": "skill", "resource": "experimental-*", "effect": "ask" }
+  // ],
 
-  // MCP servers (optional). Tools register as <server-name>_*. Uncomment and adapt.
+  // MCP servers (optional). Their tools register as <server-name>_<tool>.
+  // Uncomment and adapt.
   // "mcp": {
   //   "context7": {
   //     "type": "remote",

@@ -10,7 +10,7 @@ The agent-skills project enables OpenCode users to work with a curated collectio
 - Provide an `orchestrator` subagent that coordinates multi-step workflows
 - Ship specialized agents for coding, testing, security, design, content, DevOps, documentation, brainstorming, planning, and refactoring
 - Provide skills that support each agent role with domain-specific guidance
-- Follow OpenCode v2 conventions: agents as markdown, skills as SKILL.md
+- Follow OpenCode conventions: agents as markdown, skills as SKILL.md
 - Ship a harness-neutral skill catalog that needs no agent-side custom tools
 - Keep the skill catalog harness-neutral (open Agent Skills format) so future agent runtimes beyond OpenCode can adopt it via an integration-layer adapter
 - Follow the Agent Skills specification and repository authoring conventions
