@@ -175,8 +175,6 @@ agent-skills/
 ├── src/                # CLI installer tooling (copy/symlink/merge)
 └── tests/              # Test suites (bun test)
 ```
-└── tests/              # Test suites (bun test)
-```
 
 ---
 
