@@ -1,6 +1,109 @@
 # Changelog
 
 
+## v0.5.0
+
+[compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.4.0...v0.5.0)
+
+### 🚀 Enhancements
+
+- Add eval runner --limit flag, judge flag guard, and exit code on failures ([#31](https://github.com/thomiOmi/agent-skills/pull/31))
+- Add common pitfalls sections to four thin skills and refresh audit ([#32](https://github.com/thomiOmi/agent-skills/pull/32))
+- Expand agent roster to 20 for agency structure ([#36](https://github.com/thomiOmi/agent-skills/pull/36))
+- Add frontend-patterns, backend-patterns, database-migration skills ([#37](https://github.com/thomiOmi/agent-skills/pull/37))
+- Add project-lifecycle skill and strengthen code-review for tech lead ([#38](https://github.com/thomiOmi/agent-skills/pull/38))
+- **evals:** Resume interrupted runs and cap executor runtime ([7689966](https://github.com/thomiOmi/agent-skills/commit/7689966))
+- Vendor skill-creator and plugin-dev under .agents with executor shim ([d774a38](https://github.com/thomiOmi/agent-skills/commit/d774a38))
+- Emit skill-creator schema artifacts from eval runner ([8ce9ef4](https://github.com/thomiOmi/agent-skills/commit/8ce9ef4))
+- Support agent eval targets in the eval runner ([ad61811](https://github.com/thomiOmi/agent-skills/commit/ad61811))
+- **skills:** Add config-management skill ([24171b6](https://github.com/thomiOmi/agent-skills/commit/24171b6))
+- **plugin:** ⚠️  Remove quality-verifier custom tool ([849e3df](https://github.com/thomiOmi/agent-skills/commit/849e3df))
+- **installer:** Add ownership-aware merge installer ([eb28d97](https://github.com/thomiOmi/agent-skills/commit/eb28d97))
+
+### 🩹 Fixes
+
+- Dedupe skill trigger phrases and add catalog collision regression tests ([#30](https://github.com/thomiOmi/agent-skills/pull/30))
+- **evals:** Harness validity (grading key isolation, build agent) + git-workflow defaults ([#43](https://github.com/thomiOmi/agent-skills/pull/43))
+- **evals:** Put the task before skill instructions in the prompt wrapper ([#44](https://github.com/thomiOmi/agent-skills/pull/44))
+- **skills:** Repair broken dependency graph in task decomposer ([de40e31](https://github.com/thomiOmi/agent-skills/commit/de40e31))
+- **skills:** Repair mojibake and strip BOM from markdown files ([01a12ad](https://github.com/thomiOmi/agent-skills/commit/01a12ad))
+- **plugin:** Real quality checks, GNU long-form delete guard, drop deprecated tool ([ad488a0](https://github.com/thomiOmi/agent-skills/commit/ad488a0))
+- **docs:** Correct Mermaid diagram syntax ([1e6a690](https://github.com/thomiOmi/agent-skills/commit/1e6a690))
+- **package:** Include installer sources in published files ([7686b4c](https://github.com/thomiOmi/agent-skills/commit/7686b4c))
+- **installer:** Deploy canonical global instructions ([26ed8b0](https://github.com/thomiOmi/agent-skills/commit/26ed8b0))
+- **plugin:** Block glob, quoted, and Windows-native delete bypasses ([d2903db](https://github.com/thomiOmi/agent-skills/commit/d2903db))
+
+### 💅 Refactors
+
+- Centralize eval case files under evals/cases ([#35](https://github.com/thomiOmi/agent-skills/pull/35))
+- Sharpen agent role boundaries from audit ([#39](https://github.com/thomiOmi/agent-skills/pull/39))
+- Normalize devops and security-auditor agent markup to XML tag convention ([#40](https://github.com/thomiOmi/agent-skills/pull/40))
+- **agents:** Migrate frontmatter permission maps to OpenCode v2 permissions array ([c2d774e](https://github.com/thomiOmi/agent-skills/commit/c2d774e))
+
+### 📖 Documentation
+
+- Document changelogen emoji headings and release notes-file practice ([4848533](https://github.com/thomiOmi/agent-skills/commit/4848533))
+- Mark F7 trust boundaries as done after verification ([#33](https://github.com/thomiOmi/agent-skills/pull/33))
+- Mark F4 and F6 audit items as done and update task backlog ([#34](https://github.com/thomiOmi/agent-skills/pull/34))
+- Record agent markup decision to keep XML tags ([#41](https://github.com/thomiOmi/agent-skills/pull/41))
+- Park eval runner as baseline-only, choose DeepEval for LLM-judge ([#42](https://github.com/thomiOmi/agent-skills/pull/42))
+- **tasks:** ⚠️  Record iteration-2 grading weaknesses found in review ([06f67bf](https://github.com/thomiOmi/agent-skills/commit/06f67bf))
+- Update root docs for vendored tooling and refactor evals to evals/src ([17f03bc](https://github.com/thomiOmi/agent-skills/commit/17f03bc))
+- **tasks:** Mark Fase 2 vendoring complete with verification results ([066a375](https://github.com/thomiOmi/agent-skills/commit/066a375))
+- **tasks:** Close vendored-tooling roadmap via PR #45 ([#45](https://github.com/thomiOmi/agent-skills/issues/45))
+- **tasks:** Record collection audit fixes via PR #46 ([#46](https://github.com/thomiOmi/agent-skills/issues/46))
+- **agents:** Document explore/scout/general as built-in subagents ([99c6b7d](https://github.com/thomiOmi/agent-skills/commit/99c6b7d))
+- **tasks:** Mark P2-3 config-management resolved ([8a5050a](https://github.com/thomiOmi/agent-skills/commit/8a5050a))
+- Fix root-docs audit findings (roster drift, counts, task-decomposer deprecation) ([826bc07](https://github.com/thomiOmi/agent-skills/commit/826bc07))
+- Add document ownership map and fix self-contradicting format rules ([b88a976](https://github.com/thomiOmi/agent-skills/commit/b88a976))
+- Drop duplicate agent columns from ARCHITECTURE and PRD roster tables ([a3737aa](https://github.com/thomiOmi/agent-skills/commit/a3737aa))
+- **skills:** Remove duplicate reference content delegated to other skills ([3092650](https://github.com/thomiOmi/agent-skills/commit/3092650))
+- **skills:** Move migration execution ownership to database-migration ([4081e30](https://github.com/thomiOmi/agent-skills/commit/4081e30))
+- **skills:** Translate stray Indonesian fragments to English ([b77fbca](https://github.com/thomiOmi/agent-skills/commit/b77fbca))
+- Enforce English-only repo files, discussion may use any language ([ab2b32a](https://github.com/thomiOmi/agent-skills/commit/ab2b32a))
+- Add comprehensive evaluation report for agents and skills ([#48](https://github.com/thomiOmi/agent-skills/pull/48))
+- **tasks:** Restore audit roadmap ([7fcd422](https://github.com/thomiOmi/agent-skills/commit/7fcd422))
+- Align source-of-truth references ([51b96bc](https://github.com/thomiOmi/agent-skills/commit/51b96bc))
+- Align contribution task rules ([cdd798a](https://github.com/thomiOmi/agent-skills/commit/cdd798a))
+- Normalize repository language and encoding ([3861553](https://github.com/thomiOmi/agent-skills/commit/3861553))
+- **tasks:** Archive stale eval roadmap items ([a2ebcbe](https://github.com/thomiOmi/agent-skills/commit/a2ebcbe))
+- **tasks:** Record issue hygiene audit ([c48a059](https://github.com/thomiOmi/agent-skills/commit/c48a059))
+- **prd:** Remove stale plugin-dev scope ([314de8a](https://github.com/thomiOmi/agent-skills/commit/314de8a))
+- Mark evaluation report as historical ([1d24d22](https://github.com/thomiOmi/agent-skills/commit/1d24d22))
+- **tasks:** Separate archived roadmap sections ([c1165b3](https://github.com/thomiOmi/agent-skills/commit/c1165b3))
+- Clarify placeholder examples ([3a01cbe](https://github.com/thomiOmi/agent-skills/commit/3a01cbe))
+- Add public community policies ([b117f54](https://github.com/thomiOmi/agent-skills/commit/b117f54))
+- **install:** Align local distribution workflow ([15f1e90](https://github.com/thomiOmi/agent-skills/commit/15f1e90))
+- **readme:** Convert structure tree to unicode and sync anatomy docs ([0bd7eab](https://github.com/thomiOmi/agent-skills/commit/0bd7eab))
+- **readme:** Restore full unicode tree with counts and instructions note ([77a0941](https://github.com/thomiOmi/agent-skills/commit/77a0941))
+- **rules:** Sync audit-fix editorial corrections ([a5a9630](https://github.com/thomiOmi/agent-skills/commit/a5a9630))
+- **rules:** Clarify OPENCODE.md is not auto-loaded by installer ([7562c01](https://github.com/thomiOmi/agent-skills/commit/7562c01))
+- **install:** Correct OpenCode config examples to v2 shapes ([5d9a25d](https://github.com/thomiOmi/agent-skills/commit/5d9a25d))
+- Remove duplicate tests entry in README ([#75](https://github.com/thomiOmi/agent-skills/pull/75))
+
+### 🏡 Chore
+
+- Remove eval harness, vendored tooling; enforce English-only policy ([#47](https://github.com/thomiOmi/agent-skills/pull/47))
+- Migrate lint engine to @antfu/eslint-config ([#49](https://github.com/thomiOmi/agent-skills/pull/49))
+- **github:** Add contribution templates ([b8ffbaf](https://github.com/thomiOmi/agent-skills/commit/b8ffbaf))
+- **ci:** Simplify public CI validation ([053afc3](https://github.com/thomiOmi/agent-skills/commit/053afc3))
+- **package:** Remove unused distribution metadata ([8aacb5a](https://github.com/thomiOmi/agent-skills/commit/8aacb5a))
+- **installer:** Remove remote source support ([#69](https://github.com/thomiOmi/agent-skills/pull/69))
+- **package:** Bump bun to 1.4.4 ([e2acf2c](https://github.com/thomiOmi/agent-skills/commit/e2acf2c))
+
+### 🤖 CI
+
+- Bump Bun version to 1.4.4 in GitHub Actions workflow ([571c865](https://github.com/thomiOmi/agent-skills/commit/571c865))
+
+#### ⚠️ Breaking Changes
+
+- **plugin:** ⚠️  Remove quality-verifier custom tool ([849e3df](https://github.com/thomiOmi/agent-skills/commit/849e3df))
+- **tasks:** ⚠️  Record iteration-2 grading weaknesses found in review ([06f67bf](https://github.com/thomiOmi/agent-skills/commit/06f67bf))
+
+### ❤️ Contributors
+
+- Thomi Syauqi ([@thomiOmi](https://github.com/thomiOmi))
+
 ## v0.4.0
 
 [compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.3.0...v0.4.0)
