@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.5.1
+
+[compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.5.0...v0.5.1)
+
+### 🩹 Fixes
+
+- **plugin:** Migrate to OpenCode V2 plugin API ([10107de](https://github.com/thomiOmi/agent-skills/commit/10107de))
+
+### 📖 Documentation
+
+- **tasks:** Mark 0.5.0 release complete ([f4bb2a3](https://github.com/thomiOmi/agent-skills/commit/f4bb2a3))
+
+### ❤️ Contributors
+
+- Thomi Syauqi ([@thomiOmi](https://github.com/thomiOmi))
+
 ## v0.5.0
 
 [compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.4.0...v0.5.0)
