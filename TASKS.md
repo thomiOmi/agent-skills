@@ -8,6 +8,9 @@ Roadmap and backlog for the agent-skills project.
 
 ### Done
 
+- Release 0.5.1: `bun run release -- --no-github` bumped the package to 0.5.1, regenerated `CHANGELOG.md`, created release commit 7589460 and annotated tag `v0.5.1`; the release is local only and was not pushed or published - 2026-10-23
+- OpenCode V2 plugin migration: `plugin/compaction.ts`, `plugin/secrets-scanner.ts`, and `plugin/tool-guardian.ts` now default-export V2 plugin definitions with stable IDs, `@opencode/plugin` 2.1.3 replaces `@opencode-ai/plugin`, `plugin/agent-skills.ts` is removed, and `compaction.ts` uses `node:path`; tests updated and suite at 90 tests across 12 files - 2026-10-23
+- Global 0.5.1 install: merge install updated 3 plugins, deleted stale `plugins/agent-skills.ts`, left 151 files unchanged, wrote a 154-file manifest, and saved backup `C:\Users\thomi\.config\opencode-backups\20261023-152043`; second dry-run was idempotent and the OpenCode log shows all three V2 plugins loading without errors - 2026-10-23
 - Release 0.5.0: `bun run release` bumped the package to 0.5.0, regenerated `CHANGELOG.md`, created release commit 89f9298 and annotated tag `v0.5.0`, pushed both, and published the GitHub release; CI passed on the release commit - 2026-10-23
 - Installer refactor 0.5.0: ownership-aware plan/execute (`src/lib/install/`), SHA-256 manifest at `<configRoot>/.agent-skills-manifest.json`, merge as the default with explicit replace and symlink modes plus a copy alias, config-root-only backups, deep config merge (user values win, arrays atomic, V2 and unknown keys preserved, `instructions` append, `experimental.subagent_depth` migration, strict JSONC errors), no `~/.agents` writes, and deletion of the separate deploy/sync/symlink commands - 2026-10-23
 - P0 installer regression tests: plan classification, config merge, safety (third-party and modified file preservation, replace force and backup, invalid config and corrupt manifest force behavior, dry run, no sibling `.agents`), agent V2 permissions, and docs consistency; suite at 85 tests across 12 files - 2026-10-23
@@ -22,7 +25,7 @@ Roadmap and backlog for the agent-skills project.
 - 15 skills covering code, testing, security, design, devops, AI, planning, documentation - 2026-07-26
 - 2 custom tools: task-decomposer.ts, quality-verifier.ts - 2026-07-26
 - 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security - 2026-07-26
-- Plugin registration (agent-skills.ts) for OpenCode v2 - 2026-07-26
+- Plugin registration (agent-skills.ts) for OpenCode v2 - 2026-07-26 (superseded by the V2 split plugins on 2026-10-23)
 - Clean em dash/emoji/arrow characters across 100+ files - 2026-07-29
 - Formatting rules and Boundaries section in AGENTS.md - 2026-07-29
 - Move DECISIONS.md to root, add ARCHITECTURE.md + TASKS.md - 2026-07-29
@@ -38,7 +41,7 @@ Roadmap and backlog for the agent-skills project.
 
 ### In Progress
 
-- No active implementation work. The installer refactor and 0.5.0 release are complete.
+- No active implementation work. The 0.5.1 V2 plugin migration, release, and global install are complete.
 
 ### Planned
 
@@ -89,6 +92,7 @@ Unscheduled personal notes (not part of the roadmap):
 
 | Date | Change |
 |---|---|
+| 2026-10-23 | Released v0.5.1: migrated the plugin layer to the OpenCode V2 API with three default-exported plugins and stable IDs, replaced `@opencode-ai/plugin` with `@opencode/plugin` 2.1.3, removed `plugin/agent-skills.ts`, switched compaction to `node:path`, updated tests and docs, then created release commit 7589460 and annotated tag v0.5.1; global merge install updated 3 plugins, deleted 1 stale plugin, left 151 files unchanged, and a second dry-run was idempotent; release is local only and was not pushed or published |
 | 2026-10-23 | Released v0.5.0: `bun run release` bumped the package to 0.5.0, regenerated `CHANGELOG.md`, and created release commit 89f9298 plus annotated tag v0.5.0; pushed both, CI passed on the release commit, and the GitHub release was published with the changelog section plus installer breaking changes |
 | 2026-10-23 | Installer refactor for 0.5.0: ownership-aware planner/executor with a SHA-256 manifest, merge as the default mode, explicit replace and symlink modes, copy as a deprecated replace alias, config-root-only backups, deep config merge with strict JSONC errors and `experimental.subagent_depth` migration, no `~/.agents` writes, and removal of the separate deploy/sync/symlink commands; added P0 tests for planning, config merge, safety, agent V2 permissions, and docs consistency (85 tests across 12 files); updated DECISIONS, ARCHITECTURE, PRD, README, INSTALL, AGENTS, SECURITY, TASKS, package description, and removed the unused `c12`/`defu` dependencies |
 | 2026-10-22 | OpenCode v2 documentation audit: INSTALL.md model and permission examples corrected to V2 shapes (`model: provider/model#variant`, provider options under `request.body`, ordered `permissions` array with `shell`/`subagent` actions, `agents` map), the `cline/*` example IDs replaced with built-in provider IDs, `config/opencode.jsonc` comment example updated; ARCHITECTURE.md and PRD.md no longer claim native v2 conventions while the 20 agent files still use the V1 permission map, which is now recorded as a known gap in DECISIONS.md (closed on 2026-10-23 when all agents moved to V2 permissions) |

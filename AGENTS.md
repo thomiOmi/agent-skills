@@ -162,7 +162,7 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 
 **Project:** agent-skills
 **Type:** OpenCode Agent Orchestra (TypeScript + Bun)
-**Stack:** TypeScript, Bun, @opencode-ai/plugin
+**Stack:** TypeScript, Bun, @opencode/plugin
 **Package manager:** bun
 **Test runner:** Bun built-in test (`bun test`)
 **Linter / formatter:** ESLint + typescript-eslint + @stylistic
