@@ -144,7 +144,7 @@ The system uses `TASKS.md` file-based tracking and working context documents for
 
 ### FR-7: Plugin
 
-The plugin registers lifecycle hooks via the OpenCode plugin API: compaction state injection, secret scanning, and destructive-command guarding. Agents, skills, and commands are discovered from the installed directories rather than registered by the plugin.
+The plugins register lifecycle hooks via the OpenCode V2 plugin API: compaction state injection, secret scanning, and destructive-command guarding. Each plugin is a default definition with a stable ID and a `setup` function. Agents, skills, and commands are discovered from the installed directories rather than registered by the plugin.
 
 ### FR-8: Installer
 
@@ -182,7 +182,7 @@ The installer deploys agents, skills, commands, plugin hooks, global instruction
 - 34 skills with progressive disclosure and verification checklists
 - No custom tools (quality-verifier and task-decomposer were removed - see DECISIONS.md)
 - 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
-- Plugin registration via OpenCode plugin API
+- Plugin registration via OpenCode V2 plugin API
 - Ownership-aware installer with merge, replace, and symlink modes, a manifest, config merge, backups, and config-root-only writes
 - File-based task tracking and persistence (`TASKS.md`)
 - Authoring standards: agentskills.io for skills and OpenCode conventions for integration files

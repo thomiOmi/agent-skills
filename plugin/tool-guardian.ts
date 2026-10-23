@@ -1,10 +1,10 @@
-import type { Plugin } from "@opencode-ai/plugin";
 import process from "node:process";
+import { Plugin } from "@opencode/plugin";
 
 /**
  * Tool Guardian - blocks irreversible destructive bash commands.
  *
- * Intercepts bash tool calls before execution and throws on commands that
+ * Intercepts shell commands before execution and throws on commands that
  * are catastrophic or hard to reverse:
  * - recursive force delete targeting filesystem roots, home, or wildcards,
  *   including glob forms (`/*`, `~/*`, `$HOME/*`, `C:\*`), quoted home vars
@@ -19,7 +19,7 @@ import process from "node:process";
  *
  * Specific-path deletes (rm -rf node_modules, rm -rf /tmp/build) and
  * recoverable operations (git reset --hard) are deliberately allowed.
- * Permission prompts for bash remain governed by opencode.json config; this
+ * Permission prompts for shell commands remain governed by opencode.json config; this
  * guard is an additional safety layer, not a permission system.
  *
  * Escape hatch: set AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1 to disable.
@@ -157,7 +157,7 @@ export function findDangerousCommand(command: string): string | null {
 }
 
 /**
- * Throws when a bash command matches a destructive rule.
+ * Throws when a shell command matches a destructive rule.
  * Exported for direct use in tests.
  */
 export function guardBashCommand(command: string): void {
@@ -171,20 +171,23 @@ export function guardBashCommand(command: string): void {
   }
 }
 
-export const ToolGuardianPlugin: Plugin = async () => {
-  return {
-    "tool.execute.before": async (input, output) => {
+/**
+ * V2 plugin definition. Registers a shell creation hook so destructive
+ * commands are blocked before the command starts.
+ */
+export const ToolGuardianPlugin = Plugin.define({
+  id: "agent-skills.tool-guardian",
+  async setup(context) {
+    await context.shell.hook("create.before", async (event) => {
       if (process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN === "1") {
         return;
       }
-      if (input.tool !== "bash") {
+      if (!event.command) {
         return;
       }
-      const command = typeof output.args?.command === "string" ? output.args.command : "";
-      if (!command) {
-        return;
-      }
-      guardBashCommand(command);
-    },
-  };
-};
+      guardBashCommand(event.command);
+    });
+  },
+});
+
+export default ToolGuardianPlugin;

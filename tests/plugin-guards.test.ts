@@ -1,11 +1,70 @@
-import type { Plugin } from "@opencode-ai/plugin";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it } from "bun:test";
-import { AgentSkillsPlugin } from "../plugin/agent-skills";
+import { CompactionPlugin } from "../plugin/compaction";
 import { guardToolCall, scanForSecrets, SecretsScannerPlugin } from "../plugin/secrets-scanner";
-import { findDangerousCommand, guardBashCommand } from "../plugin/tool-guardian";
+import { findDangerousCommand, guardBashCommand, ToolGuardianPlugin } from "../plugin/tool-guardian";
 
-function harnessCtx(): Parameters<Plugin>[0] {
-  return { directory: process.cwd(), worktree: process.cwd() } as unknown as Parameters<Plugin>[0];
+type HookCallback = (event: never) => Promise<void>;
+
+interface CapturedHooks {
+  tool: Record<string, HookCallback>;
+  shell: Record<string, HookCallback>;
+  session: Record<string, HookCallback>;
+}
+
+interface HarnessLocation {
+  directory: string;
+  project: {
+    directory: string;
+    canonical: string;
+  };
+}
+
+type PluginContext = Parameters<typeof SecretsScannerPlugin.setup>[0];
+
+function defaultLocation(): HarnessLocation {
+  const directory = process.cwd();
+  return {
+    directory,
+    project: { directory, canonical: directory },
+  };
+}
+
+/**
+ * Builds a minimal V2 plugin context that records registered hooks so tests
+ * can invoke them directly.
+ */
+function createHarness(location: HarnessLocation = defaultLocation()): {
+  context: PluginContext;
+  hooks: CapturedHooks;
+} {
+  const hooks: CapturedHooks = { tool: {}, shell: {}, session: {} };
+  const register = (domain: keyof CapturedHooks) => {
+    return async (name: string, callback: HookCallback): Promise<{ dispose: () => Promise<void> }> => {
+      hooks[domain][name] = callback;
+      return { dispose: async () => {} };
+    };
+  };
+  const context = {
+    location,
+    tool: { hook: register("tool") },
+    shell: { hook: register("shell") },
+    session: { hook: register("session") },
+  } as unknown as PluginContext;
+  return { context, hooks };
+}
+
+/**
+ * Returns a registered hook or fails loudly when setup did not register it.
+ */
+function getHook(hooks: Record<string, HookCallback>, name: string): HookCallback {
+  const hook = hooks[name];
+  if (!hook) {
+    throw new Error(`Expected hook ${name} to be registered`);
+  }
+  return hook;
 }
 
 describe("Secrets Scanner", () => {
@@ -36,22 +95,64 @@ describe("Secrets Scanner", () => {
     expect(scanForSecrets("risk-based testing and task-description docs")).toBeNull();
   });
 
-  it("blocks write and edit calls containing secrets via the hook", async () => {
-    const plugin = await SecretsScannerPlugin(harnessCtx());
-    const hook = plugin["tool.execute.before"];
-    expect(hook).toBeDefined();
-    await expect(
-      hook?.({ tool: "write", sessionID: "s", callID: "c" }, { args: { filePath: "a.ts", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" } }),
-    ).rejects.toThrow(/secrets-scanner/);
-    await expect(
-      hook?.({ tool: "read", sessionID: "s", callID: "c" }, { args: { filePath: ".env", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" } }),
-    ).resolves.toBeUndefined();
-  });
-
   it("guardToolCall throws with guidance", () => {
     expect(() => guardToolCall("edit", { newString: "AKIAIOSFODNN7EXAMPLE" })).toThrow(
       /AGENT_SKILLS_DISABLE_SECRETS_SCANNER/,
     );
+  });
+});
+
+describe("Secrets Scanner plugin", () => {
+  it("blocks write and edit calls containing secrets", async () => {
+    const harness = createHarness();
+    await SecretsScannerPlugin.setup(harness.context);
+    const hook = getHook(harness.hooks.tool, "execute.before");
+
+    await expect(
+      hook({
+        tool: "write",
+        input: { filePath: "a.ts", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
+      } as never),
+    ).rejects.toThrow(/secrets-scanner/);
+
+    await expect(
+      hook({
+        tool: "edit",
+        input: { filePath: "a.ts", oldString: "before", newString: "AKIAIOSFODNN7EXAMPLE" },
+      } as never),
+    ).rejects.toThrow(/secrets-scanner/);
+
+    await expect(
+      hook({
+        tool: "read",
+        input: { filePath: ".env", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
+      } as never),
+    ).resolves.toBeUndefined();
+  });
+
+  it("honors the disable escape hatch", async () => {
+    const previous = process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER;
+    process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER = "1";
+    try {
+      const harness = createHarness();
+      await SecretsScannerPlugin.setup(harness.context);
+      const hook = getHook(harness.hooks.tool, "execute.before");
+
+      await expect(
+        hook({
+          tool: "write",
+          input: { content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
+        } as never),
+      ).resolves.toBeUndefined();
+    }
+    finally {
+      if (previous === undefined) {
+        delete process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER;
+      }
+      else {
+        process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER = previous;
+      }
+    }
   });
 });
 
@@ -134,22 +235,105 @@ describe("Tool Guardian", () => {
   });
 });
 
-describe("AgentSkillsPlugin harness", () => {
-  it("composes both guards into tool.execute.before", async () => {
-    const hooks = await AgentSkillsPlugin(harnessCtx());
-    const hook = hooks["tool.execute.before"];
-    expect(hook).toBeDefined();
-    await expect(
-      hook?.(
-        { tool: "write", sessionID: "s", callID: "c" },
-        { args: { filePath: ".env", content: "SECRET_TOKEN=ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" } },
-      ),
-    ).rejects.toThrow(/secrets-scanner/);
-    await expect(
-      hook?.({ tool: "bash", sessionID: "s", callID: "c" }, { args: { command: "rm -rf /" } }),
-    ).rejects.toThrow(/tool-guardian/);
-    await expect(
-      hook?.({ tool: "bash", sessionID: "s", callID: "c" }, { args: { command: "bun run test" } }),
-    ).resolves.toBeUndefined();
+describe("Tool Guardian plugin", () => {
+  it("blocks destructive shell commands and allows safe commands", async () => {
+    const harness = createHarness();
+    await ToolGuardianPlugin.setup(harness.context);
+    const hook = getHook(harness.hooks.shell, "create.before");
+
+    await expect(hook({ command: "rm -rf /" } as never)).rejects.toThrow(/tool-guardian/);
+    await expect(hook({ command: "bun run test" } as never)).resolves.toBeUndefined();
+  });
+
+  it("honors the disable escape hatch", async () => {
+    const previous = process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN;
+    process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN = "1";
+    try {
+      const harness = createHarness();
+      await ToolGuardianPlugin.setup(harness.context);
+      const hook = getHook(harness.hooks.shell, "create.before");
+
+      await expect(hook({ command: "rm -rf /" } as never)).resolves.toBeUndefined();
+    }
+    finally {
+      if (previous === undefined) {
+        delete process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN;
+      }
+      else {
+        process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN = previous;
+      }
+    }
+  });
+});
+
+describe("Compaction plugin", () => {
+  it("injects the TASKS.md continue point into the compaction system prompt", async () => {
+    const projectDirectory = await mkdtemp(join(tmpdir(), "agent-skills-compaction-"));
+    try {
+      await writeFile(
+        join(projectDirectory, "TASKS.md"),
+        [
+          "# Tasks",
+          "",
+          "## Continue Here",
+          "- Finish the V2 plugin migration.",
+          "",
+          "## Backlog",
+          "- Keep this out of the summary.",
+          "",
+        ].join("\n"),
+        "utf-8",
+      );
+      const harness = createHarness({
+        directory: projectDirectory,
+        project: { directory: projectDirectory, canonical: projectDirectory },
+      });
+      await CompactionPlugin.setup(harness.context);
+      const hook = getHook(harness.hooks.session, "compaction");
+      const event = { system: [] as Array<{ type: "text"; text: string }> };
+
+      await hook(event as never);
+
+      expect(event.system).toHaveLength(1);
+      expect(event.system[0]?.type).toBe("text");
+      expect(event.system[0]?.text).toContain("## Project State (TASKS.md)");
+      expect(event.system[0]?.text).toContain("Finish the V2 plugin migration.");
+      expect(event.system[0]?.text).not.toContain("Keep this out of the summary.");
+    }
+    finally {
+      await rm(projectDirectory, { recursive: true, force: true });
+    }
+  });
+
+  it("does nothing when TASKS.md is absent", async () => {
+    const projectDirectory = await mkdtemp(join(tmpdir(), "agent-skills-compaction-"));
+    try {
+      const harness = createHarness({
+        directory: projectDirectory,
+        project: { directory: projectDirectory, canonical: projectDirectory },
+      });
+      await CompactionPlugin.setup(harness.context);
+      const hook = getHook(harness.hooks.session, "compaction");
+      const event = { system: [] as Array<{ type: "text"; text: string }> };
+
+      await hook(event as never);
+
+      expect(event.system).toHaveLength(0);
+    }
+    finally {
+      await rm(projectDirectory, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("V2 plugin definitions", () => {
+  it("use stable unique ids", () => {
+    const ids = [CompactionPlugin.id, SecretsScannerPlugin.id, ToolGuardianPlugin.id];
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids).toEqual([
+      "agent-skills.compaction",
+      "agent-skills.secrets-scanner",
+      "agent-skills.tool-guardian",
+    ]);
   });
 });

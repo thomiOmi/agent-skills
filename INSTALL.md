@@ -323,7 +323,9 @@ Every file and directory in this repo has a specific purpose when installed to `
 | `agents/*.md` | `agents/*.md` | **20 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, and domain specialists. |
 | `skills/*/` | `skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
 | `commands/*.md` | `commands/*.md` | **17 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
-| `plugin/agent-skills.ts` | `plugins/agent-skills.ts` | **OpenCode plugin** - registers a compaction hook that preserves TASKS.md state across context compaction, and two tool guard hooks: secrets-scanner (blocks writing hardcoded secrets via write/edit) and tool-guardian (blocks destructive bash commands). |
+| `plugin/compaction.ts` | `plugins/compaction.ts` | **Compaction plugin** - registers a V2 session compaction hook that preserves TASKS.md state across context compaction. |
+| `plugin/secrets-scanner.ts` | `plugins/secrets-scanner.ts` | **Secrets scanner plugin** - registers a V2 tool hook that blocks write/edit calls containing hardcoded secrets. |
+| `plugin/tool-guardian.ts` | `plugins/tool-guardian.ts` | **Tool guardian plugin** - registers a V2 shell hook that blocks destructive shell commands before execution. |
 | ownership metadata | `.agent-skills-manifest.json` | **Install manifest** - SHA-256 hashes, modes, and timestamps that drive safe updates and stale-file cleanup. |
 
 The installer does not write `~/.agents/skills/`. Older installs may still have

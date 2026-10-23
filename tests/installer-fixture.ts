@@ -46,7 +46,7 @@ const FIXTURE_FILES: Record<string, string> = {
   ].join("\n"),
   "skills/alpha/references/notes.md": "Alpha reference notes.\n",
   "commands/ship.md": "# Ship\n",
-  "plugin/agent-skills.ts": "export default {};\n",
+  "plugin/example.ts": "export default { id: \"fixture.example\", setup() {} };\n",
   "instructions/AGENTS.md": "# Fixture Rules\n",
   "config/opencode.jsonc": [
     "{",

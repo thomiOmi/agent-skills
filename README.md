@@ -173,11 +173,10 @@ agent-skills/
 ├── commands/           # 17 slash commands (*.md)
 ├── config/             # Global opencode.jsonc and tui.jsonc templates
 ├── instructions/       # Global AGENTS.md + OPENCODE.md source
-├── plugin/             # OpenCode plugin entrypoint + hooks
-│   ├── agent-skills.ts   # Plugin registration (hooks, no custom tools)
+├── plugin/             # OpenCode V2 plugins + hooks
 │   ├── compaction.ts     # TASKS.md state into compaction prompt
 │   ├── secrets-scanner.ts # Blocks writes containing secrets
-│   └── tool-guardian.ts  # Blocks destructive bash commands
+│   └── tool-guardian.ts  # Blocks destructive shell commands
 ├── scripts/            # ESLint and frontmatter dev utilities
 ├── skills/             # 34 atomic domain skills (SKILL.md + resources)
 ├── src/                # CLI installer (plan/execute, manifest, config merge)

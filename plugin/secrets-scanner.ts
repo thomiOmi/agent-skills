@@ -1,5 +1,5 @@
-import type { Plugin } from "@opencode-ai/plugin";
 import process from "node:process";
+import { Plugin } from "@opencode/plugin";
 
 /**
  * Secrets Scanner - blocks tool calls that would write hardcoded secrets.
@@ -117,16 +117,23 @@ export function guardToolCall(_tool: string, args: unknown): void {
   }
 }
 
-export const SecretsScannerPlugin: Plugin = async () => {
-  return {
-    "tool.execute.before": async (input, output) => {
+/**
+ * V2 plugin definition. Registers a tool execution hook that scans write and
+ * edit inputs before they reach the filesystem.
+ */
+export const SecretsScannerPlugin = Plugin.define({
+  id: "agent-skills.secrets-scanner",
+  async setup(context) {
+    await context.tool.hook("execute.before", async (event) => {
       if (process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER === "1") {
         return;
       }
-      if (input.tool !== "write" && input.tool !== "edit") {
+      if (event.tool !== "write" && event.tool !== "edit") {
         return;
       }
-      guardToolCall(input.tool, output.args);
-    },
-  };
-};
+      guardToolCall(event.tool, event.input);
+    });
+  },
+});
+
+export default SecretsScannerPlugin;
