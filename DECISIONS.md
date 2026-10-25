@@ -153,6 +153,8 @@ Reference: <https://bun.com/llms.txt>. An existing dependency that Bun now cover
 
 Dependency maintenance follows from the same policy: Dependabot groups Bun updates at the minor and patch levels only, TypeScript major updates stay ignored until `typescript-eslint` supports TypeScript 7, and major updates for other packages arrive as individual pull requests so they get a deliberate review instead of riding along inside a group.
 
+Applied on 2026-10-26: frontmatter parsing in the test suite now calls `Bun.YAML.parse`, so the tests no longer import the `yaml` package. `scripts/opencode-frontmatter.js` keeps `yaml` on purpose: ESLint runs plugins under Node, and a runtime check confirmed `bun run lint` executes ESLint with `typeof Bun` undefined, so a Bun-only parser would turn every frontmatter into a parse failure. Editor ESLint integrations have the same constraint. A dependency that cannot move to a Bun API because its host runtime is not Bun stays, and the reason is recorded here.
+
 
 ---
 

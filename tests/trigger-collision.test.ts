@@ -1,7 +1,6 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import { describe, expect, it } from "bun:test";
 import { join } from "pathe";
-import parseYaml from "yaml";
 
 interface SkillInfo {
   name: string;
@@ -33,7 +32,7 @@ async function loadSkills(): Promise<SkillInfo[]> {
     }
     const content = await readFile(skillFilePath, "utf-8");
     const frontmatterRaw = content.split("---")[1] ?? "";
-    const frontmatter = parseYaml.parse(frontmatterRaw) as { name?: string; description?: string };
+    const frontmatter = Bun.YAML.parse(frontmatterRaw) as { name?: string; description?: string };
     if (typeof frontmatter.name === "string" && typeof frontmatter.description === "string") {
       skills.push({ name: frontmatter.name, description: frontmatter.description });
     }
