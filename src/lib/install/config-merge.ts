@@ -275,15 +275,12 @@ async function readFirstExisting(
 }
 
 function parseConfigText(path: string, raw: string): Record<string, unknown> {
-  const errors: Array<{ error: number; offset: number; length: number }> = [];
-  const value = parseJSONC(raw, { errors }) as unknown;
-
-  if (errors.length > 0) {
-    const firstError = errors[0];
-    const detail = firstError
-      ? `parse error ${firstError.error} at offset ${firstError.offset}`
-      : "unknown parse error";
-    throw new ConfigParseError(path, new Error(detail));
+  let value: unknown;
+  try {
+    value = parseJSONC(raw);
+  }
+  catch (error) {
+    throw new ConfigParseError(path, error);
   }
 
   if (!isPlainRecord(value)) {
