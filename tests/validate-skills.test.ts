@@ -1,7 +1,14 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import { describe, expect, it } from "bun:test";
 import { join } from "pathe";
-import parseYaml from "yaml";
+
+interface SkillFrontmatter {
+  name: string;
+  description: string;
+  compatibility?: string;
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown;
+}
 
 describe("Validate Skills (Agent Skills Specification)", () => {
   const skillsDir = join(import.meta.dir, "..", "skills");
@@ -39,7 +46,7 @@ describe("Validate Skills (Agent Skills Specification)", () => {
       expect(parts.length).toBeGreaterThanOrEqual(3);
 
       const frontmatterRaw = parts[1] ?? "";
-      const frontmatter = parseYaml.parse(frontmatterRaw);
+      const frontmatter = Bun.YAML.parse(frontmatterRaw) as SkillFrontmatter;
 
       expect(frontmatter).toBeDefined();
 

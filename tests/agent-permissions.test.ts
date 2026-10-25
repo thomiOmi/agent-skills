@@ -1,7 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "bun:test";
 import { basename, join } from "pathe";
-import { parse } from "yaml";
 
 interface PermissionEntry {
   action?: unknown;
@@ -43,7 +42,7 @@ function parseAgent(fileName: string): ParsedAgent {
     throw new Error(`Missing frontmatter: ${fileName}`);
   }
 
-  const frontmatter = parse(match[1] ?? "") as AgentFrontmatter;
+  const frontmatter = Bun.YAML.parse(match[1] ?? "") as AgentFrontmatter;
   const permissions = Array.isArray(frontmatter.permissions)
     ? frontmatter.permissions as PermissionEntry[]
     : [];

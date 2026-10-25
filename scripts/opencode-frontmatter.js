@@ -1,3 +1,5 @@
+// ESLint loads plugins under Node in editor integrations, so this file must
+// not depend on the Bun global. Keep a pure-JS YAML parser here.
 import { parse as parseYaml } from "yaml";
 
 const VALID_MODES = ["primary", "subagent", "all"];
