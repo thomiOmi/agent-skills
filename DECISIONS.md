@@ -141,6 +141,18 @@ Separately flagged in the same audit, both resolved in the follow-up code pass:
 
 `tools/task-decomposer.ts` and its `"task-decomposer"` registration in `plugin/agent-skills.ts` were deleted in the same pass; PRD.md FR-4, PRD.md Scope, ARCHITECTURE.md, and INSTALL.md were updated from 2 custom tools to 1.
 
+### Dependency selection: Bun native first, then unjs, then third-party
+
+New code prefers Bun built-in APIs before adding a dependency, because they ship with the runtime and add no install, audit, or supply-chain surface. The order of preference is:
+
+1. Bun native APIs: `Bun.file`, `Bun.spawn` and `Bun.$`, `Bun.Glob`, `Bun.YAML`, `Bun.TOML`, `Bun.JSON5`, `Bun.semver`, `Bun.env`, plus the built-in test runner and bundler.
+2. unjs.io packages (`citty`, `confbox`, `consola`, `pathe`, `pkg-types`, `scule`, `std-env`) when a Bun native API does not cover the need and the package stays small and runtime-agnostic.
+3. Any other third-party library only when neither layer covers the need, after checking maintenance activity, install weight, and license.
+
+Reference: <https://bun.com/llms.txt>. An existing dependency that Bun now covers natively is a migration candidate, not an obligation; a migration must keep behavior identical and pass typecheck, lint, and tests before it lands.
+
+Dependency maintenance follows from the same policy: Dependabot groups Bun updates at the minor and patch levels only, TypeScript major updates stay ignored until `typescript-eslint` supports TypeScript 7, and major updates for other packages arrive as individual pull requests so they get a deliberate review instead of riding along inside a group.
+
 
 ---
 
