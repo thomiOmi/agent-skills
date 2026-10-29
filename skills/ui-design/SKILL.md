@@ -61,9 +61,10 @@ Output:
 ## References
 
 - `references/components.md` - component anatomy patterns (button, input, modal, dropdown)
+- `references/accessibility.md` - deeper accessibility work
 
 See `assets/templates.md` for component and design token templates.
-For deeper accessibility work, see `references/accessibility.md`.
+For the DESIGN.md file format, load `design-md`.
 
 ---
 

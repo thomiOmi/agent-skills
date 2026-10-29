@@ -83,6 +83,8 @@ Full template lives in `assets/templates.md`.
 - `references/workflow.md` - full step-by-step guide for each step
 - `references/error-types.md` - common error signals and their typical root causes
 - `references/scenarios.md` - flaky tests, prod-only failures, performance bugs, anti-patterns
+- `code-simplifier` - when the fix requires simplifying complex nested logic
+- `tech-debt` - when the bug stems from accumulated technical debt
 
 See `assets/templates.md` for bug report and RCA document templates.
 

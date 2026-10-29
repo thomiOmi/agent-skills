@@ -58,6 +58,7 @@ it('calls setDiscount with SAVE10', () => {
 - `references/structure.md` - AAA pattern, what to test, **error path rules and checklist**, integration tests
 - `references/doubles.md` - mocks, stubs, fakes, spies and when to use each
 - `references/advanced.md` - snapshot tests and contract tests
+- `test-planning` - when designing test strategies, QA entry/exit criteria, and coverage targets
 
 See `assets/templates.md` for unit, integration, and test case documentation templates.
 

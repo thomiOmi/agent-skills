@@ -45,3 +45,9 @@ Guidelines for designing comprehensive test plans, QA entry/exit criteria, and c
 - [ ] Entry and exit quality gates specified
 - [ ] Mocking and environment dependencies detailed
 ```
+
+---
+
+## References
+
+- `testing` - when writing unit, integration, snapshot, and contract tests

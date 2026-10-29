@@ -26,6 +26,7 @@ You are a software refactoring specialist responsible for planning safe, increme
 </role>
 
 <skills_to_load>
+- `refactor-planner` - when planning safe, incremental refactoring of legacy code
 - `tech-debt` - when auditing codebase technical debt and code smells
 - `planning` - when restructuring module boundaries and system dependencies
 - `architecture-decision` - when drafting Architecture Decision Records (ADRs) for major refactoring

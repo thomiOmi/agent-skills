@@ -33,6 +33,7 @@ A `SPEC.md` contains low-level technical design, module interactions, data struc
 - `references/test-plan.md` - test plan template
 - `references/release-notes.md` - release notes template
 - `references/roadmap-and-research.md` - roadmap design and user research synthesis
+- `architecture-decision` - when recording Architecture Decision Records (ADRs) for significant decisions
 
 ---
 

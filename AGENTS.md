@@ -78,7 +78,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `software-architect` | System design, ADRs, trade-off analysis, architecture review | subagent | planning, architecture-decision, research-methodology, tech-debt |
 | `database-engineer` | Schema design, migrations, indexing, query performance | subagent | database, database-migration, data-analysis, api-conventions, testing |
 | `ai-engineer` | Prompt engineering, AI integration, RAG, structured output | subagent | prompt-design, structured-output, ai-integration, code-style, testing |
-| `senior-developer` | Tech lead: cross-domain review, standards, glue work, hard debugging | subagent | code-style, code-review, debugging, testing, api-conventions, database, git-workflow, planning, prompt-design, structured-output |
+| `senior-developer` | Tech lead: cross-domain review, standards, glue work, hard debugging | subagent | code-style, code-review, security-review, debugging, testing, api-conventions, database, git-workflow, planning, prompt-design, structured-output |
 | `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | sdlc-documentation, task-decomposition |
 | `project-manager` | Project planning, milestone tracking, risk, status reports | subagent | task-decomposition, planning, sdlc-documentation |
 | `data-analyst` | SQL analysis, reporting, data profiling | subagent | database, data-analysis, code-style |
@@ -90,7 +90,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `brainstormer` | Creative ideation, solution exploration | subagent | prompt-design, planning, code-style |
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style |
 | `researcher` | Technical research, comparisons, evidence-based recommendations | subagent | research-methodology, planning |
-| `refactor-planner` | Safe refactoring, legacy code migration | subagent | tech-debt, planning, architecture-decision, code-simplifier |
+| `refactor-planner` | Safe refactoring, legacy code migration | subagent | refactor-planner, tech-debt, planning, architecture-decision, code-simplifier |
 | `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, no-ai-slop, seo-optimization |
 
 Invoke a specialist directly with `@agent-name` when you already know who should handle it.

@@ -42,6 +42,7 @@ For meta tags, heading structure, and keyword research, load `seo-optimization`.
 
 See `assets/templates.md` for blog post, landing page, and email campaign templates.
 For deeper SEO work, load the `seo-optimization` skill.
+For technical and project documentation (README, CHANGELOG, OpenAPI, API docs, setup guides), load `documentation`.
 
 ---
 
@@ -50,7 +51,7 @@ For deeper SEO work, load the `seo-optimization` skill.
 **Blog post:** Problem to context to solution to key takeaways to CTA
 **Landing page:** Headline to value prop to proof to benefits to CTA
 **Email:** Subject line to greeting to single message to CTA to closing
-**Documentation:** What is it to how to use to examples to API reference
+**Documentation:** Delegated to `documentation` skill (README, CHANGELOG, OpenAPI, API docs, setup guides)
 **Social:** Hook to value to link/visual to CTA (keep under character limit)
 
 ---
