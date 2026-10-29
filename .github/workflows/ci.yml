@@ -39,6 +39,12 @@ jobs:
       - name: Install dependencies
         run: bun ci
 
+      - name: Run Security Audit
+        run: bun audit --prod --audit-level=high
+
+      - name: Check Dependency Deduplication
+        run: bun dedupe --check
+
       - name: Run ESLint
         run: bun run lint
 
@@ -46,4 +52,4 @@ jobs:
         run: bun run typecheck
 
       - name: Run Tests
-        run: bun test
+        run: bun test --coverage --parallel
