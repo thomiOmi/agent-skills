@@ -5,9 +5,9 @@ import type {
   Manifest,
   PlannedFile,
 } from "../lib/install/types";
+import { readFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
 import { consola } from "consola";
-import { join, resolve } from "pathe";
-import { readPackageJSON } from "pkg-types";
 import { prepareConfigs } from "../lib/config";
 import { env } from "../lib/env";
 import { executeInstall } from "../lib/install/execute";
@@ -60,7 +60,7 @@ function normalizeMode(mode: InstallOptions["mode"]): InstallMode {
 
 async function readPackageVersion(repoRoot: string): Promise<string> {
   try {
-    const packageJson = await readPackageJSON(join(repoRoot, "package.json"));
+    const packageJson = JSON.parse(await readFile(join(repoRoot, "package.json"), "utf-8"));
     return packageJson.version ?? "0.0.0";
   }
   catch {

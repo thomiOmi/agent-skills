@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import process from "node:process";
-import { dirname, join } from "pathe";
 
 export interface InstallerFixture {
   sandbox: string;

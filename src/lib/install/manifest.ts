@@ -1,6 +1,6 @@
 import type { Manifest, ManifestFile } from "./types";
 import { readFile } from "node:fs/promises";
-import { join } from "pathe";
+import { join } from "node:path";
 import { isNotFoundError, isPlainRecord, writeFileAtomic } from "./utils";
 
 export const MANIFEST_FILE_NAME = ".agent-skills-manifest.json";

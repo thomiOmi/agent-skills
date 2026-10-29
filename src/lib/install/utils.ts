@@ -1,5 +1,5 @@
 import { mkdir, rename, rm, stat, writeFile } from "node:fs/promises";
-import { dirname } from "pathe";
+import { dirname } from "node:path";
 
 /**
  * Returns true when a filesystem error means the requested path does not exist.
