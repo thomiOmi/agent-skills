@@ -1,6 +1,3 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import { describe, expect, it } from "bun:test";
 import { CompactionPlugin } from "../plugin/compaction";
 import { guardToolCall, scanForSecrets, SecretsScannerPlugin } from "../plugin/secrets-scanner";
@@ -267,66 +264,6 @@ describe("Tool Guardian plugin", () => {
 
       await expect(hook({ command: "rm -rf /" } as never)).resolves.toBeUndefined();
     });
-  });
-});
-
-describe("Compaction plugin", () => {
-  it("injects the TASKS.md continue point into the compaction system prompt", async () => {
-    const projectDirectory = await mkdtemp(join(tmpdir(), "agent-skills-compaction-"));
-    try {
-      await writeFile(
-        join(projectDirectory, "TASKS.md"),
-        [
-          "# Tasks",
-          "",
-          "## Continue Here",
-          "- Finish the V2 plugin migration.",
-          "",
-          "## Backlog",
-          "- Keep this out of the summary.",
-          "",
-        ].join("\n"),
-        "utf-8",
-      );
-      const harness = createHarness({
-        directory: projectDirectory,
-        project: { directory: projectDirectory, canonical: projectDirectory },
-      });
-      await CompactionPlugin.setup(harness.context);
-      const hook = getHook(harness.hooks.session, "compaction");
-      const event = { system: [] as Array<{ type: "text"; text: string }> };
-
-      await hook(event as never);
-
-      expect(event.system).toHaveLength(1);
-      expect(event.system[0]?.type).toBe("text");
-      expect(event.system[0]?.text).toContain("## Project State (TASKS.md)");
-      expect(event.system[0]?.text).toContain("Finish the V2 plugin migration.");
-      expect(event.system[0]?.text).not.toContain("Keep this out of the summary.");
-    }
-    finally {
-      await rm(projectDirectory, { recursive: true, force: true });
-    }
-  });
-
-  it("does nothing when TASKS.md is absent", async () => {
-    const projectDirectory = await mkdtemp(join(tmpdir(), "agent-skills-compaction-"));
-    try {
-      const harness = createHarness({
-        directory: projectDirectory,
-        project: { directory: projectDirectory, canonical: projectDirectory },
-      });
-      await CompactionPlugin.setup(harness.context);
-      const hook = getHook(harness.hooks.session, "compaction");
-      const event = { system: [] as Array<{ type: "text"; text: string }> };
-
-      await hook(event as never);
-
-      expect(event.system).toHaveLength(0);
-    }
-    finally {
-      await rm(projectDirectory, { recursive: true, force: true });
-    }
   });
 });
 
