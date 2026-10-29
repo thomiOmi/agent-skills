@@ -40,7 +40,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "bun test",
+    "test": "bun test --parallel --randomize",
     "changelog": "changelogen",
     "release": "changelogen --release",
     "setup": "bun run src/cli.ts install",
@@ -64,19 +64,13 @@
     "@types/bun": "^1.4.3",
     "changelogen": "^0.6.2",
     "eslint": "^10.13.0",
-    "lint-staged": "^17.6.0",
     "simple-git-hooks": "^2.14.0",
     "typescript": "~5.9.3",
     "yaml": "^2.9.1"
   },
   "simple-git-hooks": {
-    "pre-commit": "bunx lint-staged",
+    "pre-commit": "bun run lint:fix",
     "commit-msg": "bunx commitlint --edit $1",
     "pre-push": "bun run typecheck && bun run test"
-  },
-  "lint-staged": {
-    "*.{js,mjs,cjs,ts,mts,cts,md,json,jsonc,json5}": [
-      "eslint --fix"
-    ]
   }
 }
