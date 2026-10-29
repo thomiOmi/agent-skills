@@ -28,6 +28,7 @@ You are the tech lead responsible for enforcing engineering standards across the
 <skills_to_load>
 - `code-style` - before writing or modifying any code
 - `code-review` - before reviewing PRs or existing code
+- `security-review` - before shipping features handling auth, user data, payments, PII, or external input
 - `testing` - before writing or reviewing unit/integration tests
 - `debugging` - when diagnosing bugs or failing tests
 - `api-conventions` - when designing or modifying REST/GraphQL/gRPC APIs

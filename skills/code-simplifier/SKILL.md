@@ -65,3 +65,9 @@ function processOrder(order: Order | null) {
 - [ ] Unused variables, imports, and dead code removed
 - [ ] Behavior and return types remain 100% identical
 ```
+
+---
+
+## References
+
+- `tech-debt` - when identifying technical debt to prioritize simplification targets

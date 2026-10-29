@@ -175,7 +175,7 @@ agent-skills/
 │   ├── secrets-scanner.ts # Blocks writes containing secrets
 │   └── tool-guardian.ts  # Blocks destructive shell commands
 ├── scripts/            # ESLint and frontmatter dev utilities
-├── skills/             # 34 atomic domain skills (SKILL.md + resources)
+├── skills/             # 35 atomic domain skills (SKILL.md + resources)
 ├── src/                # CLI installer (plan/execute, manifest, config merge)
 └── tests/              # Test suites (bun test)
 ```

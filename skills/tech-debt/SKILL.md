@@ -41,3 +41,9 @@ Guidelines for identifying, categorizing, and safely remediating technical debt.
 - [ ] Unit tests pass before and after changes
 - [ ] No public API breaking changes introduced without deprecation
 ```
+
+---
+
+## References
+
+- `code-simplifier` - when executing behavior-preserving simplification of identified debt

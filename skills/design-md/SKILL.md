@@ -126,3 +126,4 @@ Validate and check `DESIGN.md` files using the official CLI:
 ## References
 
 - `references/DESIGN_SPEC.md` - full DESIGN.md token schema reference with example values
+- `ui-design` - design token principles, accessibility checklist, component states

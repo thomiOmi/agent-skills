@@ -58,3 +58,9 @@ What is the change or architecture choice we are committing to?
 - [ ] Positive and negative consequences (trade-offs) listed
 - [ ] Saved in `DECISIONS.md` or `docs/adr/`
 ```
+
+---
+
+## References
+
+- `planning` - for broader system architecture context beyond a single ADR

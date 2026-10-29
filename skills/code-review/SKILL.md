@@ -55,3 +55,9 @@ A review that only lists style issues is a failed review: style belongs to autom
 - [ ] Unit/integration tests added or updated
 - [ ] All functions/classes have descriptive docstrings
 ```
+
+---
+
+## References
+
+- `security-review` - when auditing deep security vulnerabilities beyond surface-level checks
