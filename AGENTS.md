@@ -174,5 +174,5 @@ Invoke a specialist directly with `@agent-name` when you already know who should
 **Skill files:** skills/*/SKILL.md (source - installed to ~/.config/opencode/skills/)
 **Global rules:** instructions/AGENTS.md (source of truth - installed to ~/.config/opencode/AGENTS.md)
 **Global config:** config/opencode.jsonc - config/tui.jsonc (templates - installed with config merge)
-**Installer modes:** merge (default), replace, symlink; copy is a deprecated alias for replace
+**Installer modes:** merge (default), replace, symlink
 **CLI installer:** src/ (TypeScript + citty - not deployed, runs locally; writes only to the OpenCode config root)

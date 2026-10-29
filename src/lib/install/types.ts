@@ -73,7 +73,7 @@ export interface InstallPlan {
 
 /** Options accepted by the install command. */
 export interface InstallOptions {
-  mode?: InstallMode | "copy";
+  mode?: InstallMode;
   source?: string;
   dryRun?: boolean;
   skipBackup?: boolean;
@@ -91,5 +91,6 @@ export interface InstallResult {
   kept: number;
   deleted: number;
   conflicts: string[];
+  warnings: string[];
   backupPath: string | null;
 }

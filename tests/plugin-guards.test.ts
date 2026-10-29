@@ -33,6 +33,30 @@ function defaultLocation(): HarnessLocation {
 }
 
 /**
+ * Runs a callback with an environment variable set, restoring the previous
+ * value (or deleting the variable) when the callback settles.
+ */
+async function withEnvVar(
+  name: string,
+  value: string,
+  callback: () => Promise<void>,
+): Promise<void> {
+  const previous = process.env[name];
+  process.env[name] = value;
+  try {
+    await callback();
+  }
+  finally {
+    if (previous === undefined) {
+      delete process.env[name];
+    }
+    else {
+      process.env[name] = previous;
+    }
+  }
+}
+
+/**
  * Builds a minimal V2 plugin context that records registered hooks so tests
  * can invoke them directly.
  */
@@ -131,9 +155,7 @@ describe("Secrets Scanner plugin", () => {
   });
 
   it("honors the disable escape hatch", async () => {
-    const previous = process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER;
-    process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER = "1";
-    try {
+    await withEnvVar("AGENT_SKILLS_DISABLE_SECRETS_SCANNER", "1", async () => {
       const harness = createHarness();
       await SecretsScannerPlugin.setup(harness.context);
       const hook = getHook(harness.hooks.tool, "execute.before");
@@ -144,15 +166,7 @@ describe("Secrets Scanner plugin", () => {
           input: { content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
         } as never),
       ).resolves.toBeUndefined();
-    }
-    finally {
-      if (previous === undefined) {
-        delete process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER;
-      }
-      else {
-        process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER = previous;
-      }
-    }
+    });
   });
 });
 
@@ -246,23 +260,13 @@ describe("Tool Guardian plugin", () => {
   });
 
   it("honors the disable escape hatch", async () => {
-    const previous = process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN;
-    process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN = "1";
-    try {
+    await withEnvVar("AGENT_SKILLS_DISABLE_TOOL_GUARDIAN", "1", async () => {
       const harness = createHarness();
       await ToolGuardianPlugin.setup(harness.context);
       const hook = getHook(harness.hooks.shell, "create.before");
 
       await expect(hook({ command: "rm -rf /" } as never)).resolves.toBeUndefined();
-    }
-    finally {
-      if (previous === undefined) {
-        delete process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN;
-      }
-      else {
-        process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN = previous;
-      }
-    }
+    });
   });
 });
 

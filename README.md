@@ -104,9 +104,6 @@ bun run src/cli.ts install --mode replace
 
 # Symlink for live development
 bun run setup:symlink
-
-# Deprecated alias for replace
-bun run src/cli.ts install --mode copy
 ```
 
 Preview any mode with `--dry-run`:
