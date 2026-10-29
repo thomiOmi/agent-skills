@@ -1,6 +1,6 @@
 ---
 description: Inspect and update tasks in TASKS.md
-agent: orchestrator
+agent: general
 ---
 
 Manage tasks in TASKS.md: $ARGUMENTS

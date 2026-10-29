@@ -3,6 +3,12 @@ description: Run and improve tests for the given scope
 agent: qa-engineer
 ---
 
+## Context
+
+- Current git status: !`git status`
+
+## Your task
+
 Handle testing for: $ARGUMENTS
 
 If no scope is given, run the project's default test suite and report results.

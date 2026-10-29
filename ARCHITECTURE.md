@@ -164,21 +164,11 @@ This section deliberately does not repeat the mapping. A second copy would silen
 
 ## Custom Tools
 
-The project currently ships no custom tools; the plugin registers only hooks (see Plugin Hooks below). Tool history:
-
-### task-decomposer.ts (removed)
-
-Deprecated and deleted after the root-docs audit: its `inferAgent()` keyword routing covered only 5 of the 20 agents, which violates the hardcoded-routing-in-the-orchestrator-prompt decision. The underlying `skills/task-decomposition/scripts/task-decomposer.ts` remains as part of the skill.
-
-### quality-verifier.ts (removed)
-
-Removed on 2026-10-20: its file-level checks were language-specific (debug-statement scan for `console.log`/`debugger`/`print`, JSDoc-on-exports docstring scan, package.json plus bun/npm script checks) while the agent and skill catalog is advertised as language-agnostic, so every additional language would add patterns and false-positive tuning forever; each language's own tooling already does this better (eslint no-console, ruff, clippy, golangci-lint). The centralized verification layer now means the agent runs the project's own lint, typecheck, and test commands (see PRD FR-5). The wrapper `tools/quality-verifier.ts` and `tests/quality-verifier.test.ts` were deleted with it, and the installer no longer ships a `tools/` directory.
-
----
+The project currently ships no custom tools; the plugin registers only hooks (see Plugin Hooks below).
 
 ## Plugin Hooks (OpenCode V2)
 
-Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.3 is a devDependency, and the OpenCode host resolves the runtime import to its own copy. The previous `plugin/agent-skills.ts` composition entrypoint was removed, so the installer deletes the stale installed file on the next merge when it is unmodified.
+Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.3 is a devDependency, and the OpenCode host resolves the runtime import to its own copy.
 
 ### compaction.ts
 

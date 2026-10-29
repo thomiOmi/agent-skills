@@ -51,14 +51,16 @@
   // MCP servers (optional). Their tools register as <server-name>_<tool>.
   // Uncomment and adapt.
   // "mcp": {
-  //   "context7": {
-  //     "type": "remote",
-  //     "url": "https://mcp.context7.com/mcp"
-  //   },
-  //   "my-local-server": {
-  //     "type": "local",
-  //     "command": ["bun", "x", "my-mcp-command"],
-  //     "enabled": true
+  //   "servers": {
+  //     "context7": {
+  //       "type": "remote",
+  //       "url": "https://mcp.context7.com/mcp"
+  //     },
+  //     "my-local-server": {
+  //       "type": "local",
+  //       "command": ["bun", "x", "my-mcp-command"],
+  //       "enabled": true
+  //     }
   //   }
   // },
 }

@@ -25,9 +25,9 @@ Roadmap and backlog for the agent-skills project.
 - 11 specialized agents with routing in orchestrator prompt - 2026-07-25
   - orchestrator, senior-developer, ui-ux, marketing, qa-engineer, devops, security-auditor, brainstormer, deep-thinker, docs-writer, refactor-planner
 - 15 skills covering code, testing, security, design, devops, AI, planning, documentation - 2026-07-26
-- 2 custom tools: task-decomposer.ts, quality-verifier.ts - 2026-07-26
+- No custom tools - verification and routing use agent commands and prompts - 2026-07-26
 - 10 slash commands: /ship, /fix, /plan, /review, /test, /commit, /docs, /explain, /brainstorm, /security - 2026-07-26
-- Plugin registration (agent-skills.ts) for OpenCode v2 - 2026-07-26 (superseded by the V2 split plugins on 2026-10-23)
+- Plugin registration via OpenCode V2 plugin API - 2026-07-26
 - Clean em dash/emoji/arrow characters across 100+ files - 2026-07-29
 - Formatting rules and Boundaries section in AGENTS.md - 2026-07-29
 - Move DECISIONS.md to root, add ARCHITECTURE.md + TASKS.md - 2026-07-29
