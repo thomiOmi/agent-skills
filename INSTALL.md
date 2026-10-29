@@ -33,7 +33,6 @@ supported.
 | merge | `bun run setup` | Default. Updates managed files, preserves modified and unmanaged files, and deletes stale managed files only when they are unmodified. |
 | replace | `bun run src/cli.ts install --mode replace` | Overwrites managed files. Unmanaged paths abort the install unless `--force` is set. |
 | symlink | `bun run setup:symlink` | Links repository files into the config root for live editing. Falls back to a copy when symlinks are unavailable. |
-| copy | `bun run src/cli.ts install --mode copy` | Deprecated alias for replace. Emits a warning. |
 
 Add `--dry-run` to plan without writing. Add `--force` to replace or symlink
 mode to overwrite paths the installer does not own. Add `--skip-backup` to
@@ -46,7 +45,7 @@ inside a custom root.
 
 | Option | Description |
 |---|---|
-| `--mode <merge\|replace\|symlink\|copy>` | Install mode. Defaults to merge. `copy` is a deprecated alias for replace. |
+| `--mode <merge\|replace\|symlink>` | Install mode. Defaults to merge. |
 | `--dry-run` | Print the plan without writing. Shows creates, updates, deletes, keeps, conflicts, and warnings. |
 | `--force` | Overwrite unmanaged paths in replace or symlink mode, proceed on a corrupt manifest, or replace an unparseable config. |
 | `--target <dir>` | Install into a different config root. Used for testing; the real config root is untouched. |

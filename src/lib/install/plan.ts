@@ -190,7 +190,7 @@ function planStaleFile(
   };
 
   if (destination.isDirectory || destination.isBrokenSymlink) {
-    return { ...base, action: "keep", reason: "unmanaged" };
+    return { ...base, action: "keep", reason: "unmanaged", conflict: true };
   }
 
   if (destination.hash === previous.hash) {

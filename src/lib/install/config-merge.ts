@@ -163,25 +163,40 @@ export async function writeConfigFile(
   consola.success(`ok  ${path}`);
 }
 
-async function prepareOpenCodeConfig(
+interface PrepareConfigOptions {
+  configRoot: string;
+  destinationJsonc: string;
+  destinationJson: string;
+  force: boolean;
+  getCandidates: (configRoot: string) => string[];
+  migrateSubagentDepth?: boolean;
+  readTemplate: (repoRoot: string) => Promise<Record<string, unknown>>;
+  applyInstructions?: (config: Record<string, unknown>, warnings: string[]) => void;
+}
+
+async function prepareConfig(
   repoRoot: string,
-  configRoot: string,
-  force: boolean,
-): Promise<PreparedConfig<OpenCodeConfig>> {
-  const template = await readRequiredConfig(join(repoRoot, "config", "opencode.jsonc"));
+  options: PrepareConfigOptions,
+): Promise<PreparedConfig<Record<string, unknown>>> {
+  const template = await options.readTemplate(repoRoot);
   const warnings: string[] = [];
-  const source = await readFirstExisting(getOpenCodeCandidates(configRoot), force, warnings);
+  const source = await readFirstExisting(options.getCandidates(options.configRoot), options.force, warnings);
   const userConfig = source ? structuredClone(source.value) : {};
 
-  migrateSubagentDepth(userConfig, warnings);
+  if (options.migrateSubagentDepth) {
+    migrateSubagentDepth(userConfig, warnings);
+  }
 
-  const value = mergeConfigDefaults(template, userConfig) as OpenCodeConfig;
-  applyInstructions(value, warnings);
+  const value = mergeConfigDefaults(template, userConfig);
+
+  if (options.applyInstructions) {
+    options.applyInstructions(value, warnings);
+  }
 
   const destinationPath = await resolveDestinationPath(
-    configRoot,
-    "opencode.jsonc",
-    "opencode.json",
+    options.configRoot,
+    options.destinationJsonc,
+    options.destinationJson,
   );
   const changed = source === null
     || !deepEqual(value, source.value)
@@ -201,35 +216,46 @@ async function prepareOpenCodeConfig(
   return { path: destinationPath, value, changed, warnings };
 }
 
+async function prepareOpenCodeConfig(
+  repoRoot: string,
+  configRoot: string,
+  force: boolean,
+): Promise<PreparedConfig<OpenCodeConfig>> {
+  const result = await prepareConfig(repoRoot, {
+    configRoot,
+    destinationJsonc: "opencode.jsonc",
+    destinationJson: "opencode.json",
+    force,
+    getCandidates: getOpenCodeCandidates,
+    migrateSubagentDepth: true,
+    readTemplate: repoRootParam => readRequiredConfig(join(repoRootParam, "config", "opencode.jsonc")),
+    applyInstructions,
+  });
+
+  return result as PreparedConfig<OpenCodeConfig>;
+}
+
 async function prepareTuiConfig(
   repoRoot: string,
   configRoot: string,
   force: boolean,
 ): Promise<PreparedConfig<OpenCodeTuiConfig>> {
   const templatePath = join(repoRoot, "config", "tui.jsonc");
-  const template = await pathExists(templatePath)
-    ? await readRequiredConfig(templatePath)
-    : { $schema: "https://opencode.ai/tui.json", attention: { enabled: true } };
-  const warnings: string[] = [];
-  const source = await readFirstExisting(getTuiCandidates(configRoot), force, warnings);
-  const value = mergeConfigDefaults(template, source?.value ?? {}) as OpenCodeTuiConfig;
-  const destinationPath = await resolveDestinationPath(configRoot, "tui.jsonc", "tui.json");
-  const changed = source === null
-    || !deepEqual(value, source.value)
-    || source.path !== destinationPath;
+  const result = await prepareConfig(repoRoot, {
+    configRoot,
+    destinationJsonc: "tui.jsonc",
+    destinationJson: "tui.json",
+    force,
+    getCandidates: getTuiCandidates,
+    readTemplate: async (_repoRootParam) => {
+      if (await pathExists(templatePath)) {
+        return readRequiredConfig(templatePath);
+      }
+      return { $schema: "https://opencode.ai/tui.json", attention: { enabled: true } };
+    },
+  });
 
-  if (changed && source && hasJsonComments(source.raw)) {
-    warnings.push(
-      `Comments in ${source.path} are not preserved when the installer rewrites the file.`,
-    );
-  }
-  if (source && source.path !== destinationPath) {
-    warnings.push(
-      `Merged settings from ${source.path}; the installer writes ${destinationPath}.`,
-    );
-  }
-
-  return { path: destinationPath, value, changed, warnings };
+  return result as PreparedConfig<OpenCodeTuiConfig>;
 }
 
 async function readRequiredConfig(path: string): Promise<Record<string, unknown>> {

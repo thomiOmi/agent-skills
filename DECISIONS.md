@@ -111,7 +111,7 @@ The manifest at `<configRoot>/.agent-skills-manifest.json` is the ownership sour
 
 ### Install modes: merge by default, replace explicit, symlink for development
 
-`merge` is the default. It updates managed files, preserves user-modified and unmanaged files, and deletes stale managed files only when unmodified. `replace` is explicit and aborts on unmanaged conflicts unless `--force` is set. `symlink` remains for live development and falls back to a copy when symlinks are unavailable. `copy` is accepted as a deprecated alias for `replace` and emits a warning. This keeps the safe path as the default while preserving an explicit escape hatch.
+`merge` is the default. It updates managed files, preserves user-modified and unmanaged files, and deletes stale managed files only when unmodified. `replace` is explicit and aborts on unmanaged conflicts unless `--force` is set. `symlink` remains for live development and falls back to a copy when symlinks are unavailable. This keeps the safe path as the default while preserving an explicit escape hatch.
 
 ### Config merge: user values win, unknown keys survive
 

@@ -10,8 +10,8 @@ import { getRepoRoot } from "./lib/paths";
 const installArgs = {
   "mode": {
     type: "enum" as const,
-    options: ["merge", "replace", "symlink", "copy"],
-    description: "Install mode: merge (default), replace, symlink, or copy (deprecated alias for replace)",
+    options: ["merge", "replace", "symlink"],
+    description: "Install mode: merge (default), replace, or symlink",
   },
   "force": {
     type: "boolean" as const,

@@ -6,8 +6,8 @@ import type {
   Manifest,
   PlannedFile,
 } from "./types";
-import { chmod, cp, mkdir, rm, stat, symlink } from "node:fs/promises";
-import { dirname } from "node:path";
+import { chmod, cp, mkdir, rename, rm, stat, symlink } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import process from "node:process";
 import { consola } from "consola";
 import { backupGlobal } from "../backup";
@@ -100,16 +100,23 @@ async function installFile(
 
   await mkdir(dirname(file.destinationPath), { recursive: true });
 
-  if (file.action === "update") {
-    await rm(file.destinationPath, { recursive: true, force: true });
-  }
-
   if (mode === "symlink") {
     return createSymlinkOrCopy(file.sourcePath, file.destinationPath);
   }
 
-  await cp(file.sourcePath, file.destinationPath);
-  await preserveMode(file.sourcePath, file.destinationPath);
+  const destinationDir = dirname(file.destinationPath);
+  const temporaryPath = join(destinationDir, `.agent-skills-tmp-${file.relativePath.replace(/\//g, "_")}`);
+
+  try {
+    await cp(file.sourcePath, temporaryPath, { recursive: true });
+    await preserveMode(file.sourcePath, temporaryPath);
+    await rename(temporaryPath, file.destinationPath);
+  }
+  catch {
+    await rm(temporaryPath, { force: true });
+    throw new Error(`Failed to install ${file.relativePath}`);
+  }
+
   consola.log(`  ${file.action === "create" ? "create" : "update"} ${file.relativePath}`);
   return "copy";
 }
@@ -204,12 +211,38 @@ function countPlan(
   plan: InstallPlan,
   backupPath: string | null,
 ): ExecuteInstallResult {
+  let created = 0;
+  let updated = 0;
+  let unchanged = 0;
+  let kept = 0;
+  let deleted = 0;
+
+  for (const file of plan.files) {
+    switch (file.action) {
+      case "create":
+        created++;
+        break;
+      case "update":
+        updated++;
+        break;
+      case "unchanged":
+        unchanged++;
+        break;
+      case "keep":
+        kept++;
+        break;
+      case "delete":
+        deleted++;
+        break;
+    }
+  }
+
   return {
-    created: plan.files.filter(file => file.action === "create").length,
-    updated: plan.files.filter(file => file.action === "update").length,
-    unchanged: plan.files.filter(file => file.action === "unchanged").length,
-    kept: plan.files.filter(file => file.action === "keep").length,
-    deleted: plan.files.filter(file => file.action === "delete").length,
+    created,
+    updated,
+    unchanged,
+    kept,
+    deleted,
     backupPath,
   };
 }

@@ -66,6 +66,7 @@ describe("Installer commands", () => {
     ) as { schemaVersion: number; packageVersion: string; files: Record<string, unknown> };
     expect(manifest.schemaVersion).toBe(1);
     expect(manifest.packageVersion).toBe("9.9.9");
+    expect(manifest.files["agents/orchestrator.md"]).toBeDefined();
     expect(Object.keys(manifest.files).length).toBeGreaterThan(0);
   });
 
@@ -138,20 +139,6 @@ describe("Installer commands", () => {
       .toContain("Alpha fixture skill");
     expect(await pathExists(join(fixture.target, "opencode.jsonc"))).toBe(true);
     expect(await pathExists(join(fixture.target, "tui.jsonc"))).toBe(true);
-  });
-
-  it("accepts copy as a deprecated alias for replace", async () => {
-    const fixture = await createFixture();
-
-    const result = await installCommand({
-      mode: "copy",
-      source: fixture.repo,
-      targetDir: fixture.target,
-      skipBackup: true,
-    });
-
-    expect(result.mode).toBe("replace");
-    expect(await pathExists(join(fixture.target, "agents/orchestrator.md"))).toBe(true);
   });
 
   it("is idempotent on a second merge run", async () => {

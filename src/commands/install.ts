@@ -41,21 +41,16 @@ function resolveRepoRoot(source: string | undefined): string {
   return absolutePath;
 }
 
-function normalizeMode(mode: InstallOptions["mode"]): InstallMode {
+function normalizeMode(mode: string | undefined): InstallMode {
   if (mode === undefined) {
     return "merge";
   }
 
-  if (mode === "copy") {
-    consola.warn("Install mode 'copy' is deprecated; using 'replace'. Pass --mode replace explicitly.");
-    return "replace";
+  if (!MODES.includes(mode as InstallMode)) {
+    throw new Error(`Unknown install mode: ${mode}. Use one of: ${MODES.join(", ")}.`);
   }
 
-  if (!MODES.includes(mode)) {
-    throw new Error(`Unknown install mode: ${mode}. Use one of: ${[...MODES, "copy"].join(", ")}.`);
-  }
-
-  return mode;
+  return mode as InstallMode;
 }
 
 async function readPackageVersion(repoRoot: string): Promise<string> {
@@ -142,7 +137,8 @@ export async function installCommand(opts: InstallOptions = {}): Promise<Install
     backupPath: opts.backupPath,
   });
 
-  for (const warning of [...plan.warnings, ...configs.openCode.warnings, ...configs.tui.warnings]) {
+  const allWarnings = [...plan.warnings, ...configs.openCode.warnings, ...configs.tui.warnings];
+  for (const warning of allWarnings) {
     consola.warn(warning);
   }
 
@@ -166,6 +162,7 @@ export async function installCommand(opts: InstallOptions = {}): Promise<Install
     mode,
     ...result,
     conflicts: plan.conflicts.map(file => file.relativePath),
+    warnings: allWarnings,
   };
 }
 
