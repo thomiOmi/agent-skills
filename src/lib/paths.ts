@@ -1,7 +1,7 @@
 import { homedir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { dirname, join, resolve } from "pathe";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

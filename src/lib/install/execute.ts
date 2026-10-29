@@ -7,9 +7,9 @@ import type {
   PlannedFile,
 } from "./types";
 import { chmod, cp, mkdir, rm, stat, symlink } from "node:fs/promises";
+import { dirname } from "node:path";
 import process from "node:process";
 import { consola } from "consola";
-import { dirname } from "pathe";
 import { backupGlobal } from "../backup";
 import { writeConfigFile } from "./config-merge";
 import { createManifest, getManifestPath, writeManifest } from "./manifest";

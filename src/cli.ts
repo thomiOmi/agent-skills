@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 import type { InstallMode } from "./commands/install";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import { defineCommand, runMain } from "citty";
 import { consola } from "consola";
-import { resolve } from "pathe";
-import { readPackageJSON } from "pkg-types";
 import { installCommand } from "./commands/install";
 import { getRepoRoot } from "./lib/paths";
 
@@ -59,7 +59,7 @@ function toInstallOptions(args: Record<string, unknown>) {
 }
 
 async function printVersion(): Promise<void> {
-  const pkg = await readPackageJSON(resolve(getRepoRoot(), "package.json"));
+  const pkg = JSON.parse(await readFile(resolve(getRepoRoot(), "package.json"), "utf-8"));
   consola.log(pkg.version ?? "0.0.0");
 }
 

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
+import { basename, join } from "node:path";
 import { describe, expect, it } from "bun:test";
 import { parseJSONC } from "confbox";
-import { basename, join } from "pathe";
 
 const repoRoot = join(import.meta.dir, "..");
 const agentsDirectory = join(repoRoot, "agents");
