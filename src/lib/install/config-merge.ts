@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
 import process from "node:process";
 import { parseJSONC, stringifyJSONC } from "confbox";
 import { consola } from "consola";
-import { join, resolve } from "pathe";
 import { deepEqual, isPlainRecord, pathExists, writeFileAtomic } from "./utils";
 
 export interface OpenCodeConfig {

@@ -1,6 +1,6 @@
 import type { ConfigEnvironmentSnapshot, InstallerFixture } from "./installer-fixture";
+import { basename, join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { basename, join } from "pathe";
 import {
   ConfigParseError,
   hasJsonComments,

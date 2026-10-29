@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
+import { basename, join } from "node:path";
 import { describe, expect, it } from "bun:test";
-import { basename, join } from "pathe";
 
 interface PermissionEntry {
   action?: unknown;

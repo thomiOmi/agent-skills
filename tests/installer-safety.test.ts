@@ -1,8 +1,8 @@
 import type { ConfigEnvironmentSnapshot, InstallerFixture } from "./installer-fixture";
 import { readdir, readFile, rm } from "node:fs/promises";
+import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { parseJSONC } from "confbox";
-import { join } from "pathe";
 import { installCommand } from "../src/commands/install";
 import { pathExists } from "../src/lib/install/utils";
 import {

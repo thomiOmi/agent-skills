@@ -1,7 +1,7 @@
 import type { SourceFile } from "./types";
 import { createHash } from "node:crypto";
 import { readdir, readFile, stat } from "node:fs/promises";
-import { join } from "pathe";
+import { join, sep } from "node:path";
 
 const IGNORED_NAMES = new Set([".DS_Store", ".git", "Thumbs.db", "node_modules"]);
 
@@ -84,7 +84,7 @@ async function scanDirectory(
     }
 
     const absolutePath = join(directory, entry.name);
-    const relativePath = join(destinationPrefix, entry.name);
+    const relativePath = join(destinationPrefix, entry.name).split(sep).join("/");
 
     if (entry.isDirectory()) {
       await scanDirectory(absolutePath, relativePath, files);

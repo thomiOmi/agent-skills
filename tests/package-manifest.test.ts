@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { describe, expect, it } from "bun:test";
-import { join } from "pathe";
 
 describe("Package distribution", () => {
   it("includes every source directory required by the installer", async () => {

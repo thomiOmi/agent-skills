@@ -1,4 +1,4 @@
-import { isAbsolute, relative, resolve } from "pathe";
+import { isAbsolute, relative, resolve } from "node:path";
 import { getBackupRoot, getGlobalRoot } from "../paths";
 
 export interface ResolvedTargets {

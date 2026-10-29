@@ -1,6 +1,6 @@
 import { cp, mkdir, readdir, stat, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { consola } from "consola";
-import { join } from "pathe";
 import { pathExists } from "./install/utils";
 import { getTimestamp } from "./paths";
 
