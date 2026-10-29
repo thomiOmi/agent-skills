@@ -1,7 +1,15 @@
 ---
 description: Diagnose and fix a bug systematically
-agent: orchestrator
+agent: general
 ---
+
+## Context
+
+- Current git status: !`git status`
+- Current git diff (staged and unstaged changes): !`git diff HEAD`
+- Recent commits: !`git log --oneline -10`
+
+## Your task
 
 Fix this issue: $ARGUMENTS
 

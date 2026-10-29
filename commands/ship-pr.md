@@ -3,6 +3,14 @@ description: Commit, push to origin, and create a GitHub Pull Request
 agent: orchestrator
 ---
 
+## Context
+
+- Current git status: !`git status`
+- Current git diff (staged and unstaged changes): !`git diff HEAD`
+- Current branch: !`git branch --show-current`
+
+## Your task
+
 Ship branch and open Pull Request: $ARGUMENTS
 
 Workflow:

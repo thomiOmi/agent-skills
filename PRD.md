@@ -128,7 +128,7 @@ The system provides 35 skills covering code quality, testing, security, design, 
 
 The system ships no custom tools. Verification and agent routing rely on the agents' own commands and prompts, which stay language-agnostic.
 
-Tool history: `quality-verifier` was removed on 2026-10-20 (its file-level checks were language-specific and a maintenance burden - see DECISIONS.md); `task-decomposer` was deprecated and removed earlier (see DECISIONS.md), agent routing stays hardcoded in the orchestrator prompt.
+Tool history: none.
 
 ### FR-5: Verification
 
@@ -180,7 +180,7 @@ The installer deploys agents, skills, commands, plugin hooks, global instruction
 
 - 20 specialized subagents with documented roles
 - 35 skills with progressive disclosure and verification checklists
-- No custom tools (quality-verifier and task-decomposer were removed - see DECISIONS.md)
+- No custom tools
 - 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
 - Plugin registration via OpenCode V2 plugin API
 - Ownership-aware installer with merge, replace, and symlink modes, a manifest, config merge, backups, and config-root-only writes

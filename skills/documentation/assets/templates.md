@@ -32,5 +32,5 @@ cp .env.example .env
 ## ADR Skeleton
 
 ADR no longer has a separate skeleton here. For ADRs, load the
-`architecture-decision` skill and use its `ADR_TEMPLATE.md` as the
+`architecture-decision` skill and use its `adr.md` as the
 official format.

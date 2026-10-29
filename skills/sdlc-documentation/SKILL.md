@@ -20,13 +20,13 @@ A `SPEC.md` contains low-level technical design, module interactions, data struc
 
 ### When to create SPEC.md
 - Designing complex multi-file features or API refactors.
-- Reference template available in `references/SPEC_TEMPLATE.md`.
+- Reference template available in `references/spec.md`.
 
 ---
 
 ## References
 
-- `references/SPEC_TEMPLATE.md` - SPEC.md template for technical feature specs
+- `references/spec.md` - SPEC.md template for technical feature specs
 - `references/prd.md` - Product Requirements Document template
 - `references/sdd.md` - Software Design Document template
 - `references/user-stories.md` - user story format with acceptance criteria

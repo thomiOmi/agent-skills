@@ -3,6 +3,13 @@ description: Perform a comprehensive security and vulnerability audit on the cod
 agent: security-auditor
 ---
 
+## Context
+
+- Recent commits: !`git log --oneline -10`
+- Current git diff (staged and unstaged changes): !`git diff`
+
+## Your task
+
 Audit codebase for security vulnerabilities: $ARGUMENTS
 
 Requirements:

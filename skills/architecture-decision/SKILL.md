@@ -20,7 +20,7 @@ In real projects, this skill generates or updates `DECISIONS.md` (or `docs/adr/A
 
 ### When to create DECISIONS.md
 - Choosing a tech stack, library, schema migration strategy, or architectural pattern.
-- Reference templates available in `references/ADR_TEMPLATE.md` (single ADR) and `references/DECISIONS_TEMPLATE.md` (full decision log).
+- Reference templates available in `references/adr.md` (single ADR) and `references/decisions.md` (full decision log).
 
 ---
 
