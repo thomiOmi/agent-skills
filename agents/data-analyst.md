@@ -2,6 +2,7 @@
 name: data-analyst
 description: Data analyst - SQL query design, schema analysis, data modeling, reporting, and query performance tuning.
 mode: subagent
+color: "#a855f7"
 request:
   body:
     temperature: 0.2

@@ -2,6 +2,7 @@
 name: orchestrator
 description: Task decomposition, delegation, and verification across specialized subagents. Coordinates multi-step workflows with quality gates, resumable session IDs, and TASKS.md checkpointing.
 mode: subagent
+color: "#3b82f6"
 request:
   body:
     temperature: 0.2

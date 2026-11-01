@@ -2,6 +2,7 @@
 name: backend-developer
 description: Backend developer - API endpoints, business logic, authentication, background jobs, and server-side integration in existing codebases.
 mode: subagent
+color: "#f59e0b"
 request:
   body:
     temperature: 0.2

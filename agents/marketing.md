@@ -2,6 +2,7 @@
 name: marketing
 description: Marketing content specialist - technical copywriting, content strategy, blog posts, release announcements, and SEO.
 mode: subagent
+color: "#be185d"
 request:
   body:
     temperature: 0.4

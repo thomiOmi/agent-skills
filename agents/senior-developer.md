@@ -2,6 +2,7 @@
 name: senior-developer
 description: Tech lead and senior software engineer - cross-domain code review, engineering standards, full-stack glue work, and complex debugging escalation.
 mode: subagent
+color: "#ef4444"
 request:
   body:
     temperature: 0.2

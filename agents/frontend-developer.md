@@ -2,6 +2,7 @@
 name: frontend-developer
 description: Frontend developer - UI implementation, component structure, client state, styling, responsiveness, and accessibility in existing codebases.
 mode: subagent
+color: "#10b981"
 request:
   body:
     temperature: 0.2

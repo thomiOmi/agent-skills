@@ -2,6 +2,7 @@
 name: qa-engineer
 description: QA engineer - test strategy, test planning, test writing, coverage audit, quality gates, and failure reproduction.
 mode: subagent
+color: "#f97316"
 request:
   body:
     temperature: 0.1

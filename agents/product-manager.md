@@ -2,6 +2,7 @@
 name: product-manager
 description: Product manager - PRDs, feature specs, user stories, acceptance criteria, and roadmap planning.
 mode: subagent
+color: "#84cc16"
 request:
   body:
     temperature: 0.3
