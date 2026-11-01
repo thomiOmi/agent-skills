@@ -81,6 +81,18 @@ Slash commands live in `commands/` (17 files). Run project scripts via `bun run 
 
 ---
 
+## Git Workflow
+
+### Branch Protection
+
+- **Do not push directly to `main`**. All changes must go through a pull request.
+- Create a feature branch from `main` for every change.
+- Generate a PR for every feature branch before merging to `main`.
+- PR must pass all CI checks (lint, typecheck, test) before merging.
+- Do not force-push to `main` or already-merged branches.
+
+---
+
 ## Project Context
 
 **Project:** agent-skills
