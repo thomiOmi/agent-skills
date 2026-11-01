@@ -20,6 +20,8 @@ skill-name/
 └── ...               # Any additional files or directories
 ```
 
+Keep file references one level deep from `SKILL.md` (e.g. `references/REFERENCE.md`, `assets/template.md`). Avoid deeply nested reference chains, since agents load these files on demand and long chains make discovery harder.
+
 ### Frontmatter Schema
 
 | Field | Required | Constraints |
@@ -36,7 +38,7 @@ skill-name/
 Agents load skills progressively to optimize context window efficiency:
 
 1. **Metadata (~100 tokens)**: `name` + `description` loaded at startup for discovery.
-2. **Instructions (< 5000 tokens / ~500 lines, recommended)**: Full `SKILL.md` body loaded when activated. This is a progressive-disclosure guideline for context-window efficiency, not a hard lint constraint; bodies exceeding it should be treated as a warning, not an error.
+2. **Instructions (< 5000 tokens / ~500 lines, recommended)**: Full `SKILL.md` body loaded when activated. This guideline is enforced as a hard check by `tests/validate-skills.test.ts`; bodies exceeding it will fail validation rather than produce a warning.
 3. **Resources (On-demand)**: Files in `references/`, `scripts/`, or `assets/` loaded only when needed.
 
 ---
@@ -48,3 +50,11 @@ Run automated specification validation on all repository skills:
 ```bash
 bun test tests/validate-skills.test.ts
 ```
+
+For canonical specification validation, use the [skills-ref](https://github.com/agentskills/agentskills/tree/main/skills-ref) reference library:
+
+```bash
+skills-ref validate ./my-skill
+```
+
+This checks that your `SKILL.md` frontmatter is valid and follows all naming conventions. The local `bun test` command is this repository's supplementary CI check.
