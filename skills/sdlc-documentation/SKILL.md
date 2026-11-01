@@ -1,6 +1,6 @@
 ---
 name: sdlc-documentation
-description: Use this skill when generating software development lifecycle (SDLC) specs, product requirements (PRDs), technical design documents, user stories, acceptance criteria, feature specs, or SPEC.md. Trigger with "SDLC docs", "write a PRD", "feature spec", "user stories", "acceptance criteria", "SPEC.md", "technical spec", or "release notes".
+description: 'Use this skill when generating software development lifecycle (SDLC) specs, product requirements (PRDs), technical design documents, user stories, acceptance criteria, feature specs, or SPEC.md. Trigger with "SDLC docs", "write a PRD", "feature spec", "user stories", "acceptance criteria", "SPEC.md", "technical spec", or "release notes".'
 license: MIT
 metadata:
   version: "1.2.0"
