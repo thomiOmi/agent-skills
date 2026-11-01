@@ -228,11 +228,11 @@ async function prepareOpenCodeConfig(
     force,
     getCandidates: getOpenCodeCandidates,
     migrateSubagentDepth: true,
-    readTemplate: repoRootParam => readRequiredConfig(join(repoRootParam, "config", "opencode.jsonc")),
+    readTemplate: async repoRootParam => readRequiredConfig(join(repoRootParam, "config", "opencode.jsonc")),
     applyInstructions,
   });
 
-  return result as PreparedConfig<OpenCodeConfig>;
+  return result;
 }
 
 async function prepareTuiConfig(
@@ -255,7 +255,7 @@ async function prepareTuiConfig(
     },
   });
 
-  return result as PreparedConfig<OpenCodeTuiConfig>;
+  return result;
 }
 
 async function readRequiredConfig(path: string): Promise<Record<string, unknown>> {
@@ -340,7 +340,7 @@ function getOpenCodeCandidates(configRoot: string): string[] {
     join(configRoot, "opencode.json"),
   ];
 
-  if (process.env.OPENCODE_CONFIG) {
+  if (process.env.OPENCODE_CONFIG !== undefined) {
     candidates.unshift(resolve(process.env.OPENCODE_CONFIG));
   }
 
@@ -353,7 +353,7 @@ function getTuiCandidates(configRoot: string): string[] {
     join(configRoot, "tui.json"),
   ];
 
-  if (process.env.OPENCODE_TUI_CONFIG) {
+  if (process.env.OPENCODE_TUI_CONFIG !== undefined) {
     candidates.unshift(resolve(process.env.OPENCODE_TUI_CONFIG));
   }
 

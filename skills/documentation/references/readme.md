@@ -30,8 +30,7 @@ npm run dev            # to http://localhost:3000
 
 Run npm install to install dependencies.
 
-# Good
+## Good
 
-Requires Node 22+. Uses pnpm workspaces - run `pnpm install` from the
-repo root, not from individual packages.
+Requires Node 22+. Uses pnpm workspaces - run `pnpm install` from the repo root, not from individual packages.
 ```

@@ -9,11 +9,9 @@ metadata:
 
 # Documentation
 
-Write for the reader who has zero context from this conversation.
-If it only makes sense to you right now, it will confuse someone else later.
+Write for the reader who has zero context from this conversation. If it only makes sense to you right now, it will confuse someone else later.
 
-For Architecture Decision Records, load `architecture-decision`.
-For product requirements and feature specs, load `sdlc-documentation`.
+For Architecture Decision Records, load `architecture-decision`. For product requirements and feature specs, load `sdlc-documentation`.
 
 ---
 
@@ -21,14 +19,14 @@ For product requirements and feature specs, load `sdlc-documentation`.
 
 **Before (unhelpful docstring):**
 
-```ts
+```text
 // Gets the user
 function getUser(id: string) { ... }
 ```
 
 **After (helpful docstring):**
 
-```ts
+```text
 /** Fetches a user by ID.
  * @param id - UUID of the user (not email or username)
  * @returns User object with profile and preferences joined

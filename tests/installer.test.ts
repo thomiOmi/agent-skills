@@ -32,7 +32,7 @@ async function createFixture(): Promise<InstallerFixture> {
 
 async function readConfig(root: string): Promise<Record<string, unknown>> {
   const raw = await readFile(join(root, "opencode.jsonc"), "utf-8");
-  return parseJSONC(raw) as Record<string, unknown>;
+  return parseJSONC<Record<string, unknown>>(raw);
 }
 
 describe("Installer commands", () => {
@@ -94,9 +94,9 @@ describe("Installer commands", () => {
     expect(await readFile(join(fixture.target, "plugins/global-only.ts"), "utf-8"))
       .toBe("export default {};");
 
-    const config = parseJSONC(
+    const config = parseJSONC<Record<string, unknown>>(
       await readFile(join(fixture.target, "opencode.json"), "utf-8"),
-    ) as Record<string, unknown>;
+    );
     expect(config.default_agent).toBe("build");
     expect(config.model).toBe("custom/model");
     expect(config.instructions).toEqual(["AGENTS.md"]);
@@ -165,7 +165,7 @@ describe("Installer commands", () => {
   it("rejects unknown install modes", async () => {
     const fixture = await createFixture();
 
-    await expect(
+    expect(
       installCommand({
         mode: "deploy" as never,
         source: fixture.repo,
@@ -177,7 +177,7 @@ describe("Installer commands", () => {
   it("rejects remote source URLs", async () => {
     const fixture = await createFixture();
 
-    await expect(
+    expect(
       installCommand({
         source: "github:thomiOmi/agent-skills",
         targetDir: fixture.target,

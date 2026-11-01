@@ -6,9 +6,7 @@ Setup guide for humans. Not read by AI agents.
 
 ## Current Install Path
 
-The supported distribution path is a local clone of this public repository
-followed by the installer. The installer writes only to the OpenCode global
-config root (`~/.config/opencode/`). It does not write to `~/.agents/`.
+The supported distribution path is a local clone of this public repository followed by the installer. The installer writes only to the OpenCode global config root (`~/.config/opencode/`). It does not write to `~/.agents/`.
 
 ```bash
 git clone https://github.com/thomiOmi/agent-skills.git
@@ -16,35 +14,28 @@ cd agent-skills
 bun run setup
 ```
 
-`bun run setup` uses merge mode by default. It reads an ownership manifest,
-preserves user-modified and unmanaged files, backs up the config root before
-writing, and merges `opencode.jsonc` and `tui.jsonc` without discarding your
-settings.
+`bun run setup` uses merge mode by default. It reads an ownership manifest, preserves user-modified and unmanaged files, backs up the config root before writing, and merges `opencode.jsonc` and `tui.jsonc` without discarding your settings.
 
-Package registry distribution and remote source installation are not
-supported.
+Package registry distribution and remote source installation are not supported.
 
 ---
 
 ## Install Modes
 
 | Mode | Command | Behavior |
-|---|---|---|
+| --- | --- | --- |
 | merge | `bun run setup` | Default. Updates managed files, preserves modified and unmanaged files, and deletes stale managed files only when they are unmodified. |
 | replace | `bun run src/cli.ts install --mode replace` | Overwrites managed files. Unmanaged paths abort the install unless `--force` is set. |
 | symlink | `bun run setup:symlink` | Links repository files into the config root for live editing. Falls back to a copy when symlinks are unavailable. |
 
-Add `--dry-run` to plan without writing. Add `--force` to replace or symlink
-mode to overwrite paths the installer does not own. Add `--skip-backup` to
-disable the backup, or `--backup-path <dir>` to write the timestamped backup
-inside a custom root.
+Add `--dry-run` to plan without writing. Add `--force` to replace or symlink mode to overwrite paths the installer does not own. Add `--skip-backup` to disable the backup, or `--backup-path <dir>` to write the timestamped backup inside a custom root.
 
 ---
 
 ## Installer Options and Environment
 
 | Option | Description |
-|---|---|
+| --- | --- |
 | `--mode <merge\|replace\|symlink>` | Install mode. Defaults to merge. |
 | `--dry-run` | Print the plan without writing. Shows creates, updates, deletes, keeps, conflicts, and warnings. |
 | `--force` | Overwrite unmanaged paths in replace or symlink mode, proceed on a corrupt manifest, or replace an unparseable config. |
@@ -58,64 +49,50 @@ Environment overrides:
 
 - `OPENCODE_CONFIG_DIR` sets the config root when `--target` is absent.
 - `OPENCODE_BACKUP_DIR` sets the backup root when `--target` is absent.
-- `OPENCODE_CONFIG` and `OPENCODE_TUI_CONFIG` are read as config merge sources.
-  The installer still writes to the config root.
+- `OPENCODE_CONFIG` and `OPENCODE_TUI_CONFIG` are read as config merge sources. The installer still writes to the config root.
 
-`--target` also places the default backup under `<target>/backups/` unless
-`--backup-path` is given. Nothing outside the target directory is written.
+`--target` also places the default backup under `<target>/backups/` unless `--backup-path` is given. Nothing outside the target directory is written.
 
 ---
 
 ## What the Installer Manages
 
-| Source (repo) | Destination (`~/.config/opencode/`) |
-|---|---|
-| `instructions/AGENTS.md` | `AGENTS.md` |
-| `config/opencode.jsonc` | `opencode.jsonc` or an existing `opencode.json` |
-| `config/tui.jsonc` | `tui.jsonc` or an existing `tui.json` |
-| `agents/*.md` | `agents/*.md` |
-| `skills/*/` | `skills/*/` |
-| `commands/*.md` | `commands/*.md` |
-| `plugin/` | `plugins/` |
-| ownership metadata | `.agent-skills-manifest.json` |
+| Source (repo)            | Destination (`~/.config/opencode/`)             |
+| ------------------------ | ----------------------------------------------- |
+| `instructions/AGENTS.md` | `AGENTS.md`                                     |
+| `config/opencode.jsonc`  | `opencode.jsonc` or an existing `opencode.json` |
+| `config/tui.jsonc`       | `tui.jsonc` or an existing `tui.json`           |
+| `agents/*.md`            | `agents/*.md`                                   |
+| `skills/*/`              | `skills/*/`                                     |
+| `commands/*.md`          | `commands/*.md`                                 |
+| `plugin/`                | `plugins/`                                      |
+| ownership metadata       | `.agent-skills-manifest.json`                   |
 
-`~/.agents/skills/` is not managed. Copies left by older installer versions
-are untouched. Remove them manually if you no longer need the compatibility
-path.
+`~/.agents/skills/` is not managed. Copies left by older installer versions are untouched. Remove them manually if you no longer need the compatibility path.
 
 ---
 
 ## Ownership Manifest
 
-The installer records every file it owns in
-`~/.config/opencode/.agent-skills-manifest.json`. The manifest stores the
-SHA-256 hash, install mode, and install timestamp for each managed path.
+The installer records every file it owns in `~/.config/opencode/.agent-skills-manifest.json`. The manifest stores the SHA-256 hash, install mode, and install timestamp for each managed path.
 
-- First run without a manifest: existing files at shipped paths are adopted,
-  updated, and recorded. A backup runs first.
-- Later runs: files that match the manifest are updated. Files modified by you
-  are preserved in merge mode and become conflicts in replace mode.
-- Stale files: a managed file that is no longer shipped is deleted only when
-  its content still matches the manifest. Modified stale files are preserved.
-- Unmanaged files at shipped paths: preserved in merge mode. Replace and
-  symlink modes abort unless `--force` is set.
+- First run without a manifest: existing files at shipped paths are adopted, updated, and recorded. A backup runs first.
+- Later runs: files that match the manifest are updated. Files modified by you are preserved in merge mode and become conflicts in replace mode.
+- Stale files: a managed file that is no longer shipped is deleted only when its content still matches the manifest. Modified stale files are preserved.
+- Unmanaged files at shipped paths: preserved in merge mode. Replace and symlink modes abort unless `--force` is set.
 - A corrupt manifest aborts the install unless `--force` is set.
 
 ---
 
 ## Backups
 
-Before the first write, the installer copies the config root to
-`~/.config/opencode-backups/<timestamp>/`. The backup includes the previous
-manifest so the installation can be restored. It excludes `node_modules` and
-`backups`.
+Before the first write, the installer copies the config root to `~/.config/opencode-backups/<timestamp>/`. The backup includes the previous manifest so the installation can be restored. It excludes `node_modules` and `backups`.
 
 ```bash
 cp -r ~/.config/opencode-backups/<timestamp>/. ~/.config/opencode/
 ```
 
-Use `--backup-path <dir>` to create the timestamped directory under a custom
-root instead. Use `--skip-backup` only when you already have a backup.
+Use `--backup-path <dir>` to create the timestamped directory under a custom root instead. Use `--skip-backup` only when you already have a backup.
 
 ---
 
@@ -125,28 +102,21 @@ root instead. Use `--skip-backup` only when you already have a backup.
 
 - Your values win. Template values fill only missing keys.
 - Arrays are atomic. The installer never merges two arrays element by element.
-- Unknown keys and V2 keys such as `permissions`, `plugins`, `providers`,
-  `agents`, `mcp`, and `watcher` are preserved.
-- `default_agent` and `small_model` are never forced. If you set them, they
-  stay as set.
+- Unknown keys and V2 keys such as `permissions`, `plugins`, `providers`, `agents`, `mcp`, and `watcher` are preserved.
+- `default_agent` and `small_model` are never forced. If you set them, they stay as set.
 - `instructions` keeps your entries and appends `AGENTS.md` only when missing.
 - A top-level `subagent_depth` is migrated to `experimental.subagent_depth`.
-- An existing `opencode.json` or `tui.json` is updated in place instead of
-  creating a duplicate `.jsonc` file.
-- Comments in JSONC files are not preserved when a rewrite is required. The
-  installer warns before dropping them.
+- An existing `opencode.json` or `tui.json` is updated in place instead of creating a duplicate `.jsonc` file.
+- Comments in JSONC files are not preserved when a rewrite is required. The installer warns before dropping them.
 - An invalid existing config aborts in merge mode unless `--force` is set.
 
-`OPENCODE_CONFIG` and `OPENCODE_TUI_CONFIG` are read as merge sources when set.
-The installer still writes to the config root.
+`OPENCODE_CONFIG` and `OPENCODE_TUI_CONFIG` are read as merge sources when set. The installer still writes to the config root.
 
 ---
 
 ## opencode.jsonc Template
 
-Reference template installed by the installer. The actual template also
-contains a `watcher.ignore` list and commented examples for permissions and MCP
-servers.
+Reference template installed by the installer. The actual template also contains a `watcher.ignore` list and commented examples for permissions and MCP servers.
 
 ```jsonc
 {
@@ -169,10 +139,7 @@ servers.
 
 ## Per-Agent Model Overrides
 
-Each agent can run on a different model with provider-specific options.
-Overrides work in agent markdown frontmatter or in `opencode.jsonc`.
-No agent in this repository pins a model today, so every agent inherits the
-session model unless you add an override.
+Each agent can run on a different model with provider-specific options. Overrides work in agent markdown frontmatter or in `opencode.jsonc`. No agent in this repository pins a model today, so every agent inherits the session model unless you add an override.
 
 ### In agent frontmatter (agents/*.md)
 
@@ -188,13 +155,9 @@ request:
 ---
 ```
 
-- `model` uses the `provider/model` format with an optional `#variant`
-  suffix. Omit it to use the session model.
-- The provider must be available in the current project. Built-in provider
-  IDs include `anthropic`, `openai`, and `opencode`; a custom provider is
-  added under `providers` in `opencode.jsonc` and referenced by its own ID.
-- Provider options such as `temperature` and `top_p` belong under
-  `request.body`. OpenCode v2 does not accept them as top-level agent fields.
+- `model` uses the `provider/model` format with an optional `#variant` suffix. Omit it to use the session model.
+- The provider must be available in the current project. Built-in provider IDs include `anthropic`, `openai`, and `opencode`; a custom provider is added under `providers` in `opencode.jsonc` and referenced by its own ID.
+- Provider options such as `temperature` and `top_p` belong under `request.body`. OpenCode v2 does not accept them as top-level agent fields.
 - OpenCode lists available models with `opencode models`.
 
 ### In opencode.jsonc (including built-in agents)
@@ -220,19 +183,16 @@ request:
 ### Recommended assignments for this orchestra
 
 | Agent | Rationale |
-|---|---|
+| --- | --- |
 | `deep-thinker` | Strongest reasoning model available - root cause analysis and trade-offs |
 | `orchestrator` | Fast, capable model - it only decomposes and delegates |
 | `senior-developer` | Strong coding model - architecture and implementation |
 | `qa-engineer` | Strong coding model - writes and audits tests |
 | `marketing`, `docs-writer` | Mid-tier model - prose quality matters less than speed and cost |
 
-Pick the concrete `provider/model` id from `opencode models` on your machine;
-the table above describes the tier, not a fixed id.
+Pick the concrete `provider/model` id from `opencode models` on your machine; the table above describes the tier, not a fixed id.
 
-Keep cost down: give the heavy reasoning model only to `deep-thinker` and the
-strong coding model to `senior-developer` and `qa-engineer`. Everything else
-can ride the default session model.
+Keep cost down: give the heavy reasoning model only to `deep-thinker` and the strong coding model to `senior-developer` and `qa-engineer`. Everything else can ride the default session model.
 
 ---
 
@@ -240,8 +200,7 @@ can ride the default session model.
 
 ### Skill loading permissions
 
-Control which skills agents can load with wildcard patterns in `opencode.jsonc`
-(see [Agent Skills docs](https://opencode.ai/docs/skills/)):
+Control which skills agents can load with wildcard patterns in `opencode.jsonc` (see [Agent Skills docs](https://opencode.ai/docs/skills/)):
 
 ```jsonc
 {
@@ -264,9 +223,7 @@ You can also deny the skill action for a specific agent:
 {
   "agents": {
     "build": {
-      "permissions": [
-        { "action": "skill", "resource": "*", "effect": "deny" }
-      ]
+      "permissions": [{ "action": "skill", "resource": "*", "effect": "deny" }]
     }
   }
 }
@@ -274,9 +231,7 @@ You can also deny the skill action for a specific agent:
 
 ### MCP servers
 
-Add local or remote MCP servers under `mcp`. Their tools register under the
-normalized `<server-name>_<tool>` name, so they can be denied per agent with
-a permission action. Uncommented example (disabled by default):
+Add local or remote MCP servers under `mcp`. Their tools register under the normalized `<server-name>_<tool>` name, so they can be denied per agent with a permission action. Uncommented example (disabled by default):
 
 ```jsonc
 {
@@ -307,15 +262,14 @@ a permission action. Uncommented example (disabled by default):
 }
 ```
 
-MCP servers add to context - enable only what you need.
-See [MCP docs](https://opencode.ai/docs/mcp-servers/) for all options.
+MCP servers add to context - enable only what you need. See [MCP docs](https://opencode.ai/docs/mcp-servers/) for all options.
 
 ## Deployment Map
 
 Every file and directory in this repo has a specific purpose when installed to `~/.config/opencode/`:
 
 | Source (repo) | Destination (`~/.config/opencode/`) | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `instructions/AGENTS.md` | `AGENTS.md` | **Global agent rules** - read by the agent every session. Root `AGENTS.md` remains contributor guidance for this repository. |
 | `config/opencode.jsonc` | `opencode.jsonc` or existing `opencode.json` | **Global config** - default_agent, experimental.subagent_depth, instructions, permissions, formatters, lsp, watcher. |
 | `config/tui.jsonc` | `tui.jsonc` or existing `tui.json` | **TUI config** - theme, attention notifications. |
@@ -327,8 +281,7 @@ Every file and directory in this repo has a specific purpose when installed to `
 | `plugin/tool-guardian.ts` | `plugins/tool-guardian.ts` | **Tool guardian plugin** - registers a V2 shell hook that blocks destructive shell commands before execution. |
 | ownership metadata | `.agent-skills-manifest.json` | **Install manifest** - SHA-256 hashes, modes, and timestamps that drive safe updates and stale-file cleanup. |
 
-The installer does not write `~/.agents/skills/`. Older installs may still have
-copies there; they are untouched and can be removed manually.
+The installer does not write `~/.agents/skills/`. Older installs may still have copies there; they are untouched and can be removed manually.
 
 ---
 
@@ -345,13 +298,7 @@ copies there; they are untouched and can be removed manually.
 ```markdown
 # AGENTS.md
 
-**Project:** my-app
-**Stack:** Node.js 22 - TypeScript - PostgreSQL - Next.js 15
-**Package manager:** bun
-**Test runner:** bun test
-**Linter / formatter:** ESLint + typescript-eslint + @stylistic
-**Main branch:** main
-**CI:** GitHub Actions
+**Project:** my-app **Stack:** Node.js 22 - TypeScript - PostgreSQL - Next.js 15 **Package manager:** bun **Test runner:** bun test **Linter / formatter:** ESLint + typescript-eslint + @stylistic **Main branch:** main **CI:** GitHub Actions
 ```
 
 ---
@@ -372,21 +319,15 @@ copies there; they are untouched and can be removed manually.
 
 **A file I edited was skipped:**
 
-Merge mode preserves files modified after install. Run with `--dry-run` to
-confirm the plan. If you want the shipped version, back up first and run
-`bun run src/cli.ts install --mode replace --force`.
+Merge mode preserves files modified after install. Run with `--dry-run` to confirm the plan. If you want the shipped version, back up first and run `bun run src/cli.ts install --mode replace --force`.
 
 **My config comments disappeared:**
 
-JSONC comments are not preserved when the installer rewrites a config. The
-installer warns before doing it. Keep a backup or use `--dry-run` to inspect
-the plan first.
+JSONC comments are not preserved when the installer rewrites a config. The installer warns before doing it. Keep a backup or use `--dry-run` to inspect the plan first.
 
 **Config merge was skipped:**
 
-An invalid `opencode.jsonc` or `opencode.json` aborts merge mode. Fix the
-syntax, or pass `--force` to replace it with the merged template after a
-backup.
+An invalid `opencode.jsonc` or `opencode.json` aborts merge mode. Fix the syntax, or pass `--force` to replace it with the merged template after a backup.
 
 **I want to see what will change:**
 
@@ -394,5 +335,4 @@ backup.
 bun run src/cli.ts install --dry-run
 ```
 
-The dry run prints creates, updates, deletes, keeps, conflicts, and warnings
-without writing anything.
+The dry run prints creates, updates, deletes, keeps, conflicts, and warnings without writing anything.

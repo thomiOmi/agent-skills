@@ -30,12 +30,11 @@ Guidelines for simplifying code structure, eliminating dead code, and flattening
 ```ts
 function processOrder(order: Order | null) {
   if (order) {
-    if (order.status === 'pending') {
-      if (order.total > 0) {
-        return executePayment(order);
-      } else {
-        throw new Error('Order total must be greater than zero');
+    if (order.status === "pending") {
+      if (order.total <= 0) {
+        throw new Error("Order total must be greater than zero");
       }
+      return executePayment(order);
     }
   }
 }
@@ -45,10 +44,14 @@ function processOrder(order: Order | null) {
 
 ```ts
 function processOrder(order: Order | null) {
-  if (!order) return;
-  if (order.status !== 'pending') return;
+  if (!order) {
+    return;
+  }
+  if (order.status !== "pending") {
+    return;
+  }
   if (order.total <= 0) {
-    throw new Error('Order total must be greater than zero');
+    throw new Error("Order total must be greater than zero");
   }
 
   return executePayment(order);

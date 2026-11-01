@@ -26,7 +26,7 @@ function parseAgentOrchestra(markdown: string): Map<string, string[]> {
     const cells = line.split("|").map(cell => cell.trim());
     const nameMatch = /^`([a-z0-9-]+)`$/.exec(cells[1] ?? "");
     const name = nameMatch?.[1];
-    if (!name) {
+    if (name === undefined) {
       continue;
     }
 
@@ -143,9 +143,9 @@ describe("Documentation consistency", () => {
   });
 
   it("uses experimental.subagent_depth in the shipped config template", () => {
-    const config = parseJSONC(
+    const config = parseJSONC<Record<string, unknown>>(
       readText(join(repoRoot, "config/opencode.jsonc")),
-    ) as Record<string, unknown>;
+    );
     const experimental = config.experimental as Record<string, unknown> | undefined;
 
     expect(typeof experimental?.subagent_depth).toBe("number");

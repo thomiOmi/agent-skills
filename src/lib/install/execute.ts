@@ -94,7 +94,7 @@ async function installFile(
   file: PlannedFile,
   mode: InstallMode,
 ): Promise<ManagedFileMode> {
-  if (!file.sourcePath) {
+  if (file.sourcePath === undefined || file.sourcePath === null) {
     throw new Error(`Missing source path for ${file.relativePath}`);
   }
 

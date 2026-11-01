@@ -25,8 +25,7 @@ Before writing any endpoint, schema, or response shape, confirm:
 6. **What naming convention for JSON keys?** ask the user or check existing endpoints
 7. **What date/time format?** ask the user - ISO 8601, MySQL YYYY-MM-DD HH:mm:ss, Unix timestamp, or other
 
-For questions 4-7: if not defined in project AGENTS.md, ask before proceeding.
-See `references/field-conventions.md` for full clarification checklist and format options.
+For questions 4-7: if not defined in project AGENTS.md, ask before proceeding. See `references/field-conventions.md` for full clarification checklist and format options.
 
 ---
 
@@ -34,7 +33,7 @@ See `references/field-conventions.md` for full clarification checklist and forma
 
 **Inconsistent vs consistent error response:**
 
-```json
+```text
 // Bad: Inconsistent - mixing error shapes across endpoints
 POST /orders to { "error": "insufficient_balance" }
 GET  /orders to { "errors": [{ "code": "NOT_FOUND", "message": "Order not found" }] }
@@ -59,8 +58,7 @@ GET  /orders to { "errors": [{ "code": "NOT_FOUND", "message": "Order not found"
 - `references/websocket.md` - message envelope, auth, reconnection
 - `references/field-conventions.md` - response formats, date formats, naming clarification
 
-For OpenAPI spec generation, load the `documentation` skill - its OpenAPI
-reference defines the minimum spec requirements per endpoint.
+For OpenAPI spec generation, load the `documentation` skill - its OpenAPI reference defines the minimum spec requirements per endpoint.
 
 ---
 

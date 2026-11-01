@@ -18,7 +18,7 @@ async function createConfigRoot(): Promise<string> {
 }
 
 afterEach(async () => {
-  await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true })));
+  await Promise.all(roots.splice(0).map(async root => rm(root, { recursive: true, force: true })));
 });
 
 function hashContent(content: string): string {
@@ -231,7 +231,7 @@ describe("Installer plan", () => {
   it("rejects a source path that escapes the config root", async () => {
     const configRoot = await createConfigRoot();
 
-    await expect(
+    expect(
       buildInstallPlan({
         mode: "merge",
         force: false,

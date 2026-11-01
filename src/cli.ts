@@ -59,7 +59,7 @@ function toInstallOptions(args: Record<string, unknown>) {
 }
 
 async function printVersion(): Promise<void> {
-  const pkg = JSON.parse(await readFile(resolve(getRepoRoot(), "package.json"), "utf-8"));
+  const pkg = JSON.parse(await readFile(resolve(getRepoRoot(), "package.json"), "utf-8")) as { version?: string };
   consola.log(pkg.version ?? "0.0.0");
 }
 
@@ -90,4 +90,4 @@ const main = defineCommand({
   default: "install",
 });
 
-runMain(main);
+void runMain(main);

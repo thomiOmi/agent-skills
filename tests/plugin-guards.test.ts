@@ -129,21 +129,21 @@ describe("Secrets Scanner plugin", () => {
     await SecretsScannerPlugin.setup(harness.context);
     const hook = getHook(harness.hooks.tool, "execute.before");
 
-    await expect(
+    expect(
       hook({
         tool: "write",
         input: { filePath: "a.ts", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
       } as never),
     ).rejects.toThrow(/secrets-scanner/);
 
-    await expect(
+    expect(
       hook({
         tool: "edit",
         input: { filePath: "a.ts", oldString: "before", newString: "AKIAIOSFODNN7EXAMPLE" },
       } as never),
     ).rejects.toThrow(/secrets-scanner/);
 
-    await expect(
+    expect(
       hook({
         tool: "read",
         input: { filePath: ".env", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
@@ -157,7 +157,7 @@ describe("Secrets Scanner plugin", () => {
       await SecretsScannerPlugin.setup(harness.context);
       const hook = getHook(harness.hooks.tool, "execute.before");
 
-      await expect(
+      expect(
         hook({
           tool: "write",
           input: { content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
@@ -252,8 +252,8 @@ describe("Tool Guardian plugin", () => {
     await ToolGuardianPlugin.setup(harness.context);
     const hook = getHook(harness.hooks.shell, "create.before");
 
-    await expect(hook({ command: "rm -rf /" } as never)).rejects.toThrow(/tool-guardian/);
-    await expect(hook({ command: "bun run test" } as never)).resolves.toBeUndefined();
+    expect(hook({ command: "rm -rf /" } as never)).rejects.toThrow(/tool-guardian/);
+    expect(hook({ command: "bun run test" } as never)).resolves.toBeUndefined();
   });
 
   it("honors the disable escape hatch", async () => {
@@ -262,7 +262,7 @@ describe("Tool Guardian plugin", () => {
       await ToolGuardianPlugin.setup(harness.context);
       const hook = getHook(harness.hooks.shell, "create.before");
 
-      await expect(hook({ command: "rm -rf /" } as never)).resolves.toBeUndefined();
+      expect(hook({ command: "rm -rf /" } as never)).resolves.toBeUndefined();
     });
   });
 });

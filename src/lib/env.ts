@@ -1,25 +1,25 @@
 import process from "node:process";
 
 function detectProvider(): string {
-  if (process.env.GITHUB_ACTIONS) {
+  if (process.env.GITHUB_ACTIONS !== undefined) {
     return "github";
   }
-  if (process.env.GITLAB_CI) {
+  if (process.env.GITLAB_CI !== undefined) {
     return "gitlab";
   }
-  if (process.env.CIRCLECI) {
+  if (process.env.CIRCLECI !== undefined) {
     return "circleci";
   }
-  if (process.env.TRAVIS) {
+  if (process.env.TRAVIS !== undefined) {
     return "travis";
   }
-  if (process.env.JENKINS_URL) {
+  if (process.env.JENKINS_URL !== undefined) {
     return "jenkins";
   }
-  if (process.env.AZURE_HTTP_USER_AGENT) {
+  if (process.env.AZURE_HTTP_USER_AGENT !== undefined) {
     return "azure";
   }
-  if (process.env.BITBUCKET_BRANCH_NAME) {
+  if (process.env.BITBUCKET_BRANCH_NAME !== undefined) {
     return "bitbucket";
   }
   return "unknown";
@@ -27,14 +27,14 @@ function detectProvider(): string {
 
 function detectCi(): boolean {
   return !!(
-    process.env.CI
-    || process.env.CONTINUOUS_INTEGRATION
-    || process.env.BUILD_NUMBER
-    || process.env.GITHUB_ACTIONS
-    || process.env.GITLAB_CI
-    || process.env.CIRCLECI
-    || process.env.TRAVIS
-    || process.env.JENKINS_URL
+    process.env.CI !== undefined
+    || process.env.CONTINUOUS_INTEGRATION !== undefined
+    || process.env.BUILD_NUMBER !== undefined
+    || process.env.GITHUB_ACTIONS !== undefined
+    || process.env.GITLAB_CI !== undefined
+    || process.env.CIRCLECI !== undefined
+    || process.env.TRAVIS !== undefined
+    || process.env.JENKINS_URL !== undefined
   );
 }
 

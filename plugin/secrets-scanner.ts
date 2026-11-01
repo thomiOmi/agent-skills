@@ -61,7 +61,7 @@ export function scanForSecrets(text: string): string | null {
   }
   for (const { name, pattern } of SECRET_PATTERNS) {
     const match = pattern.exec(text);
-    if (match?.[0]) {
+    if (match !== null) {
       return `${name} (${mask(match[0])})`;
     }
   }
@@ -107,7 +107,7 @@ export function guardToolCall(_tool: string, args: unknown): void {
   collectStrings(args, 0, strings);
   for (const text of strings) {
     const finding = scanForSecrets(text);
-    if (finding) {
+    if (finding !== null) {
       throw new Error(
         `Blocked by secrets-scanner: ${finding}. `
         + "Remove the secret from the content and use environment variables or a secrets manager instead. "

@@ -10,20 +10,20 @@ export function getRepoRoot(): string {
 }
 
 export function getGlobalRoot(targetOverride?: string): string {
-  if (targetOverride) {
+  if (targetOverride !== undefined) {
     return resolve(targetOverride);
   }
-  if (process.env.OPENCODE_CONFIG_DIR) {
+  if (process.env.OPENCODE_CONFIG_DIR !== undefined) {
     return resolve(process.env.OPENCODE_CONFIG_DIR);
   }
   return join(homedir(), ".config", "opencode");
 }
 
 export function getBackupRoot(targetOverride?: string): string {
-  if (targetOverride) {
+  if (targetOverride !== undefined) {
     return resolve(targetOverride, "backups");
   }
-  if (process.env.OPENCODE_BACKUP_DIR) {
+  if (process.env.OPENCODE_BACKUP_DIR !== undefined) {
     return resolve(process.env.OPENCODE_BACKUP_DIR);
   }
   return join(homedir(), ".config", "opencode-backups");

@@ -2,7 +2,7 @@
 
 ## Component Template
 
-```tsx
+```text
 interface ComponentProps {
   // Props here
 }
@@ -40,7 +40,7 @@ export function Component({ ...props }: ComponentProps) {
   --radius-md: 8px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 ```
