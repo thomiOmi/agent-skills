@@ -148,7 +148,6 @@ agent-skills/
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
 ├── DECISIONS.md        # Architectural decisions and audit history
-├── EVALUATION.md       # Historical eval snapshot (not current status)
 ├── INSTALL.md          # Full install and manifest reference
 ├── LICENSE
 ├── PRD.md              # Product goals, requirements, scope

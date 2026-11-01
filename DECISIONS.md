@@ -82,10 +82,7 @@ The manifest at `<configRoot>/.agent-skills-manifest.json` is the ownership sour
 
 `opencode.jsonc` and `tui.jsonc` are deep-merged with the repository templates. User values win, template values fill only missing keys, arrays are atomic, and unknown keys plus V2 keys (`permissions`, `plugins`, `providers`, `agents`, `mcp`, `watcher`) are preserved. `default_agent` and `small_model` are never forced; `instructions` keeps user entries and appends `AGENTS.md` only when missing; a top-level `subagent_depth` is migrated to `experimental.subagent_depth`. An existing `opencode.json` or `tui.json` is updated in place instead of creating a duplicate `.jsonc` file. Config sources are config-root files plus `OPENCODE_CONFIG`/`OPENCODE_TUI_CONFIG`; project-local cwd configs are not merged into the global config. Invalid config aborts in merge mode unless `--force` is set. JSONC comments are not preserved across a rewrite; the installer warns instead of adding a comment-preserving dependency.
 
-
 ### Release notes: changelogen emoji headings kept, bodies applied via notes-file
-
-
 
 changelogen emits named section headings such as Enhancements, Fixes, Refactors, Documentation, and Chore into CHANGELOG.md and release output. CHANGELOG.md is the documented exception to the no-emoji rule. GitHub Release bodies created with inline shell interpolation (`bun -e`, PowerShell strings) were silently truncated at the first `#` character. Practice: extract the version section from CHANGELOG.md into a temporary file and apply it with `gh release create/edit --notes-file <file>`, then verify the body via `gh release view --json body` before moving on.
 
@@ -110,7 +107,6 @@ Reference: <https://bun.com/llms.txt>. An existing dependency that Bun now cover
 Dependency maintenance follows from the same policy: Dependabot groups Bun updates at the minor and patch levels only, TypeScript major updates stay ignored until `typescript-eslint` supports TypeScript 7, and major updates for other packages arrive as individual pull requests so they get a deliberate review instead of riding along inside a group.
 
 Applied on 2026-10-26: frontmatter parsing in the test suite now calls `Bun.YAML.parse`, so the tests no longer import the `yaml` package. `scripts/opencode-frontmatter.js` keeps `yaml` on purpose: ESLint runs plugins under Node, and a runtime check confirmed `bun run lint` executes ESLint with `typeof Bun` undefined, so a Bun-only parser would turn every frontmatter into a parse failure. Editor ESLint integrations have the same constraint. A dependency that cannot move to a Bun API because its host runtime is not Bun stays, and the reason is recorded here.
-
 
 ---
 

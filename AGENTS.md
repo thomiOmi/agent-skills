@@ -20,7 +20,6 @@ cross-reference it, not repeat the details.
 | `TASKS.md` | Live state: what is done, in progress, planned, and next | What is already shipped and what is next |
 | `DECISIONS.md` | Historical record of architectural choices | Why something was built this way instead of another way |
 | `SPEC.md` | Agent Skills format spec | How to author a new skill; how skill specification validation works |
-| `EVALUATION.md` | Historical static evaluation and audit snapshot | What an earlier audit assessed; not current project status |
 
 Priority order (highest to lowest):
 
