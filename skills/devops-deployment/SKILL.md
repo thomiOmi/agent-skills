@@ -21,6 +21,7 @@ Guidelines for reliable, secure, and maintainable infrastructure and deployment 
 
 See `assets/templates.md` for Dockerfile, pipeline, and deployment workflow templates.
 For CI/CD pipeline patterns, see `references/ci-cd-pipeline.md`.
+For project configuration file edits, load `config-management`.
 
 ---
 

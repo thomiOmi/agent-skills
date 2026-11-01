@@ -85,6 +85,7 @@ Full template lives in `assets/templates.md`.
 - `references/scenarios.md` - flaky tests, prod-only failures, performance bugs, anti-patterns
 - `code-simplifier` - when the fix requires simplifying complex nested logic
 - `tech-debt` - when the bug stems from accumulated technical debt
+- `testing` - when writing regression tests for fixed bugs
 
 See `assets/templates.md` for bug report and RCA document templates.
 
