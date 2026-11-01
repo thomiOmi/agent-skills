@@ -13,6 +13,7 @@ Write for the reader who has zero context from this conversation.
 If it only makes sense to you right now, it will confuse someone else later.
 
 For Architecture Decision Records, load `architecture-decision`.
+For product requirements and feature specs, load `sdlc-documentation`.
 
 ---
 
