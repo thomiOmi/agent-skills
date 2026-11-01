@@ -29,7 +29,7 @@ export async function backupGlobal(opts: BackupOptions): Promise<string | null> 
   }
 
   const stamp = getTimestamp();
-  const backupDir = opts.backupPath
+  const backupDir = opts.backupPath !== undefined
     ? join(opts.backupPath, stamp)
     : join(opts.backupRoot, stamp);
 

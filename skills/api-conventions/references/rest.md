@@ -24,7 +24,7 @@ No trailing slashes. Lowercase, kebab-case: `/payment-methods`.
 | Method | Purpose           | Idempotent |
 | ------ | ----------------- | ---------- |
 | GET    | Read              | OK         |
-| POST   | Create or trigger | X         |
+| POST   | Create or trigger | X          |
 | PUT    | Replace entirely  | OK         |
 | PATCH  | Partial update    | OK         |
 | DELETE | Remove            | OK         |
@@ -34,12 +34,18 @@ No trailing slashes. Lowercase, kebab-case: `/payment-methods`.
 Single resource:
 
 ```json
-{ "data": { "id": "usr_123", "email": "user@example.com", "createdAt": "2026-01-15T10:00:00Z" } }
+{
+  "data": {
+    "id": "usr_123",
+    "email": "user@example.com",
+    "createdAt": "2026-01-15T10:00:00Z"
+  }
+}
 ```
 
 Collection:
 
-```json
+```text
 { "data": [...], "meta": { "total": 142, "page": 1, "perPage": 20 } }
 ```
 
@@ -50,7 +56,9 @@ Error (consistent across all endpoints):
   "error": {
     "code": "VALIDATION_ERROR",
     "message": "Human-readable description",
-    "details": [{ "field": "email", "message": "Must be a valid email address" }]
+    "details": [
+      { "field": "email", "message": "Must be a valid email address" }
+    ]
   }
 }
 ```

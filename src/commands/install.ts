@@ -28,7 +28,7 @@ function isRemoteSource(source: string): boolean {
 
 function resolveRepoRoot(source: string | undefined): string {
   const defaultRoot = repoSubdir(".");
-  if (!source) {
+  if (source === undefined) {
     return defaultRoot;
   }
 
@@ -55,7 +55,7 @@ function normalizeMode(mode: string | undefined): InstallMode {
 
 async function readPackageVersion(repoRoot: string): Promise<string> {
   try {
-    const packageJson = JSON.parse(await readFile(join(repoRoot, "package.json"), "utf-8"));
+    const packageJson = JSON.parse(await readFile(join(repoRoot, "package.json"), "utf-8")) as { version?: string };
     return packageJson.version ?? "0.0.0";
   }
   catch {
@@ -148,7 +148,7 @@ export async function installCommand(opts: InstallOptions = {}): Promise<Install
   consola.log(`  unchanged: ${result.unchanged}`);
   consola.log(`  kept:      ${result.kept}`);
   consola.log(`  deleted:   ${result.deleted}`);
-  if (result.backupPath) {
+  if (result.backupPath !== undefined && result.backupPath !== null) {
     consola.info(`  backup:    ${result.backupPath}`);
   }
   if (dryRun) {
@@ -173,7 +173,7 @@ export async function installCommand(opts: InstallOptions = {}): Promise<Install
  * @returns Human-readable source description.
  */
 export function describeSource(source: string | undefined): string {
-  if (!source) {
+  if (source === undefined) {
     return "local repo (default)";
   }
   return `local path ${resolve(source)}`;

@@ -164,7 +164,7 @@ describe("Installer safety", () => {
     await writeFixtureFile(fixture.repo, "agents/custom.md", "shipped now");
     await writeFixtureFile(fixture.target, "agents/custom.md", "third party");
 
-    await expect(
+    expect(
       installCommand({
         mode: "replace",
         source: fixture.repo,
@@ -215,7 +215,7 @@ describe("Installer safety", () => {
     const fixture = await createFixture();
     await writeFixtureFile(fixture.target, "opencode.jsonc", "{ \"default_agent\": }");
 
-    await expect(
+    expect(
       installCommand({
         source: fixture.repo,
         targetDir: fixture.target,
@@ -241,9 +241,9 @@ describe("Installer safety", () => {
     expect(result.created).toBeGreaterThan(0);
     expect(await pathExists(join(fixture.target, "agents/orchestrator.md"))).toBe(true);
 
-    const config = parseJSONC(
+    const config = parseJSONC<Record<string, unknown>>(
       await readFile(join(fixture.target, "opencode.jsonc"), "utf-8"),
-    ) as Record<string, unknown>;
+    );
     expect(config.default_agent).toBe("plan");
   });
 
@@ -251,7 +251,7 @@ describe("Installer safety", () => {
     const fixture = await createFixture();
     await writeFixtureFile(fixture.target, ".agent-skills-manifest.json", "{ not json");
 
-    await expect(
+    expect(
       installCommand({
         source: fixture.repo,
         targetDir: fixture.target,

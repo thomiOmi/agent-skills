@@ -162,7 +162,7 @@ export function findDangerousCommand(command: string): string | null {
  */
 export function guardBashCommand(command: string): void {
   const finding = findDangerousCommand(command);
-  if (finding) {
+  if (finding !== null) {
     throw new Error(
       `Blocked by tool-guardian: ${finding}. `
       + "Confirm the command manually with the user before running it. "
