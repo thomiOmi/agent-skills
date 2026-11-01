@@ -168,7 +168,7 @@ The project currently ships no custom tools; the plugin registers only hooks (se
 
 ## Plugin Hooks (OpenCode V2)
 
-Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.3 is a devDependency, and the OpenCode host resolves the runtime import to its own copy.
+Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.4 is a devDependency, and the OpenCode host resolves the runtime import to its own copy.
 
 ### compaction.ts
 
