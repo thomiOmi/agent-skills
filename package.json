@@ -37,6 +37,7 @@
     "node": ">=24.0.0"
   },
   "scripts": {
+    "prepare": "simple-git-hooks",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -64,13 +65,17 @@
     "@types/bun": "^1.4.4",
     "changelogen": "^0.6.2",
     "eslint": "^10.13.0",
+    "lint-staged": "^17.6.0",
     "simple-git-hooks": "^2.14.0",
     "typescript": "~5.9.3",
     "yaml": "^2.9.1"
   },
   "simple-git-hooks": {
-    "pre-commit": "bun run lint:fix",
-    "commit-msg": "bunx commitlint --edit $1",
+    "pre-commit": "bun x lint-staged",
+    "commit-msg": "bun x commitlint --edit \"$1\"",
     "pre-push": "bun run typecheck && bun run test"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
   }
 }
