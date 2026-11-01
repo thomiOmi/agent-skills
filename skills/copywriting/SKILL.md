@@ -67,13 +67,7 @@ Bridge: How to get from Before to After
 
 ## Tone Adjustment
 
-| Audience | Tone | Sentence length | Vocabulary |
-|----------|------|-----------------|------------|
-| C-suite / executives | Confident, concise | Short | Business outcomes, ROI |
-| Developers | Direct, technical | Medium | Specific, jargon OK |
-| End users / consumers | Friendly, helpful | Short-medium | Simple, avoid jargon |
-| Enterprise buyers | Professional, detailed | Medium-long | Industry terms, compliance |
-| Designers | Inspiring, visual | Varied | Design vocabulary |
+For per-audience tone adjustment rules, load `references/tones/tones.md`.
 
 ---
 
@@ -142,7 +136,7 @@ Bridge: How to get from Before to After
 - [ ] Action verb used in CTA state ("Deploy in 1 click")
 - [ ] Unexplained jargon and fluff removed
 - [ ] Headline delivers on its promise (no clickbait)
-- [ ] Tone matches target audience (see Tone Adjustment table)
+- [ ] Tone matches target audience (see references/tones/tones.md)
 - [ ] Headline follows a recognized pattern (How-to, List, Question, Comparison, Direct, Negative)
 - [ ] No "We" centered copy, weak adverbs, industry buzzwords, walls of text, or missing social proof
 - [ ] CTA states exactly what happens next
