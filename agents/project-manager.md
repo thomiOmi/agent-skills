@@ -2,7 +2,6 @@
 name: project-manager
 description: Project manager - project planning, milestone tracking, risk management, status reporting, and cross-team coordination.
 mode: subagent
-color: secondary
 request:
   body:
     temperature: 0.3

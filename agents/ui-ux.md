@@ -2,7 +2,6 @@
 name: ui-ux
 description: UI/UX engineer - design system, frontend components, accessibility (a11y), responsive layout, and UI polish.
 mode: subagent
-color: accent
 request:
   body:
     temperature: 0.3

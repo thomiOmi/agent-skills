@@ -82,7 +82,7 @@ discussion to plan to orchestrator to test to implement to review to verify to r
 8. **Remember** - key decisions, progress, and learnings saved to `TASKS.md` and working context for cross-session persistence
 9. **Improve** - final polish and optimization after verification passes
 
-If verification fails, the system retries from the implement step using the resumable `task_id` (max 3 retries before escalation).
+If verification fails, the system retries from the implement step using the resumable `sessionID` (max 3 retries before escalation).
 
 ### FR-2: Agent Roster
 

@@ -2,7 +2,6 @@
 name: docs-writer
 description: Technical writer - documentation, API specs, READMEs, SDLC docs, guides, and changelogs.
 mode: subagent
-color: primary
 request:
   body:
     temperature: 0.2

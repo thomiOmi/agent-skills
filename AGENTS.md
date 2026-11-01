@@ -93,7 +93,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `refactor-planner` | Safe refactoring, legacy code migration | subagent | refactor-planner, tech-debt, planning, architecture-decision, code-simplifier |
 | `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, no-ai-slop, seo-optimization |
 
-Invoke a specialist directly with `@agent-name` when you already know who should handle it.
+Invoke a specialist by asking the orchestrator to delegate to that subagent when you already know who should handle it.
 
 **Daily shortcuts (slash commands):**
 

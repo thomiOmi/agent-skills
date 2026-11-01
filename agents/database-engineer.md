@@ -2,7 +2,6 @@
 name: database-engineer
 description: Database engineer - schema design, migrations, indexing, query performance, data integrity, and database reliability.
 mode: subagent
-color: secondary
 request:
   body:
     temperature: 0.2

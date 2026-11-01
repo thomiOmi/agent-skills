@@ -2,7 +2,6 @@
 name: devops
 description: DevOps engineer - CI/CD, deployment, infrastructure, Docker, cloud services, monitoring.
 mode: subagent
-color: secondary
 request:
   body:
     temperature: 0.2

@@ -2,7 +2,6 @@
 name: software-architect
 description: Software architect - system design, architecture diagrams, ADRs, trade-off analysis, and architecture reviews before and during implementation.
 mode: subagent
-color: primary
 request:
   body:
     temperature: 0.3

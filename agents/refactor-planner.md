@@ -2,7 +2,6 @@
 name: refactor-planner
 description: Refactoring specialist - legacy code modernization, architectural refactoring, tech debt reduction, and migration planning.
 mode: subagent
-color: accent
 request:
   body:
     temperature: 0.2

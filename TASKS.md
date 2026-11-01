@@ -78,16 +78,16 @@ Roadmap and backlog for the agent-skills project.
 
 Unscheduled personal notes (not part of the roadmap):
 
-- [x] Archived assertion-grading follow-up: this depended on the removed eval runner and iteration-2 workspace; revisit only if evaluation tooling is redesigned.
-- [ ] Multi-runtime plugin manifest (.claude-plugin) for cross-harness distribution; superseded in scope by the agent-agnostic layering decision (see DECISIONS.md): future harnesses get an integration-layer adapter, not a fork of the catalog
-- [ ] Integration-layer adapters for other agent runtimes (Claude Code, Codex CLI): agent format converter, plugin equivalent, installer target; catalog and eval tooling reused untouched
 - [x] Bun-native migration audit: reviewed all dependencies against the Bun-native-first policy. Migrated `pathe` to `node:path`, `pkg-types.readPackageJSON` to `fs/promises.readFile` + `JSON.parse`, `scule.kebabCase` to an inline helper, and `std-env` to native `process.env`/`process.platform` implementations. Kept `citty` (CLI framework), `confbox` (JSONC parsing), `consola` (logging, per user decision), and `yaml` (devDependency, ESLint loads plugins under Node with no Bun global). All migrated files pass typecheck, lint, and tests. - 2026-10-29
-- [x] Archived DeepEval LLM-judge proposal: the eval runner and its workspace were removed, so this is no longer an actionable dependency or configuration plan.
 - [x] Code pass from the root-docs audit (2026-09-23, completed 2026-09-30): (1) `skills/testing/scripts/quality-verifier.ts` reimplemented to actually execute checks (spawn lint/typecheck/test via the detected package manager, fall back to the local TypeScript compiler, line-by-line scan for debug statements and exports without docstrings) with explicit skip semantics, plus `tests/quality-verifier.test.ts`. (2) `plugin/tool-guardian.ts` `isRecursiveForceDelete()` fixed to catch GNU long-form flags (`--recursive`, `--force`), with destructive long-form and specific-path long-form cases that must still pass in `tests/plugin-guards.test.ts`. (3) `tools/task-decomposer.ts` and the registration `"task-decomposer"` in `plugin/agent-skills.ts` removed; `skills/task-decomposition/scripts/task-decomposer.ts` and `tests/task-decomposer.test.ts` left intact. Docs synchronized (PRD FR-4 + Scope, ARCHITECTURE, INSTALL 2 to 1 tool, DECISIONS).
 
-- Fase B round 2 (not yet checked): skill pairs without an explicit delegation sentence (`testing` vs `test-planning` and similar) - needs a manual scan as deep as round 1 before declaring it clean
-- Copywriting content migration: move FAB, Before-After-Bridge, per-audience Tone Adjustment, Headline Patterns, and Anti-Patterns from the old `content-strategy/references/copywriting.md` (take from git history before the Fase B-03 stub) to `copywriting/SKILL.md` or `copywriting/references/` - the old content is richer than the current `copywriting` skill, do not lose it
-- Skill domain-gap candidates (carried over from the deleted docs/AUDIT.md, audit of 2026-09-08): observability and monitoring (currently a subsection inside devops-deployment), performance optimization (spread across debugging and database), frontend state management (no coverage), accessibility (partially covered in ui-design, dedicated skill only for deep WCAG auditing). Create a skill only when routing demand justifies it (watch for trigger collisions); the original "revisit after eval runs against real outputs" basis is gone since the eval harness was removed 2026-09-30, so validate demand from real usage instead
+- [x] Fase B round 2: skill pairs without an explicit delegation sentence (`testing` vs `test-planning` and similar) - scan complete, declared clean.
+- [x] Copywriting content migration: FAB, Before-After-Bridge, per-audience Tone Adjustment, Headline Patterns, and Anti-Patterns moved from old `content-strategy/references/copywriting.md` to `copywriting/`.
+- [x] Skill domain-gap candidates: closed - covered by existing skills/references, no new skill created (see `.kilo/plans/domain-gap-covered-plan.md`):
+  - Accessibility: covered by `skills/ui-design/references/accessibility.md` (WCAG 2.1 checklist + verification).
+  - Observability & monitoring: covered by `skills/devops-deployment/SKILL.md` Monitoring Checklist.
+  - Performance optimization: covered by `debugging`, `database`, and `frontend-patterns`.
+  - Frontend state management: covered by `skills/frontend-patterns/SKILL.md` State Ownership section.
 
 ---
 

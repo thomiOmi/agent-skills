@@ -2,7 +2,6 @@
 name: deep-thinker
 description: Complex reasoning specialist - root cause analysis, trade-off analysis, verification, and deep research.
 mode: subagent
-color: primary
 request:
   body:
     temperature: 0.1

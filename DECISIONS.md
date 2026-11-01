@@ -10,7 +10,7 @@ Key architectural decisions. Review before making changes that touch these areas
 
 ### Orchestrator as subagent, built-in plan/build as primary
 
-OpenCode built-in `plan` and `build` agents serve as the primary user interface. The `orchestrator` subagent handles task decomposition, delegation, and verification. Orchestrator has `task` permission (except self-delegation) to coordinate specialized subagents.
+OpenCode built-in `plan` and `build` agents serve as the primary user interface. The `orchestrator` subagent handles task decomposition, delegation, and verification. Orchestrator has `subagent` permission (except self-delegation) to coordinate specialized subagents.
 
 ### Agent selection: hardcoded routing in orchestrator prompt
 
@@ -20,9 +20,9 @@ Task to agent mapping is hardcoded in the orchestrator prompt, not a custom tool
 
 Verification has two layers: (1) domain-specific checklist in each SKILL.md executed by the subagent, (2) a project quality gate where the agent runs the project's own lint, typecheck, and test commands. qa-engineer has access to run tests, typecheck, lint.
 
-### Resumable Subagent Task Recovery (`task_id`)
+### Resumable Subagent Recovery (`sessionID`)
 
-OpenCode surfaces failed subagent tool calls with a resumable `task_id`. If a subagent task fails or needs iteration, pass the `task_id` back to the `task` tool with additional guidance to resume the child session rather than restarting from scratch.
+OpenCode surfaces failed subagent tool calls with a resumable `sessionID`. If a subagent task fails or needs iteration, pass the `sessionID` back to the `subagent` tool with additional guidance to resume the child session rather than restarting from scratch.
 
 ### Global rules format: concise + grouped by task type
 
