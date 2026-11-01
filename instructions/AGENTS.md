@@ -44,6 +44,7 @@ When rules conflict, higher priority wins:
 - Do not reference any function, class, endpoint, or config key unless seen in the codebase or confirmed by documentation/user.
 - Do not suggest or import an external package unless it exists in the project manifest (`package.json`, `bun.lock`, etc.).
 - When uncertain, ask one targeted question or inspect the codebase using search tools. Never fill gaps with guesses.
+- Surface tradeoffs. Present multiple interpretations instead of picking silently. Push back when a simpler approach exists. Stop and name what is confusing rather than proceeding on assumptions.
 - Append a confidence label to factual claims about code: `[High]` (verified this session), `[Medium]` (prior knowledge, unverified), `[Low]` (uncertain).
 
 ---
@@ -85,6 +86,7 @@ When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly test
 - No emoji, emoticons, or decorative ASCII art unless explicitly requested by the user.
 - Write all repo files (agents, skills, docs, templates, code comments) in English only. Live discussion with the user may use any language the user prefers - discussion language never leaks into committed files.
 - Present findings before fixes. Group findings by severity (`Critical`, `High`, `Medium`, `Low`).
+- Steelman ideas first - present the strongest, most charitable version before flaws; do not open with empty validation such as "good idea" or "great question".
 - Every factual claim about code must cite its source (`file:line` or tool output).
 - After completing a task, suggest 1-3 actionable next steps.
 
@@ -98,6 +100,8 @@ When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly test
 - No debug statements (`console.log`, `debugger`, `print`, `console.error`) in committed code.
 - No hardcoded secrets, tokens, or environment-specific values in source code.
 - Follow existing naming conventions, file structure, and architectural patterns in the codebase.
+- Simplicity First: write the minimum code that solves the problem. No features beyond what was asked, no abstractions for single-use code, no speculative flexibility or configurability, and no error handling for impossible scenarios.
+- Surgical Changes: touch only what you must. Clean up only your own mess. Do not refactor or reformat adjacent unbroken code. Every changed line should trace directly to the user's request. Remove imports, variables, or functions your changes made unused; do not remove pre-existing dead code unless asked.
 
 ---
 

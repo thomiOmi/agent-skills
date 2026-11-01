@@ -17,7 +17,7 @@ cross-reference it, not repeat the details.
 | `AGENTS.md` (this file) | Canonical agent roster, commands, boundaries, formatting rules | Which agents exist, what commands to run, what an agent must never do |
 | `PRD.md` | Product goals, personas, requirements, scope | Why this project exists and what is in or out of scope |
 | `ARCHITECTURE.md` | System design, diagrams, plugin hooks | How the pieces fit together technically |
-| `TASKS.md` | Live state: what is done, in progress, planned, and backlogged | What is already shipped and what is next |
+| `TASKS.md` | Live state: what is done, in progress, planned, and next | What is already shipped and what is next |
 | `DECISIONS.md` | Historical record of architectural choices | Why something was built this way instead of another way |
 | `SPEC.md` | Agent Skills format spec | How to author a new skill; how skill specification validation works |
 | `EVALUATION.md` | Historical static evaluation and audit snapshot | What an earlier audit assessed; not current project status |
@@ -36,33 +36,6 @@ The installed `instructions/AGENTS.md` configures cross-project global rules; th
 All global rules (Role & Identity, Anti-Hallucination, Communication, Code Quality, Security, Analysis & Review, Testing, Commits) apply automatically from `instructions/AGENTS.md` - they are not duplicated here.
 
 Architectural decisions, conventions, and known issues are in `DECISIONS.md` (loaded automatically via opencode.jsonc instructions).
-
----
-
-## Commands
-
-Run these from the project root. Never run `npm publish` locally.
-
-| Command | What it does |
-|---|---|
-| `bun run typecheck` | TypeScript type check (tsc --noEmit) |
-| `bun run lint --format json` | ESLint check all files (JSON output) |
-| `bun run lint:fix` | ESLint auto-fix |
-| `bun run test` | Run all tests (bun test tests/) |
-| `bun test tests/<path>` | Single test file |
-| `bun run changelog` | Regenerate CHANGELOG.md from conventional commits (changelogen, no version bump) |
-| `bun run release` | Prepare a release: bump version, update CHANGELOG.md, create a release commit and tag (changelogen) |
-| `bun run setup` | Merge install to ~/.config/opencode/ (default; backup, manifest, config merge) |
-| `bun run setup:symlink` | Install via symlinks for live editing |
-| `bun run setup:merge` | Explicit merge install (same behavior as setup) |
-| `bun run src/cli.ts install --mode replace` | Replace managed files; aborts on unmanaged paths unless `--force` |
-| `bun run cli` | Run the installer CLI directly from the cloned repository |
-
-**Never run locally:**
-- Package registry publication is deferred.
-- `bun run setup` without `--dry-run` first
-
-**Git hooks (simple-git-hooks):** pre-commit runs lint-staged, commit-msg runs commitlint, pre-push runs typecheck and tests. If hooks are missing after cloning, run `bunx simple-git-hooks`.
 
 ---
 
@@ -88,75 +61,26 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-md |
 | `docs-writer` | Technical writing, documentation | subagent | documentation, no-ai-slop, sdlc-documentation |
 | `brainstormer` | Creative ideation, solution exploration | subagent | prompt-design, planning, code-style |
-| `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style |
+| `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style, code-review |
 | `researcher` | Technical research, comparisons, evidence-based recommendations | subagent | research-methodology, planning |
 | `refactor-planner` | Safe refactoring, legacy code migration | subagent | refactor-planner, tech-debt, planning, architecture-decision, code-simplifier |
 | `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, no-ai-slop, seo-optimization |
 
 Invoke a specialist by asking the orchestrator to delegate to that subagent when you already know who should handle it.
 
-**Daily shortcuts (slash commands):**
-
-| Command | Purpose |
-|---|---|
-| `/ship` | Implement + verify end-to-end |
-| `/ship-pr` | Commit, push to origin, and create GitHub PR |
-| `/fix` | Diagnose and fix a bug |
-| `/plan` | Plan only (no code changes) |
-| `/review` | Code review |
-| `/refactor` | Plan and execute safe code refactoring |
-| `/audit` | Audit codebase for security vulnerabilities |
-| `/simplify` | Simplify code logic and flatten conditionals |
-| `/test` | Run / improve tests |
-| `/tasks` | Manage tasks in TASKS.md |
-| `/spec` | Draft feature specs / PRDs |
-| `/clean-branches` | Prune stale local git branches |
-| `/commit` | Conventional commit from current changes |
-| `/explain` | Explain code or system |
-| `/brainstorm` | Explore options before coding |
-| `/security` | Security audit |
-| `/docs` | Write or update docs |
+Slash commands live in `commands/` (17 files). Run project scripts via `bun run <script>`; see `package.json` scripts.
 
 ---
 
 ## Boundaries
 
-### Always do
-- Read `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md` at the start of every session
-- Load `code-style` skill before writing or reviewing code
-- Load `testing` skill before writing or reviewing tests
-- Load relevant skill before domain-specific work (database, api-conventions, etc.)
-- Run `bun run typecheck` and `bun run lint --format json` after any code change
-- Read files before editing them
-- Use `todowrite` or `TASKS.md` for multi-step tasks
-
-### Ask first
-- Adding new dependencies (npm, bun)
-- Schema changes or migrations
-- Modifying CI/CD pipeline
-- Changing installer modes, config merge behavior, or the install target layout
-- Deleting files or directories
-
 ### Never do
-- Edit files in `~/.config/opencode/` directly (the installer manages them)
-  Reason: Source of truth is in this repo; the ownership manifest tracks installed files.
-- Modify `node_modules/` or `dist/`
-- Add emoji, em dashes, or decorative text to any file
-- Skip verification (typecheck + lint + test) before marking a task done
-- Do not change the package version manually; use `bun run release` so the
-  version, CHANGELOG.md, release commit, and tag stay consistent.
+
+- Edit files in `~/.config/opencode/` directly (the installer manages them). Reason: the ownership manifest tracks installed files.
+- Modify `node_modules/` or `dist/`.
+- Do not change the package version manually; use `bun run release` so the version, CHANGELOG.md, release commit, and tag stay consistent.
 
 ---
-
-## Formatting Rules
-
-- No emoji, emoticons, or decorative Unicode characters
-  Exceptions: README.md may use emoji in section headings, and CHANGELOG.md is generated by changelogen and keeps emoji in section headings
-- No em dashes (--) or en dashes (-) - use regular hyphen (-) instead
-- No decorative formatting (ASCII art, banners, separator lines with special chars)
-- No right arrow (->) or other arrows - use words like "to" or "becomes"
-- No decorative checkmark or cross glyphs inline in prose (a checkmark or cross character used as a symbol, not as text) - use text like "Done" or "Failed". This does NOT apply to standard GFM task-list checkboxes (`- [ ]` and `- [x]`) used for checklists throughout this repo; those are intentional and stay.
-- English only in all repo files (agents, skills, docs, templates, code comments). The sole exception is live discussion with the user, which may use any language the user prefers - discussion language never leaks into committed files.
 
 ## Project Context
 
