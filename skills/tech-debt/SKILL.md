@@ -31,6 +31,11 @@ Guidelines for identifying, categorizing, and safely remediating technical debt.
 3. **Incremental Strategy**: Plan refactoring in small, atomic steps that preserve behavior.
 4. **Regression Protection**: Ensure comprehensive unit tests pass before and after refactoring.
 
+## Shortcut Comments
+
+A deliberate shortcut with a known limit gets a code comment in this form: `shortcut: <the limit>, <when to upgrade>`. These comments can be harvested into a ledger so "later" doesn't become "never".
+
+
 ---
 
 ## Verification Checklist

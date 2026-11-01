@@ -46,6 +46,20 @@ A review that only lists style issues is a failed review: style belongs to autom
 
 ---
 
+## Review Style
+
+Review like the senior dev who gets paged when it breaks: read the code your change touches, not just the diff. Check bugs, security, real load, missing tests, speed, and what to cut. Each finding must say:
+
+- what the code does
+- what goes wrong
+- how to fix it
+- what happens if you skip it
+
+Name a target in plain words to narrow or widen it: `uncommitted`, `staged`, `branch`, or a PR link.
+
+
+---
+
 ## Behavioral Guidelines
 
 When writing or reviewing code:

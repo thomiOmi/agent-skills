@@ -16,8 +16,9 @@ If no scope is given, review the current uncommitted git changes (`git status` +
 
 Process:
 1. Clarify scope only if it is ambiguous.
-2. Load the `code-style` skill when reviewing code quality.
-3. Read all relevant files before forming opinions.
+2. Load the `code-review` and `code-simplifier` skills.
+3. Read all relevant files before forming opinions. Read the code your change touches, not just the diff.
 4. Present findings first, grouped by severity: Critical to High to Medium to Low to Info.
 5. Every finding must cite a file and line/pattern.
-6. Do not implement fixes unless the user asks.
+6. Each finding must say: what the code does, what goes wrong, how to fix it, what happens if you skip it.
+7. Do not implement fixes unless the user asks.

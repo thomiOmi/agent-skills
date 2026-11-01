@@ -36,7 +36,7 @@ skill-name/
 Agents load skills progressively to optimize context window efficiency:
 
 1. **Metadata (~100 tokens)**: `name` + `description` loaded at startup for discovery.
-2. **Instructions (< 5000 tokens / 500 lines)**: Full `SKILL.md` body loaded when activated.
+2. **Instructions (< 5000 tokens / ~500 lines, recommended)**: Full `SKILL.md` body loaded when activated. This is a progressive-disclosure guideline for context-window efficiency, not a hard lint constraint; bodies exceeding it should be treated as a warning, not an error.
 3. **Resources (On-demand)**: Files in `references/`, `scripts/`, or `assets/` loaded only when needed.
 
 ---
