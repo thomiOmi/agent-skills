@@ -15,24 +15,39 @@ Guidelines for writing clear, audience-focused, high-converting copy.
 
 ## Core Formulas
 
-### AIDA (Attention, Interest, Desire, Action)
+### AIDA (Attention to Interest to Desire to Action)
 
-- **Attention**: Bold headline highlighting problem or benefit.
-- **Interest**: Context explaining the frustration.
-- **Desire**: Pain-relief solution and clear value.
-- **Action**: Direct, specific CTA ("Start your free trial").
+```text
+Headline: Grab attention with a bold promise or question
+Interest: Explain the problem context
+Desire: Show how your solution makes things better
+Action: Clear CTA with specific next step
+```
 
-### PAS (Problem, Agitate, Solve)
+**Example:**
+> **Stop guessing which emails convert.**
+> Most marketers A/B test blind - picking winners by gut feel. Our AI analyzes 12 variables per send and recommends the winning variant before you hit send.
+> **Start your free trial to**
 
-- **Problem**: State the specific frustration.
-- **Agitate**: Show what the problem costs in time or money.
-- **Solve**: Present your solution as relief.
+### PAS (Problem to Agitate to Solve)
 
-### FAB (Features, Advantages, Benefits)
+```text
+Problem: Name the specific frustration
+Agitate: Make it hurt - what does the problem cost them?
+Solve: Present your solution as the relief
+```
 
-- **Feature**: What it is.
-- **Advantage**: What it does better.
-- **Benefit**: What it means for the user.
+**Example:**
+> Your best engineers spend 3 hours a week fixing `npm install` failures. That's 150 hours a year per dev.
+> Lockfile automates dependency resolution so your team ships, not troubleshoots.
+
+### FAB (Features to Advantages to Benefits)
+
+```text
+Feature: What it is
+Advantage: What it does better
+Benefit: What it means for the user
+```
 
 **Example:**
 
@@ -42,9 +57,11 @@ Guidelines for writing clear, audience-focused, high-converting copy.
 
 ### Before-After-Bridge
 
-- **Before**: What life looks like now (painful).
-- **After**: What life looks like with your solution (better).
-- **Bridge**: How to get from Before to After.
+```text
+Before: What life looks like now (painful)
+After: What life looks like with your solution (better)
+Bridge: How to get from Before to After
+```
 
 ---
 
