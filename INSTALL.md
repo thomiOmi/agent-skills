@@ -4,9 +4,9 @@ Setup guide for humans. Not read by AI agents.
 
 ---
 
-## Current Install Path
+## Install
 
-The supported distribution path is a local clone of this public repository followed by the installer. The installer writes only to the OpenCode global config root (`~/.config/opencode/`). It does not write to `~/.agents/`.
+The supported distribution path is a local clone of this repository followed by the installer. The installer writes only to the OpenCode global config root (`~/.config/opencode/`). It does not write to `~/.agents/`. See [README.md Install](./README.md#install) for the full clone-and-run steps.
 
 ```bash
 git clone https://github.com/thomiOmi/agent-skills.git
@@ -57,16 +57,16 @@ Environment overrides:
 
 ## What the Installer Manages
 
-| Source (repo)            | Destination (`~/.config/opencode/`)             |
-| ------------------------ | ----------------------------------------------- |
-| `instructions/AGENTS.md` | `AGENTS.md`                                     |
-| `config/opencode.jsonc`  | `opencode.jsonc` or an existing `opencode.json` |
-| `config/tui.jsonc`       | `tui.jsonc` or an existing `tui.json`           |
-| `agents/*.md`            | `agents/*.md`                                   |
-| `skills/*/`              | `skills/*/`                                     |
-| `commands/*.md`          | `commands/*.md`                                 |
-| `plugin/`                | `plugins/`                                      |
-| ownership metadata       | `.agent-skills-manifest.json`                   |
+| Source (repo) | Destination (`~/.config/opencode/`) | Purpose |
+| --- | --- | --- |
+| `instructions/AGENTS.md` | `AGENTS.md` | Global agent rules - read by the agent every session. Root `AGENTS.md` remains contributor guidance for this repository. |
+| `config/opencode.jsonc` | `opencode.jsonc` or an existing `opencode.json` | Global config - default_agent, experimental.subagent_depth, instructions, permissions, formatter, lsp, watcher. |
+| `config/tui.jsonc` | `tui.jsonc` or an existing `tui.json` | TUI config - theme, attention notifications. |
+| `agents/*.md` | `agents/*.md` | 20 subagent definitions - orchestrator, senior-developer, qa-engineer, security-auditor, and domain specialists. |
+| `skills/*/` | `skills/*/` | 35 skill directories - SKILL.md + references/. Auto-loaded per task. |
+| `commands/*.md` | `commands/*.md` | 17 slash-command shortcuts - /ship, /fix, /plan, /review, /test, etc. |
+| `plugin/` | `plugins/` | 3 V2 plugins - compaction, secrets-scanner, tool-guardian. |
+| ownership metadata | `.agent-skills-manifest.json` | Install manifest - SHA-256 hashes, modes, and timestamps that drive safe updates and stale-file cleanup. |
 
 `~/.agents/skills/` is not managed. Copies left by older installer versions are untouched. Remove them manually if you no longer need the compatibility path.
 
@@ -263,25 +263,6 @@ Add local or remote MCP servers under `mcp`. Their tools register under the norm
 ```
 
 MCP servers add to context - enable only what you need. See [MCP docs](https://opencode.ai/docs/mcp-servers/) for all options.
-
-## Deployment Map
-
-Every file and directory in this repo has a specific purpose when installed to `~/.config/opencode/`:
-
-| Source (repo) | Destination (`~/.config/opencode/`) | Purpose |
-| --- | --- | --- |
-| `instructions/AGENTS.md` | `AGENTS.md` | **Global agent rules** - read by the agent every session. Root `AGENTS.md` remains contributor guidance for this repository. |
-| `config/opencode.jsonc` | `opencode.jsonc` or existing `opencode.json` | **Global config** - default_agent, experimental.subagent_depth, instructions, permissions, formatters, lsp, watcher. |
-| `config/tui.jsonc` | `tui.jsonc` or existing `tui.json` | **TUI config** - theme, attention notifications. |
-| `agents/*.md` | `agents/*.md` | **20 subagent definitions** - orchestrator, senior-developer, qa-engineer, security-auditor, and domain specialists. |
-| `skills/*/` | `skills/*/` | **34 skill directories** - SKILL.md + references/. Auto-loaded per task. |
-| `commands/*.md` | `commands/*.md` | **17 slash-command shortcuts** - `/ship`, `/fix`, `/plan`, `/review`, `/test`, etc. |
-| `plugin/compaction.ts` | `plugins/compaction.ts` | **Compaction plugin** - registers a V2 session compaction hook that preserves TASKS.md state across context compaction. |
-| `plugin/secrets-scanner.ts` | `plugins/secrets-scanner.ts` | **Secrets scanner plugin** - registers a V2 tool hook that blocks write/edit calls containing hardcoded secrets. |
-| `plugin/tool-guardian.ts` | `plugins/tool-guardian.ts` | **Tool guardian plugin** - registers a V2 shell hook that blocks destructive shell commands before execution. |
-| ownership metadata | `.agent-skills-manifest.json` | **Install manifest** - SHA-256 hashes, modes, and timestamps that drive safe updates and stale-file cleanup. |
-
-The installer does not write `~/.agents/skills/`. Older installs may still have copies there; they are untouched and can be removed manually.
 
 ---
 

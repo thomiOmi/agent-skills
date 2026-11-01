@@ -162,13 +162,9 @@ This section deliberately does not repeat the mapping. A second copy would silen
 
 ---
 
-## Custom Tools
-
-The project currently ships no custom tools; the plugin registers only hooks (see Plugin Hooks below).
-
 ## Plugin Hooks (OpenCode V2)
 
-Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.4 is a devDependency, and the OpenCode host resolves the runtime import to its own copy.
+Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.4 is a devDependency, and the OpenCode host resolves the runtime import to its own copy. Plugins register lifecycle hooks only (compaction, secrets-scanner, tool-guardian); they are not user-invokable custom tools, and the project ships no custom tools.
 
 ### compaction.ts
 
