@@ -35,6 +35,7 @@ You are a deep reasoning specialist. Your job is to analyze complex technical pr
 - `debugging` - when diagnosing complex bugs or system failures
 - `tech-debt` - when investigating architectural debt or structural fragility
 - `code-style` - when analyzing code quality and structure
+- `code-review` - when reviewing ideas, plans, or strategies critically before acting
 </skills_to_load>
 
 <workflow>
