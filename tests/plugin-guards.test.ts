@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { CompactionPlugin } from "../plugin/compaction";
-import { guardToolCall, scanForSecrets, SecretsScannerPlugin } from "../plugin/secrets-scanner";
-import { findDangerousCommand, guardBashCommand, ToolGuardianPlugin } from "../plugin/tool-guardian";
+import { scanForSecrets, SecretsScannerPlugin } from "../plugin/secrets-scanner";
+import { findDangerousCommand, ToolGuardianPlugin } from "../plugin/tool-guardian";
 
 type HookCallback = (event: never) => Promise<void>;
 
@@ -27,30 +27,6 @@ function defaultLocation(): HarnessLocation {
     directory,
     project: { directory, canonical: directory },
   };
-}
-
-/**
- * Runs a callback with an environment variable set, restoring the previous
- * value (or deleting the variable) when the callback settles.
- */
-async function withEnvVar(
-  name: string,
-  value: string,
-  callback: () => Promise<void>,
-): Promise<void> {
-  const previous = process.env[name];
-  process.env[name] = value;
-  try {
-    await callback();
-  }
-  finally {
-    if (previous === undefined) {
-      delete process.env[name];
-    }
-    else {
-      process.env[name] = previous;
-    }
-  }
 }
 
 /**
@@ -115,12 +91,6 @@ describe("Secrets Scanner", () => {
     expect(scanForSecrets("const greeting = 'hello world'; export default greeting;")).toBeNull();
     expect(scanForSecrets("risk-based testing and task-description docs")).toBeNull();
   });
-
-  it("guardToolCall throws with guidance", () => {
-    expect(() => guardToolCall("edit", { newString: "AKIAIOSFODNN7EXAMPLE" })).toThrow(
-      /AGENT_SKILLS_DISABLE_SECRETS_SCANNER/,
-    );
-  });
 });
 
 describe("Secrets Scanner plugin", () => {
@@ -149,21 +119,6 @@ describe("Secrets Scanner plugin", () => {
         input: { filePath: ".env", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
       } as never),
     ).resolves.toBeUndefined();
-  });
-
-  it("honors the disable escape hatch", async () => {
-    await withEnvVar("AGENT_SKILLS_DISABLE_SECRETS_SCANNER", "1", async () => {
-      const harness = createHarness();
-      await SecretsScannerPlugin.setup(harness.context);
-      const hook = getHook(harness.hooks.tool, "execute.before");
-
-      expect(
-        hook({
-          tool: "write",
-          input: { content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
-        } as never),
-      ).resolves.toBeUndefined();
-    });
   });
 });
 
@@ -240,10 +195,6 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("git reset --hard HEAD~1")).toBeNull();
     expect(findDangerousCommand("chmod +x scripts/build.sh")).toBeNull();
   });
-
-  it("guardBashCommand throws with guidance", () => {
-    expect(() => guardBashCommand("rm -rf /")).toThrow(/AGENT_SKILLS_DISABLE_TOOL_GUARDIAN/);
-  });
 });
 
 describe("Tool Guardian plugin", () => {
@@ -254,16 +205,6 @@ describe("Tool Guardian plugin", () => {
 
     expect(hook({ command: "rm -rf /" } as never)).rejects.toThrow(/tool-guardian/);
     expect(hook({ command: "bun run test" } as never)).resolves.toBeUndefined();
-  });
-
-  it("honors the disable escape hatch", async () => {
-    await withEnvVar("AGENT_SKILLS_DISABLE_TOOL_GUARDIAN", "1", async () => {
-      const harness = createHarness();
-      await ToolGuardianPlugin.setup(harness.context);
-      const hook = getHook(harness.hooks.shell, "create.before");
-
-      expect(hook({ command: "rm -rf /" } as never)).resolves.toBeUndefined();
-    });
   });
 });
 

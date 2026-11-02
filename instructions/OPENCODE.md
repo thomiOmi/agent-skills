@@ -68,6 +68,59 @@ OpenCode provides built-in tools that allow LLMs to interact with the project en
 
 ---
 
+## OpenCode V2 Plugin Lifecycle
+
+OpenCode V2 uses a plugin system based on default-exported plugin definitions. Each plugin exports a stable `id` and a `setup(ctx)` function that registers hooks, transforms, tools, and subscriptions.
+
+### Plugin format
+
+```ts
+import { Plugin } from "@opencode/plugin";
+
+export const MyPlugin = Plugin.define({
+  id: "my-plugin.id",
+  async setup(ctx) {
+    await ctx.tool.hook("execute.before", async (event) => { ... });
+    await ctx.shell.hook("create.before", async (event) => { ... });
+    await ctx.session.hook("compaction", async (event) => { ... });
+  },
+});
+
+export default MyPlugin;
+```
+
+### Disabling plugins
+
+Plugins are enabled/disabled through the `plugins` array in `opencode.jsonc`. Prefix a plugin ID with `-` to disable it:
+
+```jsonc
+{
+  "plugins": ["*", "-opencode.provider.*", "opencode.provider.openai", "-my-plugin.id"]
+}
+```
+
+A later ID re-enables an earlier wildcard-disabled plugin. Two built-in plugins cannot be removed: `opencode.config.policy` and `opencode.provider.opencode`.
+
+### Local plugins
+
+V2 discovers local plugins from `.opencode/plugin/` and `.opencode/plugins/`. Use `.opencode/plugins/` for V2 plugin files. Local paths must name directories.
+
+Object form for plugins with options:
+
+```jsonc
+{
+  "plugins": [
+    { "package": "./plugins/local", "options": { "enabled": true } }
+  ]
+}
+```
+
+### No environment variable escape hatches
+
+OpenCode V2 does not consume `OPENCODE_DISABLE_*` environment variables to control plugins. Use the `plugins` config array with the `-` prefix instead.
+
+---
+
 ## Guidelines for Models & Providers
 
 - **Always verify before modification**: Always call `read`, `grep`, or `glob` to verify codebase state before attempting modifications.

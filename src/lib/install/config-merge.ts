@@ -91,7 +91,7 @@ export function mergeConfigDefaults<T>(defaults: T, user: unknown): T {
     const merged = structuredClone(defaults) as Record<string, unknown>;
     for (const [key, userValue] of Object.entries(user)) {
       const defaultValue = (defaults as Record<string, unknown>)[key];
-      merged[key] = key in (defaults as Record<string, unknown>)
+      merged[key] = Object.hasOwn(defaults, key)
         ? mergeConfigDefaults(defaultValue, userValue)
         : structuredClone(userValue);
     }

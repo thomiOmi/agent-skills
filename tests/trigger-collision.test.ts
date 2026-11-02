@@ -31,8 +31,11 @@ async function loadSkills(): Promise<SkillInfo[]> {
       continue;
     }
     const content = await readFile(skillFilePath, "utf-8");
-    const frontmatterRaw = content.split("---")[1] ?? "";
-    const frontmatter = Bun.YAML.parse(frontmatterRaw) as { name?: string; description?: string };
+    const frontmatterMatch = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(content);
+    if (!frontmatterMatch) {
+      continue;
+    }
+    const frontmatter = Bun.YAML.parse(frontmatterMatch[1] ?? "") as { name?: string; description?: string };
     if (typeof frontmatter.name === "string" && typeof frontmatter.description === "string") {
       skills.push({ name: frontmatter.name, description: frontmatter.description });
     }

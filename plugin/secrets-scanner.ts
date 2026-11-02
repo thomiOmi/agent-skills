@@ -1,4 +1,3 @@
-import process from "node:process";
 import { Plugin } from "@opencode/plugin";
 
 /**
@@ -13,7 +12,8 @@ import { Plugin } from "@opencode/plugin";
  * Scope: only file-writing tools (write, edit). Reading .env files and
  * running bash commands are out of scope for this guard.
  *
- * Escape hatch: set AGENT_SKILLS_DISABLE_SECRETS_SCANNER=1 to disable.
+ * Disable this plugin via OpenCode config: add `-agent-skills.secrets-scanner`
+ * to the `plugins` array in opencode.jsonc.
  */
 
 interface SecretPattern {
@@ -77,7 +77,7 @@ export function scanForSecrets(text: string): string | null {
   return null;
 }
 
-function collectStrings(value: unknown, depth: number, out: string[]): void {
+function collectStrings(value: unknown, depth: number, visited: WeakSet<object>, out: string[]): void {
   if (depth > MAX_DEPTH || out.length > 512) {
     return;
   }
@@ -87,13 +87,17 @@ function collectStrings(value: unknown, depth: number, out: string[]): void {
   }
   if (Array.isArray(value)) {
     for (const item of value) {
-      collectStrings(item, depth + 1, out);
+      collectStrings(item, depth + 1, visited, out);
     }
     return;
   }
   if (value !== null && typeof value === "object") {
+    if (visited.has(value)) {
+      return;
+    }
+    visited.add(value);
     for (const item of Object.values(value)) {
-      collectStrings(item, depth + 1, out);
+      collectStrings(item, depth + 1, visited, out);
     }
   }
 }
@@ -104,14 +108,14 @@ function collectStrings(value: unknown, depth: number, out: string[]): void {
  */
 export function guardToolCall(_tool: string, args: unknown): void {
   const strings: string[] = [];
-  collectStrings(args, 0, strings);
+  collectStrings(args, 0, new WeakSet(), strings);
   for (const text of strings) {
     const finding = scanForSecrets(text);
     if (finding !== null) {
       throw new Error(
         `Blocked by secrets-scanner: ${finding}. `
         + "Remove the secret from the content and use environment variables or a secrets manager instead. "
-        + "If this is a false positive, set AGENT_SKILLS_DISABLE_SECRETS_SCANNER=1 to bypass.",
+        + "To disable this plugin, add `-agent-skills.secrets-scanner` to the plugins array in opencode.jsonc.",
       );
     }
   }
@@ -125,9 +129,6 @@ export const SecretsScannerPlugin = Plugin.define({
   id: "agent-skills.secrets-scanner",
   async setup(context) {
     await context.tool.hook("execute.before", async (event) => {
-      if (process.env.AGENT_SKILLS_DISABLE_SECRETS_SCANNER === "1") {
-        return;
-      }
       if (event.tool !== "write" && event.tool !== "edit") {
         return;
       }
