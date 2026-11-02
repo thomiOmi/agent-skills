@@ -303,7 +303,7 @@ async function readFirstExisting(
 function parseConfigText(path: string, raw: string): Record<string, unknown> {
   let value: unknown;
   try {
-    value = parseJSONC(raw);
+    value = parseJSONC(raw, { allowTrailingComma: true });
   }
   catch (error) {
     throw new ConfigParseError(path, error);
