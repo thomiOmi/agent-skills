@@ -104,11 +104,13 @@ async function installFile(
     return createSymlinkOrCopy(file.sourcePath, file.destinationPath);
   }
 
+  const sourceInfo = await stat(file.sourcePath);
+  const copyOptions = sourceInfo.isDirectory() ? { recursive: true } : {};
   const destinationDir = dirname(file.destinationPath);
   const temporaryPath = join(destinationDir, `.agent-skills-tmp-${file.relativePath.replace(/\//g, "_")}`);
 
   try {
-    await cp(file.sourcePath, temporaryPath, { recursive: true });
+    await cp(file.sourcePath, temporaryPath, copyOptions);
     await preserveMode(file.sourcePath, temporaryPath);
     await rename(temporaryPath, file.destinationPath);
   }

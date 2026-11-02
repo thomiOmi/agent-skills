@@ -40,12 +40,10 @@ describe("Validate Skills (Agent Skills Specification)", () => {
       expect(exists).toBe(true);
 
       const content = await readFile(skillFilePath, "utf-8");
-      expect(content.startsWith("---")).toBe(true);
+      const frontmatterMatch = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(content);
+      expect(frontmatterMatch).not.toBeNull();
 
-      const parts = content.split("---");
-      expect(parts.length).toBeGreaterThanOrEqual(3);
-
-      const frontmatterRaw = parts[1] ?? "";
+      const frontmatterRaw = frontmatterMatch?.[1] ?? "";
       const frontmatter = Bun.YAML.parse(frontmatterRaw) as SkillFrontmatter;
 
       expect(frontmatter).toBeDefined();
@@ -81,7 +79,8 @@ describe("Validate Skills (Agent Skills Specification)", () => {
       }
 
       // 7. Validate progressive disclosure (body line count <= 500 lines)
-      const bodyLines = parts.slice(2).join("---").split("\n");
+      const body = content.slice(frontmatterMatch![0].length);
+      const bodyLines = body.split("\n");
       expect(bodyLines.length).toBeLessThanOrEqual(500);
 
       // 8. Validate internal references point to files that actually exist

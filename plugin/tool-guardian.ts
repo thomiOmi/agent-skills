@@ -1,5 +1,5 @@
-import process from "node:process";
 import { Plugin } from "@opencode/plugin";
+import { isPluginDisabled } from "../src/lib/plugin-guard";
 
 /**
  * Tool Guardian - blocks irreversible destructive bash commands.
@@ -179,7 +179,7 @@ export const ToolGuardianPlugin = Plugin.define({
   id: "agent-skills.tool-guardian",
   async setup(context) {
     await context.shell.hook("create.before", async (event) => {
-      if (process.env.AGENT_SKILLS_DISABLE_TOOL_GUARDIAN === "1") {
+      if (isPluginDisabled("AGENT_SKILLS_DISABLE_TOOL_GUARDIAN")) {
         return;
       }
       if (!event.command) {
