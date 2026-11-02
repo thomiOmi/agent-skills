@@ -1,5 +1,4 @@
 import { Plugin } from "@opencode/plugin";
-import { isPluginDisabled } from "../src/lib/plugin-guard";
 
 /**
  * Tool Guardian - blocks irreversible destructive bash commands.
@@ -22,7 +21,8 @@ import { isPluginDisabled } from "../src/lib/plugin-guard";
  * Permission prompts for shell commands remain governed by opencode.json config; this
  * guard is an additional safety layer, not a permission system.
  *
- * Escape hatch: set AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1 to disable.
+ * Disable this plugin via OpenCode config: add `-agent-skills.tool-guardian`
+ * to the `plugins` array in opencode.jsonc.
  */
 
 const DELETE_COMMAND = /\b(?:rm|remove-item|del|rmdir)\b/i;
@@ -166,7 +166,7 @@ export function guardBashCommand(command: string): void {
     throw new Error(
       `Blocked by tool-guardian: ${finding}. `
       + "Confirm the command manually with the user before running it. "
-      + "If this is a false positive, set AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1 to bypass.",
+      + "To disable this plugin, add `-agent-skills.tool-guardian` to the plugins array in opencode.jsonc.",
     );
   }
 }
@@ -179,9 +179,6 @@ export const ToolGuardianPlugin = Plugin.define({
   id: "agent-skills.tool-guardian",
   async setup(context) {
     await context.shell.hook("create.before", async (event) => {
-      if (isPluginDisabled("AGENT_SKILLS_DISABLE_TOOL_GUARDIAN")) {
-        return;
-      }
       if (!event.command) {
         return;
       }
