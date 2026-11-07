@@ -93,6 +93,21 @@ Slash commands live in `commands/` (17 files). Run project scripts via `bun run 
 
 ---
 
+## Custom Tools
+
+Four custom workflow tools are registered under the `agent_skills` namespace via the OpenCode V2 plugin (`plugin/custom-tool.ts`):
+
+| Tool | Effective ID | Purpose |
+|------|-------------|---------|
+| `plan` | `agent_skills_plan` | Create or update the project task plan (TASKS.md) with a canonical structure |
+| `todo` | `agent_skills_todo` | Add, complete, or list todo items in the task plan |
+| `task` | `agent_skills_task` | Delegate a task to a subagent or update its status |
+| `memory` | `agent_skills_memory` | Save, recall, or forget memory key-value entries |
+
+Each tool defaults to permission `ask`; set `allow` in `opencode.jsonc` to enable. Storage is configurable: `"project"` (default, `<project>/.opencode/`) or `"global"` (`~/.config/opencode/`).
+
+---
+
 ## Project Context
 
 **Project:** agent-skills

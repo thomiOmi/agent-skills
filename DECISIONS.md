@@ -108,6 +108,17 @@ Dependency maintenance follows from the same policy: Dependabot groups Bun updat
 
 Applied on 2026-10-26: frontmatter parsing in the test suite now calls `Bun.YAML.parse`, so the tests no longer import the `yaml` package. `scripts/opencode-frontmatter.js` keeps `yaml` on purpose: ESLint runs plugins under Node, and a runtime check confirmed `bun run lint` executes ESLint with `typeof Bun` undefined, so a Bun-only parser would turn every frontmatter into a parse failure. Editor ESLint integrations have the same constraint. A dependency that cannot move to a Bun API because its host runtime is not Bun stays, and the reason is recorded here.
 
+### Custom Tools via OpenCode V2 Plugin
+
+Custom workflow tools (`agent_skills_plan`, `agent_skills_todo`, `agent_skills_task`, `agent_skills_memory`) are registered via an OpenCode V2 plugin server part using `ctx.tool.transform()`. This replaces the previous "no custom tools" stance (PRD FR-4) because consistent `TASKS.md` structure requires tool-enforced output rather than relying on AI to write markdown by convention.
+
+- Tools live under the `agent_skills` namespace; effective IDs are `agent_skills_plan`, `agent_skills_todo`, `agent_skills_task`, `agent_skills_memory`.
+- Each tool defaults to permission `ask`; users opt in by setting `allow` in `opencode.jsonc`.
+- Storage location is configurable: `"project"` (default, `<project>/.opencode/`) or `"global"` (`~/.config/opencode/`).
+- Existing artifacts (`skills/task-decomposition`, `skills/memory-management`, `skills/project-lifecycle`, `commands/tasks.md`) are retained as thin wrappers that delegate to the custom tools; they are not removed until the custom tools are verified and the artifacts are confirmed redundant.
+
+Applied on 2026-11-02: custom tool plugin implemented in `plugin/custom-tool.ts` with handlers in `tools/handlers/` and path resolution in `tools/storage.ts`.
+
 ---
 
 ## Conventions
