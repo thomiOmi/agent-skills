@@ -164,7 +164,7 @@ This section deliberately does not repeat the mapping. A second copy would silen
 
 ## Plugin Hooks (OpenCode V2)
 
-Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.4 is a devDependency, and the OpenCode host resolves the runtime import to its own copy. Plugins register lifecycle hooks only (compaction, secrets-scanner, tool-guardian); they are not user-invokable custom tools, and the project ships no custom tools.
+Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.4 is a devDependency, and the OpenCode host resolves the runtime import to its own copy. Plugins register lifecycle hooks only (compaction, secrets-scanner, tool-guardian) plus custom tools (custom-tool); custom tools are user-invokable via the `agent_skills` namespace.
 
 ### compaction.ts
 
@@ -177,3 +177,7 @@ Registers `ctx.tool.hook("execute.before")` and blocks write/edit tool calls who
 ### tool-guardian.ts
 
 Registers `ctx.shell.hook("create.before")` and blocks irreversible destructive shell commands: recursive force deletes targeting filesystem roots, home, or wildcards - including glob forms (`rm -rf /*`, `~/*`, `$HOME/*`, `C:\*`), quoted home vars (`"$HOME"`, `"$env:USERPROFILE"`), and traversal forms that resolve to a root (`/.`, `/..`, `/tmp/..`) - in both short flags like `-rf` and GNU long forms like `--recursive --force`; Windows-native `del` / `rmdir` with `/s` plus `/q` or `/f` against those same targets; git force push (except `--force-with-lease` and safe variants like `--force-if-includes`); mkfs/fdisk/dd to devices/format; DROP TABLE/DATABASE/SCHEMA; chmod -R 777 on / or ~. Specific-path deletes and recoverable operations are allowed. Escape hatch: `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.
+
+### custom-tool.ts
+
+Registers four custom workflow tools under the `agent_skills` namespace via `ctx.tool.transform()`: `agent_skills_plan`, `agent_skills_todo`, `agent_skills_task`, `agent_skills_memory`. These tools enforce a canonical `TASKS.md` structure so AI output stays consistent across sessions. Storage is configurable via plugin options: `"project"` (default, `<project>/.opencode/`) or `"global"` (`~/.config/opencode/`).

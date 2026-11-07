@@ -126,9 +126,15 @@ The system provides 35 skills covering code quality, testing, security, design, 
 
 ### FR-4: Custom Tools
 
-The system ships no custom tools. Verification and agent routing rely on the agents' own commands and prompts, which stay language-agnostic.
+The system ships four custom workflow tools under the `agent_skills` namespace: `plan`, `todo`, `task`, and `memory`. These tools enforce a canonical `TASKS.md` structure so AI output stays consistent across sessions. Verification and agent routing still rely on the agents' own commands and prompts, which stay language-agnostic.
+
+Custom tools are registered via an OpenCode V2 plugin (`plugin/custom-tool.ts`) using `ctx.tool.transform()`. Each tool is opt-in with permission `ask` by default; users set `allow` in `opencode.jsonc` to enable them.
 
 Tool history: none.
+
+Custom tool storage is configurable per plugin options:
+- `"project"` (default): files written to `<project>/.opencode/{plans,todos,tasks,memory}`
+- `"global"`: files written to `~/.config/opencode/{plans,todos,tasks,memory}`
 
 ### FR-5: Verification
 
