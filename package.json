@@ -30,7 +30,8 @@
     "instructions",
     "plugin",
     "skills",
-    "src"
+    "src",
+    "tools"
   ],
   "engines": {
     "bun": ">=1.4.4",
@@ -55,7 +56,8 @@
   "dependencies": {
     "citty": "^0.2.2",
     "confbox": "^0.3.1",
-    "consola": "^3.4.2"
+    "consola": "^3.4.2",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",

@@ -14,6 +14,23 @@
     "AGENTS.md"
   ],
 
+  "plugins": [
+    {
+      "package": "./plugin/custom-tool.ts",
+      "options": {
+        "storage": "project"
+      }
+    }
+  ],
+
+  "permissions": [
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "tool", "resource": "agent_skills_plan", "effect": "ask" },
+    { "action": "tool", "resource": "agent_skills_todo", "effect": "ask" },
+    { "action": "tool", "resource": "agent_skills_task", "effect": "ask" },
+    { "action": "tool", "resource": "agent_skills_memory", "effect": "ask" }
+  ],
+
   "formatter": true,
 
   "lsp": true,

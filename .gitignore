@@ -5,4 +5,5 @@ build
 *.log
 .DS_Store
 .agentskills.local
-.kilo/plans
+.kilo/
+.opencode/
