@@ -157,6 +157,106 @@ describe("collectScenario", () => {
     await rm(outDir, { recursive: true, force: true });
   });
 
+  test("treats a child with zero tool calls as valid, not a measurement failure", async () => {
+    const rootID = "ses_synthetic_child_zero_parent";
+    const childID = "ses_synthetic_zero_child";
+    const root = {
+      info: { id: rootID, agent: "build" },
+      messages: [{
+        type: "assistant",
+        content: [{
+          type: "tool",
+          name: "subagent",
+          state: {
+            status: "completed",
+            input: { agent: "synthetic-agent" },
+            metadata: { sessionId: childID },
+          },
+        }],
+      }],
+    };
+    const child = { info: { id: childID, parentID: rootID }, messages: [{ type: "assistant", content: [] }] };
+    const outDir = await tempDir();
+    const runner: OpenCodeRunner = {
+      listSessions: async () => [{ id: rootID, directory: PLAYGROUND, updated: Date.now() }],
+      exportSession: async (sessionID: string) => sessionID === rootID ? root : child,
+    };
+    const summary = await collectScenario({ scenario: 5, run: 1, playgroundDir: PLAYGROUND, runner, outDir });
+    expect(summary.failures).toEqual([]);
+    expect(summary.zeroToolSessions).toEqual([{ sessionID: childID, source: "child" }]);
+    expect(summary.childCoverage).toBe("complete");
+    expect(markdownRow(summary)).toContain("zeroToolCalls=1");
+    await rm(outDir, { recursive: true, force: true });
+  });
+
+  test("keeps a zero-tool main session in aggregates and records it as valid", async () => {
+    const rootID = "ses_synthetic_zero_root";
+    const root = { info: { id: rootID, agent: "build" }, messages: [{ type: "assistant", content: [] }] };
+    const outDir = await tempDir();
+    const runner: OpenCodeRunner = {
+      listSessions: async () => [{ id: rootID, directory: PLAYGROUND, updated: Date.now() }],
+      exportSession: async () => root,
+    };
+    const summary = await collectScenario({ scenario: 6, run: 2, playgroundDir: PLAYGROUND, runner, outDir });
+    expect(summary.failures).toEqual([]);
+    expect(summary.zeroToolSessions).toEqual([{ sessionID: rootID, source: "main" }]);
+    expect(markdownRow(summary)).toContain("zeroToolCalls=1");
+    await rm(outDir, { recursive: true, force: true });
+  });
+
+  test("still records an unexpected format as a measurement failure", async () => {
+    const rootID = "ses_synthetic_bad_format";
+    const outDir = await tempDir();
+    const runner: OpenCodeRunner = {
+      listSessions: async () => [{ id: rootID, directory: PLAYGROUND, updated: Date.now() }],
+      exportSession: async () => ({ info: { id: rootID }, messages: [] }),
+    };
+    const summary = await collectScenario({ scenario: 7, run: 1, playgroundDir: PLAYGROUND, runner, outDir });
+    expect(summary.failures[0]?.problem).toContain("unexpected format");
+    expect(summary.zeroToolSessions).toEqual([]);
+    await rm(outDir, { recursive: true, force: true });
+  });
+
+  test("--session selects a root without freshness checks and rejects a child", async () => {
+    const rootID = "ses_synthetic_session_root";
+    const root = await syntheticExport();
+    const outDir = await tempDir();
+    const sessions: SessionInfo[] = [{
+      id: rootID,
+      directory: "other/directory",
+      updated: Date.now() - 120 * 60 * 1000,
+    }];
+    const runner: OpenCodeRunner = {
+      listSessions: async () => sessions,
+      exportSession: async () => ({ ...root, info: { ...(root.info as object), id: rootID } }),
+    };
+    const selected = await collectScenario({
+      scenario: 8,
+      run: 1,
+      playgroundDir: "",
+      sessionID: rootID,
+      runner,
+      outDir,
+    });
+    expect(selected.sessionID).toBe(rootID);
+    const childRunner: OpenCodeRunner = {
+      ...runner,
+      exportSession: async () => ({
+        info: { id: rootID, parentID: "ses_synthetic_parent" },
+        messages: [],
+      }),
+    };
+    await expect(collectScenario({
+      scenario: 8,
+      run: 2,
+      playgroundDir: "",
+      sessionID: rootID,
+      runner: childRunner,
+      outDir,
+    })).rejects.toThrow("selected session is a child session");
+    await rm(outDir, { recursive: true, force: true });
+  });
+
   test("rejects invalid scenario or run values", async () => {
     const root = await syntheticExport();
     const outDir = await tempDir();

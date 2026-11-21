@@ -28,6 +28,10 @@ export interface IDRecord {
   source: "main" | "child";
   sessionID: string;
 }
+export interface ZeroToolSession {
+  sessionID: string;
+  source: "main" | "child";
+}
 export interface CollectionSummary {
   scenario: number;
   run: 1 | 2;
@@ -47,6 +51,7 @@ export interface CollectionSummary {
   incomplete: number;
   mismatch: boolean;
   failures: Array<{ sessionID: string; problem: string }>;
+  zeroToolSessions: ZeroToolSession[];
 }
 export interface CollectOptions {
   scenario: number;
@@ -56,6 +61,7 @@ export interface CollectOptions {
   outDir?: string;
   now?: number;
   force?: boolean;
+  sessionID?: string;
 }
 
 const DEFAULT_OUT_DIR = join(import.meta.dir, "..", "docs", "eval", "sessions");
@@ -148,25 +154,35 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
   if (options.run !== 1 && options.run !== 2) {
     throw new Error("run must be 1 or 2");
   }
-  if (!options.playgroundDir) {
-    throw new Error("missing playground directory: pass --playground <dir> or set EVAL_PLAYGROUND_DIR");
+  if (!options.playgroundDir && !options.sessionID) {
+    throw new Error("missing playground directory: pass --playground <dir>, EVAL_PLAYGROUND_DIR, or --session <id>");
   }
   const outDir = options.outDir ?? DEFAULT_OUT_DIR;
   const summaryDir = join(outDir, "summary");
   const summaryPath = join(summaryDir, `${options.scenario}-run${options.run}.json`);
-  const wanted = normalizeDirectory(options.playgroundDir);
   const sessions = await options.runner.listSessions();
-  const candidates = sessions
-    .filter(session => typeof session.directory === "string" && normalizeDirectory(session.directory) === wanted)
-    .sort((left, right) => (sessionTime(right) ?? 0) - (sessionTime(left) ?? 0));
-  const root = candidates[0];
-  if (!root) {
-    throw new Error("no OpenCode session found for the playground directory");
+  let root: SessionInfo | undefined;
+  if (options.sessionID) {
+    process.stderr.write("NOTE: --session supplied; directory matching and the 60-minute freshness rule are skipped\n");
+    root = sessions.find(session => session.id === options.sessionID);
+    if (!root) {
+      throw new Error(`session ${options.sessionID} was not found in the session list`);
+    }
   }
-  const timestamp = sessionTime(root);
-  const now = options.now ?? Date.now();
-  if (typeof timestamp !== "number" || now - timestamp > MAX_AGE_MS) {
-    throw new Error("newest playground session is older than 60 minutes");
+  else {
+    const wanted = normalizeDirectory(options.playgroundDir);
+    const candidates = sessions
+      .filter(session => typeof session.directory === "string" && normalizeDirectory(session.directory) === wanted)
+      .sort((left, right) => (sessionTime(right) ?? 0) - (sessionTime(left) ?? 0));
+    root = candidates[0];
+    if (!root) {
+      throw new Error("no OpenCode session found for the playground directory");
+    }
+    const timestamp = sessionTime(root);
+    const now = options.now ?? Date.now();
+    if (typeof timestamp !== "number" || now - timestamp > MAX_AGE_MS) {
+      throw new Error("newest playground session is older than 60 minutes");
+    }
   }
   if (!options.force) {
     try {
@@ -200,6 +216,7 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
     incomplete: 0,
     mismatch: false,
     failures: [],
+    zeroToolSessions: [],
   };
   const exportedRoot = await options.runner.exportSession(root.id);
   const rootInfo = (exportedRoot as { info?: ExportedInfo }).info;
@@ -248,7 +265,12 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
     summary.completedSubagentIDs.push(...found.completedSubagentIDs);
     summary.failedSubagentIDs.push(...found.failedSubagentIDs);
     if (!item.result.ok) {
-      summary.failures.push({ sessionID: item.sessionID, problem: item.result.problem });
+      if (item.result.problem === "0 tool calls found in file") {
+        summary.zeroToolSessions.push({ sessionID: item.sessionID, source: item.source });
+      }
+      else {
+        summary.failures.push({ sessionID: item.sessionID, problem: item.result.problem });
+      }
       continue;
     }
     summary.errors += item.result.analysis.errors;
@@ -301,6 +323,7 @@ export function markdownRow(summary: CollectionSummary): string {
     `errors=${summary.errors}`,
     `incomplete=${summary.incomplete}`,
     `childCoverage=${summary.childCoverage}`,
+    `zeroToolCalls=${summary.zeroToolSessions.length}`,
     ...(nonTarget.length > 0 ? [`failedTools=${nonTarget.join(",")}`] : []),
     ...(summary.failures.length > 0 ? [`failures=${summary.failures.length}`] : []),
   ].join("; ");
@@ -341,17 +364,20 @@ if (import.meta.main) {
   const run = Number(args[1]);
   const playgroundIndex = args.indexOf("--playground");
   const playgroundDir = playgroundIndex >= 0 ? args[playgroundIndex + 1] : Bun.env.EVAL_PLAYGROUND_DIR;
+  const sessionIndex = args.indexOf("--session");
+  const sessionID = sessionIndex >= 0 ? args[sessionIndex + 1] : undefined;
   const force = args.includes("--force");
-  if (!playgroundDir) {
-    process.stderr.write("usage: bun scripts/eval-collect.ts <scenario 1-10> <run 1|2> --playground <dir> [--force]\n");
+  if (!playgroundDir && !sessionID) {
+    process.stderr.write("usage: bun scripts/eval-collect.ts <scenario 1-10> <run 1|2> [--playground <dir> | --session <id>] [--force]\n");
     process.exit(1);
   }
   collectScenario({
     scenario,
     run: run as 1 | 2,
-    playgroundDir,
+    playgroundDir: playgroundDir ?? "",
     runner: createCliRunner(),
     force,
+    sessionID,
   }).catch((error: unknown) => {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
     process.exit(1);
