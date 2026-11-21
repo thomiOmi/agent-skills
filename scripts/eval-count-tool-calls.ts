@@ -2,18 +2,26 @@
 /** Counts `skill` and `subagent` tool calls in a plain `opencode session export <id>` JSON file. Dev-only. */
 import process from "node:process";
 
-export interface ToolPart { type?: string; name?: string; state?: { status?: string; input?: unknown } }
+export interface ToolPart {
+  type?: string;
+  name?: string;
+  state?: { status?: string; input?: unknown; metadata?: Record<string, unknown> };
+}
 export interface Message { type?: string; skill?: string; content?: ToolPart[]; name?: string; time?: unknown }
 export interface SessionExport { messages?: Message[] }
 export interface Analysis {
   total: number;
   totals: Map<string, number>;
-  skillIds: Map<string, number>;
-  agentIds: Map<string, number>;
+  completedSkillIds: Map<string, number>;
+  failedSkillIds: Map<string, number>;
+  completedAgentIds: Map<string, number>;
+  failedAgentIds: Map<string, number>;
+  childSessionIds: Map<string, number>;
   errors: number;
   incomplete: number;
   skillMessages: number;
-  toolSkillCalls: number;
+  completedSkillCalls: number;
+  mismatch: boolean;
 }
 export type Result = { ok: true; analysis: Analysis } | { ok: false; problem: string };
 
@@ -45,38 +53,60 @@ export function analyzeSession(data: SessionExport): Result {
   const analysis: Analysis = {
     total: tools.length,
     totals: new Map(),
-    skillIds: new Map(),
-    agentIds: new Map(),
+    completedSkillIds: new Map(),
+    failedSkillIds: new Map(),
+    completedAgentIds: new Map(),
+    failedAgentIds: new Map(),
+    childSessionIds: new Map(),
     errors: 0,
     incomplete: 0,
     skillMessages: 0,
-    toolSkillCalls: 0,
+    completedSkillCalls: 0,
+    mismatch: false,
   };
   for (const tool of tools) {
     const name = tool.name ?? "<unnamed>";
+    const status = tool.state?.status;
     bump(analysis.totals, name);
-    if (tool.state?.status === "error") {
+    if (status === "error") {
       analysis.errors++;
     }
-    if (tool.state?.status === "streaming") {
+    if (status === "streaming") {
       analysis.incomplete++;
       continue;
+    }
+    const child = idFrom(tool.state?.metadata, "sessionID");
+    if (child) {
+      bump(analysis.childSessionIds, child);
     }
     if (name === "skill") {
       const id = idFrom(tool.state?.input, "id");
       if (id) {
-        bump(analysis.skillIds, id);
+        if (status === "completed") {
+          bump(analysis.completedSkillIds, id);
+        }
+        else if (status === "error") {
+          bump(analysis.failedSkillIds, id);
+        }
+      }
+      if (status === "completed") {
+        analysis.completedSkillCalls++;
       }
     }
     else if (name === "subagent") {
       const id = idFrom(tool.state?.input, "agent");
       if (id) {
-        bump(analysis.agentIds, id);
+        if (status === "completed") {
+          bump(analysis.completedAgentIds, id);
+        }
+        else if (status === "error") {
+          bump(analysis.failedAgentIds, id);
+        }
       }
     }
   }
-  analysis.toolSkillCalls = analysis.totals.get("skill") ?? 0;
   analysis.skillMessages = data.messages.filter(message => message?.type === "skill" && typeof message.skill === "string").length;
+  analysis.mismatch = analysis.skillMessages !== analysis.completedSkillCalls;
   return { ok: true, analysis };
 }
 
@@ -109,17 +139,23 @@ if (import.meta.main) {
     `Total tool calls: ${analysis.total}`,
     "Totals by tool name:",
     format(analysis.totals),
-    "Skill IDs (state.input.id):",
-    format(analysis.skillIds),
-    "Subagent IDs (state.input.agent):",
-    format(analysis.agentIds),
+    "Skill IDs - completed (state.input.id):",
+    format(analysis.completedSkillIds),
+    "Skill IDs - failed (state.input.id):",
+    format(analysis.failedSkillIds),
+    "Subagent IDs - completed (state.input.agent):",
+    format(analysis.completedAgentIds),
+    "Subagent IDs - failed (state.input.agent):",
+    format(analysis.failedAgentIds),
+    "Child sessions (state.metadata.sessionID):",
+    format(analysis.childSessionIds),
     `Error-state tool entries: ${analysis.errors}`,
     `Incomplete (streaming, ignored): ${analysis.incomplete}`,
-    `Skill messages (type=skill): ${analysis.skillMessages}; skill tool calls: ${analysis.toolSkillCalls}`,
+    `Skill messages (type=skill): ${analysis.skillMessages}; completed skill tool calls: ${analysis.completedSkillCalls}`,
   ];
   process.stdout.write(`${lines.join("\n")}\n`);
-  if (analysis.skillMessages !== analysis.toolSkillCalls) {
-    process.stderr.write(`MISMATCH: ${analysis.skillMessages} skill messages vs ${analysis.toolSkillCalls} skill tool calls\n`);
+  if (analysis.mismatch) {
+    process.stderr.write(`MISMATCH: ${analysis.skillMessages} skill messages vs ${analysis.completedSkillCalls} completed skill tool calls\n`);
   }
   if (!analysis.totals.has("skill") && !analysis.totals.has("subagent")) {
     process.stderr.write("NOTE: no 'skill' or 'subagent' tool name found; check tool names above for a rename\n");

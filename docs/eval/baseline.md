@@ -46,7 +46,7 @@ Record these once before run 1. Reuse all of them for run 2 and for the after ru
 - [ ] Playground has no `opencode.jsonc`, `AGENTS.md`, `.opencode/`, or `.agents/`. Do not add any of them.
 - [ ] Installed skills count **from the global install** (not this repo): `<HOME>/.config/opencode/skills/` contains **43** skill directories, and the ownership manifest `<HOME>/.config/opencode/.agent-skills-manifest.json` exists. Re-read the count at run time.
 - [ ] Installed agents count **from the global install**: `opencode debug agents` reports **27** agents total: 20 installed subagents plus 7 built-ins (`build`, `compaction`, `explore`, `general`, `plan`, `summary`, `title`). The installed `agents/` directory contains **20** files. Re-read at run time.
-- [ ] Difference from this repo: `agent-skills` currently has **35** skills and **20** agents. The global install has 43 skills (8 extra local skills) and the same 20 agents. Use the global numbers as the setup record.
+- [ ] Difference from this repo: `agent-skills` currently has **35** skills and **20** agents. The global install has 43 skills (8 extra local skills) and the same 20 agents. Use the global numbers as the setup record. The 8 extra skills are part of the measured environment and must be unchanged for the after run.
 - [ ] Config source: run `opencode debug config` **from the playground directory** and summarize it locally; do not paste its raw output here. It reports a single global config document under `<HOME>/.config/opencode/` and no project or ancestor config. Relevant keys are `default_agent`, `instructions`, `experimental.todo` (enabled), `experimental.subagent_depth` (set), plus MCP server entries; sensitive values are redacted by the command.
 - [ ] Repo commit being measured: record `git rev-parse --short HEAD` from `agent-skills` at run time.
 - [ ] The model, global config, and installed agent/skill set are identical for the baseline and after runs. If any changes, the comparison is invalid.
@@ -89,16 +89,21 @@ opencode stats --tools --json
 ```
 
 The counter prints totals for **every** tool name it sees, so a renamed `skill` or `subagent`
-tool is visible. Skill IDs come from `state.input.id`; subagent agent IDs from
-`state.input.agent`. **Failed IDs** in the results table are the IDs reported on error-state
-tool entries, for example a guessed agent ID that does not exist. Streaming string inputs are
-ignored and listed under "Incomplete". If the counter prints `0 tool calls found in file` or
-`unexpected format`, record that as a measurement failure, not as a zero.
+tool is visible. It prints separate completed and failed ID lists: skill IDs from
+`state.input.id`, subagent agent IDs from `state.input.agent`, and child session IDs from
+`state.metadata.sessionID`. The **MISMATCH** warning compares `type: "skill"` messages only with
+**completed** `skill` tool calls, so failed calls do not create a false mismatch. Copy completed
+IDs into the "Skill calls (IDs)" / "Subagent calls (IDs)" columns and failed IDs into "Failed
+IDs"; a guessed agent ID that does not exist appears as a failed subagent ID. Streaming string
+inputs are ignored and listed under "Incomplete". If the counter prints
+`0 tool calls found in file` or `unexpected format`, record that as a measurement failure, not as
+a zero.
 
-Subagent calls create **child sessions** with a `parentID`. The export of the main session does
-not contain their internal tool calls. Find children with `opencode session list --format json`,
-export each child into `docs/eval/sessions/`, run the counter on each, and record whether you did
-so in the "Child sessions exported?" column. Use `no` only when there were no children.
+Subagent calls create **child sessions** with a `parentID`, whose IDs the counter prints under
+"Child sessions". The export of the main session does not contain their internal tool calls. Find
+children with `opencode session list --format json`, export each child into
+`docs/eval/sessions/`, run the counter on each, and record whether you did so in the "Child
+sessions exported?" column. Use `no` only when there were no children.
 
 **Never use `--sanitize` for this measurement.** Source verification
 (`packages/core/src/session/transfer.ts`, `sanitizeToolState` in anomalyco/opencode) shows it
@@ -133,8 +138,9 @@ line to the playground README so there is an uncommitted change to commit.
 ## Results table template
 
 Run every scenario at least twice (Run 1 and Run 2) in separate fresh sessions. Write `none`
-when the counter printed `(none)`. Failed IDs and child-session status come from the counter
-and from `opencode session list --format json`.
+when the counter printed `(none)`. Completed IDs go in the call columns; failed IDs and child
+session IDs come from the counter, and child-session export status from
+`opencode session list --format json`.
 
 | Scenario | Run (1/2) | Primary agent (build/plan) | Session ID | Skill calls (IDs) | Subagent calls (IDs) | Failed IDs | Child sessions exported? | Notes |
 |---|---|---|---|---|---|---|---|---|

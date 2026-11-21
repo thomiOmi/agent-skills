@@ -11,7 +11,7 @@ async function fixture(): Promise<SessionExport> {
 }
 
 describe("analyzeSession", () => {
-  test("counts skill and subagent calls, errors, incomplete inputs, and skill-message cross-check", async () => {
+  test("splits completed and failed IDs, finds child sessions, and checks completed skill calls only", async () => {
     const result = analyzeSession(await fixture());
     expect(result.ok).toBe(true);
     if (!result.ok) {
@@ -23,32 +23,32 @@ describe("analyzeSession", () => {
       ["skill", 2],
       ["subagent", 2],
     ]);
-    expect([...result.analysis.skillIds.entries()].sort()).toEqual([
-      ["missing-skill", 1],
-      ["security-review", 1],
-    ]);
-    expect([...result.analysis.agentIds.entries()]).toEqual([["security-auditor", 1]]);
+    expect([...result.analysis.completedSkillIds.entries()]).toEqual([["security-review", 1]]);
+    expect([...result.analysis.failedSkillIds.entries()]).toEqual([["missing-skill", 1]]);
+    expect([...result.analysis.completedAgentIds.entries()]).toEqual([["security-auditor", 1]]);
+    expect([...result.analysis.failedAgentIds.entries()]).toEqual([]);
+    expect([...result.analysis.childSessionIds.entries()]).toEqual([["ses_synthetic_child", 1]]);
     expect(result.analysis.errors).toBe(1);
     expect(result.analysis.incomplete).toBe(1);
     expect(result.analysis.skillMessages).toBe(1);
-    expect(result.analysis.toolSkillCalls).toBe(2);
+    expect(result.analysis.completedSkillCalls).toBe(1);
+    expect(result.analysis.mismatch).toBe(false);
   });
 
-  test("ignores streaming string inputs and reports no mismatch when counts agree", async () => {
+  test("reports a mismatch when skill messages exceed completed skill calls", async () => {
     const data = await fixture();
     data.messages = [
-      ...(data.messages ?? []).filter(message => message.type !== "skill"),
-      { type: "skill", skill: "security-review", name: "security-review", time: { created: 5 } },
-      { type: "skill", skill: "missing-skill", name: "missing-skill", time: { created: 5 } },
+      ...(data.messages ?? []),
+      { type: "skill", skill: "extra-skill", name: "extra-skill", time: { created: 5 } },
     ];
     const result = analyzeSession(data);
     expect(result.ok).toBe(true);
     if (!result.ok) {
       return;
     }
-    expect(result.analysis.incomplete).toBe(1);
     expect(result.analysis.skillMessages).toBe(2);
-    expect(result.analysis.toolSkillCalls).toBe(2);
+    expect(result.analysis.completedSkillCalls).toBe(1);
+    expect(result.analysis.mismatch).toBe(true);
   });
 
   test("fails loudly on unexpected formats", () => {
@@ -79,7 +79,7 @@ describe("analyzeSession", () => {
 });
 
 describe("CLI", () => {
-  test("prints every tool name and reports the skill-message mismatch", async () => {
+  test("prints all tool names, ID groups, child sessions, and no false mismatch", async () => {
     const child = Bun.spawn(["bun", "scripts/eval-count-tool-calls.ts", fixturePath], {
       cwd: join(import.meta.dir, ".."),
       stdout: "pipe",
@@ -93,6 +93,11 @@ describe("CLI", () => {
     expect(output).toContain("shell: 1");
     expect(output).toContain("skill: 2");
     expect(output).toContain("subagent: 2");
-    expect(errors).toContain("MISMATCH:");
+    expect(output).toContain("Skill IDs - completed (state.input.id):\n  security-review: 1");
+    expect(output).toContain("Skill IDs - failed (state.input.id):\n  missing-skill: 1");
+    expect(output).toContain("Subagent IDs - completed (state.input.agent):\n  security-auditor: 1");
+    expect(output).toContain("Subagent IDs - failed (state.input.agent):\n  (none)");
+    expect(output).toContain("Child sessions (state.metadata.sessionID):\n  ses_synthetic_child: 1");
+    expect(errors).not.toContain("MISMATCH:");
   });
 });
