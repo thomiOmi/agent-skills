@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
-import { collectScenario, markdownRow } from "../scripts/eval-collect";
+import { childCoverageWarning, collectScenario, markdownRow } from "../scripts/eval-collect";
 
 const PLAYGROUND = "sandbox/playground";
 
@@ -63,7 +63,11 @@ describe("collectScenario", () => {
     expect(summary.completedSkillIDs.some(record => record.source === "child")).toBe(true);
     expect(summary.completedSubagentIDs.some(record => record.source === "main")).toBe(true);
     expect(summary.failedSkillIDs.length).toBe(1);
-    expect(summary.errors).toBe(1);
+    expect(summary.errors).toBe(2);
+    expect(summary.failedCallsByToolName).toEqual({ skill: 1, task: 1 });
+    expect(summary.completedSubagentCalls).toBe(1);
+    expect(summary.childCoverage).toBe("complete");
+    expect(childCoverageWarning(summary)).toBeUndefined();
     expect(summary.incomplete).toBe(1);
     expect(summary.mismatch).toBe(true);
     const saved = JSON.parse(await readFile(join(outDir, "summary", "1-run1.json"), "utf8")) as typeof summary;
@@ -71,6 +75,41 @@ describe("collectScenario", () => {
     const row = markdownRow(summary);
     expect(row).toContain("| 1 Feature | 1 | build |");
     expect(row).toContain("child-skill");
+    expect(row).toContain("failedTools=task");
+    expect(row).toContain("childCoverage=complete");
+    await rm(outDir, { recursive: true, force: true });
+  });
+
+  test("flags incomplete child coverage when completed subagents outnumber exported children", async () => {
+    const rootID = "ses_synthetic_no_children";
+    const root = {
+      info: { id: rootID, agent: "build" },
+      messages: [{
+        type: "assistant",
+        content: [
+          { type: "tool", name: "subagent", state: { status: "completed", input: { agent: "synthetic-agent" } } },
+          { type: "tool", name: "subagent", state: { status: "completed", input: { agent: "synthetic-agent" } } },
+        ],
+      }],
+    };
+    const outDir = await tempDir();
+    const runner: OpenCodeRunner = {
+      listSessions: async () => [{ id: rootID, directory: PLAYGROUND, updated: Date.now() }],
+      exportSession: async () => root,
+    };
+    const summary = await collectScenario({
+      scenario: 3,
+      run: 2,
+      playgroundDir: PLAYGROUND,
+      runner,
+      outDir,
+    });
+    expect(summary.completedSubagentCalls).toBe(2);
+    expect(summary.childSessionCount).toBe(0);
+    expect(summary.childSessionsFound).toBe(0);
+    expect(summary.childCoverage).toBe("incomplete");
+    expect(childCoverageWarning(summary)).toContain("WARNING: child coverage incomplete");
+    expect(markdownRow(summary)).toContain("childCoverage=incomplete");
     await rm(outDir, { recursive: true, force: true });
   });
 

@@ -35,6 +35,10 @@ export interface CollectionSummary {
   primaryAgent?: string;
   model?: string;
   childSessionCount: number;
+  childSessionsFound: number;
+  childCoverage: "complete" | "incomplete";
+  completedSubagentCalls: number;
+  failedCallsByToolName: Record<string, number>;
   completedSkillIDs: IDRecord[];
   failedSkillIDs: IDRecord[];
   completedSubagentIDs: IDRecord[];
@@ -77,7 +81,7 @@ function sessionTime(session: SessionInfo): number | undefined {
   return typeof session.updated === "number" ? session.updated : session.created;
 }
 
-function childIDs(exported: unknown): string[] {
+function toolParts(exported: unknown): ToolPart[] {
   const data = exported as SessionExport;
   const parts: ToolPart[] = [];
   for (const message of data?.messages ?? []) {
@@ -87,12 +91,31 @@ function childIDs(exported: unknown): string[] {
       }
     }
   }
+  return parts;
+}
+
+function childIDs(exported: unknown): string[] {
   const found: string[] = [];
-  for (const part of parts) {
+  for (const part of toolParts(exported)) {
     const metadata = part.state?.metadata;
     const id = metadata?.sessionID ?? metadata?.sessionId;
     if (typeof id === "string" && !found.includes(id)) {
       found.push(id);
+    }
+  }
+  return found;
+}
+
+/** Collects every session reference used for coverage checks, including legacy parent keys. */
+function sessionReferences(exported: unknown): Set<string> {
+  const found = new Set<string>();
+  for (const part of toolParts(exported)) {
+    const metadata = part.state?.metadata;
+    for (const key of ["sessionID", "sessionId", "parentSessionId"]) {
+      const value = metadata?.[key];
+      if (typeof value === "string") {
+        found.add(value);
+      }
     }
   }
   return found;
@@ -165,6 +188,10 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
     run: options.run,
     sessionID: root.id,
     childSessionCount: 0,
+    childSessionsFound: 0,
+    childCoverage: "complete",
+    completedSubagentCalls: 0,
+    failedCallsByToolName: {},
     completedSkillIDs: [],
     failedSkillIDs: [],
     completedSubagentIDs: [],
@@ -183,6 +210,7 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
   }
 
   const queue: Array<{ id: string; parentID: string }> = childIDs(exportedRoot).map(id => ({ id, parentID: root.id }));
+  const references = sessionReferences(exportedRoot);
   const seen = new Set<string>([root.id]);
   const analyses: Array<{ result: ReturnType<typeof analyzeSession>; sessionID: string; source: "main" | "child" }> = [];
   analyses.push({ result: analyzeSession(exportedRoot as SessionExport), sessionID: root.id, source: "main" });
@@ -199,6 +227,9 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
     }
     await writeFile(join(outDir, `${baseName}-child-${next.id}.json`), JSON.stringify(child, null, 2));
     summary.childSessionCount++;
+    for (const reference of sessionReferences(child)) {
+      references.add(reference);
+    }
     analyses.push({ result: analyzeSession(child as SessionExport), sessionID: next.id, source: "child" });
     for (const id of childIDs(child)) {
       if (!seen.has(id)) {
@@ -219,13 +250,36 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
     }
     summary.errors += item.result.analysis.errors;
     summary.incomplete += item.result.analysis.incomplete;
+    summary.completedSubagentCalls += item.result.analysis.completedSubagentCalls;
     summary.mismatch ||= item.result.analysis.mismatch;
+    for (const [name, count] of item.result.analysis.failedCallsByToolName) {
+      summary.failedCallsByToolName[name] = (summary.failedCallsByToolName[name] ?? 0) + count;
+    }
+  }
+
+  references.delete(root.id);
+  summary.childSessionsFound = references.size;
+  if (summary.completedSubagentCalls > summary.childSessionCount
+    || summary.childSessionsFound > summary.childSessionCount) {
+    summary.childCoverage = "incomplete";
+  }
+  const warning = childCoverageWarning(summary);
+  if (warning) {
+    process.stderr.write(`${warning}\n`);
   }
 
   await mkdir(summaryDir, { recursive: true });
   await writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`);
   process.stdout.write(`${markdownRow(summary)}\n`);
   return summary;
+}
+
+/** Returns the loud stderr warning for an incomplete child-session coverage result. */
+export function childCoverageWarning(summary: CollectionSummary): string | undefined {
+  if (summary.childCoverage !== "incomplete") {
+    return undefined;
+  }
+  return `WARNING: child coverage incomplete: ${summary.completedSubagentCalls} completed subagent calls, ${summary.childSessionsFound} child sessions found, ${summary.childSessionCount} exported`;
 }
 
 function joinedIDs(records: IDRecord[]): string {
@@ -236,8 +290,22 @@ function joinedIDs(records: IDRecord[]): string {
 export function markdownRow(summary: CollectionSummary): string {
   const label = SCENARIO_LABELS[summary.scenario - 1] ?? "unknown";
   const failed = joinedIDs([...summary.failedSkillIDs, ...summary.failedSubagentIDs]);
-  const notes = `mismatch=${summary.mismatch}; errors=${summary.errors}; incomplete=${summary.incomplete}${summary.failures.length ? `; failures=${summary.failures.length}` : ""}`;
-  return `| ${summary.scenario} ${label} | ${summary.run} | ${summary.primaryAgent ?? "unknown"} | ${summary.sessionID} | ${joinedIDs(summary.completedSkillIDs)} | ${joinedIDs(summary.completedSubagentIDs)} | ${failed} | ${summary.childSessionCount > 0 ? "yes" : "no"} | ${notes} |`;
+  const nonTarget = Object.keys(summary.failedCallsByToolName)
+    .filter(name => name !== "skill" && name !== "subagent")
+    .sort();
+  const notes = [
+    `mismatch=${summary.mismatch}`,
+    `errors=${summary.errors}`,
+    `incomplete=${summary.incomplete}`,
+    `childCoverage=${summary.childCoverage}`,
+    ...(nonTarget.length > 0 ? [`failedTools=${nonTarget.join(",")}`] : []),
+    ...(summary.failures.length > 0 ? [`failures=${summary.failures.length}`] : []),
+  ].join("; ");
+  return [
+    `| ${summary.scenario} ${label} | ${summary.run} | ${summary.primaryAgent ?? "unknown"} | ${summary.sessionID} `,
+    `| ${joinedIDs(summary.completedSkillIDs)} | ${joinedIDs(summary.completedSubagentIDs)} | ${failed} `,
+    `| ${summary.childSessionCount > 0 ? "yes" : "no"} | ${notes} |`,
+  ].join("");
 }
 
 /** Creates a real OpenCode runner using the CLI. */
