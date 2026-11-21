@@ -50,6 +50,11 @@ function fixtures(): CollectionSummary[] {
       childCoverage: "incomplete" as const,
       failedCallsByToolName: { task: 1 },
     },
+    {
+      ...summary(3, 1),
+      failures: [{ sessionID: "ses_synthetic", problem: "synthetic analysis failure" }],
+    },
+    summary(3, 2, [record("skill-d")]),
     summary(10, 1),
     summary(10, 2),
   ];
@@ -75,7 +80,7 @@ async function runCli(args: string[]): Promise<{ code: number; output: string; e
 describe("buildMetrics", () => {
   test("counts scenarios by run, failures, control, and disagreements", () => {
     const metrics = buildMetrics(fixtures());
-    expect(metrics.scenariosWithCompletedSkill).toEqual({ run1: 2, run2: 1, anyRun: 2 });
+    expect(metrics.scenariosWithCompletedSkill).toEqual({ run1: 2, run2: 2, anyRun: 3 });
     expect(metrics.scenariosWithCompletedSubagent).toEqual({ run1: 0, run2: 1, anyRun: 1 });
     expect(metrics.failedSkillIDs).toEqual(["bad-skill"]);
     expect(metrics.totalFailedSkillIDs).toBe(1);
@@ -84,6 +89,14 @@ describe("buildMetrics", () => {
     expect(metrics.disagreeingScenarios).toEqual([1]);
     expect(metrics.incompleteChildCoverageScenarios).toEqual([2]);
     expect(metrics.failedNonTargetTools).toEqual([{ scenario: 2, run: 2, names: ["task"] }]);
+    expect(metrics.runsWithAnalysisFailures).toEqual([
+      { scenario: 3, run: 1, problem: "synthetic analysis failure" },
+    ]);
+    expect(metrics.excludedRunCount).toBe(1);
+    expect(renderMetrics(metrics)).toContain("Runs with analysis failures: 1");
+    expect(renderMetrics(metrics)).toContain("scenario 3 run 1: synthetic analysis failure");
+    expect(renderMetrics(metrics)).toContain("Excluded/unreliable runs (analysis failures): 1");
+    expect(renderMetrics(metrics)).toContain("(excluded/unreliable runs: 1)");
     expect(renderMetrics(metrics)).toContain("Scenarios with incomplete child coverage: 2");
     expect(renderMetrics(metrics)).toContain("Failed non-target tool calls by scenario: 2/run2:task");
     expect(renderTable(fixtures())).toContain("| Scenario | Run (1/2) |");
@@ -108,6 +121,8 @@ describe("CLI", () => {
     expect(result.output).toContain("Scenarios with >=1 completed skill call");
     const saved = JSON.parse(await readFile(out, "utf8")) as ReportMetrics;
     expect(saved.disagreeingScenarios).toEqual([1]);
+    expect(saved.excludedRunCount).toBe(1);
+    expect(saved.runsWithAnalysisFailures.length).toBe(1);
     await rm(dir, { recursive: true, force: true });
   });
 

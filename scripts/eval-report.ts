@@ -19,10 +19,20 @@ export interface ReportMetrics {
   disagreeingScenarios: number[];
   incompleteChildCoverageScenarios: number[];
   failedNonTargetTools: Array<{ scenario: number; run: number; names: string[] }>;
+  runsWithAnalysisFailures: Array<{ scenario: number; run: number; problem: string }>;
+  excludedRunCount: number;
 }
 
 /** Builds metrics from summaries without matching any scenario by ID. */
 export function buildMetrics(summaries: CollectionSummary[]): ReportMetrics {
+  const reliable = summaries.filter(summary => summary.failures.length === 0);
+  const runsWithAnalysisFailures = summaries
+    .filter(summary => summary.failures.length > 0)
+    .map(summary => ({
+      scenario: summary.scenario,
+      run: summary.run,
+      problem: summary.failures.map(failure => failure.problem).join("; "),
+    }));
   const skill = { run1: 0, run2: 0, anyRun: 0 };
   const subagent = { run1: 0, run2: 0, anyRun: 0 };
   const failedSkill = new Set<string>();
@@ -30,7 +40,7 @@ export function buildMetrics(summaries: CollectionSummary[]): ReportMetrics {
   const incompleteCoverage = new Set<number>();
   const failedNonTargetTools: Array<{ scenario: number; run: number; names: string[] }> = [];
   const byScenario = new Map<number, Map<number, CollectionSummary>>();
-  for (const summary of summaries) {
+  for (const summary of reliable) {
     if (summary.childCoverage === "incomplete") {
       incompleteCoverage.add(summary.scenario);
     }
@@ -106,6 +116,8 @@ export function buildMetrics(summaries: CollectionSummary[]): ReportMetrics {
     disagreeingScenarios,
     incompleteChildCoverageScenarios: [...incompleteCoverage].sort((left, right) => left - right),
     failedNonTargetTools,
+    runsWithAnalysisFailures,
+    excludedRunCount: summaries.length - reliable.length,
   };
 }
 
@@ -134,12 +146,26 @@ export function renderMetrics(metrics: ReportMetrics): string {
   const nonTarget = metrics.failedNonTargetTools.length
     ? metrics.failedNonTargetTools.map(item => `${item.scenario}/run${item.run}:${item.names.join(",")}`).join("; ")
     : "none";
+  const excluded = `excluded/unreliable runs: ${metrics.excludedRunCount}`;
+  const failures = metrics.runsWithAnalysisFailures.length === 0
+    ? ["Runs with analysis failures: none"]
+    : [
+        `Runs with analysis failures: ${metrics.runsWithAnalysisFailures.length}`,
+        ...metrics.runsWithAnalysisFailures.map(item =>
+          `  scenario ${item.scenario} run ${item.run}: ${item.problem}`),
+      ];
+  const skill = metrics.scenariosWithCompletedSkill;
+  const subagent = metrics.scenariosWithCompletedSubagent;
+  const skillCounts = `run 1 ${skill.run1}/${metrics.totalScenarios}, run 2 ${skill.run2}/${metrics.totalScenarios}, any run ${skill.anyRun}/${metrics.totalScenarios}`;
+  const subagentCounts = `run 1 ${subagent.run1}/${metrics.totalScenarios}, run 2 ${subagent.run2}/${metrics.totalScenarios}, any run ${subagent.anyRun}/${metrics.totalScenarios}`;
   return [
-    `Scenarios with >=1 completed skill call: run 1 ${metrics.scenariosWithCompletedSkill.run1}/${metrics.totalScenarios}, run 2 ${metrics.scenariosWithCompletedSkill.run2}/${metrics.totalScenarios}, any run ${metrics.scenariosWithCompletedSkill.anyRun}/${metrics.totalScenarios}`,
-    `Scenarios with >=1 completed subagent call: run 1 ${metrics.scenariosWithCompletedSubagent.run1}/${metrics.totalScenarios}, run 2 ${metrics.scenariosWithCompletedSubagent.run2}/${metrics.totalScenarios}, any run ${metrics.scenariosWithCompletedSubagent.anyRun}/${metrics.totalScenarios}`,
+    ...failures,
+    `Excluded/unreliable runs (analysis failures): ${metrics.excludedRunCount}`,
+    `Scenarios with >=1 completed skill call: ${skillCounts} (${excluded})`,
+    `Scenarios with >=1 completed subagent call: ${subagentCounts} (${excluded})`,
     `Failed skill IDs: ${metrics.totalFailedSkillIDs} (${idText(metrics.failedSkillIDs)})`,
     `Failed subagent IDs: ${metrics.totalFailedSubagentIDs} (${idText(metrics.failedSubagentIDs)})`,
-    `Control scenario 10 had zero skill/subagent calls: ${control}`,
+    `Control scenario 10 had zero skill/subagent calls: ${control} (${excluded})`,
     `Scenarios where run 1 and run 2 disagree: ${metrics.disagreeingScenarios.length ? metrics.disagreeingScenarios.join(", ") : "none"}`,
     `Scenarios with incomplete child coverage: ${coverage}`,
     `Failed non-target tool calls by scenario: ${nonTarget}`,
@@ -161,6 +187,7 @@ export function renderComparison(before: ReportMetrics, after: ReportMetrics): s
     ["Disagreeing scenarios", String(before.disagreeingScenarios.length), String(after.disagreeingScenarios.length)],
     ["Incomplete child coverage scenarios", String(before.incompleteChildCoverageScenarios.length), String(after.incompleteChildCoverageScenarios.length)],
     ["Failed non-target tool scenarios", String(before.failedNonTargetTools.length), String(after.failedNonTargetTools.length)],
+    ["Excluded/unreliable runs", String(before.excludedRunCount), String(after.excludedRunCount)],
   ];
   return ["| Metric | Before | After |", "|---|---|---|", ...rows.map(row => `| ${row[0]} | ${row[1]} | ${row[2]} |`)].join("\n");
 }
