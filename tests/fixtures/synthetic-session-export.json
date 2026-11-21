@@ -83,6 +83,19 @@
             "content": [{ "type": "text", "text": "synthetic" }]
           },
           "time": { "created": 2 }
+        },
+        {
+          "type": "tool",
+          "id": "call_task",
+          "name": "task",
+          "executed": true,
+          "state": {
+            "status": "completed",
+            "input": { "description": "Synthetic search", "prompt": "synthetic task", "subagent_type": "explore" },
+            "content": [{ "type": "text", "text": "synthetic output" }],
+            "metadata": { "sessionId": "ses_synthetic_legacy_child", "parentSessionId": "ses_synthetic_root" }
+          },
+          "time": { "created": 2 }
         }
       ]
     },

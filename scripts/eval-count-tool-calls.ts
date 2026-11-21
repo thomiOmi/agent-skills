@@ -75,7 +75,8 @@ export function analyzeSession(data: SessionExport): Result {
       analysis.incomplete++;
       continue;
     }
-    const child = idFrom(tool.state?.metadata, "sessionID");
+    // V2 subagent metadata uses sessionID; older exports use sessionId on task tools.
+    const child = idFrom(tool.state?.metadata, "sessionID") ?? idFrom(tool.state?.metadata, "sessionId");
     if (child) {
       bump(analysis.childSessionIds, child);
     }

@@ -17,17 +17,21 @@ describe("analyzeSession", () => {
     if (!result.ok) {
       return;
     }
-    expect(result.analysis.total).toBe(5);
+    expect(result.analysis.total).toBe(6);
     expect([...result.analysis.totals.entries()].sort()).toEqual([
       ["shell", 1],
       ["skill", 2],
       ["subagent", 2],
+      ["task", 1],
     ]);
     expect([...result.analysis.completedSkillIds.entries()]).toEqual([["security-review", 1]]);
     expect([...result.analysis.failedSkillIds.entries()]).toEqual([["missing-skill", 1]]);
     expect([...result.analysis.completedAgentIds.entries()]).toEqual([["security-auditor", 1]]);
     expect([...result.analysis.failedAgentIds.entries()]).toEqual([]);
-    expect([...result.analysis.childSessionIds.entries()]).toEqual([["ses_synthetic_child", 1]]);
+    expect([...result.analysis.childSessionIds.entries()].sort()).toEqual([
+      ["ses_synthetic_child", 1],
+      ["ses_synthetic_legacy_child", 1],
+    ]);
     expect(result.analysis.errors).toBe(1);
     expect(result.analysis.incomplete).toBe(1);
     expect(result.analysis.skillMessages).toBe(1);
@@ -93,11 +97,12 @@ describe("CLI", () => {
     expect(output).toContain("shell: 1");
     expect(output).toContain("skill: 2");
     expect(output).toContain("subagent: 2");
+    expect(output).toContain("task: 1");
     expect(output).toContain("Skill IDs - completed (state.input.id):\n  security-review: 1");
     expect(output).toContain("Skill IDs - failed (state.input.id):\n  missing-skill: 1");
     expect(output).toContain("Subagent IDs - completed (state.input.agent):\n  security-auditor: 1");
     expect(output).toContain("Subagent IDs - failed (state.input.agent):\n  (none)");
-    expect(output).toContain("Child sessions (state.metadata.sessionID):\n  ses_synthetic_child: 1");
+    expect(output).toContain("Child sessions (state.metadata.sessionID):\n  ses_synthetic_child: 1\n  ses_synthetic_legacy_child: 1");
     expect(errors).not.toContain("MISMATCH:");
   });
 });
