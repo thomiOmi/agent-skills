@@ -1,0 +1,114 @@
+{
+  "info": {
+    "id": "ses_synthetic0000000000000000000",
+    "title": "Synthetic fixture",
+    "time": { "created": 0, "updated": 0 },
+    "location": { "directory": "/synthetic", "projectID": "synthetic" },
+    "agent": "build",
+    "model": { "providerID": "synthetic", "modelID": "synthetic" }
+  },
+  "messages": [
+    {
+      "id": "msg_synthetic_1",
+      "type": "user",
+      "time": { "created": 0 },
+      "text": "synthetic prompt",
+      "files": [],
+      "agents": [],
+      "skills": []
+    },
+    {
+      "id": "msg_synthetic_2",
+      "type": "assistant",
+      "agent": "build",
+      "model": { "providerID": "synthetic", "modelID": "synthetic" },
+      "time": { "created": 1 },
+      "content": [
+        {
+          "type": "tool",
+          "id": "call_skill",
+          "name": "skill",
+          "state": {
+            "status": "completed",
+            "input": { "id": "security-review" },
+            "content": [{ "type": "text", "text": "synthetic output" }],
+            "metadata": {}
+          },
+          "time": { "created": 1 }
+        },
+        {
+          "type": "tool",
+          "id": "call_subagent",
+          "name": "subagent",
+          "state": {
+            "status": "completed",
+            "input": {
+              "agent": "security-auditor",
+              "description": "Synthetic review",
+              "prompt": "synthetic task"
+            },
+            "content": [{ "type": "text", "text": "synthetic output" }],
+            "metadata": { "sessionID": "ses_synthetic_child" }
+          },
+          "time": { "created": 1 }
+        },
+        { "type": "text", "text": "synthetic text" }
+      ]
+    },
+    {
+      "id": "msg_synthetic_3",
+      "type": "assistant",
+      "agent": "build",
+      "model": { "providerID": "synthetic", "modelID": "synthetic" },
+      "time": { "created": 2 },
+      "content": [
+        {
+          "type": "tool",
+          "id": "call_skill_error",
+          "name": "skill",
+          "state": {
+            "status": "error",
+            "input": { "id": "missing-skill" },
+            "error": { "name": "ToolFailure", "data": { "message": "Unable to load skill missing-skill" } }
+          },
+          "time": { "created": 2 }
+        },
+        {
+          "type": "tool",
+          "id": "call_shell",
+          "name": "shell",
+          "state": {
+            "status": "completed",
+            "input": { "command": "echo synthetic" },
+            "content": [{ "type": "text", "text": "synthetic" }]
+          },
+          "time": { "created": 2 }
+        }
+      ]
+    },
+    {
+      "id": "msg_synthetic_4",
+      "type": "assistant",
+      "agent": "build",
+      "model": { "providerID": "synthetic", "modelID": "synthetic" },
+      "time": { "created": 3 },
+      "content": [
+        {
+          "type": "tool",
+          "id": "call_subagent_streaming",
+          "name": "subagent",
+          "state": { "status": "streaming", "input": "{\"agent\":\"sec" },
+          "time": { "created": 3 }
+        }
+      ]
+    },
+    {
+      "id": "msg_synthetic_5",
+      "type": "skill",
+      "time": { "created": 4 },
+      "skill": "security-review",
+      "name": "security-review",
+      "text": "synthetic skill text"
+    }
+  ]
+}
