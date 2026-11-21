@@ -32,8 +32,10 @@ session was started.
 | `bun test` | playground | executed (4 passed) |
 | `git reset --hard HEAD` + `git clean -fd` | playground | executed |
 | `git rev-parse --short HEAD` | both repos | executed |
-| `bun scripts/eval-count-tool-calls.ts <file.json>` | repo | executed on the synthetic fixture |
-| `opencode session export <sessionID> > file.json` | playground | documented (help + official docs) |
+| `bun scripts/eval-count-tool-calls.ts <file.json>` | repo | executed on the synthetic fixture and a real export |
+| `bun scripts/eval-collect.ts ...` | repo | executed in tests with a fake runner and synthetic fixtures; not run against real OpenCode |
+| `bun scripts/eval-report.ts ...` | repo | executed in tests with synthetic summaries |
+| `opencode session export <sessionID> > file.json` | repo | executed on a real session (plain, no `--sanitize`) |
 | `opencode stats --tools --json` | playground | documented (help + source) |
 
 ## Setup checklist
@@ -70,28 +72,51 @@ manual step described there.
 
 ```sh
 # 1. Reset the playground to the clean commit (executed; destructive only inside the playground)
-cd ../agent-playground
+cd <playground-dir>
 git reset --hard HEAD
 git clean -fd
 bun test
 
 # 2. Start a fresh OpenCode session from the playground directory, send exactly one prompt, let it finish.
-
-# 3. Find the session ID (executed)
-opencode session list --format json
-
-# 4. Export that session as plain JSON (documented; NOT --sanitize, see below)
-opencode session export <sessionID> > docs/eval/sessions/<scenario>-run<N>-<sessionID>.json
 ```
 
-Note: the export path above is relative to this repo. Create `docs/eval/sessions/` first if it
-does not exist; it is gitignored.
+### Automated collection
+
+From this repo, run the collector for each scenario/run. Provide the playground directory with
+`--playground <dir>` or the `EVAL_PLAYGROUND_DIR` environment variable:
 
 ```sh
-# 5. Count tool calls (executed on the synthetic fixture in tests/fixtures/)
-cd ../agent-skills
+bun scripts/eval-collect.ts <scenario> <run> --playground <playground-dir>
+```
+
+It selects the newest root session whose `directory` field matches the playground, refuses
+sessions older than 60 minutes or already collected (`--force` overrides), exports the session
+and its descendants into `docs/eval/sessions/` (gitignored), writes one summary per collection to
+`docs/eval/sessions/summary/<scenario>-run<N>.json`, and prints the Markdown row for the results
+table. Never use `--sanitize`.
+
+### Reporting
+
+```sh
+bun scripts/eval-report.ts docs/eval/sessions/summary
+bun scripts/eval-report.ts docs/eval/sessions/summary --json docs/eval/sessions/metrics.json
+bun scripts/eval-report.ts docs/eval/sessions/summary --compare <before.json> <after.json>
+```
+
+The report prints the full results table plus ID-independent aggregate metrics. `--json` writes
+the same metrics to a local file; `--compare` prints a before/after table of those metrics only.
+
+### Manual fallback
+
+If the collector cannot be used, reproduce the same steps by hand:
+
+```sh
+opencode session list --format json
+opencode session export <sessionID> > docs/eval/sessions/<scenario>-run<N>-<sessionID>.json
 bun scripts/eval-count-tool-calls.ts docs/eval/sessions/<scenario>-run<N>-<sessionID>.json
 ```
+
+Exports, summaries, and metrics stay under `docs/eval/sessions/` and are never committed.
 
 Optional aggregate cross-check (documented; time-range/project totals only, no per-session
 breakdown and no skill/agent IDs):
@@ -103,19 +128,24 @@ opencode stats --tools --json
 The counter prints totals for **every** tool name it sees, so a renamed `skill` or `subagent`
 tool is visible. It prints separate completed and failed ID lists: skill IDs from
 `state.input.id`, subagent agent IDs from `state.input.agent`, and child session IDs from
-`state.metadata.sessionID`. The **MISMATCH** warning compares `type: "skill"` messages only with
-**completed** `skill` tool calls, so failed calls do not create a false mismatch. Copy completed
-IDs into the "Skill calls (IDs)" / "Subagent calls (IDs)" columns and failed IDs into "Failed
-IDs"; a guessed agent ID that does not exist appears as a failed subagent ID. Streaming string
-inputs are ignored and listed under "Incomplete". If the counter prints
-`0 tool calls found in file` or `unexpected format`, record that as a measurement failure, not as
-a zero.
+`state.metadata.sessionID` or the camelCase `state.metadata.sessionId` seen in older exports.
+The **MISMATCH** warning compares `type: "skill"` messages only with **completed** `skill` tool
+calls, so failed calls do not create a false mismatch. Copy completed IDs into the "Skill calls
+(IDs)" / "Subagent calls (IDs)" columns and failed IDs into "Failed IDs". Streaming string inputs
+are ignored and listed under "Incomplete". If the counter prints `0 tool calls found in file` or
+`unexpected format`, record that as a measurement failure, not as a zero.
 
-Subagent calls create **child sessions** with a `parentID`, whose IDs the counter prints under
-"Child sessions". The export of the main session does not contain their internal tool calls. Find
-children with `opencode session list --format json`, export each child into
+Subagent calls create child sessions whose IDs appear in tool metadata. The export of the main
+session does not contain their internal tool calls, so the collector exports each child and marks
+provenance as `main` or `child` in the summary. In the manual flow, export each child into
 `docs/eval/sessions/`, run the counter on each, and record whether you did so in the "Child
 sessions exported?" column. Use `no` only when there were no children.
+
+### Frozen results
+
+Baseline results are saved as the frozen file `docs/eval/results/baseline-2026-11.md` only when
+the user pastes real results; do not create it until then. The scenario prompts and the playground
+commit `99419d2` are frozen until the after run.
 
 **Never use `--sanitize` for this measurement.** Source verification
 (`packages/core/src/session/transfer.ts`, `sanitizeToolState` in anomalyco/opencode) shows it
