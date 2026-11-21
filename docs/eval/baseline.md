@@ -5,8 +5,9 @@ scenarios in their own OpenCode against a throwaway playground project, then pas
 back. Capture the **baseline** before changing any agents, skills, commands, plugins,
 instructions, or config. Later, repeat with the identical setup for the after run.
 
-The target is `C:/Users/thomi/workspaces/my-projects/agent-playground`. See
-[`playground.md`](playground.md) for its contents and seeded issues. The playground has no
+The target is `<playground>`, the `agent-playground` sibling of this repository; substitute your
+local path when running. See [`playground.md`](playground.md) for its contents and seeded issues.
+The playground has no
 project config, so the **global installed config** is what gets measured, not this repo's
 `opencode.jsonc`.
 
@@ -41,13 +42,13 @@ Record these once before run 1. Reuse all of them for run 2 and for the after ru
 - [ ] OpenCode version: `opencode --version` -> **v2.3.2**, the version the counter script was verified against. Re-check the script after **any** OpenCode upgrade; the export shape and tool names can change.
 - [ ] Model: write down the exact provider/model/variant. Do not change it between runs.
 - [ ] Primary agent: use the agent listed per scenario below (`build` or `plan`). Note any manual switch in the Notes column.
-- [ ] Playground path: `C:/Users/thomi/workspaces/my-projects/agent-playground`, clean commit `99419d2`. Confirm `bun test` passes (4 tests) before starting.
+- [ ] Playground path: `<playground>` (the sibling `agent-playground` directory), clean commit `99419d2`. Confirm `bun test` passes (4 tests) before starting.
 - [ ] Playground has no `opencode.jsonc`, `AGENTS.md`, `.opencode/`, or `.agents/`. Do not add any of them.
-- [ ] Installed skills count **from the global install** (not this repo): `~/.config/opencode/skills/` contains **43** skill directories, and the ownership manifest `~/.config/opencode/.agent-skills-manifest.json` exists. Re-read the count at run time.
+- [ ] Installed skills count **from the global install** (not this repo): `<HOME>/.config/opencode/skills/` contains **43** skill directories, and the ownership manifest `<HOME>/.config/opencode/.agent-skills-manifest.json` exists. Re-read the count at run time.
 - [ ] Installed agents count **from the global install**: `opencode debug agents` reports **27** agents total: 20 installed subagents plus 7 built-ins (`build`, `compaction`, `explore`, `general`, `plan`, `summary`, `title`). The installed `agents/` directory contains **20** files. Re-read at run time.
 - [ ] Difference from this repo: `agent-skills` currently has **35** skills and **20** agents. The global install has 43 skills (8 extra local skills) and the same 20 agents. Use the global numbers as the setup record.
-- [ ] Config source: run `opencode debug config` **from the playground directory**. On this machine it reports only `document: C:\Users\thomi\.config\opencode\opencode.jsonc` and `directory: C:\Users\thomi\.config\opencode`. Save the full output outside the repo if needed. The global config sets `default_agent: plan`, `instructions: ["AGENTS.md"]`, `experimental.todo: true`, `experimental.subagent_depth: 2`; keys and headers are printed as `***`.
-- [ ] Repo commit being measured: `git rev-parse --short HEAD` in `agent-skills` -> `4f6cc57`.
+- [ ] Config source: run `opencode debug config` **from the playground directory** and summarize it locally; do not paste its raw output here. It reports a single global config document under `<HOME>/.config/opencode/` and no project or ancestor config. Relevant keys are `default_agent`, `instructions`, `experimental.todo` (enabled), `experimental.subagent_depth` (set), plus MCP server entries; secret and header values are redacted by the command.
+- [ ] Repo commit being measured: record `git rev-parse --short HEAD` from `agent-skills` at run time.
 - [ ] The model, global config, and installed agent/skill set are identical for the baseline and after runs. If any changes, the comparison is invalid.
 
 ## Reset and measurement procedure

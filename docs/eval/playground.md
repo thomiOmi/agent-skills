@@ -5,7 +5,7 @@ repository so that the global installed OpenCode config, agents, skills, and com
 get measured. It deliberately contains no `opencode.jsonc`, no `AGENTS.md`, no `.opencode/`, and
 no `.agents/`.
 
-- Path: `C:/Users/thomi/workspaces/my-projects/agent-playground` (sibling of `agent-skills`)
+- Path: `<playground>` (the `agent-playground` sibling of `agent-skills`; substitute your local path)
 - Git: its own repository, branch `main`, one clean initial commit `99419d2`
 - Size: 10 files, 204 lines total
 - Test result on the clean commit: `bun test` -> 4 passed, 0 failed
@@ -49,17 +49,16 @@ and make one initial commit. `bun install` is not needed because there are no de
 
 ## Config isolation
 
-Run `opencode debug config` from the playground directory, not from `agent-skills`. On this
-machine it reports only:
+Run `opencode debug config` from the playground directory, not from `agent-skills`. Summarize it
+by key names and flags only; never paste its raw output into a tracked file. It reports a single
+global config document under `<HOME>/.config/opencode/` and no project-local or ancestor config
+sources. The relevant global keys are `default_agent`, `instructions`, `experimental.todo`
+(enabled), `experimental.subagent_depth` (set), plus MCP server entries; secret and header values
+are redacted by the command.
 
-```text
-document: C:\Users\thomi\.config\opencode\opencode.jsonc
-directory: C:\Users\thomi\.config\opencode
-```
-
-No project-local or ancestor OpenCode config was found above the playground. The only ancestor
-match was an unrelated `C:\Users\thomi\.agents` directory, which is not an OpenCode config
-source. This means the measured behavior comes from the user's global install.
+An unrelated `.agents` directory exists in the user home directory above the playground, but it
+is not an OpenCode config source. This means the measured behavior comes from the user's global
+install.
 
 ## Seeded issues (do not reveal these in any prompt)
 
