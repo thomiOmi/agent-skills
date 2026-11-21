@@ -25,6 +25,7 @@ session was started.
 | `opencode debug agents` | repo | executed |
 | `opencode debug --help` | repo | executed |
 | `opencode debug config` | playground | executed |
+| `opencode api get /api/skill` | playground | executed (60 advertised, 28806 description chars) |
 | `opencode session --help` | repo | executed |
 | `opencode session export --help` | repo | executed |
 | `opencode session list --format json` | repo | executed |
@@ -44,12 +45,23 @@ Record these once before run 1. Reuse all of them for run 2 and for the after ru
 - [ ] Primary agent: use the agent listed per scenario below (`build` or `plan`). Note any manual switch in the Notes column.
 - [ ] Playground path: `<playground>` (the sibling `agent-playground` directory), clean commit `99419d2`. Confirm `bun test` passes (4 tests) before starting.
 - [ ] Playground has no `opencode.jsonc`, `AGENTS.md`, `.opencode/`, or `.agents/`. Do not add any of them.
-- [ ] Installed skills count **from the global install** (not this repo): `<HOME>/.config/opencode/skills/` contains **43** skill directories, and the ownership manifest `<HOME>/.config/opencode/.agent-skills-manifest.json` exists. OpenCode V2 also merges `<HOME>/.claude/skills` and `<HOME>/.agents/skills`. Re-read the count at run time.
+- [ ] Advertised skills: run `opencode api get /api/skill` **from the playground directory** and count the advertised IDs. Current baseline: **60** (57 filesystem + 3 built-ins). Per-source counts: global OpenCode skills folder **43**, `<HOME>/.agents/skills` **15**, `<HOME>/.claude/skills` **9**, duplicate IDs **10**, built-ins **3**. This includes **8** skills not owned by this repo; they are part of the measured environment. Duplicate IDs resolve by the documented source precedence at <https://opencode.ai/docs/skills/#precedence>: **9** resolve to the home `.agents/skills` source and **1** to the global OpenCode folder. Re-read at run time. Record counts per source only; never paste the full ID list into a tracked file.
+- [ ] Advertised description size: from the same API output, sum the character lengths of every advertised `description`. Current baseline: **28806** characters. Recompute at run time.
+- [ ] Save the full sorted advertised ID list locally in `docs/eval/sessions/advertised-skill-ids.txt` (gitignored, never committed). For the after run the list must be identical, except for repo-owned skills that the planned changes add, rename, or remove.
 - [ ] Installed agents count **from the global install**: `opencode debug agents` reports **27** agents total: 20 installed subagents plus 7 built-ins (`build`, `compaction`, `explore`, `general`, `plan`, `summary`, `title`). The installed `agents/` directory contains **20** files. Re-read at run time.
-- [ ] Difference from this repo: `agent-skills` currently has **35** skills and **20** agents. The global install has 43 skills (8 extra local skills) and the same 20 agents. Use the global numbers as the setup record. The 8 extra skills are part of the measured environment and must be unchanged for the after run.
 - [ ] Config source: run `opencode debug config` **from the playground directory** and summarize it locally; do not paste its raw output here. It reports a single global config document under `<HOME>/.config/opencode/` and no project or ancestor config. Relevant keys are `default_agent`, `instructions`, `experimental.todo` (enabled), `experimental.subagent_depth` (set), plus MCP server entries; sensitive values are redacted by the command.
 - [ ] Repo commit being measured: record `git rev-parse --short HEAD` from `agent-skills` at run time.
 - [ ] The model, global config, and installed agent/skill set are identical for the baseline and after runs. If any changes, the comparison is invalid.
+
+The advertised counts, description total, and local ID list were produced by these commands, run
+from the playground directory:
+
+```powershell
+$j = opencode api get /api/skill | ConvertFrom-Json
+$ids = @($j.data.id | Sort-Object)
+$ids | Set-Content ../agent-skills/docs/eval/sessions/advertised-skill-ids.txt
+$chars = 0; foreach ($item in $j.data) { $chars += $item.description.Length }; $chars
+```
 
 ## Reset and measurement procedure
 
