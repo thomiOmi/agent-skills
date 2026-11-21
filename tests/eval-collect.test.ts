@@ -1,5 +1,5 @@
 import type { OpenCodeRunner, SessionInfo } from "../scripts/eval-collect";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
@@ -135,6 +135,25 @@ describe("collectScenario", () => {
     await expect(collectScenario({ ...base, runner })).rejects.toThrow("already collected");
     const forced = await collectScenario({ ...base, runner, force: true });
     expect(forced.sessionID).toBe(rootID);
+    await rm(outDir, { recursive: true, force: true });
+  });
+
+  test("refuses a selected session that is actually a child", async () => {
+    const rootID = "ses_synthetic_child_selected";
+    const root = { info: { id: rootID, parentID: "ses_synthetic_parent" }, messages: [] };
+    const outDir = await tempDir();
+    const runner: OpenCodeRunner = {
+      listSessions: async () => [{ id: rootID, directory: PLAYGROUND, updated: Date.now() }],
+      exportSession: async () => root,
+    };
+    await expect(collectScenario({
+      scenario: 4,
+      run: 1,
+      playgroundDir: PLAYGROUND,
+      runner,
+      outDir,
+    })).rejects.toThrow("selected session is a child session");
+    await expect(access(join(outDir, "summary", "4-run1.json"))).rejects.toThrow();
     await rm(outDir, { recursive: true, force: true });
   });
 

@@ -202,8 +202,11 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
     failures: [],
   };
   const exportedRoot = await options.runner.exportSession(root.id);
-  await writeFile(join(outDir, `${baseName}-${root.id}.json`), JSON.stringify(exportedRoot, null, 2));
   const rootInfo = (exportedRoot as { info?: ExportedInfo }).info;
+  if (rootInfo?.parentID) {
+    throw new Error("selected session is a child session (info.parentID is present); rerun on a root session");
+  }
+  await writeFile(join(outDir, `${baseName}-${root.id}.json`), JSON.stringify(exportedRoot, null, 2));
   summary.primaryAgent = rootInfo?.agent;
   if (rootInfo?.model?.providerID && rootInfo.model.modelID) {
     summary.model = `${rootInfo.model.providerID}/${rootInfo.model.modelID}`;
