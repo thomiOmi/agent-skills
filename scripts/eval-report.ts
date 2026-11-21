@@ -17,6 +17,8 @@ export interface ReportMetrics {
   failedSubagentIDs: string[];
   controlScenario10ZeroCalls: boolean | null;
   disagreeingScenarios: number[];
+  incompleteChildCoverageScenarios: number[];
+  failedNonTargetTools: Array<{ scenario: number; run: number; names: string[] }>;
 }
 
 /** Builds metrics from summaries without matching any scenario by ID. */
@@ -25,8 +27,19 @@ export function buildMetrics(summaries: CollectionSummary[]): ReportMetrics {
   const subagent = { run1: 0, run2: 0, anyRun: 0 };
   const failedSkill = new Set<string>();
   const failedSubagent = new Set<string>();
+  const incompleteCoverage = new Set<number>();
+  const failedNonTargetTools: Array<{ scenario: number; run: number; names: string[] }> = [];
   const byScenario = new Map<number, Map<number, CollectionSummary>>();
   for (const summary of summaries) {
+    if (summary.childCoverage === "incomplete") {
+      incompleteCoverage.add(summary.scenario);
+    }
+    const nonTarget = Object.keys(summary.failedCallsByToolName)
+      .filter(name => name !== "skill" && name !== "subagent")
+      .sort();
+    if (nonTarget.length > 0) {
+      failedNonTargetTools.push({ scenario: summary.scenario, run: summary.run, names: nonTarget });
+    }
     const runs = byScenario.get(summary.scenario) ?? new Map<number, CollectionSummary>();
     runs.set(summary.run, summary);
     byScenario.set(summary.scenario, runs);
@@ -91,6 +104,8 @@ export function buildMetrics(summaries: CollectionSummary[]): ReportMetrics {
     failedSubagentIDs: [...failedSubagent].sort(),
     controlScenario10ZeroCalls,
     disagreeingScenarios,
+    incompleteChildCoverageScenarios: [...incompleteCoverage].sort((left, right) => left - right),
+    failedNonTargetTools,
   };
 }
 
@@ -113,6 +128,12 @@ export function renderMetrics(metrics: ReportMetrics): string {
   const control = metrics.controlScenario10ZeroCalls === null
     ? "not observed"
     : metrics.controlScenario10ZeroCalls ? "yes" : "no";
+  const coverage = metrics.incompleteChildCoverageScenarios.length
+    ? metrics.incompleteChildCoverageScenarios.join(", ")
+    : "none";
+  const nonTarget = metrics.failedNonTargetTools.length
+    ? metrics.failedNonTargetTools.map(item => `${item.scenario}/run${item.run}:${item.names.join(",")}`).join("; ")
+    : "none";
   return [
     `Scenarios with >=1 completed skill call: run 1 ${metrics.scenariosWithCompletedSkill.run1}/${metrics.totalScenarios}, run 2 ${metrics.scenariosWithCompletedSkill.run2}/${metrics.totalScenarios}, any run ${metrics.scenariosWithCompletedSkill.anyRun}/${metrics.totalScenarios}`,
     `Scenarios with >=1 completed subagent call: run 1 ${metrics.scenariosWithCompletedSubagent.run1}/${metrics.totalScenarios}, run 2 ${metrics.scenariosWithCompletedSubagent.run2}/${metrics.totalScenarios}, any run ${metrics.scenariosWithCompletedSubagent.anyRun}/${metrics.totalScenarios}`,
@@ -120,6 +141,8 @@ export function renderMetrics(metrics: ReportMetrics): string {
     `Failed subagent IDs: ${metrics.totalFailedSubagentIDs} (${idText(metrics.failedSubagentIDs)})`,
     `Control scenario 10 had zero skill/subagent calls: ${control}`,
     `Scenarios where run 1 and run 2 disagree: ${metrics.disagreeingScenarios.length ? metrics.disagreeingScenarios.join(", ") : "none"}`,
+    `Scenarios with incomplete child coverage: ${coverage}`,
+    `Failed non-target tool calls by scenario: ${nonTarget}`,
   ].join("\n");
 }
 
@@ -136,6 +159,8 @@ export function renderComparison(before: ReportMetrics, after: ReportMetrics): s
     ["Failed subagent ID count", String(before.totalFailedSubagentIDs), String(after.totalFailedSubagentIDs)],
     ["Control scenario 10 zero calls", String(before.controlScenario10ZeroCalls), String(after.controlScenario10ZeroCalls)],
     ["Disagreeing scenarios", String(before.disagreeingScenarios.length), String(after.disagreeingScenarios.length)],
+    ["Incomplete child coverage scenarios", String(before.incompleteChildCoverageScenarios.length), String(after.incompleteChildCoverageScenarios.length)],
+    ["Failed non-target tool scenarios", String(before.failedNonTargetTools.length), String(after.failedNonTargetTools.length)],
   ];
   return ["| Metric | Before | After |", "|---|---|---|", ...rows.map(row => `| ${row[0]} | ${row[1]} | ${row[2]} |`)].join("\n");
 }

@@ -25,6 +25,10 @@ function summary(
     primaryAgent: "build",
     model: "provider/model",
     childSessionCount: 0,
+    childSessionsFound: 0,
+    childCoverage: "complete",
+    completedSubagentCalls: 0,
+    failedCallsByToolName: {},
     completedSkillIDs: skill,
     failedSkillIDs: failedSkill,
     completedSubagentIDs: subagent,
@@ -41,7 +45,11 @@ function fixtures(): CollectionSummary[] {
     summary(1, 1, [record("skill-a")], [], [record("bad-skill")]),
     summary(1, 2, [], [record("agent-b")]),
     summary(2, 1, [record("skill-c")]),
-    summary(2, 2, [record("skill-c")]),
+    {
+      ...summary(2, 2, [record("skill-c")]),
+      childCoverage: "incomplete" as const,
+      failedCallsByToolName: { task: 1 },
+    },
     summary(10, 1),
     summary(10, 2),
   ];
@@ -74,8 +82,12 @@ describe("buildMetrics", () => {
     expect(metrics.totalFailedSubagentIDs).toBe(0);
     expect(metrics.controlScenario10ZeroCalls).toBe(true);
     expect(metrics.disagreeingScenarios).toEqual([1]);
-    expect(renderMetrics(metrics)).toContain("any run 2/10");
+    expect(metrics.incompleteChildCoverageScenarios).toEqual([2]);
+    expect(metrics.failedNonTargetTools).toEqual([{ scenario: 2, run: 2, names: ["task"] }]);
+    expect(renderMetrics(metrics)).toContain("Scenarios with incomplete child coverage: 2");
+    expect(renderMetrics(metrics)).toContain("Failed non-target tool calls by scenario: 2/run2:task");
     expect(renderTable(fixtures())).toContain("| Scenario | Run (1/2) |");
+    expect(renderTable(fixtures())).toContain("failedTools=task");
   });
 
   test("marks control as not observed when scenario 10 is absent", () => {
