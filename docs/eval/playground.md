@@ -53,8 +53,8 @@ Run `opencode debug config` from the playground directory, not from `agent-skill
 by key names and flags only; never paste its raw output into a tracked file. It reports a single
 global config document under `<HOME>/.config/opencode/` and no project-local or ancestor config
 sources. The relevant global keys are `default_agent`, `instructions`, `experimental.todo`
-(enabled), `experimental.subagent_depth` (set), plus MCP server entries; secret and header values
-are redacted by the command.
+(enabled), `experimental.subagent_depth` (set), plus MCP server entries; sensitive values are
+redacted by the command.
 
 An unrelated `.agents` directory exists in the user home directory above the playground, but it
 is not an OpenCode config source. This means the measured behavior comes from the user's global
