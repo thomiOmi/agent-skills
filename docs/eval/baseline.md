@@ -93,9 +93,10 @@ It selects the newest root session whose `directory` field matches the playgroun
 sessions older than 60 minutes or already collected (`--force` overrides), exports the session
 and its descendants into `docs/eval/sessions/` (gitignored), writes one summary per collection to
 `docs/eval/sessions/summary/<scenario>-run<N>.json`, and prints the Markdown row for the results
-table. The summary records `childCoverage`: when completed `subagent` calls outnumber exported
-children, the collector writes a loud stderr warning, sets `childCoverage` to `incomplete`, and
-the report flags that scenario. Never use `--sanitize`.
+table. If the exported `info.parentID` is present, the selected session is a child and collection
+fails without writing a summary. The summary records `childCoverage`: when completed `subagent`
+calls outnumber exported children, the collector writes a loud stderr warning, sets
+`childCoverage` to `incomplete`, and the report flags that scenario. Never use `--sanitize`.
 
 ### Reporting
 
@@ -105,7 +106,9 @@ bun scripts/eval-report.ts docs/eval/sessions/summary --json docs/eval/sessions/
 bun scripts/eval-report.ts docs/eval/sessions/summary --compare <before.json> <after.json>
 ```
 
-The report prints the full results table plus ID-independent aggregate metrics. `--json` writes
+The report prints the full results table plus ID-independent aggregate metrics. Runs whose summary
+has `failures` are listed with scenario, run, and problem text; they are marked excluded/unreliable
+and omitted from presence counts, and the counts state how many runs were excluded. `--json` writes
 the same metrics to a local file; `--compare` prints a before/after table of those metrics only.
 
 ### Manual fallback
