@@ -37,6 +37,7 @@ function summary(
     incomplete: 0,
     mismatch: false,
     failures: [],
+    zeroToolSessions: [],
   };
 }
 
@@ -55,6 +56,10 @@ function fixtures(): CollectionSummary[] {
       failures: [{ sessionID: "ses_synthetic", problem: "synthetic analysis failure" }],
     },
     summary(3, 2, [record("skill-d")]),
+    {
+      ...summary(4, 1),
+      zeroToolSessions: [{ sessionID: "ses_synthetic", source: "main" }],
+    },
     summary(10, 1),
     summary(10, 2),
   ];
@@ -93,6 +98,8 @@ describe("buildMetrics", () => {
       { scenario: 3, run: 1, problem: "synthetic analysis failure" },
     ]);
     expect(metrics.excludedRunCount).toBe(1);
+    expect(metrics.runsWithZeroMainToolCalls).toEqual([{ scenario: 4, run: 1 }]);
+    expect(renderMetrics(metrics)).toContain("Runs with zero tool calls in the main session: 4/1");
     expect(renderMetrics(metrics)).toContain("Runs with analysis failures: 1");
     expect(renderMetrics(metrics)).toContain("scenario 3 run 1: synthetic analysis failure");
     expect(renderMetrics(metrics)).toContain("Excluded/unreliable runs (analysis failures): 1");
