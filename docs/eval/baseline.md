@@ -96,7 +96,12 @@ and its descendants into `docs/eval/sessions/` (gitignored), writes one summary 
 table. If the exported `info.parentID` is present, the selected session is a child and collection
 fails without writing a summary. The summary records `childCoverage`: when completed `subagent`
 calls outnumber exported children, the collector writes a loud stderr warning, sets
-`childCoverage` to `incomplete`, and the report flags that scenario. Never use `--sanitize`.
+`childCoverage` to `incomplete`, and the report flags that scenario. A `0 tool calls found in file`
+result is a **valid zero**: it is recorded in `zeroToolSessions` with `main`/`child` provenance and
+shown as `zeroToolCalls=<n>` in the row notes; it is not a measurement failure.
+`--session <id>` selects a specific session instead of the newest match (directory matching and the
+60-minute freshness rule are skipped, with a printed note); it is the recovery path when the newest
+session is a child. The `info.parentID` guard still applies. Never use `--sanitize`.
 
 ### Reporting
 
@@ -108,8 +113,11 @@ bun scripts/eval-report.ts docs/eval/sessions/summary --compare <before.json> <a
 
 The report prints the full results table plus ID-independent aggregate metrics. Runs whose summary
 has `failures` are listed with scenario, run, and problem text; they are marked excluded/unreliable
-and omitted from presence counts, and the counts state how many runs were excluded. `--json` writes
-the same metrics to a local file; `--compare` prints a before/after table of those metrics only.
+and omitted from presence counts, and the counts state how many runs were excluded. Runs whose main
+session had zero tool calls stay in the aggregates as valid zero-skill/zero-subagent runs and are
+listed as `Runs with zero tool calls in the main session: scenario/run`; child zero-tool sessions
+appear only in the table notes. `--json` writes the same metrics to a local file; `--compare` prints
+a before/after table of those metrics only.
 
 ### Manual fallback
 
