@@ -44,7 +44,7 @@ Record these once before run 1. Reuse all of them for run 2 and for the after ru
 - [ ] Primary agent: use the agent listed per scenario below (`build` or `plan`). Note any manual switch in the Notes column.
 - [ ] Playground path: `<playground>` (the sibling `agent-playground` directory), clean commit `99419d2`. Confirm `bun test` passes (4 tests) before starting.
 - [ ] Playground has no `opencode.jsonc`, `AGENTS.md`, `.opencode/`, or `.agents/`. Do not add any of them.
-- [ ] Installed skills count **from the global install** (not this repo): `<HOME>/.config/opencode/skills/` contains **43** skill directories, and the ownership manifest `<HOME>/.config/opencode/.agent-skills-manifest.json` exists. Re-read the count at run time.
+- [ ] Installed skills count **from the global install** (not this repo): `<HOME>/.config/opencode/skills/` contains **43** skill directories, and the ownership manifest `<HOME>/.config/opencode/.agent-skills-manifest.json` exists. OpenCode V2 also merges `<HOME>/.claude/skills` and `<HOME>/.agents/skills`. Re-read the count at run time.
 - [ ] Installed agents count **from the global install**: `opencode debug agents` reports **27** agents total: 20 installed subagents plus 7 built-ins (`build`, `compaction`, `explore`, `general`, `plan`, `summary`, `title`). The installed `agents/` directory contains **20** files. Re-read at run time.
 - [ ] Difference from this repo: `agent-skills` currently has **35** skills and **20** agents. The global install has 43 skills (8 extra local skills) and the same 20 agents. Use the global numbers as the setup record. The 8 extra skills are part of the measured environment and must be unchanged for the after run.
 - [ ] Config source: run `opencode debug config` **from the playground directory** and summarize it locally; do not paste its raw output here. It reports a single global config document under `<HOME>/.config/opencode/` and no project or ancestor config. Relevant keys are `default_agent`, `instructions`, `experimental.todo` (enabled), `experimental.subagent_depth` (set), plus MCP server entries; sensitive values are redacted by the command.
@@ -121,7 +121,7 @@ symptoms only; they never reveal the seeded defects.
 
 | # | Primary agent | Prompt (copy-paste exactly) | Expected skills (expected, not required) | Expected agents (expected, not required) |
 |---|---|---|---|---|
-| 1 Feature (larger, multi-file) | build | Add POST /widgets with validated name, insert into SQLite, return 201, add tests, and document the endpoint in the README. | `api-conventions`, `backend-patterns`, `database`, `documentation`, `testing`, `code-style` | `backend-developer`, `database-engineer`, `docs-writer`, `qa-engineer` |
+| 1 Feature (larger, multi-file) | build | Add a `created_at` timestamp to widgets: add a migration, return it from GET /widgets, show it in WidgetList, add tests, and update the README. | `api-conventions`, `backend-patterns`, `database`, `database-migration`, `frontend-patterns`, `documentation`, `testing`, `code-style` | `backend-developer`, `database-engineer`, `frontend-developer`, `docs-writer`, `qa-engineer` |
 | 2 Bug investigation | plan | GET /widgets?limit=N returns one more item than N. Find the root cause and report. Do not change files. | `debugging` | `senior-developer`, `deep-thinker` |
 | 3 Refactor | build | Remove the duplicated validation logic between the handlers without changing behavior; keep tests passing. | `refactor-planner`, `code-simplifier`, `code-style`, `testing` | `refactor-planner`, `senior-developer` |
 | 4 Git commit | build | Stage all current changes and commit them with a Conventional Commit message. Do not push. | `git-workflow` | none |
@@ -132,8 +132,13 @@ symptoms only; they never reveal the seeded defects.
 | 9 Tests | build | Write unit tests for the widget validation function covering valid input, empty name, too-long name, and non-string name. | `testing`, `test-planning` | `qa-engineer` |
 | 10 Trivial control | build | Fix the typo in the README heading. | none (expected, not required) | none (expected, not required) |
 
-Scenario 4 precondition: after the reset and before starting the session, append one arbitrary
-line to the playground README so there is an uncommitted change to commit.
+Scenario notes:
+- Scenario 1 is feasible on the clean playground commit; it was dry-run and the playground was
+  reset afterwards. The playground already has `POST /widgets`, so the task adds a field across
+  migration, API, UI, tests, and docs instead of adding that endpoint.
+- Scenario 6: the playground has no schema documentation yet, so creating it is acceptable.
+- Scenario 4 precondition: after the reset and before starting the session, append one arbitrary
+  line to the playground README so there is an uncommitted change to commit.
 
 ## Results table template
 

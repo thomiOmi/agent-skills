@@ -56,9 +56,10 @@ sources. The relevant global keys are `default_agent`, `instructions`, `experime
 (enabled), `experimental.subagent_depth` (set), plus MCP server entries; sensitive values are
 redacted by the command.
 
-An unrelated `.agents` directory exists in the user home directory above the playground, but it
-is not an OpenCode config source. This means the measured behavior comes from the user's global
-install.
+A `.agents` directory exists in the user home directory. It is not an OpenCode **config**
+source, but OpenCode V2 does read `<HOME>/.agents/skills` as a global compatibility **skill**
+source, so it is part of the measured environment and must stay unchanged. The same applies to
+`<HOME>/.claude/skills`. No project-local `.agents/` exists in the playground.
 
 ## Seeded issues (do not reveal these in any prompt)
 
