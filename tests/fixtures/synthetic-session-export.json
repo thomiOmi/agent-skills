@@ -93,7 +93,19 @@
             "status": "completed",
             "input": { "description": "Synthetic search", "prompt": "synthetic task", "subagent_type": "explore" },
             "content": [{ "type": "text", "text": "synthetic output" }],
-            "metadata": { "sessionId": "ses_synthetic_legacy_child", "parentSessionId": "ses_synthetic_root" }
+            "metadata": { "sessionId": "ses_synthetic_legacy_child", "parentSessionId": "ses_synthetic0000000000000000000" }
+          },
+          "time": { "created": 2 }
+        },
+        {
+          "type": "tool",
+          "id": "call_task_error",
+          "name": "task",
+          "executed": true,
+          "state": {
+            "status": "error",
+            "input": { "description": "Synthetic unknown tool" },
+            "error": { "name": "ToolFailure", "data": { "message": "Unknown tool task" } }
           },
           "time": { "created": 2 }
         }

@@ -18,9 +18,11 @@ export interface Analysis {
   failedAgentIds: Map<string, number>;
   childSessionIds: Map<string, number>;
   errors: number;
+  failedCallsByToolName: Map<string, number>;
   incomplete: number;
   skillMessages: number;
   completedSkillCalls: number;
+  completedSubagentCalls: number;
   mismatch: boolean;
 }
 export type Result = { ok: true; analysis: Analysis } | { ok: false; problem: string };
@@ -59,9 +61,11 @@ export function analyzeSession(data: SessionExport): Result {
     failedAgentIds: new Map(),
     childSessionIds: new Map(),
     errors: 0,
+    failedCallsByToolName: new Map(),
     incomplete: 0,
     skillMessages: 0,
     completedSkillCalls: 0,
+    completedSubagentCalls: 0,
     mismatch: false,
   };
   for (const tool of tools) {
@@ -70,6 +74,7 @@ export function analyzeSession(data: SessionExport): Result {
     bump(analysis.totals, name);
     if (status === "error") {
       analysis.errors++;
+      bump(analysis.failedCallsByToolName, name);
     }
     if (status === "streaming") {
       analysis.incomplete++;
@@ -95,6 +100,9 @@ export function analyzeSession(data: SessionExport): Result {
       }
     }
     else if (name === "subagent") {
+      if (status === "completed") {
+        analysis.completedSubagentCalls++;
+      }
       const id = idFrom(tool.state?.input, "agent");
       if (id) {
         if (status === "completed") {
@@ -151,6 +159,9 @@ if (import.meta.main) {
     "Child sessions (state.metadata.sessionID):",
     format(analysis.childSessionIds),
     `Error-state tool entries: ${analysis.errors}`,
+    "Failed calls by tool name:",
+    format(analysis.failedCallsByToolName),
+    `Completed subagent calls: ${analysis.completedSubagentCalls}`,
     `Incomplete (streaming, ignored): ${analysis.incomplete}`,
     `Skill messages (type=skill): ${analysis.skillMessages}; completed skill tool calls: ${analysis.completedSkillCalls}`,
   ];

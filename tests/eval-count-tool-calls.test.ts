@@ -17,12 +17,12 @@ describe("analyzeSession", () => {
     if (!result.ok) {
       return;
     }
-    expect(result.analysis.total).toBe(6);
+    expect(result.analysis.total).toBe(7);
     expect([...result.analysis.totals.entries()].sort()).toEqual([
       ["shell", 1],
       ["skill", 2],
       ["subagent", 2],
-      ["task", 1],
+      ["task", 2],
     ]);
     expect([...result.analysis.completedSkillIds.entries()]).toEqual([["security-review", 1]]);
     expect([...result.analysis.failedSkillIds.entries()]).toEqual([["missing-skill", 1]]);
@@ -32,7 +32,12 @@ describe("analyzeSession", () => {
       ["ses_synthetic_child", 1],
       ["ses_synthetic_legacy_child", 1],
     ]);
-    expect(result.analysis.errors).toBe(1);
+    expect(result.analysis.errors).toBe(2);
+    expect([...result.analysis.failedCallsByToolName.entries()].sort()).toEqual([
+      ["skill", 1],
+      ["task", 1],
+    ]);
+    expect(result.analysis.completedSubagentCalls).toBe(1);
     expect(result.analysis.incomplete).toBe(1);
     expect(result.analysis.skillMessages).toBe(1);
     expect(result.analysis.completedSkillCalls).toBe(1);
@@ -97,7 +102,9 @@ describe("CLI", () => {
     expect(output).toContain("shell: 1");
     expect(output).toContain("skill: 2");
     expect(output).toContain("subagent: 2");
-    expect(output).toContain("task: 1");
+    expect(output).toContain("task: 2");
+    expect(output).toContain("Failed calls by tool name:\n  skill: 1\n  task: 1");
+    expect(output).toContain("Completed subagent calls: 1");
     expect(output).toContain("Skill IDs - completed (state.input.id):\n  security-review: 1");
     expect(output).toContain("Skill IDs - failed (state.input.id):\n  missing-skill: 1");
     expect(output).toContain("Subagent IDs - completed (state.input.agent):\n  security-auditor: 1");
