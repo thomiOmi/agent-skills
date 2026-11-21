@@ -93,7 +93,9 @@ It selects the newest root session whose `directory` field matches the playgroun
 sessions older than 60 minutes or already collected (`--force` overrides), exports the session
 and its descendants into `docs/eval/sessions/` (gitignored), writes one summary per collection to
 `docs/eval/sessions/summary/<scenario>-run<N>.json`, and prints the Markdown row for the results
-table. Never use `--sanitize`.
+table. The summary records `childCoverage`: when completed `subagent` calls outnumber exported
+children, the collector writes a loud stderr warning, sets `childCoverage` to `incomplete`, and
+the report flags that scenario. Never use `--sanitize`.
 
 ### Reporting
 
@@ -130,8 +132,10 @@ tool is visible. It prints separate completed and failed ID lists: skill IDs fro
 `state.input.id`, subagent agent IDs from `state.input.agent`, and child session IDs from
 `state.metadata.sessionID` or the camelCase `state.metadata.sessionId` seen in older exports.
 The **MISMATCH** warning compares `type: "skill"` messages only with **completed** `skill` tool
-calls, so failed calls do not create a false mismatch. Copy completed IDs into the "Skill calls
-(IDs)" / "Subagent calls (IDs)" columns and failed IDs into "Failed IDs". Streaming string inputs
+calls, so failed calls do not create a false mismatch. It also prints **Failed calls by tool
+name** for every tool in an `error` state, which makes calls to non-existent or legacy tools
+visible. Copy completed IDs into the "Skill calls (IDs)" / "Subagent calls (IDs)" columns and
+failed IDs into "Failed IDs". Streaming string inputs
 are ignored and listed under "Incomplete". If the counter prints `0 tool calls found in file` or
 `unexpected format`, record that as a measurement failure, not as a zero.
 
