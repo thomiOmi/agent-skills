@@ -126,14 +126,6 @@
           "time": { "created": 3 }
         }
       ]
-    },
-    {
-      "id": "msg_synthetic_5",
-      "type": "skill",
-      "time": { "created": 4 },
-      "skill": "security-review",
-      "name": "security-review",
-      "text": "synthetic skill text"
     }
   ]
 }

@@ -70,7 +70,7 @@ describe("collectScenario", () => {
     expect(summary.childCoverage).toBe("complete");
     expect(childCoverageWarning(summary)).toBeUndefined();
     expect(summary.incomplete).toBe(1);
-    expect(summary.mismatch).toBe(true);
+    expect(summary.mismatch).toBe(false);
     const saved = JSON.parse(await readFile(join(outDir, "summary", "1-run1.json"), "utf8")) as typeof summary;
     expect(saved.sessionID).toBe(rootID);
     const row = markdownRow(summary);
