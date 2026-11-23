@@ -334,10 +334,15 @@ export function markdownRow(summary: CollectionSummary): string {
   ].join("");
 }
 
-/** Creates a real OpenCode runner using the CLI. */
-export function createCliRunner(): OpenCodeRunner {
+/** Resolves the OpenCode working directory, falling back to the invoking shell's directory. */
+export function resolveWorkingDirectory(playgroundDir?: string): string {
+  return playgroundDir || process.cwd();
+}
+
+/** Creates a real OpenCode runner using the CLI with an explicit working directory. */
+export function createCliRunner(workingDirectory: string, spawn: typeof Bun.spawn = Bun.spawn): OpenCodeRunner {
   async function invoke(args: string[]): Promise<string> {
-    const child = Bun.spawn(["opencode", ...args], { stdout: "pipe", stderr: "pipe" });
+    const child = spawn(["opencode", ...args], { cwd: workingDirectory, stdout: "pipe", stderr: "pipe" });
     const [output, errors] = await Promise.all([
       new Response(child.stdout).text(),
       new Response(child.stderr).text(),
@@ -375,7 +380,7 @@ if (import.meta.main) {
     scenario,
     run: run as 1 | 2,
     playgroundDir: playgroundDir ?? "",
-    runner: createCliRunner(),
+    runner: createCliRunner(resolveWorkingDirectory(playgroundDir)),
     force,
     sessionID,
   }).catch((error: unknown) => {

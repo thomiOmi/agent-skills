@@ -3,7 +3,7 @@ import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
-import { childCoverageWarning, collectScenario, markdownRow } from "../scripts/eval-collect";
+import { childCoverageWarning, collectScenario, createCliRunner, markdownRow, resolveWorkingDirectory } from "../scripts/eval-collect";
 
 const PLAYGROUND = "sandbox/playground";
 
@@ -268,5 +268,44 @@ describe("collectScenario", () => {
       outDir,
     })).rejects.toThrow("scenario must be an integer from 1 to 10");
     await rm(outDir, { recursive: true, force: true });
+  });
+});
+
+describe("createCliRunner", () => {
+  test("spawns session listing and export with the playground as the working directory", async () => {
+    const root = await syntheticExport();
+    const rootID = (root.info as { id: string }).id;
+    const calls: Array<{ cwd: string | undefined; command: string }> = [];
+    const fakeSpawn = ((args: string[], options: { cwd?: string }) => {
+      calls.push({ cwd: options.cwd, command: args.join(" ") });
+      const payload = args[2] === "list"
+        ? JSON.stringify([{ id: rootID, directory: PLAYGROUND, updated: Date.now() }])
+        : JSON.stringify(root);
+      return {
+        stdout: new Response(payload).body,
+        stderr: new Response("").body,
+        exited: Promise.resolve(0),
+      } as unknown as ReturnType<typeof Bun.spawn>;
+    }) as unknown as typeof Bun.spawn;
+    const runner = createCliRunner(PLAYGROUND, fakeSpawn);
+    const sessions = await runner.listSessions();
+    const exported = await runner.exportSession(rootID);
+    expect(sessions.length).toBe(1);
+    expect(exported).toEqual(root);
+    expect(calls.length).toBe(2);
+    expect(calls[0]?.cwd).toBe(PLAYGROUND);
+    expect(calls[1]?.cwd).toBe(PLAYGROUND);
+    expect(calls[0]?.command).toContain("session list");
+    expect(calls[1]?.command).toContain("session export");
+  });
+});
+
+describe("resolveWorkingDirectory", () => {
+  test("uses the explicit playground directory when provided", () => {
+    expect(resolveWorkingDirectory(PLAYGROUND)).toBe(PLAYGROUND);
+  });
+
+  test("falls back to the invoking shell directory when no playground directory is provided", () => {
+    expect(resolveWorkingDirectory()).toBe(process.cwd());
   });
 });
