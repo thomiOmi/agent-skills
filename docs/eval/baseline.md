@@ -43,7 +43,7 @@ session was started.
 Record these once before run 1. Reuse all of them for run 2 and for the after run.
 
 - [ ] OpenCode version: `opencode --version` -> **v2.3.2**, the version the counter script was verified against. Re-check the script after **any** OpenCode upgrade; the export shape and tool names can change.
-- [ ] Model: write down the exact provider/model/variant. Do not change it between runs.
+- [ ] Model: write down the exact provider/model/variant. Do not change it between runs. Each summary also records the model from the export's `info.model` as `providerID/id` plus `#variant` when present; legacy `modelID` is accepted as a fallback.
 - [ ] Primary agent: use the agent listed per scenario below (`build` or `plan`). Note any manual switch in the Notes column.
 - [ ] Playground path: `<playground>` (the sibling `agent-playground` directory), clean commit `99419d2`. Confirm `bun test` passes (4 tests) before starting.
 - [ ] Playground has no `opencode.jsonc`, `AGENTS.md`, `.opencode/`, or `.agents/`. Do not add any of them.
@@ -51,7 +51,7 @@ Record these once before run 1. Reuse all of them for run 2 and for the after ru
 - [ ] Advertised description size: from the same API output, sum the character lengths of every advertised `description`. Current baseline: **28806** characters. Recompute at run time.
 - [ ] Save the full sorted advertised ID list locally in `docs/eval/sessions/advertised-skill-ids.txt` (gitignored, never committed). For the after run the list must be identical, except for repo-owned skills that the planned changes add, rename, or remove.
 - [ ] Installed agents count **from the global install**: `opencode debug agents` reports **27** agents total: 20 installed subagents plus 7 built-ins (`build`, `compaction`, `explore`, `general`, `plan`, `summary`, `title`). The installed `agents/` directory contains **20** files. Re-read at run time.
-- [ ] Config source: run `opencode debug config` **from the playground directory** and summarize it locally; do not paste its raw output here. It reports a single global config document under `<HOME>/.config/opencode/` and no project or ancestor config. Relevant keys are `default_agent`, `instructions`, `experimental.todo` (enabled), `experimental.subagent_depth` (set), plus MCP server entries; sensitive values are redacted by the command.
+- [ ] Config source: run `opencode debug config` **from the playground directory** and summarize it locally; do not paste its raw output here. It reports three sources: one pathless document (`mcp`, `providers`, `websearch`), one global file document under `<HOME>/.config/opencode/`, and one global config directory. All are global; there is no project or ancestor config. Relevant keys in the file document are `default_agent`, `instructions`, `experimental.todo` (enabled), `experimental.subagent_depth` (set), plus MCP server entries; sensitive values are redacted by the command.
 - [ ] Repo commit being measured: record `git rev-parse --short HEAD` from `agent-skills` at run time.
 - [ ] The model, global config, and installed agent/skill set are identical for the baseline and after runs. If any changes, the comparison is invalid.
 
@@ -82,18 +82,20 @@ bun test
 
 ### Automated collection
 
-From this repo, run the collector for each scenario/run. Provide the playground directory with
+The collector spawns `opencode` with the playground as its working directory for both session listing and export, so it can be run from this repo root. Provide the playground directory with
 `--playground <dir>` or the `EVAL_PLAYGROUND_DIR` environment variable:
 
 ```sh
 bun scripts/eval-collect.ts <scenario> <run> --playground <playground-dir>
 ```
 
+Collect immediately after each run: the collector rejects the newest playground session when it is older than 60 minutes. With `--session <id>` and no `--playground`, the invoking shell's directory is used as the OpenCode working directory; `--session` is the recovery path described below.
+
 It selects the newest root session whose `directory` field matches the playground, refuses
 sessions older than 60 minutes or already collected (`--force` overrides), exports the session
 and its descendants into `docs/eval/sessions/` (gitignored), writes one summary per collection to
 `docs/eval/sessions/summary/<scenario>-run<N>.json`, and prints the Markdown row for the results
-table. If the exported `info.parentID` is present, the selected session is a child and collection
+table. Each summary records the primary agent and model from the export. If the exported `info.parentID` is present, the selected session is a child and collection
 fails without writing a summary. The summary records `childCoverage`: when completed `subagent`
 calls outnumber exported children, the collector writes a loud stderr warning, sets
 `childCoverage` to `incomplete`, and the report flags that scenario. A `0 tool calls found in file`
@@ -101,7 +103,8 @@ result is a **valid zero**: it is recorded in `zeroToolSessions` with `main`/`ch
 shown as `zeroToolCalls=<n>` in the row notes; it is not a measurement failure.
 `--session <id>` selects a specific session instead of the newest match (directory matching and the
 60-minute freshness rule are skipped, with a printed note); it is the recovery path when the newest
-session is a child. The `info.parentID` guard still applies. Never use `--sanitize`.
+session is a child or older than 60 minutes. Obtain the ID from `opencode session list --format json`
+run in the playground directory. The `info.parentID` guard still applies. Never use `--sanitize`.
 
 ### Reporting
 
@@ -142,8 +145,7 @@ The counter prints totals for **every** tool name it sees, so a renamed `skill` 
 tool is visible. It prints separate completed and failed ID lists: skill IDs from
 `state.input.id`, subagent agent IDs from `state.input.agent`, and child session IDs from
 `state.metadata.sessionID` or the camelCase `state.metadata.sessionId` seen in older exports.
-The **MISMATCH** warning compares `type: "skill"` messages only with **completed** `skill` tool
-calls, so failed calls do not create a false mismatch. It also prints **Failed calls by tool
+The **MISMATCH** warning is computed only when at least one `type: "skill"` message exists, and then compares those messages with **completed** `skill` tool calls. Real exports contain no `type: "skill"` messages, so a completed `skill` call alone is not a mismatch and no warning is printed. It also prints **Failed calls by tool
 name** for every tool in an `error` state, which makes calls to non-existent or legacy tools
 visible. Copy completed IDs into the "Skill calls (IDs)" / "Subagent calls (IDs)" columns and
 failed IDs into "Failed IDs". Streaming string inputs
