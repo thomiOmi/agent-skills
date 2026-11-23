@@ -3,7 +3,7 @@ import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
-import { childCoverageWarning, collectScenario, createCliRunner, markdownRow, resolveWorkingDirectory } from "../scripts/eval-collect";
+import { childCoverageWarning, collectScenario, createCliRunner, formatExportedModel, markdownRow, resolveWorkingDirectory } from "../scripts/eval-collect";
 
 const PLAYGROUND = "sandbox/playground";
 
@@ -59,6 +59,7 @@ describe("collectScenario", () => {
     });
     expect(summary.sessionID).toBe(rootID);
     expect(summary.primaryAgent).toBe("build");
+    expect(summary.model).toBe("synthetic/synthetic");
     expect(summary.childSessionCount).toBe(2);
     expect(summary.completedSkillIDs.some(record => record.source === "child")).toBe(true);
     expect(summary.completedSubagentIDs.some(record => record.source === "main")).toBe(true);
@@ -307,5 +308,55 @@ describe("resolveWorkingDirectory", () => {
 
   test("falls back to the invoking shell directory when no playground directory is provided", () => {
     expect(resolveWorkingDirectory()).toBe(process.cwd());
+  });
+});
+
+describe("formatExportedModel", () => {
+  test("uses the real id field and appends the variant", () => {
+    expect(formatExportedModel({ providerID: "synthetic", id: "flash", variant: "high" })).toBe("synthetic/flash#high");
+  });
+
+  test("falls back to modelID when the real id field is absent", () => {
+    expect(formatExportedModel({ providerID: "synthetic", modelID: "legacy" })).toBe("synthetic/legacy");
+  });
+
+  test("omits missing or incomplete model records", () => {
+    expect(formatExportedModel(undefined)).toBeUndefined();
+    expect(formatExportedModel({ id: "flash" })).toBeUndefined();
+    expect(formatExportedModel({ providerID: "synthetic" })).toBeUndefined();
+  });
+});
+
+describe("collectScenario model recording", () => {
+  test("records the real export model shape and the legacy fallback", async () => {
+    const root = await syntheticExport();
+    const rootID = (root.info as { id: string }).id;
+    const sessions: SessionInfo[] = [{ id: rootID, directory: PLAYGROUND, updated: Date.now() }];
+    const outDir = await tempDir();
+    const realExport = {
+      ...root,
+      info: { ...(root.info as object), model: { providerID: "synthetic", id: "flash", variant: "high" } },
+    };
+    const realSummary = await collectScenario({
+      scenario: 9,
+      run: 1,
+      playgroundDir: PLAYGROUND,
+      runner: makeRunner(realExport, sessions),
+      outDir,
+    });
+    expect(realSummary.model).toBe("synthetic/flash#high");
+    const legacyExport = {
+      ...root,
+      info: { ...(root.info as object), model: { providerID: "synthetic", modelID: "legacy" } },
+    };
+    const legacySummary = await collectScenario({
+      scenario: 9,
+      run: 2,
+      playgroundDir: PLAYGROUND,
+      runner: makeRunner(legacyExport, sessions),
+      outDir,
+    });
+    expect(legacySummary.model).toBe("synthetic/legacy");
+    await rm(outDir, { recursive: true, force: true });
   });
 });

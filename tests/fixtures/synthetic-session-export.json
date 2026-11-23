@@ -5,7 +5,7 @@
     "time": { "created": 0, "updated": 0 },
     "location": { "directory": "/synthetic", "projectID": "synthetic" },
     "agent": "build",
-    "model": { "providerID": "synthetic", "modelID": "synthetic" }
+    "model": { "providerID": "synthetic", "id": "synthetic" }
   },
   "messages": [
     {
