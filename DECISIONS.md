@@ -8,13 +8,13 @@ Architectural decisions, conventions, and known issues for the agent-skills proj
 
 Key architectural decisions. Review before making changes that touch these areas.
 
-### Orchestrator as subagent, built-in plan/build as primary
+### Orchestrator as subagent, built-in plan/build as primary (superseded 2026-11-25)
 
-OpenCode built-in `plan` and `build` agents serve as the primary user interface. The `orchestrator` subagent handles task decomposition, delegation, and verification. Orchestrator has `subagent` permission (except self-delegation) to coordinate specialized subagents.
+OpenCode built-in `plan` and `build` agents serve as the primary user interface. The `orchestrator` subagent handles task decomposition, delegation, and verification. Orchestrator has `subagent` permission (except self-delegation) to coordinate specialized subagents. Superseded by the decision "Orchestrator retired in favor of native delegation" below.
 
-### Agent selection: hardcoded routing in orchestrator prompt
+### Agent selection: hardcoded routing in orchestrator prompt (superseded 2026-11-25)
 
-Task to agent mapping is hardcoded in the orchestrator prompt, not a custom tool. Provides full control and reliability.
+Task to agent mapping is hardcoded in the orchestrator prompt, not a custom tool. Provides full control and reliability. Routing now lives in the global Delegation & Verification Policy in `instructions/AGENTS.md`.
 
 ### Quality verification: dual-layer (skill-level + project quality gate)
 
@@ -54,7 +54,7 @@ A 2026-10-20 development-tools audit closed token-level gaps in the delete guard
 
 ### Agent frontmatter uses the V2 permissions array
 
-All 20 agent files use the OpenCode V2 `permissions` array of `{action, resource, effect}` entries, with `shell` and `subagent` replacing the V1 `bash` and `task` maps. Provider options such as temperature live under `request.body`; top-level `temperature`, `permission`, `bash`, `task`, and `tools` keys are not used. `tests/agent-permissions.test.ts` enforces the shape, the read permission, orchestrator delegation plus self-delegation deny, and the absence of language-specific shell resources. This closes the V1 known gap recorded in the 2026-10-22 audit.
+All 19 agent files use the OpenCode V2 `permissions` array of `{action, resource, effect}` entries, with `shell` and `subagent` replacing the V1 `bash` and `task` maps. Provider options such as temperature live under `request.body`; top-level `temperature`, `permission`, `bash`, `task`, and `tools` keys are not used. `tests/agent-permissions.test.ts` enforces the shape, the read permission, the absence of `subagent` grants in custom agents, and the absence of language-specific shell resources. This closes the V1 known gap recorded in the 2026-10-22 audit.
 
 ### Conventional git skills merged into git-workflow
 
@@ -88,7 +88,7 @@ changelogen emits named section headings such as Enhancements, Fixes, Refactors,
 
 ### Agent file markup: XML tags retained (evaluated against modern conventions)
 
-Evaluated converting the 20 `agents/*.md` bodies from XML tags (`<role>`, `<skills_to_load>`, `<constraints>`, `<workflow>`, `<output_format>`) to markdown headings after observing that community agent files (Claude Code agent collections, official OpenCode docs examples) use `#`/`##` headings. Primary sources checked: the agentskills.io specification states the body has "no format restrictions" and its no-XML rules apply to frontmatter name and description fields, not the body; Anthropic prompting best practices still list "Structure prompts with XML tags" as an active general principle for current Claude models; community guides for writing subagent prompts actively recommend XML blocks such as `<constraints>` and `<output_format>`; OpenCode agent docs prescribe no body format at all. Decision: keep XML tags. Rationale: agent files are system prompts rather than documents, and XML structuring is an officially recommended prompting technique; the three-way sync invariant (skills_to_load against AGENTS.md Key Skills against the orchestrator delegation list) and the one-grep audit depend on consistent markup; 18 of 20 agents shipped with this format since the initial commit. A conversion would also contradict skills/prompt-design/SKILL.md, which explicitly teaches XML tags as a technique. If revisited, protect the 4 output templates containing `##` headings (brainstormer, deep-thinker, project-manager, researcher) before any mechanical conversion.
+Evaluated converting the 20 `agents/*.md` bodies from XML tags (`<role>`, `<skills_to_load>`, `<constraints>`, `<workflow>`, `<output_format>`) to markdown headings after observing that community agent files (Claude Code agent collections, official OpenCode docs examples) use `#`/`##` headings. Primary sources checked: the agentskills.io specification states the body has "no format restrictions" and its no-XML rules apply to frontmatter name and description fields, not the body; Anthropic prompting best practices still list "Structure prompts with XML tags" as an active general principle for current Claude models; community guides for writing subagent prompts actively recommend XML blocks such as `<constraints>` and `<output_format>`; OpenCode agent docs prescribe no body format at all. Decision: keep XML tags. Rationale: agent files are system prompts rather than documents, and XML structuring is an officially recommended prompting technique; the sync invariant (skills_to_load against AGENTS.md Key Skills) and the one-grep audit depend on consistent markup; 17 of 19 agents ship with this format. A conversion would also contradict skills/prompt-design/SKILL.md, which explicitly teaches XML tags as a technique. If revisited, protect the 4 output templates containing `##` headings (brainstormer, deep-thinker, project-manager, researcher) before any mechanical conversion.
 
 ### Documentation audit: PRD/ARCHITECTURE agent-roster drift resolved
 
@@ -126,7 +126,11 @@ The agentskills.io specification states the Markdown body after frontmatter has 
 
 ### Workflow routing by task type with a closed review gate
 
-The former workflow was one linear chain from discussion to improvement. The new one classifies the request first: feature development goes through planning and file picking, bug investigation through `deep-thinker` and `researcher`, and refactoring through file picking and planning. All paths converge on implementation and then a `qa-engineer` review gate that loops back on failure, at most three retries. Because only `orchestrator` has `subagent` permission, the sequence is coordinated there rather than through nested delegation. Date: 2026-11-25.
+The former workflow was one linear chain from discussion to improvement. The new one classifies the request first: feature development goes through planning and file picking, bug investigation through `deep-thinker` and `researcher`, and refactoring through file picking and planning. All paths converge on implementation and then a `qa-engineer` review gate that loops back on failure, at most three retries. The sequence is coordinated by the primary agent with OpenCode's native `subagent` tool; custom agents do not grant `subagent` to one another. Date: 2026-11-25.
+
+### Orchestrator retired in favor of native delegation
+
+OpenCode V2 already gives `plan` and `build` the `subagent` permission by default (the base policy is `*` allow; only `general` denies launching subagents), runs subagents in the background with resumable `sessionID`s, and shows agent descriptions to the model when it chooses a subagent. The old `orchestrator` was a `subagent` itself and only acted when explicitly invoked, so it could not be relied on for coordination. Its non-native contribution was policy, not mechanics: task classification, routing order, the `qa-engineer` review gate, the three-retry cap, and resume behavior. Decision: delete `agents/orchestrator.md`, move that policy into `instructions/AGENTS.md` as a concise Delegation & Verification Policy, keep `qa-engineer` as the review gate, and forbid `subagent` grants in custom agents to prevent nested delegation. Catalog count drops from 20 to 19 agents. This supersedes the two orchestrator-era decisions above. Date: 2026-11-25.
 
 ### content-strategy merged into copywriting
 
@@ -151,5 +155,5 @@ The former workflow was one linear chain from discussion to improvement. The new
 - Read-only agents deny `edit` and ask for `shell`
 - Agents that run verification may allow `shell` on `*`
 - Content and planning agents use `shell: ask` - usable with user confirmation, never silent
-- Only `orchestrator` receives `subagent: allow` on `*` plus `subagent: deny` on `orchestrator`; no agent uses top-level `task`
+- No custom agent grants `subagent: allow`; delegation belongs to the primary agent via OpenCode's native permission; no agent uses top-level `task`
 - Temperature belongs under `request.body.temperature`, not at the top level

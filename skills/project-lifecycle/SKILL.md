@@ -28,7 +28,7 @@ The unit of work here is a PROJECT, not a task. If the request fits in one phase
 
 ## The Engagement Arc
 
-Seven phases. Each has an owner, deliverables, and a definition of done. Delegate phase work to the mapped specialists; the orchestrator stays accountable for the arc.
+Seven phases. Each has an owner, deliverables, and a definition of done. Delegate phase work to the mapped specialists; the primary agent stays accountable for the arc.
 
 | Phase | Goal | Deliverable | Responsible agents | Definition of done |
 |---|---|---|---|---|

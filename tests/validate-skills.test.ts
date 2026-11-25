@@ -106,7 +106,7 @@ permissions:
     resource: "*"
     effect: allow
   - action: subagent
-    resource: "orchestrator"
+    resource: "self"
     effect: deny
 `;
 

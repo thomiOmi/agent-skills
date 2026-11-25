@@ -62,7 +62,7 @@ Environment overrides:
 | `instructions/AGENTS.md` | `AGENTS.md` | Global agent rules - read by the agent every session. Root `AGENTS.md` remains contributor guidance for this repository. |
 | `config/opencode.jsonc` | `opencode.jsonc` or an existing `opencode.json` | Global config - default_agent, experimental.subagent_depth, instructions, permissions, formatter, lsp, watcher. |
 | `config/tui.jsonc` | `tui.jsonc` or an existing `tui.json` | TUI config - theme, attention notifications. |
-| `agents/*.md` | `agents/*.md` | 20 subagent definitions - orchestrator, senior-developer, qa-engineer, security-auditor, and domain specialists. |
+| `agents/*.md` | `agents/*.md` | 19 subagent definitions - senior-developer, qa-engineer, security-auditor, and domain specialists. Coordination uses the global Delegation & Verification Policy. |
 | `skills/*/` | `skills/*/` | 32 skill directories - SKILL.md + references/. Loaded on demand by the model. |
 | `commands/*.md` | `commands/*.md` | 2 slash commands - /commit and /ship-pr. |
 | `plugin/` | `plugins/` | 2 V2 plugins - secrets-scanner, tool-guardian. |
@@ -185,7 +185,6 @@ request:
 | Agent | Rationale |
 | --- | --- |
 | `deep-thinker` | Strongest reasoning model available - root cause analysis and trade-offs |
-| `orchestrator` | Fast, capable model - it only decomposes and delegates |
 | `senior-developer` | Strong coding model - architecture and implementation |
 | `qa-engineer` | Strong coding model - writes and audits tests |
 | `marketing`, `docs-writer` | Mid-tier model - prose quality matters less than speed and cost |

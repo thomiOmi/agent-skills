@@ -2,12 +2,12 @@
 
 ## 1. Problem Statement
 
-The agent-skills project enables OpenCode users to work with a curated collection of specialized agents and skills. The current implementation uses OpenCode's built-in `plan` and `build` agents as the primary interface, with a dedicated `orchestrator` subagent that handles task decomposition, delegation, and verification.
+The agent-skills project enables OpenCode users to work with a curated collection of specialized agents and skills. The current implementation uses OpenCode's built-in `plan` and `build` agents as the primary interface, with a Delegation & Verification Policy in global instructions that guides multi-step coordination through OpenCode's native `subagent` tool.
 
 ## 2. Goals
 
 - Use OpenCode built-in `plan` and `build` agents as the primary user interface
-- Provide an `orchestrator` subagent that coordinates multi-step workflows
+- Provide a global delegation and verification policy for multi-step workflows
 - Ship specialized agents for coding, testing, security, design, content, DevOps, documentation, brainstorming, planning, and refactoring
 - Provide skills that support each agent role with domain-specific guidance
 - Follow OpenCode conventions: agents as markdown, skills as SKILL.md
@@ -25,7 +25,7 @@ A software developer who writes code daily. Uses the agent orchestra to automate
 
 ### Persona B - Non-Developer End User
 
-A vibe coder, sales person, marketer, or designer who uses AI agents for non-coding tasks. Describes features in plain language. Needs the orchestrator to handle decomposition and execution without managing details.
+A vibe coder, sales person, marketer, or designer who uses AI agents for non-coding tasks. Describes features in plain language. Needs the primary agent to handle decomposition and execution without managing details.
 
 ### Persona C - Tech Lead / Reviewer
 
@@ -39,21 +39,21 @@ A contributor who wants to add new agents or skills to this repository. Needs do
 
 ### Stories: Persona A - Developer End User
 
-- As a developer, I want an orchestrator agent that decomposes complex tasks into subtasks so I don't have to manually coordinate multiple agents.
+- As a developer, I want the primary agent to decompose complex tasks into subtasks and delegate them so I don't have to manually coordinate multiple agents.
 - As a developer, I want specialized agents for coding, testing, security, and design so I get expert-level help for each concern.
 - As a developer, I want every result verified before delivery so I don't ship broken code.
 - As a developer, I want progressive skill loading so agent response stays fast.
 
 ### Stories: Persona B - Non-Developer End User
 
-- As a vibe coder, I want to describe features in plain language so the orchestrator handles decomposition and execution without me managing details.
+- As a vibe coder, I want to describe features in plain language so the primary agent handles decomposition and execution without me managing details.
 - As a sales person, I want a marketing agent that drafts outreach copy so I can focus on closing deals.
 - As a marketer, I want the copywriting skill with its content-strategy reference for SEO and copywriting so I can publish optimized content without hiring an agency.
 - As a designer, I want the ui-ux agent to review my design system so accessibility and consistency are checked automatically.
 
 ### Stories: Persona C - Tech Lead / Reviewer
 
-- As a tech lead, I want the orchestrator to log what each subagent did so I can review and approve the implementation without reading every file.
+- As a tech lead, I want the primary agent to summarize what each subagent did so I can review and approve the implementation without reading every file.
 - As a reviewer, I want quality verification (lint, typecheck, tests) before output so I don't waste time on code that fails basic checks.
 - As a tech lead, I want max retry limits on subagent iterations so the system doesn't run indefinitely on failing tasks.
 
@@ -74,7 +74,7 @@ discussion to classify to route to decompose to test to implement to review to v
 
 1. **Discussion** - user and agent interact to clarify requirements and confirm assumptions
 2. **Classify & Route** - built-in primary `plan` agent identifies the task type and routes it: feature development through planning and file picking, bug investigation through root-cause analysis and research, or refactoring through file picking and planning
-3. **Orchestrator** - `orchestrator` subagent decomposes the plan into subtasks and delegates to specialized subagents
+3. **Decompose & Delegate** - the primary agent decomposes the plan into subtasks and delegates to specialized subagents with the native `subagent` tool
 4. **Test** - tests are written first (TDD approach)
 5. **Implement** - code is implemented to pass the tests
 6. **Review** - implementation is reviewed against requirements
@@ -90,7 +90,6 @@ The system provides the following agents:
 
 | Agent | Mode | Role |
 |---|---|---|
-| orchestrator | subagent | Task decomposition, delegation, verification |
 | frontend-developer | subagent | UI implementation, components, client state, styling |
 | backend-developer | subagent | API endpoints, business logic, auth, server-side integration |
 | software-architect | subagent | System design, ADRs, trade-off analysis, architecture review |
@@ -111,7 +110,7 @@ The system provides the following agents:
 | docs-writer | subagent | Technical writing, documentation |
 | refactor-planner | subagent | Safe refactoring, legacy code migration |
 
-The orchestrator subagent has permission to delegate to all other subagents via the `subagent` permission action. Self-delegation is denied to prevent circular loops.
+Delegation is performed by the primary agent through OpenCode's native `subagent` permission. Custom subagents do not grant `subagent` to one another, which prevents nested delegation loops.
 
 > This table must stay in sync with the Agent Orchestra table in `AGENTS.md`, which
 > is the canonical source for the agent roster. If they diverge, `AGENTS.md` wins.
@@ -132,7 +131,7 @@ Tool history: none.
 
 ### FR-5: Verification
 
-Every skill includes a domain-specific verification checklist at the end of its SKILL.md. The orchestrator runs the skill-level checklist before the project quality gate.
+Every skill includes a domain-specific verification checklist at the end of its SKILL.md. The primary agent runs the skill-level checklist before the project quality gate.
 
 Dual-layer verification:
 1. **Skill-level** - domain-specific checks (e.g., security checks for auth, coverage checks for tests)
@@ -178,7 +177,7 @@ The installer deploys agents, skills, commands, plugin hooks, global instruction
 
 ### In Scope
 
-- 20 specialized subagents with documented roles
+- 19 specialized subagents with documented roles
 - 32 skills with progressive disclosure and verification checklists
 - No custom tools
 - 2 slash commands: /commit, /ship-pr

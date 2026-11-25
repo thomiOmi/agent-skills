@@ -39,11 +39,10 @@ Architectural decisions, conventions, and known issues are in `DECISIONS.md` (lo
 
 ## Agent Orchestra
 
-Default primary agents: built-in `plan` (analysis) and `build` (implementation). The `orchestrator` subagent handles multi-step coordination.
+Default primary agents: built-in `plan` (analysis) and `build` (implementation). Multi-step coordination is handled by the primary agent using OpenCode's native `subagent` tool and the Delegation & Verification Policy in `instructions/AGENTS.md`.
 
 | Agent | Role | Mode | Key Skills |
 |---|---|---|---|
-| `orchestrator` | Task decomposition, delegation, verification | subagent | task-decomposition, project-lifecycle, planning, code-review, testing |
 | `frontend-developer` | UI implementation, components, client state, styling | subagent | ui-design, frontend-patterns, code-style, testing, debugging, git-workflow |
 | `backend-developer` | API endpoints, business logic, auth, server-side integration | subagent | api-conventions, backend-patterns, database, code-style, testing, debugging, git-workflow |
 | `software-architect` | System design, ADRs, trade-off analysis, architecture review | subagent | planning, architecture-decision, research-methodology, tech-debt |
@@ -64,7 +63,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `refactor-planner` | Safe refactoring, legacy code migration | subagent | refactor-planner, tech-debt, planning, architecture-decision, code-simplifier |
 | `marketing` | Content, SEO, copy, strategy | subagent | copywriting, no-ai-slop, seo-optimization |
 
-Invoke a specialist by asking the orchestrator to delegate to that subagent when you already know who should handle it.
+Invoke a specialist directly with the `subagent` tool when you know who should handle the work; see the Delegation & Verification Policy in `instructions/AGENTS.md`.
 
 Slash commands live in `commands/` (2 files: `commit`, `ship-pr`). Run project scripts via `bun run <script>`; see `package.json` scripts.
 

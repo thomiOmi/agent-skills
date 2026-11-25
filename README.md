@@ -161,7 +161,7 @@ agent-skills/
 ├── .gitignore
 ├── .github/            # CI workflows, issue and PR templates, dependabot
 ├── .vscode/            # Editor settings and extension recommendations
-├── agents/             # 20 specialized subagents (*.md)
+├── agents/             # 19 specialized subagents (*.md)
 ├── commands/           # 2 slash commands (*.md): commit, ship-pr
 ├── config/             # Global opencode.jsonc and tui.jsonc templates
 ├── instructions/       # Global AGENTS.md + OPENCODE.md source
