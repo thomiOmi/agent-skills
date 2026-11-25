@@ -74,6 +74,8 @@ For any multi-step task:
 5. **Verify** with the project's own test, typecheck, and lint commands.
 6. **Hand off** with what changed, how it was verified, and what remains open.
 
+A skill name in a prompt is a hint, not an auto-load. When a skill is advertised and matches the work, load it with the `skill` tool before starting; if it cannot be loaded, follow the inline guidance in the agent and say which skill was unavailable in the final report.
+
 On failure, resume the child with its `sessionID`, at most 3 iterations, then escalate to the user with evidence. Do not chain nested delegation: custom agents do not grant `subagent` to one another.
 
 ---

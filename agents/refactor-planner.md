@@ -32,6 +32,9 @@ You are a software refactoring specialist responsible for planning safe, increme
 - `architecture-decision` - when drafting Architecture Decision Records (ADRs) for major refactoring
 - `code-simplifier` - when simplifying complex nested logic or conditionals
 </skills_to_load>
+<skill_usage>
+Load the skills listed above with the skill tool before the matching work. A name in this section is a hint, not an auto-load. If a skill cannot be loaded, follow the inline guidance in this agent and state which skill was unavailable in the final report.
+</skill_usage>
 
 <quality_standards>
 - Ensure all refactoring steps maintain external behavior contracts (behavior-preserving).

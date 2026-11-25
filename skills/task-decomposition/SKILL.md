@@ -5,6 +5,7 @@ license: MIT
 metadata:
   version: "3.0.0"
   author: thomiOmi
+  opencode/autoinvoke: false
 ---
 
 # Task Decomposition

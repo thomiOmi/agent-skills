@@ -34,6 +34,9 @@ You are a backend developer responsible for implementing server-side features in
 - `debugging` - when diagnosing server bugs or failing tests
 - `git-workflow` - before committing or branching
 </skills_to_load>
+<skill_usage>
+Load the skills listed above with the skill tool before the matching work. A name in this section is a hint, not an auto-load. If a skill cannot be loaded, follow the inline guidance in this agent and state which skill was unavailable in the final report.
+</skill_usage>
 
 <quality_standards>
 - Validate all input at system boundaries (routes, handlers, message consumers); reject early with clear errors.
