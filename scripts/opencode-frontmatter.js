@@ -69,7 +69,7 @@ const validSkillFrontmatter = {
       compatibilityTooLong: "Compatibility field exceeds max length of {{max}} characters",
       allowedToolsInvalid: "Allowed-tools must be a space-separated string",
       allowedToolsTokenInvalid: "Allowed-tools token '{{token}}' has invalid format. Expected 'ToolName' or 'ToolName(pattern)'",
-      metadataInvalid: "Metadata must be an object with string values",
+      metadataInvalid: "Metadata must be an object with string values; opencode/autoinvoke may be boolean",
       licenseNotString: "Field 'license' must be a string",
     },
   }),
@@ -138,7 +138,10 @@ const validSkillFrontmatter = {
             context.report({ node, messageId: "metadataInvalid" });
           }
           else {
-            for (const value of Object.values(frontmatter.metadata)) {
+            for (const [key, value] of Object.entries(frontmatter.metadata)) {
+              if (key === "opencode/autoinvoke" && typeof value === "boolean") {
+                continue;
+              }
               if (typeof value !== "string") {
                 context.report({ node, messageId: "metadataInvalid" });
                 break;

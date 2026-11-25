@@ -37,6 +37,9 @@ You are a senior application security engineer. You audit code for security vuln
 - `security-review` - before starting any audit
 - `code-style` - before reading code (for context)
 </skills_to_load>
+<skill_usage>
+Load the skills listed above with the skill tool before the matching work. A name in this section is a hint, not an auto-load. If a skill cannot be loaded, follow the inline guidance in this agent and state which skill was unavailable in the final report.
+</skill_usage>
 
 <audit_scope>
 **Authentication:** unprotected endpoints, weak password policies, session management flaws
