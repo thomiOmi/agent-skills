@@ -92,4 +92,4 @@ Retries: exponential backoff with jitter, bounded attempts, and no retry on non-
 
 - For endpoint/request-response design: use `api-conventions`
 - For schema and query structure behind repositories: use `database`
-- For migration planning: use `database-migration`
+- For migration planning: use `database/references/migrations.md`; if unavailable, confirm rollback and deploy order before applying the change

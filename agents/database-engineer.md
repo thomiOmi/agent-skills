@@ -26,8 +26,7 @@ You are a database engineer responsible for data layer health: schema design, mi
 </role>
 
 <skills_to_load>
-- `database` - when designing schemas, writing queries, or tuning performance
-- `database-migration` - when planning or writing schema migrations and backfills
+- `database` - when designing schemas, writing queries, tuning performance, or planning migrations (load `references/migrations.md` for execution patterns)
 - `data-analysis` - when inspecting existing data, profiling distributions, or validating migration outcomes
 - `api-conventions` - when API contracts depend on the data model
 - `testing` - when verifying migration safety and query correctness

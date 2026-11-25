@@ -25,13 +25,12 @@ Skills are grouped by SDLC phase - pick the group that matches what you are doin
 |---|---|
 | `code-style` | Syntax, variable naming, docstrings, formatting |
 | `api-conventions` | REST, GraphQL, WebSocket design and review |
-| `database` | Database engines, transactions, schema design, query optimization |
+| `database` | Database engines, transactions, schema design, migrations, query optimization |
 | `data-analysis` | SQL queries, dataset analysis, data modeling, reporting |
 | `git-workflow` | Branching, branch naming, Conventional Commits, PR descriptions |
 | `ui-design` | Frontend components, layouts, responsive UI, WCAG accessibility |
 | `frontend-patterns` | Frontend architecture: state ownership, data fetching, rendering strategy |
 | `backend-patterns` | Backend structure: layering, transaction boundaries, jobs, idempotency |
-| `database-migration` | Safe schema migrations, expand-contract, backfills, rollback paths |
 | `design-md` | Design tokens, color palettes, dark mode themes, DESIGN.md specs |
 | `config-management` | App configuration: config files, env vars, feature flags, secrets, validation |
 
@@ -171,7 +170,7 @@ agent-skills/
 │   ├── secrets-scanner.ts # Blocks writes containing secrets
 │   └── tool-guardian.ts  # Blocks destructive shell commands
 ├── scripts/            # ESLint and frontmatter dev utilities
-├── skills/             # 34 atomic domain skills (SKILL.md + resources)
+├── skills/             # 33 atomic domain skills (SKILL.md + resources)
 ├── src/                # CLI installer (plan/execute, manifest, config merge)
 └── tests/              # Test suites (bun test)
 ```

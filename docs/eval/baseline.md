@@ -180,12 +180,12 @@ symptoms only; they never reveal the seeded defects.
 
 | # | Primary agent | Prompt (copy-paste exactly) | Expected skills (expected, not required) | Expected agents (expected, not required) |
 |---|---|---|---|---|
-| 1 Feature (larger, multi-file) | build | Add a `created_at` timestamp to widgets: add a migration, return it from GET /widgets, show it in WidgetList, add tests, and update the README. | `api-conventions`, `backend-patterns`, `database`, `database-migration`, `frontend-patterns`, `documentation`, `testing`, `code-style` | `backend-developer`, `database-engineer`, `frontend-developer`, `docs-writer`, `qa-engineer` |
+| 1 Feature (larger, multi-file) | build | Add a `created_at` timestamp to widgets: add a migration, return it from GET /widgets, show it in WidgetList, add tests, and update the README. | `api-conventions`, `backend-patterns`, `database`, `frontend-patterns`, `documentation`, `testing`, `code-style` | `backend-developer`, `database-engineer`, `frontend-developer`, `docs-writer`, `qa-engineer` |
 | 2 Bug investigation | plan | GET /widgets?limit=N returns one more item than N. Find the root cause and report. Do not change files. | `debugging` | `senior-developer`, `deep-thinker` |
 | 3 Refactor | build | Remove the duplicated validation logic between the handlers without changing behavior; keep tests passing. | `refactor-planner`, `code-simplifier`, `code-style`, `testing` | `refactor-planner`, `senior-developer` |
 | 4 Git commit | build | Stage all current changes and commit them with a Conventional Commit message. Do not push. | `git-workflow` | none |
 | 5 Docs | build | Update the README so the run and test sections are accurate and clear. | `documentation`, `no-ai-slop` | `docs-writer` |
-| 6 DB schema | build | Add a `tags` table linked to widgets with a migration, update the schema docs and tests. | `database`, `database-migration` | `database-engineer` |
+| 6 DB schema | build | Add a `tags` table linked to widgets with a migration, update the schema docs and tests. | `database` | `database-engineer` |
 | 7 Frontend | build | Add a loading state and an empty state to the WidgetList component. | `ui-design`, `frontend-patterns` | `frontend-developer`, `ui-ux` |
 | 8 Security review | plan | Review the API and database code for security vulnerabilities. Report findings only; do not change files. | `security-review` | `security-auditor` |
 | 9 Tests | build | Write unit tests for the widget validation function covering valid input, empty name, too-long name, and non-string name. | `testing`, `test-planning` | `qa-engineer` |

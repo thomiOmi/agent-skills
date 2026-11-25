@@ -1,6 +1,6 @@
 # Skill Catalog Map
 
-Cross-skill referral graph, boundary clarifications, and open decisions for the 34 skills in `skills/`. Skills are loosely coupled via explicit "load this skill" by-name pointers. No skill depends on another at runtime; pointers are activation-time delegations per SPEC.md progressive disclosure.
+Cross-skill referral graph, boundary clarifications, and open decisions for the 33 skills in `skills/`. Skills are loosely coupled via explicit "load this skill" by-name pointers. No skill depends on another at runtime; pointers are activation-time delegations per SPEC.md progressive disclosure.
 
 ## Cross-Skill Referral DAG
 
@@ -27,8 +27,8 @@ Cross-skill referral graph, boundary clarifications, and open decisions for the 
 | memory-management | debugging | Discrepancy between notes and actual behavior |
 | backend-patterns | api-conventions | Endpoint/request-response design |
 | backend-patterns | database | Schema and query structure behind repositories |
-| backend-patterns | database-migration | Migration planning |
-| database | database-migration | Planning or running a schema migration |
+| backend-patterns | database | Migration planning via `references/migrations.md` |
+| database | devops-deployment | Deployment sequencing around a migration |
 | frontend-patterns | ui-design | Component and visual implementation |
 | frontend-patterns | ui-design | Styling systems and tokens |
 | frontend-patterns | api-conventions | API shape behind the fetch layer |

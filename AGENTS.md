@@ -47,7 +47,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `frontend-developer` | UI implementation, components, client state, styling | subagent | ui-design, frontend-patterns, code-style, testing, debugging, git-workflow |
 | `backend-developer` | API endpoints, business logic, auth, server-side integration | subagent | api-conventions, backend-patterns, database, code-style, testing, debugging, git-workflow |
 | `software-architect` | System design, ADRs, trade-off analysis, architecture review | subagent | planning, architecture-decision, research-methodology, tech-debt |
-| `database-engineer` | Schema design, migrations, indexing, query performance | subagent | database, database-migration, data-analysis, api-conventions, testing |
+| `database-engineer` | Schema design, migrations, indexing, query performance | subagent | database, data-analysis, api-conventions, testing |
 | `ai-engineer` | Prompt engineering, AI integration, RAG, structured output | subagent | prompt-design, structured-output, ai-integration, code-style, testing |
 | `senior-developer` | Tech lead: cross-domain review, standards, glue work, hard debugging | subagent | code-style, code-review, security-review, debugging, testing, api-conventions, database, git-workflow, planning, prompt-design, structured-output |
 | `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | sdlc-documentation, task-decomposition |
