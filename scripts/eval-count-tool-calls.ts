@@ -115,7 +115,8 @@ export function analyzeSession(data: SessionExport): Result {
     }
   }
   analysis.skillMessages = data.messages.filter(message => message?.type === "skill" && typeof message.skill === "string").length;
-  analysis.mismatch = analysis.skillMessages !== analysis.completedSkillCalls;
+  // Real exports carry no type:"skill" messages, so the cross-check is meaningful only when some exist.
+  analysis.mismatch = analysis.skillMessages > 0 && analysis.skillMessages !== analysis.completedSkillCalls;
   return { ok: true, analysis };
 }
 

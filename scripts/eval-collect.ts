@@ -20,7 +20,7 @@ export interface OpenCodeRunner {
 }
 interface ExportedInfo {
   agent?: string;
-  model?: { providerID?: string; modelID?: string };
+  model?: { providerID?: string; id?: string; modelID?: string; variant?: string };
   parentID?: string;
 }
 export interface IDRecord {
@@ -225,8 +225,9 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
   }
   await writeFile(join(outDir, `${baseName}-${root.id}.json`), JSON.stringify(exportedRoot, null, 2));
   summary.primaryAgent = rootInfo?.agent;
-  if (rootInfo?.model?.providerID && rootInfo.model.modelID) {
-    summary.model = `${rootInfo.model.providerID}/${rootInfo.model.modelID}`;
+  const model = formatExportedModel(rootInfo?.model);
+  if (model) {
+    summary.model = model;
   }
 
   const queue: Array<{ id: string; parentID: string }> = childIDs(exportedRoot).map(id => ({ id, parentID: root.id }));
@@ -334,10 +335,27 @@ export function markdownRow(summary: CollectionSummary): string {
   ].join("");
 }
 
-/** Creates a real OpenCode runner using the CLI. */
-export function createCliRunner(): OpenCodeRunner {
+/** Resolves the OpenCode working directory, falling back to the invoking shell's directory. */
+export function resolveWorkingDirectory(playgroundDir?: string): string {
+  return playgroundDir || process.cwd();
+}
+
+/** Formats the model recorded in an export as provider/name with an optional variant. */
+export function formatExportedModel(model: ExportedInfo["model"]): string | undefined {
+  if (!model?.providerID) {
+    return undefined;
+  }
+  const name = model.id ?? model.modelID;
+  if (!name) {
+    return undefined;
+  }
+  return `${model.providerID}/${name}${model.variant ? `#${model.variant}` : ""}`;
+}
+
+/** Creates a real OpenCode runner using the CLI with an explicit working directory. */
+export function createCliRunner(workingDirectory: string, spawn: typeof Bun.spawn = Bun.spawn): OpenCodeRunner {
   async function invoke(args: string[]): Promise<string> {
-    const child = Bun.spawn(["opencode", ...args], { stdout: "pipe", stderr: "pipe" });
+    const child = spawn(["opencode", ...args], { cwd: workingDirectory, stdout: "pipe", stderr: "pipe" });
     const [output, errors] = await Promise.all([
       new Response(child.stdout).text(),
       new Response(child.stderr).text(),
@@ -375,7 +393,7 @@ if (import.meta.main) {
     scenario,
     run: run as 1 | 2,
     playgroundDir: playgroundDir ?? "",
-    runner: createCliRunner(),
+    runner: createCliRunner(resolveWorkingDirectory(playgroundDir)),
     force,
     sessionID,
   }).catch((error: unknown) => {
