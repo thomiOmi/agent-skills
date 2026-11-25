@@ -1,5 +1,78 @@
 # Changelog
 
+## v0.5.2
+
+[compare changes](https://github.com/thomiOmi/agent-skills/compare/v0.5.1...v0.5.2)
+
+### 🚀 Enhancements
+
+- **skills:** Add refactor-planner skill, delegation edges, copywriting migration ([#87](https://github.com/thomiOmi/agent-skills/pull/87))
+- **skills:** Add missing delegation edges for Fase B round 2 ([#91](https://github.com/thomiOmi/agent-skills/pull/91))
+- **skills:** Enrich copywriting content with code block examples ([#92](https://github.com/thomiOmi/agent-skills/pull/92))
+- **skills:** Split copywriting tone adjustment into separate tone reference files ([#93](https://github.com/thomiOmi/agent-skills/pull/93))
+- **agents:** Add unique color to each agent frontmatter ([7b0d0a9](https://github.com/thomiOmi/agent-skills/commit/7b0d0a9))
+- **skills,agents:** Merge karpathy guidelines and critical thinking rules ([#95](https://github.com/thomiOmi/agent-skills/pull/95))
+- **skills:** Integrate lazy senior dev philosophy into existing skills ([8e750f2](https://github.com/thomiOmi/agent-skills/commit/8e750f2))
+
+### 🩹 Fixes
+
+- Resolve typographical error in configuration ([f60722f](https://github.com/thomiOmi/agent-skills/commit/f60722f))
+- **lint:** Resolve strict boolean, unsafe types, and parsing errors ([bb4fb70](https://github.com/thomiOmi/agent-skills/commit/bb4fb70))
+- **lint:** Resolve strict boolean, unsafe types, and parsing errors ([#94](https://github.com/thomiOmi/agent-skills/pull/94))
+- **agents:** Align agent files with OpenCode v2 docs ([aeaab1e](https://github.com/thomiOmi/agent-skills/commit/aeaab1e))
+- **deps:** Align @opencode/plugin version to 2.1.4 ([4a0357e](https://github.com/thomiOmi/agent-skills/commit/4a0357e))
+- **installer:** Allow trailing commas in user config JSONC ([#97](https://github.com/thomiOmi/agent-skills/pull/97))
+- **eval:** Collect real sessions from the playground directory ([#106](https://github.com/thomiOmi/agent-skills/pull/106))
+- **plugin:** Close residual guard bypasses ([#113](https://github.com/thomiOmi/agent-skills/pull/113))
+- **agents:** State explicit skill loading and hide process skills ([#114](https://github.com/thomiOmi/agent-skills/pull/114))
+- **installer:** Handle Windows updates, path escapes, and config fallback ([#115](https://github.com/thomiOmi/agent-skills/pull/115))
+- **skills:** Restore agent-referenced skills to automatic discovery ([#120](https://github.com/thomiOmi/agent-skills/pull/120))
+
+### 💅 Refactors
+
+- **test:** Parse frontmatter with Bun.YAML in tests ([#84](https://github.com/thomiOmi/agent-skills/pull/84))
+- Migrate dependencies to Bun native APIs ([8ea8756](https://github.com/thomiOmi/agent-skills/commit/8ea8756))
+- Migrate dependencies to Bun native APIs ([#85](https://github.com/thomiOmi/agent-skills/pull/85))
+- Cleanup installer core and remove copy mode ([259e766](https://github.com/thomiOmi/agent-skills/commit/259e766))
+- Cleanup installer core and remove copy mode ([#86](https://github.com/thomiOmi/agent-skills/pull/86))
+- Move Compaction plugin tests to dedicated file ([0dbda49](https://github.com/thomiOmi/agent-skills/commit/0dbda49))
+- **commands:** Add read-only shell blocks and fix over-delegation ([#88](https://github.com/thomiOmi/agent-skills/pull/88))
+- Align installer/plugins/tests with OpenCode V2 conventions ([#98](https://github.com/thomiOmi/agent-skills/pull/98))
+- Harden guards, fix installer bugs, and simplify catalog ([#107](https://github.com/thomiOmi/agent-skills/pull/107))
+- **skills:** Merge content-strategy into copywriting ([#109](https://github.com/thomiOmi/agent-skills/pull/109))
+- **skills:** Merge database-migration into database ([#110](https://github.com/thomiOmi/agent-skills/pull/110))
+- **skills:** Merge sdlc-documentation into documentation ([#111](https://github.com/thomiOmi/agent-skills/pull/111))
+- **agents:** Retire orchestrator and move policy to global instructions ([#112](https://github.com/thomiOmi/agent-skills/pull/112))
+- Reduce dev duplication and inert agent config ([#117](https://github.com/thomiOmi/agent-skills/pull/117))
+- **config:** Migrate tui.jsonc to OpenCode V2 cli.json ([#118](https://github.com/thomiOmi/agent-skills/pull/118))
+- **agents:** Replace XML tags with Markdown headings ([#119](https://github.com/thomiOmi/agent-skills/pull/119))
+
+### 📖 Documentation
+
+- **tasks:** Record 0.5.1 release ([3f0c053](https://github.com/thomiOmi/agent-skills/commit/3f0c053))
+- **tasks:** Mark 0.5.1 published ([a5ffdb6](https://github.com/thomiOmi/agent-skills/commit/a5ffdb6))
+- Remove historical EVALUATION.md and its references ([b444ccf](https://github.com/thomiOmi/agent-skills/commit/b444ccf))
+- **AGENTS.md:** Add git workflow branch protection rules ([#96](https://github.com/thomiOmi/agent-skills/pull/96))
+- **eval:** Add baseline measurement for skill/subagent usage ([#104](https://github.com/thomiOmi/agent-skills/pull/104))
+- **skills:** Add anti-slop reference modules ([#108](https://github.com/thomiOmi/agent-skills/pull/108))
+- Align catalog counts, plugin version, and release notes ([#116](https://github.com/thomiOmi/agent-skills/pull/116))
+
+### 🏡 Chore
+
+- **deps-dev:** Bump the bun group with 2 updates ([a7a1eb1](https://github.com/thomiOmi/agent-skills/commit/a7a1eb1))
+- **deps-dev:** Bump @antfu/eslint-config from 9.5.1 to 10.0.0 ([4cac2d0](https://github.com/thomiOmi/agent-skills/commit/4cac2d0))
+- **deps-dev:** Bump @antfu/eslint-config from 9.5.1 to 10.0.0 ([#90](https://github.com/thomiOmi/agent-skills/pull/90))
+- **deps-dev:** Bump the bun group with 2 updates ([#89](https://github.com/thomiOmi/agent-skills/pull/89))
+- **deps-dev:** Bump the bun group with 2 updates ([#89](https://github.com/thomiOmi/agent-skills/pull/89))
+- **deps-dev:** Bump @antfu/eslint-config from 9.5.1 to 10.0.0 ([#90](https://github.com/thomiOmi/agent-skills/pull/90))
+- **ci:** Pin GitHub Actions to full commit SHAs ([#101](https://github.com/thomiOmi/agent-skills/pull/101))
+- **deps-dev:** Bump @opencode/plugin from 2.1.4 to 2.2.5 in the bun group ([#100](https://github.com/thomiOmi/agent-skills/pull/100))
+- **deps-dev:** Bump the bun group across 1 directory with 3 updates ([#105](https://github.com/thomiOmi/agent-skills/pull/105))
+
+### ❤️ Contributors
+
+- Thomi Syauqi ([@thomiOmi](https://github.com/thomiOmi))
+
 ## [Unreleased]
 
 ### Breaking Changes
