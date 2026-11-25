@@ -46,6 +46,11 @@ Guidelines for structuring clear, robust, deterministic, and reliable LLM prompt
 </examples>
 ```
 
+XML tags remain a valid prompting technique, but this repository writes agent
+files (`agents/*.md`) with Markdown headings for readability and a stable
+one-grep audit. Use XML where a prompt benefits from explicit delimiters; do not
+convert the repository's agent files back to XML.
+
 ---
 
 ## Best Practices

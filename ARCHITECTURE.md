@@ -156,7 +156,7 @@ are not merged into the global config. An existing `opencode.json` is updated in
 
 ## Skills to Agent Mapping
 
-The canonical per-agent assignment is the Key Skills column in the Agent Orchestra table in `AGENTS.md`. `tests/docs-consistency.test.ts` verifies that every agent's `<skills_to_load>` block matches that column and that every referenced skill directory exists.
+The canonical per-agent assignment is the Key Skills column in the Agent Orchestra table in `AGENTS.md`. `tests/docs-consistency.test.ts` verifies that every agent's "Skills to load" section matches that column and that every referenced skill directory exists.
 
 This section deliberately does not repeat the mapping. A second copy would silently drift as agents and skills evolve; skill grouping by SDLC phase lives in `README.md`, and per-agent assignment lives only in `AGENTS.md`.
 

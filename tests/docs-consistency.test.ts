@@ -41,14 +41,28 @@ function parseAgentOrchestra(markdown: string): Map<string, string[]> {
 }
 
 function parseLoadedSkills(agentContent: string): string[] {
-  const block = /<skills_to_load>([\s\S]*?)<\/skills_to_load>/.exec(agentContent);
-  if (!block) {
+  const lines = agentContent.split("\n");
+  const start = lines.findIndex(line => line.trim() === "## Skills to load");
+  if (start === -1) {
     return [];
   }
 
-  return [...(block[1] ?? "").matchAll(/`([a-z0-9-]+)`/g)]
-    .map(match => match[1])
-    .filter((value): value is string => typeof value === "string");
+  const skills: string[] = [];
+  for (let index = start + 1; index < lines.length; index++) {
+    const line = lines[index] ?? "";
+    if (line.startsWith("## ")) {
+      break;
+    }
+    if (!/^-\s/.test(line)) {
+      continue;
+    }
+    for (const match of line.matchAll(/`([a-z0-9-]+)`/g)) {
+      if (match[1]) {
+        skills.push(match[1]);
+      }
+    }
+  }
+  return skills;
 }
 
 function parseArchitectureRoster(markdown: string): string[] {
@@ -126,7 +140,7 @@ describe("Documentation consistency", () => {
 
     for (const agentName of agentNames) {
       const content = readText(join(agentsDirectory, `${agentName}.md`));
-      expect(content).toContain("<skill_usage>");
+      expect(content).toContain("## Skill usage");
       expect(content).toContain("skill tool");
     }
   });

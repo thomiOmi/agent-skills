@@ -18,11 +18,11 @@ const FIXTURE_FILES: Record<string, string> = {
   "agents/orchestrator.md": [
     "---",
     "name: orchestrator",
-    "description: Fixture orchestrator.",
+    "description: Fixture coordinator.",
     "mode: subagent",
     "---",
     "",
-    "<role>Fixture orchestrator.</role>",
+    "## Role\nFixture coordinator.",
     "",
   ].join("\n"),
   "agents/qa-engineer.md": [
@@ -32,7 +32,7 @@ const FIXTURE_FILES: Record<string, string> = {
     "mode: subagent",
     "---",
     "",
-    "<role>Fixture QA engineer.</role>",
+    "## Role\nFixture QA engineer.",
     "",
   ].join("\n"),
   "skills/alpha/SKILL.md": [
