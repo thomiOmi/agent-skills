@@ -167,29 +167,13 @@ describe("Validate Skills (Agent Skills Specification)", () => {
     });
   }
 
-  it("hides process-only skills from automatic discovery", async () => {
-    const hidden = new Set([
-      "task-decomposition",
-      "project-lifecycle",
-      "memory-management",
-      "design-md",
-      "architecture-decision",
-      "test-planning",
-      "tech-debt",
-      "code-simplifier",
-      "config-management",
-      "prompt-design",
-      "structured-output",
-    ]);
-
+  it("keeps every catalog skill available to agents", async () => {
     for (const name of skillNames) {
       const { frontmatter } = await loadSkill(name);
-      if (hidden.has(name)) {
-        expect(frontmatter.metadata?.["opencode/autoinvoke"], `${name}: hidden skill must set autoinvoke`).toBe(false);
-      }
-      else {
-        expect(frontmatter.metadata?.["opencode/autoinvoke"], `${name}: domain skill must stay discoverable`).toBeUndefined();
-      }
+      expect(
+        frontmatter.metadata?.["opencode/autoinvoke"],
+        `${name}: autoinvoke false hides the skill from agents that load it by ID`,
+      ).toBeUndefined();
     }
   });
 

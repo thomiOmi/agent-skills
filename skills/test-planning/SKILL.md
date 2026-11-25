@@ -5,7 +5,6 @@ license: MIT
 metadata:
   version: "1.1.0"
   author: thomiOmi
-  opencode/autoinvoke: false
 ---
 
 # Test Planning & QA Strategy
