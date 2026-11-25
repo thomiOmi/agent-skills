@@ -37,7 +37,7 @@ const SECRET_PATTERNS: SecretPattern[] = [
   { name: "Slack token", pattern: /\bxox[baprs]-[A-Za-z0-9-]{10,}\b/ },
   {
     name: "Private key block",
-    pattern: /-----BEGIN (RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY( BLOCK)?-----/,
+    pattern: /-----BEGIN (ENCRYPTED |RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY( BLOCK)?-----/,
   },
 ];
 
@@ -47,16 +47,25 @@ const CREDENTIAL_FIELDS
 // Quoted values cover the common cases; backticks and bare values extend
 // coverage to template literals and unquoted assignments.
 const CREDENTIAL_ASSIGNMENT = new RegExp(
-  `\\b(${CREDENTIAL_FIELDS})\\s*[:=]\\s*(?:\`([^\`\\n]{12,})\`|"([^"\\n]{12,})"|'([^'\\n]{12,})'|([\\w+/=-]{12,})(?=[\\s,;)}\\]]|$))`,
+  `\\b(${CREDENTIAL_FIELDS})\\s*[:=]\\s*(?:\`([^\`\\n]{12,})\`|"([^"\\n]{12,})"|'([^'\\n]{12,})'|([\\w+/=-]{6,})(?=[\\s,;)}\\]]|$))`,
   "gi",
 );
 
 const PLACEHOLDER_VALUE
   = /^(?:\$\{|<|%[A-Z_]+%|your|example|sample|placeholder|changeme|dummy|xxx|\*+|test[-_]?key|insert|replace)/i;
-const TEMPLATE_EXPRESSION = /\$\{/;
+const TEMPLATE_EXPRESSION = /^\$\{/;
+// Unquoted SCREAMING_SNAKE_CASE values reference code constants rather than
+// carrying a literal secret; flagging them creates false positives.
+const CODE_CONSTANT = /^[A-Z][A-Z0-9_]*$/;
 
 const MAX_SCAN_CHARS = 100_000;
+// Longest fixed-width secret token plus assignment context. The two windows
+// overlap by this much so a token straddling the boundary is still scanned.
+const MAX_PATTERN_LENGTH = 256;
 const MAX_DEPTH = 4;
+// Raised from 512 so later content fields in large structured writes are not
+// silently skipped before the scan runs.
+const MAX_CONTENT_STRINGS = 4096;
 const CONTENT_FIELDS: Record<string, readonly string[]> = {
   write: ["content"],
   edit: ["newString"],
@@ -86,7 +95,7 @@ function scanChunk(text: string): string | null {
     const isUnquoted = assignment[5] !== undefined;
     // Bare values are only flagged when they look like generated credentials;
     // plain identifiers and property chains stay allowed.
-    if (isUnquoted && !/\d/.test(value)) {
+    if (isUnquoted && (!/\d/.test(value) || CODE_CONSTANT.test(value))) {
       assignment = CREDENTIAL_ASSIGNMENT.exec(text);
       continue;
     }
@@ -99,16 +108,16 @@ function scanChunk(text: string): string | null {
 }
 
 /**
- * Scans text for likely secrets. Content beyond two scan windows cannot be
- * verified, so it fails closed with an explicit finding.
+ * Scans text for likely secrets. Two overlapping windows cover the ends of
+ * large content; anything beyond them fails closed with an explicit finding.
  */
 export function scanForSecrets(text: string): string | null {
   if (text.length > MAX_SCAN_CHARS * 2) {
     return "Unscanned content exceeds the safe scan limit";
   }
-  const chunks = text.length > MAX_SCAN_CHARS
-    ? [text.slice(0, MAX_SCAN_CHARS), text.slice(-MAX_SCAN_CHARS)]
-    : [text];
+  const firstWindow = text.slice(0, MAX_SCAN_CHARS + MAX_PATTERN_LENGTH);
+  const secondWindow = text.slice(Math.max(0, text.length - MAX_SCAN_CHARS - MAX_PATTERN_LENGTH));
+  const chunks = text.length > MAX_SCAN_CHARS ? [firstWindow, secondWindow] : [text];
   for (const chunk of chunks) {
     const finding = scanChunk(chunk);
     if (finding !== null) {
@@ -129,7 +138,7 @@ function collectContentStrings(
   visited: WeakSet<object>,
   out: string[],
 ): void {
-  if (depth > MAX_DEPTH || out.length > 512) {
+  if (depth > MAX_DEPTH || out.length > MAX_CONTENT_STRINGS) {
     return;
   }
   if (Array.isArray(value)) {
