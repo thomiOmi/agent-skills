@@ -63,7 +63,7 @@ Environment overrides:
 | `config/opencode.jsonc` | `opencode.jsonc` or an existing `opencode.json` | Global config - default_agent, experimental.subagent_depth, instructions, permissions, formatter, lsp, watcher. |
 | `config/tui.jsonc` | `tui.jsonc` or an existing `tui.json` | TUI config - theme, attention notifications. |
 | `agents/*.md` | `agents/*.md` | 20 subagent definitions - orchestrator, senior-developer, qa-engineer, security-auditor, and domain specialists. |
-| `skills/*/` | `skills/*/` | 35 skill directories - SKILL.md + references/. Loaded on demand by the model. |
+| `skills/*/` | `skills/*/` | 34 skill directories - SKILL.md + references/. Loaded on demand by the model. |
 | `commands/*.md` | `commands/*.md` | 2 slash commands - /commit and /ship-pr. |
 | `plugin/` | `plugins/` | 2 V2 plugins - secrets-scanner, tool-guardian. |
 | ownership metadata | `.agent-skills-manifest.json` | Install manifest - SHA-256 hashes, modes, and timestamps that drive safe updates and stale-file cleanup. |

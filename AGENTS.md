@@ -62,7 +62,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style, code-review |
 | `researcher` | Technical research, comparisons, evidence-based recommendations | subagent | research-methodology, planning |
 | `refactor-planner` | Safe refactoring, legacy code migration | subagent | refactor-planner, tech-debt, planning, architecture-decision, code-simplifier |
-| `marketing` | Content, SEO, copy, strategy | subagent | content-strategy, copywriting, no-ai-slop, seo-optimization |
+| `marketing` | Content, SEO, copy, strategy | subagent | copywriting, no-ai-slop, seo-optimization |
 
 Invoke a specialist by asking the orchestrator to delegate to that subagent when you already know who should handle it.
 

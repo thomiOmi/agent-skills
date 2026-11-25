@@ -128,6 +128,10 @@ The agentskills.io specification states the Markdown body after frontmatter has 
 
 The former workflow was one linear chain from discussion to improvement. The new one classifies the request first: feature development goes through planning and file picking, bug investigation through `deep-thinker` and `researcher`, and refactoring through file picking and planning. All paths converge on implementation and then a `qa-engineer` review gate that loops back on failure, at most three retries. Because only `orchestrator` has `subagent` permission, the sequence is coordinated there rather than through nested delegation. Date: 2026-11-25.
 
+### content-strategy merged into copywriting
+
+`content-strategy` was a separate skill whose description explicitly delegated landing page copy and CTA formulas to `copywriting`; the marketing agent loaded both for the same authoring moment. Decision: move channel planning, brand voice, calendars, content types, and hard rules into `copywriting/references/content-strategy.md`, move its templates to `copywriting/assets/content-templates.md`, and drop the standalone skill. The merged description covers public-facing copy but deliberately does not claim prose editing, which remains `no-ai-slop`. Catalog count drops from 35 to 34. Date: 2026-11-25.
+
 ---
 
 ## Conventions
