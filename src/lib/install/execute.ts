@@ -4,10 +4,11 @@ import type {
   InstallPlan,
   ManagedFileMode,
   Manifest,
+  PlannedAction,
   PlannedFile,
 } from "./types";
-import { chmod, cp, mkdir, rename, rm, stat, symlink } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { chmod, cp, mkdir, realpath, rename, rm, stat, symlink } from "node:fs/promises";
+import { dirname, isAbsolute, join, relative, sep } from "node:path";
 import process from "node:process";
 import { consola } from "consola";
 import { backupGlobal } from "../backup";
@@ -67,7 +68,7 @@ export async function executeInstall(
 
   for (const file of plan.files) {
     if (file.action === "create" || file.action === "update") {
-      installedModes.set(file.relativePath, await installFile(file, plan.mode));
+      installedModes.set(file.relativePath, await installFile(file, plan.mode, plan.configRoot));
     }
     else if (file.action === "delete") {
       await rm(file.destinationPath, { recursive: true, force: true });
@@ -93,15 +94,17 @@ export async function executeInstall(
 async function installFile(
   file: PlannedFile,
   mode: InstallMode,
+  configRoot: string,
 ): Promise<ManagedFileMode> {
   if (file.sourcePath === undefined || file.sourcePath === null) {
     throw new Error(`Missing source path for ${file.relativePath}`);
   }
 
   await mkdir(dirname(file.destinationPath), { recursive: true });
+  await assertParentInsideRoot(file, configRoot);
 
   if (mode === "symlink") {
-    return createSymlinkOrCopy(file.sourcePath, file.destinationPath);
+    return createSymlinkOrCopy(file.sourcePath, file.destinationPath, file.action);
   }
 
   const sourceInfo = await stat(file.sourcePath);
@@ -114,30 +117,60 @@ async function installFile(
     await preserveMode(file.sourcePath, temporaryPath);
     await rename(temporaryPath, file.destinationPath);
   }
-  catch {
-    await rm(temporaryPath, { force: true });
-    throw new Error(`Failed to install ${file.relativePath}`);
+  catch (error) {
+    await rm(temporaryPath, { recursive: true, force: true });
+    throw new Error(`Failed to install ${file.relativePath}`, { cause: error });
   }
 
   consola.log(`  ${file.action === "create" ? "create" : "update"} ${file.relativePath}`);
   return "copy";
 }
 
+/**
+ * Verifies that a destination's real parent directory stays inside the config root.
+ *
+ * @param file Planned file whose destination is about to be written.
+ * @param configRoot Absolute OpenCode config root.
+ * @throws Error when a symlinked parent resolves outside the config root.
+ */
+async function assertParentInsideRoot(file: PlannedFile, configRoot: string): Promise<void> {
+  const [realRoot, realParent] = await Promise.all([
+    realpath(configRoot),
+    realpath(dirname(file.destinationPath)),
+  ]);
+  const fromRoot = relative(realRoot, realParent);
+
+  if (fromRoot === ".." || fromRoot.startsWith(`..${sep}`) || isAbsolute(fromRoot)) {
+    throw new Error(`Refusing to write outside ${configRoot}: ${file.relativePath}`);
+  }
+}
+
 async function createSymlinkOrCopy(
   sourcePath: string,
   destinationPath: string,
+  action: PlannedAction,
 ): Promise<ManagedFileMode> {
   const sourceInfo = await stat(sourcePath);
   const linkType = sourceInfo.isDirectory()
     ? process.platform === "win32" ? "junction" : "dir"
     : "file";
 
+  if (action === "update") {
+    // The backup already captured the old destination, so clear it before
+    // linking. Otherwise symlink fails with EEXIST and silently degrades to cp.
+    await rm(destinationPath, { recursive: true, force: true });
+  }
+
   try {
     await symlink(sourcePath, destinationPath, linkType);
     consola.log(`  symlink ${destinationPath}`);
     return "symlink";
   }
-  catch {
+  catch (error) {
+    if (!isLinkCapabilityError(error)) {
+      throw new Error(`Failed to link ${destinationPath}`, { cause: error });
+    }
+
     // Windows may block symlink creation without developer mode. Copying is a
     // safe fallback because the manifest records the actual installed mode.
     await cp(sourcePath, destinationPath, { recursive: sourceInfo.isDirectory() });
@@ -145,6 +178,21 @@ async function createSymlinkOrCopy(
     consola.log(`  copy    ${destinationPath}`);
     return "copy";
   }
+}
+
+/**
+ * Reports whether an error means the host cannot create the requested link.
+ *
+ * @param error Value thrown by a symlink call.
+ * @returns True only for known link-capability failures.
+ */
+function isLinkCapabilityError(error: unknown): boolean {
+  if (typeof error !== "object" || error === null || !("code" in error)) {
+    return false;
+  }
+
+  const code = (error as { code?: unknown }).code;
+  return code === "EPERM" || code === "EACCES" || code === "ENOSYS" || code === "ENOTSUP";
 }
 
 async function preserveMode(sourcePath: string, destinationPath: string): Promise<void> {

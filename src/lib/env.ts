@@ -41,6 +41,5 @@ function detectCi(): boolean {
 export const env = {
   ci: detectCi(),
   provider: detectProvider(),
-  isWindows: process.platform === "win32",
   platform: process.platform === "win32" ? "windows" : process.platform,
 };

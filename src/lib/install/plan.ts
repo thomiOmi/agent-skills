@@ -9,7 +9,7 @@ import type {
 import { lstat, stat } from "node:fs/promises";
 import { hashFile } from "./scan";
 import { resolveInsideRoot } from "./targets";
-import { isNotFoundError } from "./utils";
+import { comparePaths, isNotFoundError } from "./utils";
 
 export interface BuildPlanOptions {
   mode: InstallMode;
@@ -38,7 +38,7 @@ interface DestinationState {
  */
 export async function buildInstallPlan(options: BuildPlanOptions): Promise<InstallPlan> {
   const orderedSources = [...options.sourceFiles].sort(
-    (left, right) => left.relativePath.localeCompare(right.relativePath),
+    (left, right) => comparePaths(left.relativePath, right.relativePath),
   );
   const manifestFiles = options.manifest?.files ?? {};
   const firstRun = options.manifest === null;
@@ -69,7 +69,7 @@ export async function buildInstallPlan(options: BuildPlanOptions): Promise<Insta
   const sourcePaths = new Set(orderedSources.map(file => file.relativePath));
   const stalePaths = Object.keys(manifestFiles)
     .filter(relativePath => !sourcePaths.has(relativePath))
-    .sort((left, right) => left.localeCompare(right));
+    .sort(comparePaths);
 
   for (const relativePath of stalePaths) {
     const previous = manifestFiles[relativePath];
@@ -190,6 +190,11 @@ function planStaleFile(
   };
 
   if (destination.isDirectory || destination.isBrokenSymlink) {
+    // Match the source-path branch: with force, non-merge modes may overwrite
+    // an unmanaged directory so stale managed directories stay removable.
+    if (mode !== "merge" && force) {
+      return { ...base, action: "delete", reason: "stale-modified", conflict: true };
+    }
     return { ...base, action: "keep", reason: "unmanaged", conflict: true };
   }
 

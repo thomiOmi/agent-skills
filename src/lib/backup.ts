@@ -8,7 +8,6 @@ export interface BackupOptions {
   configRoot: string;
   backupRoot: string;
   dryRun?: boolean;
-  skip?: boolean;
   backupPath?: string;
 }
 
@@ -19,15 +18,9 @@ export interface BackupOptions {
  * ~/.agents are not managed by the installer and are therefore untouched.
  *
  * @param opts Backup inputs.
- * @returns Backup directory path, or null when the backup was skipped or
- * there was nothing to back up.
+ * @returns Backup directory path, or null when there was nothing to back up.
  */
 export async function backupGlobal(opts: BackupOptions): Promise<string | null> {
-  if (opts.skip) {
-    consola.log("  backup skipped (--skip-backup)");
-    return null;
-  }
-
   const stamp = getTimestamp();
   const backupDir = opts.backupPath !== undefined
     ? join(opts.backupPath, stamp)

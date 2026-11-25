@@ -29,7 +29,6 @@ export interface SourceFile {
   relativePath: string;
   absolutePath: string;
   hash: string;
-  size: number;
 }
 
 /** A file owned by the installer according to the manifest. */

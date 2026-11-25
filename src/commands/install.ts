@@ -19,7 +19,8 @@ import { repoSubdir } from "../lib/paths";
 
 export type { InstallMode, InstallOptions, InstallResult } from "../lib/install/types";
 
-const MODES: InstallMode[] = ["merge", "replace", "symlink"];
+/** Install modes accepted by the CLI and the install command. */
+export const MODES: InstallMode[] = ["merge", "replace", "symlink"];
 
 function isRemoteSource(source: string): boolean {
   return /^(?:github|gh|git|gitlab|bitbucket):/.test(source)
@@ -53,7 +54,13 @@ function normalizeMode(mode: string | undefined): InstallMode {
   return mode as InstallMode;
 }
 
-async function readPackageVersion(repoRoot: string): Promise<string> {
+/**
+ * Reads the package version from a repository root.
+ *
+ * @param repoRoot Absolute repository root.
+ * @returns Version string, or "0.0.0" when package.json is missing or invalid.
+ */
+export async function readPackageVersion(repoRoot: string): Promise<string> {
   try {
     const packageJson = JSON.parse(await readFile(join(repoRoot, "package.json"), "utf-8")) as { version?: string };
     return packageJson.version ?? "0.0.0";

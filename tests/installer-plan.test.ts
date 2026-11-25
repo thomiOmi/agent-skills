@@ -1,12 +1,12 @@
 import type { Manifest, ManifestFile, SourceFile } from "../src/lib/install/types";
-import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "bun:test";
 import { createManifest } from "../src/lib/install/manifest";
 import { buildInstallPlan } from "../src/lib/install/plan";
+import { comparePaths } from "../src/lib/install/utils";
 import { writeFixtureFile } from "./installer-fixture";
 
 const roots: string[] = [];
@@ -30,7 +30,6 @@ function sourceFile(relativePath: string, content: string): SourceFile {
     relativePath,
     absolutePath: `/source/${relativePath}`,
     hash: hashContent(content),
-    size: Buffer.byteLength(content),
   };
 }
 
@@ -262,5 +261,50 @@ describe("Installer plan", () => {
       "commands/middle.md",
       "skills/zeta/SKILL.md",
     ]);
+  });
+
+  it("compares paths by code point instead of locale collation", () => {
+    expect(["a", "Z", "b", "A"].sort(comparePaths)).toEqual(["A", "Z", "a", "b"]);
+  });
+
+  it("sorts stale paths by code point instead of locale collation", async () => {
+    const configRoot = await createConfigRoot();
+    await writeFixtureFile(configRoot, "skills/a.md", "a");
+    await writeFixtureFile(configRoot, "skills/Z.md", "z");
+
+    const plan = await buildInstallPlan({
+      mode: "merge",
+      force: false,
+      configRoot,
+      sourceFiles: [],
+      manifest: manifest({
+        "skills/a.md": manifestFile(hashContent("a")),
+        "skills/Z.md": manifestFile(hashContent("z")),
+      }),
+    });
+
+    expect(plan.files.map(file => file.relativePath)).toEqual([
+      "skills/Z.md",
+      "skills/a.md",
+    ]);
+  });
+
+  it("deletes a stale managed directory in non-merge mode with force", async () => {
+    const configRoot = await createConfigRoot();
+    await mkdir(join(configRoot, "skills/old"), { recursive: true });
+    await writeFixtureFile(configRoot, "skills/old/notes.md", "managed");
+
+    const plan = await buildInstallPlan({
+      mode: "replace",
+      force: true,
+      configRoot,
+      sourceFiles: [],
+      manifest: manifest({ "skills/old": manifestFile(hashContent("managed")) }),
+    });
+
+    const stale = plan.files.find(file => file.relativePath === "skills/old");
+    expect(stale?.action).toBe("delete");
+    expect(stale?.reason).toBe("stale-modified");
+    expect(plan.hasChanges).toBe(true);
   });
 });

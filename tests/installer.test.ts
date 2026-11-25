@@ -1,5 +1,5 @@
 import type { ConfigEnvironmentSnapshot, InstallerFixture } from "./installer-fixture";
-import { readFile } from "node:fs/promises";
+import { lstat, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { parseJSONC } from "confbox";
@@ -139,6 +139,34 @@ describe("Installer commands", () => {
       .toContain("Alpha fixture skill");
     expect(await pathExists(join(fixture.target, "opencode.jsonc"))).toBe(true);
     expect(await pathExists(join(fixture.target, "tui.jsonc"))).toBe(true);
+  });
+
+  it("keeps a symlink when a previously installed destination is updated", async () => {
+    const fixture = await createFixture();
+
+    await installCommand({
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+    await writeFixtureFile(fixture.repo, "skills/alpha/SKILL.md", "# Alpha changed\n");
+
+    const result = await installCommand({
+      mode: "symlink",
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+
+    const destination = join(fixture.target, "skills/alpha/SKILL.md");
+    expect(result.updated).toBeGreaterThan(0);
+    expect((await lstat(destination)).isSymbolicLink()).toBe(true);
+    expect(await readFile(destination, "utf-8")).toContain("Alpha changed");
+
+    const manifest = JSON.parse(
+      await readFile(join(fixture.target, ".agent-skills-manifest.json"), "utf-8"),
+    ) as { files: Record<string, { mode: string }> };
+    expect(manifest.files["skills/alpha/SKILL.md"]?.mode).toBe("symlink");
   });
 
   it("is idempotent on a second merge run", async () => {
