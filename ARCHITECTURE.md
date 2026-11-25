@@ -163,7 +163,7 @@ This section deliberately does not repeat the mapping. A second copy would silen
 
 ## Plugin Hooks (OpenCode V2)
 
-Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.2.5 is a devDependency, and the OpenCode host resolves the runtime import to its own copy. Plugins register lifecycle hooks only (secrets-scanner, tool-guardian); they are not user-invokable custom tools, and the project ships no custom tools. OpenCode V2 handles compaction natively with an objective and next move, so the former `compaction.ts` plugin was removed.
+Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.3.0 is a devDependency, and the OpenCode host resolves the runtime import to its own copy. Plugins register lifecycle hooks only (secrets-scanner, tool-guardian); they are not user-invokable custom tools, and the project ships no custom tools. OpenCode V2 handles compaction natively with an objective and next move, so the former `compaction.ts` plugin was removed.
 
 Plugins are disabled through the `plugins` array in `opencode.jsonc` by prefixing the stable ID with `-` (for example `-agent-skills.secrets-scanner`). `AGENT_SKILLS_DISABLE_*` environment variables are not consumed by OpenCode or by these plugins.
 
