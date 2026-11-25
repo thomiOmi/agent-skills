@@ -48,7 +48,7 @@ A contributor who wants to add new agents or skills to this repository. Needs do
 
 - As a vibe coder, I want to describe features in plain language so the orchestrator handles decomposition and execution without me managing details.
 - As a sales person, I want a marketing agent that drafts outreach copy so I can focus on closing deals.
-- As a marketer, I want the content-strategy skill for SEO and copywriting so I can publish optimized content without hiring an agency.
+- As a marketer, I want the copywriting skill with its content-strategy reference for SEO and copywriting so I can publish optimized content without hiring an agency.
 - As a designer, I want the ui-ux agent to review my design system so accessibility and consistency are checked automatically.
 
 ### Stories: Persona C - Tech Lead / Reviewer
@@ -118,7 +118,7 @@ The orchestrator subagent has permission to delegate to all other subagents via 
 
 ### FR-3: Skills
 
-The system provides 35 skills covering code quality, testing, security, design, DevOps, AI integration, planning, documentation, and research methodology.
+The system provides 34 skills covering code quality, testing, security, design, DevOps, AI integration, planning, documentation, and research methodology.
 
 - Skills follow SKILL.md format with frontmatter (name, description)
 - Skills load progressively: frontmatter at startup (~100 tokens), full body on activation (< 5000 tokens)
@@ -179,7 +179,7 @@ The installer deploys agents, skills, commands, plugin hooks, global instruction
 ### In Scope
 
 - 20 specialized subagents with documented roles
-- 35 skills with progressive disclosure and verification checklists
+- 34 skills with progressive disclosure and verification checklists
 - No custom tools
 - 2 slash commands: /commit, /ship-pr
 - Plugin registration via OpenCode V2 plugin API

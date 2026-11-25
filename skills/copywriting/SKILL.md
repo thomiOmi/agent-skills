@@ -1,9 +1,9 @@
 ---
 name: copywriting
-description: 'Use this skill when writing landing page copy, value propositions, calls to action (CTAs), or sales outreach. Trigger with "write copy", "landing page copy", "value proposition", "CTA", "copywriting formulas", "AIDA", "PAS", "FAB", "Before-After-Bridge", "tone adjustment", "headline patterns", "anti-patterns", or when writing audience-focused copy. Do not write marketing copy without this skill loaded.'
+description: 'Use this skill when writing public-facing copy: landing pages, value propositions, calls to action (CTAs), sales outreach, blog posts, email campaigns, social posts, newsletters, brand voice, or microcopy. Trigger with "write copy", "landing page copy", "value proposition", "CTA", "copywriting formulas", "AIDA", "PAS", "FAB", "Before-After-Bridge", "headline patterns", "blog post", "email marketing", "social media post", "brand voice", "editorial calendar", "content calendar", "newsletter", "subject line", "microcopy", "tone adjustment", or when writing audience-focused copy. For editing existing prose or removing AI patterns, use no-ai-slop instead. Do not write marketing copy without this skill loaded.'
 license: MIT
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   author: thomiOmi
 ---
 
@@ -68,6 +68,20 @@ Bridge: How to get from Before to After
 ## Tone Adjustment
 
 For per-audience tone adjustment rules, load `references/tones/tones.md`.
+
+---
+
+## References
+
+Load only what the task needs:
+
+- `references/tones/tones.md` - tone by audience, with per-tone files one level below.
+- `references/content-strategy.md` - channel planning, brand voice, editorial calendar, content types, microcopy, and content hard rules.
+- `assets/content-templates.md` - blog post, landing page, and email templates.
+- `seo-optimization` - meta tags, headings, keyword research. If it cannot be loaded, keep one descriptive title and one clear heading per section.
+- `documentation` - technical docs such as README, CHANGELOG, and API guides. If it cannot be loaded, state what the thing does, how to set it up, and how to verify it.
+
+If a reference cannot be read, use the one-line fallback above and say which reference was unavailable.
 
 ---
 

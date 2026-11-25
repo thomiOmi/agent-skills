@@ -1,6 +1,6 @@
 # Skill Catalog Map
 
-Cross-skill referral graph, boundary clarifications, and open decisions for the 35 skills in `skills/`. Skills are loosely coupled via explicit "load this skill" by-name pointers. No skill depends on another at runtime; pointers are activation-time delegations per SPEC.md progressive disclosure.
+Cross-skill referral graph, boundary clarifications, and open decisions for the 34 skills in `skills/`. Skills are loosely coupled via explicit "load this skill" by-name pointers. No skill depends on another at runtime; pointers are activation-time delegations per SPEC.md progressive disclosure.
 
 ## Cross-Skill Referral DAG
 
@@ -34,8 +34,8 @@ Cross-skill referral graph, boundary clarifications, and open decisions for the 
 | frontend-patterns | api-conventions | API shape behind the fetch layer |
 | ai-integration | prompt-design | Designing or refining prompt structure |
 | ai-integration | structured-output | JSON output contracts and response parsing |
-| content-strategy | copywriting | Landing page copy and CTA formulas |
-| content-strategy | seo-optimization | Meta tags, heading structure, keyword research |
+| copywriting | seo-optimization | Meta tags, heading structure, keyword research |
+| copywriting | documentation | Technical docs: README, CHANGELOG, OpenAPI, setup guides |
 | documentation | architecture-decision | Architecture Decision Records |
 | config-management | code-style | Application code conventions |
 | config-management | devops-deployment | CI pipeline design, deployment, infrastructure |
@@ -55,9 +55,9 @@ Cross-skill referral graph, boundary clarifications, and open decisions for the 
 
 ## Boundary Clarifications
 
-### content-strategy vs documentation
+### copywriting vs documentation
 
-`content-strategy` owns public-facing marketing content (email campaigns, blog posts, social media, brand voice). `documentation` owns technical/project documentation (README, CHANGELOG, OpenAPI specs, setup guides, API docs). `content-strategy` must not claim "technical documentation" as its own surface; technical documentation is delegated to `documentation`.
+`copywriting` owns public-facing marketing copy, including its `references/content-strategy.md` for channel planning, brand voice, and calendars. `documentation` owns technical/project documentation (README, CHANGELOG, OpenAPI specs, setup guides, API docs). `copywriting` must not claim "technical documentation" as its own surface; technical documentation is delegated to `documentation`.
 
 ### ui-design vs design-md
 

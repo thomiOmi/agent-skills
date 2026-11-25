@@ -72,8 +72,7 @@ Skills are grouped by SDLC phase - pick the group that matches what you are doin
 
 | Skill | Description |
 |---|---|
-| `copywriting` | Landing page copy, CTAs, marketing formulas |
-| `content-strategy` | Content calendars, brand voice guidelines |
+| `copywriting` | Landing page copy, CTAs, marketing formulas, content strategy, brand voice |
 | `seo-optimization` | Meta tags, title tags, heading hierarchy, on-page SEO |
 | `no-ai-slop` | Remove AI slop patterns from writing, detect mode, preserve voice |
 
@@ -172,7 +171,7 @@ agent-skills/
 │   ├── secrets-scanner.ts # Blocks writes containing secrets
 │   └── tool-guardian.ts  # Blocks destructive shell commands
 ├── scripts/            # ESLint and frontmatter dev utilities
-├── skills/             # 35 atomic domain skills (SKILL.md + resources)
+├── skills/             # 34 atomic domain skills (SKILL.md + resources)
 ├── src/                # CLI installer (plan/execute, manifest, config merge)
 └── tests/              # Test suites (bun test)
 ```
