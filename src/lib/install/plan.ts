@@ -45,9 +45,18 @@ export async function buildInstallPlan(options: BuildPlanOptions): Promise<Insta
   const planned: PlannedFile[] = [];
   let adopted = false;
 
-  for (const source of orderedSources) {
-    const destinationPath = resolveInsideRoot(options.configRoot, source.relativePath);
-    const destination = await inspectDestination(destinationPath);
+  const inspectedSources = await Promise.all(
+    orderedSources.map(async (source) => {
+      const destinationPath = resolveInsideRoot(options.configRoot, source.relativePath);
+      return {
+        source,
+        destinationPath,
+        destination: await inspectDestination(destinationPath),
+      };
+    }),
+  );
+
+  for (const { source, destinationPath, destination } of inspectedSources) {
     const previous = manifestFiles[source.relativePath] ?? null;
     const file = planSourceFile(
       source,
@@ -71,14 +80,23 @@ export async function buildInstallPlan(options: BuildPlanOptions): Promise<Insta
     .filter(relativePath => !sourcePaths.has(relativePath))
     .sort(comparePaths);
 
-  for (const relativePath of stalePaths) {
+  const inspectedStale = await Promise.all(
+    stalePaths.map(async (relativePath) => {
+      const destinationPath = resolveInsideRoot(options.configRoot, relativePath);
+      return {
+        relativePath,
+        destinationPath,
+        destination: await inspectDestination(destinationPath),
+      };
+    }),
+  );
+
+  for (const { relativePath, destinationPath, destination } of inspectedStale) {
     const previous = manifestFiles[relativePath];
     if (!previous) {
       continue;
     }
 
-    const destinationPath = resolveInsideRoot(options.configRoot, relativePath);
-    const destination = await inspectDestination(destinationPath);
     const staleFile = planStaleFile(
       relativePath,
       destinationPath,

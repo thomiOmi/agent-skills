@@ -55,6 +55,48 @@ function isAgentFile(filePath) {
   return /\/agents\/.+\.md$/.test(filePath.replace(/\\/g, "/"));
 }
 
+/**
+ * Reads and parses frontmatter for a file of the given target type.
+ *
+ * @param {object} context ESLint rule context.
+ * @param {"skill" | "agent" | "any"} target File types the rule applies to.
+ * @returns {{ frontmatter: object | null, expectedName: string | null } | null} Parsed frontmatter and expected name, or null when the file is out of scope.
+ */
+function readFrontmatter(context, target) {
+  const filename = context.filename;
+  const isSkill = isSkillFile(filename);
+  const isAgent = isAgentFile(filename);
+  if (target === "skill" && !isSkill) {
+    return null;
+  }
+  if (target === "agent" && !isAgent) {
+    return null;
+  }
+  if (target === "any" && !isSkill && !isAgent) {
+    return null;
+  }
+  return {
+    frontmatter: extractFrontmatter(context.sourceCode.getText()),
+    expectedName: getExpectedName(filename),
+  };
+}
+
+/**
+ * Reports each required frontmatter field that is missing from the document.
+ *
+ * @param {object} context ESLint rule context.
+ * @param {object} node Program node used as the report location.
+ * @param {object} frontmatter Parsed frontmatter to inspect.
+ * @param {string[]} requiredFields Fields that must be present.
+ */
+function checkRequiredFields(context, node, frontmatter, requiredFields) {
+  for (const field of requiredFields) {
+    if (!(field in frontmatter)) {
+      context.report({ node, messageId: "requiredField", data: { field } });
+    }
+  }
+}
+
 const validSkillFrontmatter = {
   meta: /** @type {const} */ ({
     type: "problem",
@@ -74,16 +116,12 @@ const validSkillFrontmatter = {
     },
   }),
   create(context) {
-    const text = context.sourceCode.getText();
-    const filename = context.filename;
-    if (!isSkillFile(filename)) {
+    const loaded = readFrontmatter(context, "skill");
+    if (!loaded || !loaded.expectedName) {
       return {};
     }
-    const expectedName = getExpectedName(filename);
-    if (!expectedName) {
-      return {};
-    }
-    const frontmatter = extractFrontmatter(text);
+    const frontmatter = loaded.frontmatter;
+    const expectedName = loaded.expectedName;
     if (!frontmatter) {
       return {
         Program(node) {
@@ -94,11 +132,7 @@ const validSkillFrontmatter = {
     const requiredFields = ["name", "description"];
     return {
       Program(node) {
-        for (const field of requiredFields) {
-          if (!(field in frontmatter)) {
-            context.report({ node, messageId: "requiredField", data: { field } });
-          }
-        }
+        checkRequiredFields(context, node, frontmatter, requiredFields);
         if (frontmatter.name) {
           if (frontmatter.name !== expectedName) {
             context.report({ node, messageId: "nameMismatch", data: { actual: frontmatter.name, expected: expectedName } });
@@ -180,16 +214,12 @@ const validAgentFrontmatter = {
     },
   }),
   create(context) {
-    const text = context.sourceCode.getText();
-    const filename = context.filename;
-    if (!isAgentFile(filename)) {
+    const loaded = readFrontmatter(context, "agent");
+    if (!loaded || !loaded.expectedName) {
       return {};
     }
-    const expectedName = getExpectedName(filename);
-    if (!expectedName) {
-      return {};
-    }
-    const frontmatter = extractFrontmatter(text);
+    const frontmatter = loaded.frontmatter;
+    const expectedName = loaded.expectedName;
     if (!frontmatter) {
       return {
         Program(node) {
@@ -200,11 +230,7 @@ const validAgentFrontmatter = {
     const requiredFields = ["name", "description", "mode", "permissions"];
     return {
       Program(node) {
-        for (const field of requiredFields) {
-          if (!(field in frontmatter)) {
-            context.report({ node, messageId: "requiredField", data: { field } });
-          }
-        }
+        checkRequiredFields(context, node, frontmatter, requiredFields);
         if (frontmatter.name && frontmatter.name !== expectedName) {
           context.report({ node, messageId: "nameMismatch", data: { actual: frontmatter.name, expected: expectedName } });
         }
@@ -302,15 +328,11 @@ const deprecatedAgentFrontmatter = {
     },
   }),
   create(context) {
-    const text = context.sourceCode.getText();
-    const filename = context.filename;
-    if (!isAgentFile(filename)) {
+    const loaded = readFrontmatter(context, "agent");
+    if (!loaded?.frontmatter) {
       return {};
     }
-    const frontmatter = extractFrontmatter(text);
-    if (!frontmatter) {
-      return {};
-    }
+    const frontmatter = loaded.frontmatter;
     return {
       Program(node) {
         for (const field of DEPRECATED_AGENT_KEYS) {
@@ -332,15 +354,13 @@ const descriptionLength = {
     },
   }),
   create(context) {
-    const text = context.sourceCode.getText();
-    const filename = context.filename;
-    if (!isAgentFile(filename) && !isSkillFile(filename)) {
+    const loaded = readFrontmatter(context, "any");
+    if (!loaded?.frontmatter
+      || !loaded.frontmatter.description
+      || typeof loaded.frontmatter.description !== "string") {
       return {};
     }
-    const frontmatter = extractFrontmatter(text);
-    if (!frontmatter || !frontmatter.description || typeof frontmatter.description !== "string") {
-      return {};
-    }
+    const frontmatter = loaded.frontmatter;
     if (frontmatter.description.length <= DESCRIPTION_MAX) {
       return {};
     }

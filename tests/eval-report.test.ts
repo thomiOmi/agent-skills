@@ -147,6 +147,39 @@ describe("buildMetrics", () => {
     expect(result.errors).not.toContain("TypeError");
     await rm(dir, { recursive: true, force: true });
   });
+
+  test("rejects malformed ID records instead of reading undefined IDs", async () => {
+    const malformedRecords: unknown[] = [
+      {},
+      { id: 42, source: "main", sessionID: "ses_synthetic" },
+      { id: "skill-a", source: "root", sessionID: "ses_synthetic" },
+      { id: "skill-a", source: "main", sessionID: 7 },
+      "skill-a",
+    ];
+    for (const [index, value] of malformedRecords.entries()) {
+      const dir = await tempDir();
+      await writeFile(
+        join(dir, "1-run1.json"),
+        JSON.stringify({ ...summary(1, 1), completedSkillIDs: [value] }),
+      );
+      await expect(loadSummaries(dir), `variant ${index}`).rejects.toThrow("invalid summary");
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("reports a CLI error for a malformed ID record without a TypeError", async () => {
+    const dir = await tempDir();
+    await writeFile(
+      join(dir, "1-run1.json"),
+      JSON.stringify({ ...summary(1, 1), failedSubagentIDs: [{}] }),
+    );
+    const result = await runCli([dir]);
+    expect(result.code).toBe(1);
+    expect(result.errors).toContain("invalid summary");
+    expect(result.errors).not.toContain("TypeError");
+    expect(result.output).not.toContain("undefined");
+    await rm(dir, { recursive: true, force: true });
+  });
 });
 
 describe("CLI", () => {

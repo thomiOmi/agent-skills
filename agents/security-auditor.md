@@ -3,9 +3,6 @@ name: security-auditor
 description: Security auditor - auth review, OWASP Top 10, vulnerability assessment, data exposure, injection risks.
 mode: subagent
 color: "#dc2626"
-request:
-  body:
-    temperature: 0.1
 permissions:
   - action: read
     resource: "*"

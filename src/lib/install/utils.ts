@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { mkdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import process from "node:process";
@@ -42,7 +43,8 @@ export async function pathExists(path: string): Promise<boolean> {
  */
 export async function writeFileAtomic(path: string, content: string): Promise<void> {
   await mkdir(dirname(path), { recursive: true });
-  const temporaryPath = `${path}.tmp`;
+  // A per-write suffix stops concurrent writes to the same path from sharing a temporary file.
+  const temporaryPath = `${path}.${process.pid}.${randomBytes(6).toString("hex")}.tmp`;
   await writeFile(temporaryPath, content, "utf-8");
   try {
     await rename(temporaryPath, path);

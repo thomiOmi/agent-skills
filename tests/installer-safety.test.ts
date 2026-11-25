@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { parseJSONC } from "confbox";
 import { installCommand } from "../src/commands/install";
+import { backupGlobal } from "../src/lib/backup";
 import { pathExists } from "../src/lib/install/utils";
 import {
   createInstallerFixture,
@@ -209,6 +210,22 @@ describe("Installer safety", () => {
     expect(await readFile(join(backupDirectory, "agents/custom.md"), "utf-8"))
       .toBe("third party");
     expect(await pathExists(join(backupDirectory, "BACKUP.md"))).toBe(true);
+  });
+
+  it("creates collision-resistant backup directory names", async () => {
+    const fixture = await createFixture();
+    await writeFixtureFile(fixture.target, "agents/custom.md", "custom agent");
+    const backupRoot = join(fixture.sandbox, "backups");
+
+    const first = await backupGlobal({ configRoot: fixture.target, backupRoot });
+    const second = await backupGlobal({ configRoot: fixture.target, backupRoot });
+
+    expect(first).not.toBeNull();
+    expect(second).not.toBeNull();
+    expect(first).toMatch(/\d{8}-\d{6}-.+/);
+    expect(second).toMatch(/\d{8}-\d{6}-.+/);
+    expect(first).not.toBe(second);
+    expect(await readdir(backupRoot)).toHaveLength(2);
   });
 
   it("aborts on an invalid config before writing anything", async () => {

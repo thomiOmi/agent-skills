@@ -3,9 +3,6 @@ name: researcher
 description: Research specialist - technical research, library and tool comparisons, documentation gathering, and evidence-based recommendations with cited sources.
 mode: subagent
 color: "#059669"
-request:
-  body:
-    temperature: 0.3
 permissions:
   - action: read
     resource: "*"
