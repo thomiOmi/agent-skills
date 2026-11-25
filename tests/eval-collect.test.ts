@@ -1,9 +1,9 @@
 import type { OpenCodeRunner, SessionInfo } from "../scripts/eval-collect";
-import { access, mkdtemp, readFile, rm } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
-import { childCoverageWarning, collectScenario, createCliRunner, formatExportedModel, markdownRow, resolveWorkingDirectory } from "../scripts/eval-collect";
+import { childCoverageWarning, collectScenario, createCliRunner, formatExportedModel, markdownRow, resolveWorkingDirectory, SCENARIO_COUNT, SCENARIO_LABELS } from "../scripts/eval-collect";
 
 const PLAYGROUND = "sandbox/playground";
 
@@ -267,7 +267,54 @@ describe("collectScenario", () => {
       playgroundDir: PLAYGROUND,
       runner: makeRunner(root, []),
       outDir,
-    })).rejects.toThrow("scenario must be an integer from 1 to 10");
+    })).rejects.toThrow(`scenario must be an integer from 1 to ${SCENARIO_COUNT}`);
+    await rm(outDir, { recursive: true, force: true });
+  });
+
+  test("refuses to overwrite a malformed existing summary", async () => {
+    const root = await syntheticExport();
+    const rootID = (root.info as { id: string }).id;
+    const outDir = await tempDir();
+    await mkdir(join(outDir, "summary"), { recursive: true });
+    const summaryPath = join(outDir, "summary", "7-run1.json");
+    const malformed = "{ this is not valid JSON";
+    await writeFile(summaryPath, malformed);
+    const runner = makeRunner(root, [{ id: rootID, directory: PLAYGROUND, updated: Date.now() }]);
+    await expect(collectScenario({
+      scenario: 7,
+      run: 1,
+      playgroundDir: PLAYGROUND,
+      runner,
+      outDir,
+    })).rejects.toThrow();
+    expect(await readFile(summaryPath, "utf8")).toBe(malformed);
+    await rm(outDir, { recursive: true, force: true });
+  });
+});
+
+describe("SCENARIO_COUNT", () => {
+  test("drives scenario validation, labels, and the last scenario boundary", async () => {
+    expect(SCENARIO_COUNT).toBe(10);
+    expect(SCENARIO_LABELS).toHaveLength(SCENARIO_COUNT);
+    const root = await syntheticExport();
+    const rootID = (root.info as { id: string }).id;
+    const outDir = await tempDir();
+    const runner = makeRunner(root, [{ id: rootID, directory: PLAYGROUND, updated: Date.now() }]);
+    const last = await collectScenario({
+      scenario: SCENARIO_COUNT,
+      run: 1,
+      playgroundDir: PLAYGROUND,
+      runner,
+      outDir,
+    });
+    expect(markdownRow(last)).toContain(`| ${SCENARIO_COUNT} Trivial control |`);
+    await expect(collectScenario({
+      scenario: SCENARIO_COUNT + 1,
+      run: 1,
+      playgroundDir: PLAYGROUND,
+      runner,
+      outDir,
+    })).rejects.toThrow(`scenario must be an integer from 1 to ${SCENARIO_COUNT}`);
     await rm(outDir, { recursive: true, force: true });
   });
 });

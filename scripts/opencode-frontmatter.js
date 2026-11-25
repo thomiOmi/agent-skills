@@ -1,5 +1,6 @@
 // ESLint loads plugins under Node in editor integrations, so this file must
-// not depend on the Bun global. Keep a pure-JS YAML parser here.
+// not depend on the Bun global. Keep a pure-JS YAML parser here and export the
+// spec limits so Bun tests can import the same constants.
 import { parse as parseYaml } from "yaml";
 
 const VALID_MODES = ["primary", "subagent", "all"];
@@ -8,27 +9,17 @@ const HEX_COLOR_RE = /^#[0-9A-F]{6}$/i;
 const VALID_ACTIONS = ["allow", "ask", "deny"];
 const MODEL_ID_RE = /^\S[^\s/]*\/\S+$/;
 const ALLOWED_TOOLS_RE = /^[A-Z][A-Z0-9]*(?:\([^)]+\))?$/i;
-const VALID_PERMISSION_KEYS = [
-  "read",
-  "edit",
-  "glob",
-  "grep",
-  "list",
-  "bash",
-  "task",
-  "external_directory",
-  "todowrite",
-  "webfetch",
-  "websearch",
-  "lsp",
-  "skill",
-  "question",
-  "doom_loop",
-];
 const SKILL_NAME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const SKILL_NAME_MAX = 64;
-const COMPATIBILITY_MAX = 500;
-const DESCRIPTION_WARN_LIMIT = 1024;
+export const SKILL_NAME_MAX = 64;
+export const COMPATIBILITY_MAX = 500;
+export const DESCRIPTION_MAX = 1024;
+// OpenCode V2 accepts request.body.temperature from 0 to 2.
+export const TEMPERATURE_MAX = 2;
+const DEPRECATED_AGENT_KEYS = ["permission", "bash", "task", "tools", "temperature"];
+
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 function extractFrontmatter(text) {
   const match = text.match(/^---[ \t]*\n([\s\S]*?)\n?---\s*\n/);
@@ -73,7 +64,7 @@ const validSkillFrontmatter = {
       nameMismatch: "Frontmatter name '{{actual}}' does not match expected name '{{expected}}'",
       nameInvalidFormat: "Frontmatter name '{{actual}}' must match format: lowercase letters, numbers, and hyphens only",
       nameTooLong: "Frontmatter name '{{actual}}' exceeds max length of {{max}} characters",
-      descriptionEmpty: "Description must not be empty",
+      descriptionEmpty: "Description must be a non-empty string",
       requiredField: "Missing required field '{{field}}'",
       compatibilityTooLong: "Compatibility field exceeds max length of {{max}} characters",
       allowedToolsInvalid: "Allowed-tools must be a space-separated string",
@@ -119,7 +110,8 @@ const validSkillFrontmatter = {
             context.report({ node, messageId: "nameTooLong", data: { actual: frontmatter.name, max: SKILL_NAME_MAX } });
           }
         }
-        if (frontmatter.description !== undefined && typeof frontmatter.description !== "string") {
+        if (frontmatter.description !== undefined
+          && (typeof frontmatter.description !== "string" || frontmatter.description.length === 0)) {
           context.report({ node, messageId: "descriptionEmpty" });
         }
         if (frontmatter.license !== undefined && typeof frontmatter.license !== "string") {
@@ -162,24 +154,24 @@ const validSkillFrontmatter = {
 const validAgentFrontmatter = {
   meta: /** @type {const} */ ({
     type: "problem",
-    docs: { description: "Validate agent .md frontmatter" },
+    docs: { description: "Validate agent .md frontmatter against the OpenCode V2 schema" },
     messages: {
       noFrontmatter: "File must have valid YAML frontmatter",
       nameMismatch: "Frontmatter name '{{actual}}' does not match expected name '{{expected}}'",
-      descriptionEmpty: "Description must not be empty",
+      descriptionEmpty: "Description must be a non-empty string",
       requiredField: "Missing required field '{{field}}'",
       invalidMode: "Invalid mode '{{actual}}'. Must be one of: {{expected}}",
       invalidColor: "Invalid color '{{actual}}'. Must be a named color or hex code",
-      invalidPermissionKey: "Unknown permission key '{{key}}'",
-      invalidPermissionValue: "Permission value for '{{field}}' must be 'allow', 'ask', or 'deny'",
-      temperatureOutOfRange: "Temperature must be a number between 0.0 and 1.0",
-      topPOutOfRange: "top_p must be a number between 0.0 and 1.0",
+      invalidPermissionsShape: "Field 'permissions' must be an array of { action, resource, effect } entries",
+      invalidPermissionEntry: "Permissions entry #{{index}} must be an object with action, resource, and effect",
+      invalidPermissionAction: "Permission action must be a non-empty string (for example: read, edit, shell, subagent)",
+      invalidPermissionResource: "Permission resource must be a string",
+      invalidPermissionEffect: "Permission effect must be 'allow', 'ask', or 'deny'",
+      invalidRequestShape: "Field '{{field}}' must be an object",
+      temperatureOutOfRange: "Temperature must be a number between 0 and {{max}}",
       fieldNotBoolean: "Field '{{field}}' must be a boolean",
       fieldNotPositiveInt: "Field '{{field}}' must be a positive integer",
       fieldNotString: "Field '{{field}}' must be a string",
-      fieldNotArrayOfStrings: "Field '{{field}}' must be an array of strings",
-      maxStepsDeprecated: "Field 'maxSteps' is deprecated. Use 'steps' instead",
-      toolsDeprecated: "Field 'tools' is deprecated. Use 'permission' instead",
       hiddenOnlySubagent: "Field 'hidden' is only valid for agents with mode 'subagent'",
       modelFormatInvalid: "Field 'model' should follow the format 'provider/model-id' (e.g. 'anthropic/claude-sonnet-4')",
     },
@@ -202,7 +194,7 @@ const validAgentFrontmatter = {
         },
       };
     }
-    const requiredFields = ["name", "description", "mode"];
+    const requiredFields = ["name", "description", "mode", "permissions"];
     return {
       Program(node) {
         for (const field of requiredFields) {
@@ -213,7 +205,8 @@ const validAgentFrontmatter = {
         if (frontmatter.name && frontmatter.name !== expectedName) {
           context.report({ node, messageId: "nameMismatch", data: { actual: frontmatter.name, expected: expectedName } });
         }
-        if (frontmatter.description !== undefined && typeof frontmatter.description !== "string") {
+        if (frontmatter.description !== undefined
+          && (typeof frontmatter.description !== "string" || frontmatter.description.length === 0)) {
           context.report({ node, messageId: "descriptionEmpty" });
         }
         if (frontmatter.mode && !VALID_MODES.includes(frontmatter.mode)) {
@@ -222,48 +215,52 @@ const validAgentFrontmatter = {
         if (frontmatter.color && !VALID_COLORS.includes(frontmatter.color) && !HEX_COLOR_RE.test(frontmatter.color)) {
           context.report({ node, messageId: "invalidColor", data: { actual: frontmatter.color } });
         }
-        if (frontmatter.permission !== undefined) {
-          if (typeof frontmatter.permission === "string") {
-            if (!VALID_ACTIONS.includes(frontmatter.permission)) {
-              context.report({ node, messageId: "invalidPermissionValue", data: { field: "permission" } });
-            }
-          }
-          else if (typeof frontmatter.permission === "object" && frontmatter.permission !== null && !Array.isArray(frontmatter.permission)) {
-            for (const [key, value] of Object.entries(frontmatter.permission)) {
-              if (key !== "*" && !VALID_PERMISSION_KEYS.includes(key)) {
-                context.report({ node, messageId: "invalidPermissionKey", data: { key } });
-              }
-              if (typeof value === "string") {
-                if (!VALID_ACTIONS.includes(value)) {
-                  context.report({ node, messageId: "invalidPermissionValue", data: { field: key } });
-                }
-              }
-              else if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-                for (const [pattern, action] of Object.entries(value)) {
-                  if (typeof action !== "string" || !VALID_ACTIONS.includes(action)) {
-                    context.report({ node, messageId: "invalidPermissionValue", data: { field: `${key}.${pattern}` } });
-                  }
-                }
-              }
-              else {
-                context.report({ node, messageId: "invalidPermissionValue", data: { field: key } });
-              }
-            }
+
+        // In V2, `action` names the permission (read, edit, shell, subagent);
+        // `effect` carries allow/ask/deny. The V1 `permission` map is reported
+        // by the deprecation rule instead of being validated here.
+        if (frontmatter.permissions !== undefined) {
+          if (!Array.isArray(frontmatter.permissions)) {
+            context.report({ node, messageId: "invalidPermissionsShape" });
           }
           else {
-            context.report({ node, messageId: "invalidPermissionValue", data: { field: "permission" } });
+            frontmatter.permissions.forEach((entry, index) => {
+              if (!isRecord(entry)) {
+                context.report({ node, messageId: "invalidPermissionEntry", data: { index: index + 1 } });
+                return;
+              }
+              if (typeof entry.action !== "string" || entry.action.length === 0) {
+                context.report({ node, messageId: "invalidPermissionAction" });
+              }
+              if (typeof entry.resource !== "string") {
+                context.report({ node, messageId: "invalidPermissionResource" });
+              }
+              if (!VALID_ACTIONS.includes(entry.effect)) {
+                context.report({ node, messageId: "invalidPermissionEffect" });
+              }
+            });
           }
         }
-        if (frontmatter.temperature !== undefined) {
-          if (typeof frontmatter.temperature !== "number" || frontmatter.temperature < 0 || frontmatter.temperature > 1) {
-            context.report({ node, messageId: "temperatureOutOfRange" });
+
+        // Provider options moved under request.body in V2. A top-level
+        // temperature is reported as a deprecated V1 key, not validated here.
+        if (frontmatter.request !== undefined) {
+          if (!isRecord(frontmatter.request)) {
+            context.report({ node, messageId: "invalidRequestShape", data: { field: "request" } });
+          }
+          else if (frontmatter.request.body !== undefined) {
+            if (!isRecord(frontmatter.request.body)) {
+              context.report({ node, messageId: "invalidRequestShape", data: { field: "request.body" } });
+            }
+            else if (frontmatter.request.body.temperature !== undefined) {
+              const temperature = frontmatter.request.body.temperature;
+              if (typeof temperature !== "number" || temperature < 0 || temperature > TEMPERATURE_MAX) {
+                context.report({ node, messageId: "temperatureOutOfRange", data: { max: TEMPERATURE_MAX } });
+              }
+            }
           }
         }
-        if (frontmatter.top_p !== undefined) {
-          if (typeof frontmatter.top_p !== "number" || frontmatter.top_p < 0 || frontmatter.top_p > 1) {
-            context.report({ node, messageId: "topPOutOfRange" });
-          }
-        }
+
         for (const boolField of ["disable", "hidden"]) {
           if (frontmatter[boolField] !== undefined && typeof frontmatter[boolField] !== "boolean") {
             context.report({ node, messageId: "fieldNotBoolean", data: { field: boolField } });
@@ -280,12 +277,6 @@ const validAgentFrontmatter = {
             }
           }
         }
-        if (frontmatter.maxSteps !== undefined) {
-          context.report({ node, messageId: "maxStepsDeprecated" });
-          if (!Number.isInteger(frontmatter.maxSteps) || frontmatter.maxSteps <= 0) {
-            context.report({ node, messageId: "fieldNotPositiveInt", data: { field: "maxSteps" } });
-          }
-        }
         for (const strField of ["model", "prompt"]) {
           if (frontmatter[strField] !== undefined && typeof frontmatter[strField] !== "string") {
             context.report({ node, messageId: "fieldNotString", data: { field: strField } });
@@ -294,18 +285,34 @@ const validAgentFrontmatter = {
         if (frontmatter.model !== undefined && typeof frontmatter.model === "string" && !MODEL_ID_RE.test(frontmatter.model)) {
           context.report({ node, messageId: "modelFormatInvalid" });
         }
-        if (frontmatter.tools !== undefined) {
-          context.report({ node, messageId: "toolsDeprecated" });
-          if (typeof frontmatter.tools !== "object" || frontmatter.tools === null || Array.isArray(frontmatter.tools)) {
-            context.report({ node, messageId: "fieldNotArrayOfStrings", data: { field: "tools" } });
-          }
-          else {
-            for (const value of Object.values(frontmatter.tools)) {
-              if (typeof value !== "boolean") {
-                context.report({ node, messageId: "fieldNotArrayOfStrings", data: { field: "tools" } });
-                break;
-              }
-            }
+      },
+    };
+  },
+};
+
+const deprecatedAgentFrontmatter = {
+  meta: /** @type {const} */ ({
+    type: "suggestion",
+    docs: { description: "Warn about obsolete V1 agent frontmatter keys" },
+    messages: {
+      legacyV1Key: "Field '{{field}}' uses the obsolete V1 agent schema; migrate to V2 permissions and request.body",
+    },
+  }),
+  create(context) {
+    const text = context.sourceCode.getText();
+    const filename = context.filename;
+    if (!isAgentFile(filename)) {
+      return {};
+    }
+    const frontmatter = extractFrontmatter(text);
+    if (!frontmatter) {
+      return {};
+    }
+    return {
+      Program(node) {
+        for (const field of DEPRECATED_AGENT_KEYS) {
+          if (field in frontmatter) {
+            context.report({ node, messageId: "legacyV1Key", data: { field } });
           }
         }
       },
@@ -315,8 +322,8 @@ const validAgentFrontmatter = {
 
 const descriptionLength = {
   meta: /** @type {const} */ ({
-    type: "suggestion",
-    docs: { description: "Warn when frontmatter description exceeds max length" },
+    type: "problem",
+    docs: { description: "Require frontmatter description to stay within the spec limit" },
     messages: {
       tooLong: "Description is {{length}} characters (max {{limit}})",
     },
@@ -331,7 +338,7 @@ const descriptionLength = {
     if (!frontmatter || !frontmatter.description || typeof frontmatter.description !== "string") {
       return {};
     }
-    if (frontmatter.description.length <= DESCRIPTION_WARN_LIMIT) {
+    if (frontmatter.description.length <= DESCRIPTION_MAX) {
       return {};
     }
     return {
@@ -339,7 +346,7 @@ const descriptionLength = {
         context.report({
           node,
           messageId: "tooLong",
-          data: { length: frontmatter.description.length, limit: DESCRIPTION_WARN_LIMIT },
+          data: { length: frontmatter.description.length, limit: DESCRIPTION_MAX },
         });
       },
     };
@@ -356,6 +363,7 @@ const plugin = {
   rules: {
     "valid-skill-frontmatter": validSkillFrontmatter,
     "valid-agent-frontmatter": validAgentFrontmatter,
+    "deprecated-agent-frontmatter": deprecatedAgentFrontmatter,
     "description-length": descriptionLength,
   },
 };
@@ -369,7 +377,8 @@ Object.assign(plugin.configs, {
       rules: {
         "opencode/valid-skill-frontmatter": "error",
         "opencode/valid-agent-frontmatter": "error",
-        "opencode/description-length": "warn",
+        "opencode/deprecated-agent-frontmatter": "warn",
+        "opencode/description-length": "error",
       },
     },
   ],

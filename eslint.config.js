@@ -93,7 +93,8 @@ export default antfu(
     rules: {
       "opencode/valid-skill-frontmatter": "error",
       "opencode/valid-agent-frontmatter": "error",
-      "opencode/description-length": "warn",
+      "opencode/deprecated-agent-frontmatter": "warn",
+      "opencode/description-length": "error",
     },
   },
 

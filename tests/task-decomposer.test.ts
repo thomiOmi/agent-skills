@@ -30,4 +30,18 @@ describe("inferAgent", () => {
     expect(inferAgent("deploy to production")).toBe("devops");
     expect(inferAgent("unrelated task")).toBe("senior-developer");
   });
+
+  test("matches keywords as whole tokens, not substrings", () => {
+    expect(inferAgent("build the REST API")).toBe("senior-developer");
+    expect(inferAgent("author the docs")).toBe("senior-developer");
+    expect(inferAgent("audit the latest ci pipeline")).toBe("devops");
+    expect(inferAgent("efficient batch processing")).toBe("senior-developer");
+  });
+
+  test("still matches keywords at word boundaries and after punctuation", () => {
+    expect(inferAgent("review the UI design")).toBe("ui-ux");
+    expect(inferAgent("fix the auth, vulnerability, and owasp issues")).toBe("security-auditor");
+    expect(inferAgent("prepare the docker/CD deployment")).toBe("devops");
+    expect(inferAgent("write tests for coverage")).toBe("qa-engineer");
+  });
 });

@@ -66,7 +66,10 @@ export interface CollectOptions {
 
 const DEFAULT_OUT_DIR = join(import.meta.dir, "..", "docs", "eval", "sessions");
 const MAX_AGE_MS = 60 * 60 * 1000;
-const SCENARIO_LABELS = [
+// Single source of truth for the eval matrix: collect validation, report totals,
+// and the scenario-label table must agree on the same count.
+export const SCENARIO_COUNT = 10;
+export const SCENARIO_LABELS = [
   "Feature",
   "Bug investigation",
   "Refactor",
@@ -148,8 +151,8 @@ function recordsFor(analysis: ReturnType<typeof analyzeSession>, sessionID: stri
 
 /** Selects a fresh root session, exports it and its descendants, and returns the written summary. */
 export async function collectScenario(options: CollectOptions): Promise<CollectionSummary> {
-  if (!Number.isInteger(options.scenario) || options.scenario < 1 || options.scenario > 10) {
-    throw new Error("scenario must be an integer from 1 to 10");
+  if (!Number.isInteger(options.scenario) || options.scenario < 1 || options.scenario > SCENARIO_COUNT) {
+    throw new Error(`scenario must be an integer from 1 to ${SCENARIO_COUNT}`);
   }
   if (options.run !== 1 && options.run !== 2) {
     throw new Error("run must be 1 or 2");
@@ -185,16 +188,22 @@ export async function collectScenario(options: CollectOptions): Promise<Collecti
     }
   }
   if (!options.force) {
+    let previous: CollectionSummary | undefined;
     try {
-      const previous = JSON.parse(await readFile(summaryPath, "utf8")) as CollectionSummary;
-      if (previous.sessionID === root.id) {
-        throw new Error("this session was already collected; pass --force to overwrite");
-      }
+      previous = JSON.parse(await readFile(summaryPath, "utf8")) as CollectionSummary;
     }
     catch (error) {
-      if (error instanceof Error && error.message.startsWith("this session was already collected")) {
+      // Only a missing summary is expected. Malformed JSON and permission
+      // failures must stop collection instead of silently overwriting data.
+      if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+        previous = undefined;
+      }
+      else {
         throw error;
       }
+    }
+    if (previous?.sessionID === root.id) {
+      throw new Error("this session was already collected; pass --force to overwrite");
     }
   }
 
@@ -386,7 +395,7 @@ if (import.meta.main) {
   const sessionID = sessionIndex >= 0 ? args[sessionIndex + 1] : undefined;
   const force = args.includes("--force");
   if (!playgroundDir && !sessionID) {
-    process.stderr.write("usage: bun scripts/eval-collect.ts <scenario 1-10> <run 1|2> [--playground <dir> | --session <id>] [--force]\n");
+    process.stderr.write(`usage: bun scripts/eval-collect.ts <scenario 1-${SCENARIO_COUNT}> <run 1|2> [--playground <dir> | --session <id>] [--force]\n`);
     process.exit(1);
   }
   collectScenario({
