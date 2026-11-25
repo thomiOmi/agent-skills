@@ -24,6 +24,10 @@ This skill covers project configuration files only.
   `devops-deployment` instead.
 - Database schema and migrations: load `database` instead.
 
+If any of those skills cannot be loaded, use this fallback: follow the existing
+naming and structure in the touched files, change one concern at a time, and
+validate with the project's own commands afterward.
+
 If a change touches config plus one of those areas, apply both skills
 but keep each concern in its own commit or clearly separated change.
 

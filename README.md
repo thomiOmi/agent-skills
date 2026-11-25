@@ -12,7 +12,7 @@ Skills are grouped by SDLC phase - pick the group that matches what you are doin
 
 | Skill | Description |
 |---|---|
-| `task-decomposition` | Multi-file tasks, module reviews, TASKS.md tracking |
+| `task-decomposition` | Multi-file tasks, module reviews, conversation-based task state |
 | `planning` | Architecture design, diagrams, ERDs, ARCHITECTURE.md |
 | `architecture-decision` | Architecture Decision Records (ADRs) and trade-offs |
 | `sdlc-documentation` | SDLC specs, PRDs, user stories, acceptance criteria, release notes |
@@ -154,7 +154,6 @@ agent-skills/
 ├── README.md           # Repo overview, skill list, install instructions
 ├── SECURITY.md
 ├── SPEC.md             # Agent Skills format spec
-├── TASKS.md            # Live state: roadmap, changelog, backlog
 ├── bun.lock
 ├── commitlint.config.mjs
 ├── eslint.config.js
@@ -166,11 +165,10 @@ agent-skills/
 ├── .github/            # CI workflows, issue and PR templates, dependabot
 ├── .vscode/            # Editor settings and extension recommendations
 ├── agents/             # 20 specialized subagents (*.md)
-├── commands/           # 17 slash commands (*.md)
+├── commands/           # 2 slash commands (*.md): commit, ship-pr
 ├── config/             # Global opencode.jsonc and tui.jsonc templates
 ├── instructions/       # Global AGENTS.md + OPENCODE.md source
 ├── plugin/             # OpenCode V2 plugins + hooks
-│   ├── compaction.ts     # TASKS.md state into compaction prompt
 │   ├── secrets-scanner.ts # Blocks writes containing secrets
 │   └── tool-guardian.ts  # Blocks destructive shell commands
 ├── scripts/            # ESLint and frontmatter dev utilities

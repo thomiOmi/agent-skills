@@ -73,8 +73,8 @@ When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly test
 
 ## Task Management & Persistence
 
-- For multi-step tasks, maintain progress in a shared `TASKS.md` file in the working directory (`## Active`, `## Waiting On`, `## Done`).
-- Keep task progress transparent, human-readable, and scannable across sessions.
+- Keep live task state (Active, Waiting On, Done) visible in the conversation; mirror durable items in the project's issue tracker when one exists.
+- Do not create a project-local task file.
 - When a task adds, removes, or renames files or directories, review the README Structure section and update its tree and counts if they drifted.
 
 ---
@@ -125,7 +125,7 @@ Keep each commit focused on one logical change.
 
 - Batch independent file reads and tool calls into single requests.
 - Periodically check context pressure. Use `/compact` or summarize state at logical task milestones.
-- Persist key decisions and task progress across sessions via `TASKS.md` and working context files.
+- Persist key decisions in `DECISIONS.md` and structural knowledge in `SPEC.md`/`ARCHITECTURE.md`; OpenCode's built-in compaction carries the session's objective and next move.
 
 ---
 

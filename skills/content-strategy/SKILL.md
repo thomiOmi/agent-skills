@@ -13,6 +13,7 @@ Guidelines for creating effective, audience-focused content.
 
 For landing page copy and conversion formulas, load `copywriting`.
 For meta tags, heading structure, and keyword research, load `seo-optimization`.
+If either skill cannot be loaded, use this fallback: write for one specific reader, lead with a concrete value, use one clear call to action, and keep headings descriptive rather than clever.
 
 ---
 
@@ -42,7 +43,7 @@ For meta tags, heading structure, and keyword research, load `seo-optimization`.
 
 See `assets/templates.md` for blog post, landing page, and email campaign templates.
 For deeper SEO work, load the `seo-optimization` skill.
-For technical and project documentation (README, CHANGELOG, OpenAPI, API docs, setup guides), load `documentation`.
+For technical and project documentation (README, CHANGELOG, OpenAPI, API docs, setup guides), load `documentation`. If it cannot be loaded, write for a reader with zero context: state what the thing does, how to set it up, and how to verify it works.
 
 ---
 

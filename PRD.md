@@ -69,17 +69,17 @@ A contributor who wants to add new agents or skills to this repository. Needs do
 The system follows this workflow for every task:
 
 ```text
-discussion to plan to orchestrator to test to implement to review to verify to remember to improve
+discussion to classify to route to decompose to test to implement to review to verify to handoff
 ```
 
 1. **Discussion** - user and agent interact to clarify requirements and confirm assumptions
-2. **Plan** - built-in primary `plan` agent analyzes the request and creates a structured plan
+2. **Classify & Route** - built-in primary `plan` agent identifies the task type and routes it: feature development through planning and file picking, bug investigation through root-cause analysis and research, or refactoring through file picking and planning
 3. **Orchestrator** - `orchestrator` subagent decomposes the plan into subtasks and delegates to specialized subagents
 4. **Test** - tests are written first (TDD approach)
 5. **Implement** - code is implemented to pass the tests
 6. **Review** - implementation is reviewed against requirements
 7. **Verify** - quality verification runs the project's own lint, typecheck, and test commands plus the skill-level checklist
-8. **Remember** - key decisions, progress, and learnings saved to `TASKS.md` and working context for cross-session persistence
+8. **Handoff** - decisions recorded in `DECISIONS.md`; OpenCode's built-in compaction carries the session objective and next move; durable backlog items go to the project's issue tracker
 9. **Improve** - final polish and optimization after verification passes
 
 If verification fails, the system retries from the implement step using the resumable `sessionID` (max 3 retries before escalation).
@@ -138,13 +138,13 @@ Dual-layer verification:
 1. **Skill-level** - domain-specific checks (e.g., security checks for auth, coverage checks for tests)
 2. **Project quality gate** - the agent runs the project's own cross-cutting commands (lint, typecheck, tests), whatever the language or framework
 
-### FR-6: Persistence & Task Tracking
+### FR-6: Persistence & Handoff
 
-The system uses `TASKS.md` file-based tracking and working context documents for transparent, tool-agnostic cross-session persistence.
+Live task state stays in the conversation and, when durable, in the project's issue tracker. Decisions are recorded in `DECISIONS.md`, structural knowledge in `SPEC.md`/`ARCHITECTURE.md`, and OpenCode's built-in compaction carries the session objective and next move. The system ships no project-local task file.
 
 ### FR-7: Plugin
 
-The plugins register lifecycle hooks via the OpenCode V2 plugin API: compaction state injection, secret scanning, and destructive-command guarding. Each plugin is a default definition with a stable ID and a `setup` function. Agents, skills, and commands are discovered from the installed directories rather than registered by the plugin.
+The plugins register lifecycle hooks via the OpenCode V2 plugin API: secret scanning and destructive-command guarding. Each plugin is a default definition with a stable ID and a `setup` function. Agents, skills, and commands are discovered from the installed directories rather than registered by the plugin. Compaction is handled natively by OpenCode V2.
 
 ### FR-8: Installer
 
@@ -181,12 +181,12 @@ The installer deploys agents, skills, commands, plugin hooks, global instruction
 - 20 specialized subagents with documented roles
 - 35 skills with progressive disclosure and verification checklists
 - No custom tools
-- 17 slash commands: /ship, /ship-pr, /fix, /plan, /review, /refactor, /audit, /simplify, /test, /tasks, /spec, /clean-branches, /commit, /explain, /brainstorm, /security, /docs
+- 2 slash commands: /commit, /ship-pr
 - Plugin registration via OpenCode V2 plugin API
 - Ownership-aware installer with merge, replace, and symlink modes, a manifest, config merge, backups, and config-root-only writes
-- File-based task tracking and persistence (`TASKS.md`)
+- Conversation-based task state, issue-tracker mirroring, and built-in compaction for cross-session handoff
 - Authoring standards: agentskills.io for skills and OpenCode conventions for integration files
-- Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md, TASKS.md
+- Documentation: PRD, AGENTS.md, DECISIONS.md, ARCHITECTURE.md, README.md, INSTALL.md, SPEC.md
 
 ### Out of Scope
 

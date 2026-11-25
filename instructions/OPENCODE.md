@@ -82,7 +82,6 @@ export const MyPlugin = Plugin.define({
   async setup(ctx) {
     await ctx.tool.hook("execute.before", async (event) => { ... });
     await ctx.shell.hook("create.before", async (event) => { ... });
-    await ctx.session.hook("compaction", async (event) => { ... });
   },
 });
 
@@ -115,9 +114,9 @@ Object form for plugins with options:
 }
 ```
 
-### No environment variable escape hatches
+### Disabling plugins
 
-OpenCode V2 does not consume `OPENCODE_DISABLE_*` environment variables to control plugins. Use the `plugins` config array with the `-` prefix instead.
+OpenCode V2 does not consume `OPENCODE_DISABLE_*` environment variables to control plugins. Use the `plugins` config array with the `-` prefix on the plugin ID instead. This applies to this catalog's guards as well: `AGENT_SKILLS_DISABLE_*` variables are not read by the plugins or by OpenCode.
 
 ---
 

@@ -77,7 +77,7 @@ Act as a sharp human editor. Preserve the writer's point and personal voice whil
 
 **Em dashes as a rhythm crutch.** In short copy, use none. In longer drafts, one or two are fine only when they clearly beat commas, periods, or parentheses. Remove clusters and decorative dashes.
 
-For code-related prose (naming, docstrings, comments), load `code-style`.
+For code-related prose (naming, docstrings, comments), load `code-style`. If it cannot be loaded, use the existing file's naming and docstring conventions and keep comments to the reason, not the what.
 
 ## Workflow
 

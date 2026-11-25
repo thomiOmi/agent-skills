@@ -11,7 +11,7 @@ metadata:
 
 Guidelines for querying, analyzing, and interpreting datasets accurately and securely.
 
-For query optimization, indexing, and schema design, load `database`.
+For query optimization, indexing, and schema design, load `database`. If it cannot be loaded, use this fallback: read the query plan before adding an index, filter before joining, and verify row counts against a known baseline.
 
 ---
 

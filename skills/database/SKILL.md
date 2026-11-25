@@ -60,7 +60,9 @@ ALTER TABLE users ALTER COLUMN stripe_subscription_id SET NOT NULL;
 
 For planning or running a schema migration (rollback, zero-downtime,
 backfills), load `database-migration` instead - this skill covers schema
-design and query performance.
+design and query performance. If it cannot be loaded, use this fallback:
+additive change first, backfill before constraint, verify row counts, and
+keep a tested rollback path before applying anything to production.
 
 See `assets/templates.md` for migration and query review templates.
 

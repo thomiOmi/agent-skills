@@ -47,7 +47,7 @@ Adapt syntax to your language - principles apply universally.
   - Why: Comments that repeat the code add noise without value. Worse, they go stale and actively mislead.
 - See `references/comments.md` for examples and anti-patterns.
 
-For pull request and code audits beyond style conventions, load `code-review`.
+For pull request and code audits beyond style conventions, load `code-review`. If it cannot be loaded, review the diff for correctness, layering, duplicated logic, scope, and verification evidence before approving.
 
 **Structure:**
 

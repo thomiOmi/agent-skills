@@ -64,7 +64,7 @@ Output:
 - `references/accessibility.md` - deeper accessibility work
 
 See `assets/templates.md` for component and design token templates.
-For the DESIGN.md file format, load `design-md`.
+For the DESIGN.md file format, load `design-md`. If it cannot be loaded, keep DESIGN.md to named tokens for color, spacing, typography, and state, with one example of each.
 
 ---
 

@@ -1,7 +1,6 @@
 # Memory Protocols
 
-Deep-dive reference for the `memory-management` skill: entry formats for memory
-files, failure modes to avoid, and trust boundaries when resuming work.
+Deep-dive reference for the `memory-management` skill: entry formats for memory files, failure modes to avoid, and trust boundaries when resuming work.
 
 ---
 
@@ -21,10 +20,10 @@ files, failure modes to avoid, and trust boundaries when resuming work.
 Rules: sequential IDs, date every entry, `Rejected` prevents re-litigating,
 `Consequence` records the bill someone will pay later.
 
-### `Continue Here` section in `TASKS.md`
+### `Continue Here` block
 
 ```markdown
-## Continue Here
+Continue Here
 
 - Objective: ship rate limiter for public API
 - Done: token bucket in Redis (tested), middleware wired
@@ -33,26 +32,25 @@ Rules: sequential IDs, date every entry, `Rejected` prevents re-litigating,
 - Next: write integration tests for 429 path, then docs - owner: backend subagent
 ```
 
+State this block in the conversation at the end of a session. OpenCode's built-in compaction keeps a similar objective and next move in its summary.
+
 ---
 
 ## Failure Modes
 
 ### Memory rot
 
-Memory files accumulate stale claims that nobody verifies. Symptoms: `TASKS.md`
-lists work that was merged weeks ago; `ARCHITECTURE.md` shows services that no
-longer exist.
+Memory files accumulate stale claims that nobody verifies. Symptoms: the issue tracker lists work that was merged weeks ago; `ARCHITECTURE.md` shows services that no longer exist.
 
 Counter-measures:
 
-- At session start, reconcile `TASKS.md` against `git log` and the tree.
+- At session start, reconcile notes against `git log` and the tree.
 - When a memory file is proven wrong, fix it immediately - do not work around it.
-- Prune `## Done` and `## Someday` sections when they exceed one screen.
+- Prune stale sections in `DECISIONS.md` indexes and trackers when they exceed one screen.
 
 ### Split truth
 
-The same fact recorded in two places (e.g., the API contract in both `SPEC.md`
-and a `DECISIONS.md` entry). They will diverge.
+The same fact recorded in two places (e.g., the API contract in both `SPEC.md` and a `DECISIONS.md` entry). They will diverge.
 
 Counter-measure: one owner file per fact. Other files reference it by name
 ("contract defined in SPEC.md"), never copy it.
@@ -63,12 +61,11 @@ Relying on "as discussed earlier" instead of a file. The earlier discussion is
 gone after compaction or session end.
 
 Counter-measure: if something said in chat matters beyond this session, write
-it to a memory file in the same turn.
+it to a memory file or the tracker in the same turn.
 
 ### Over-persistence
 
-Recording everything produces noise that hides the signal; a 900-line
-`TASKS.md` is unreadable and will not be read.
+Recording everything produces noise that hides the signal. A long task note is unreadable and will not be read.
 
 Counter-measure: persist outcomes, decisions, and blockers - not narration.
 
@@ -77,7 +74,7 @@ Counter-measure: persist outcomes, decisions, and blockers - not narration.
 ## Trust Boundaries
 
 - **Never persist secrets.** Tokens, API keys, connection strings, and
-  credentials must not appear in `TASKS.md`, `DECISIONS.md`, `SPEC.md`, or
+  credentials must not appear in `DECISIONS.md`, `SPEC.md`, or
   `ARCHITECTURE.md`. Point to the secret's location (e.g., "token in
   `.env`, see README") instead of its value.
 - **Never persist generated state.** Build outputs, lockfile state, and test
