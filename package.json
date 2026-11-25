@@ -19,8 +19,7 @@
     "agent-skills",
     "agents",
     "opencode",
-    "orchestra",
-    "orchestrator"
+    "orchestra"
   ],
   "files": [
     "AGENTS.md",

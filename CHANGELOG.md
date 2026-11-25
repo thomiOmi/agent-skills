@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Breaking Changes
+
+- Removed `TASKS.md` support, the compaction plugin, and the `orchestrator` agent. Coordination now uses OpenCode's native `subagent` tool and the global Delegation & Verification Policy.
+- Reduced slash commands from 17 to `/commit` and `/ship-pr`.
+- Merged `content-strategy` into `copywriting`, `database-migration` into `database`, and `sdlc-documentation` into `documentation`. Catalog is now 32 skills and 19 agents.
+- Replaced `tui.jsonc` with OpenCode V2 `cli.json`.
+- Re-run the merge installer to refresh global configuration; user-modified files are preserved and may need manual replacement.
 
 ## v0.5.1
 
