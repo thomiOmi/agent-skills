@@ -63,11 +63,18 @@ When running tests, set `AGENT=1` (or `CLAUDECODE=1`) to enable AI-friendly test
 
 ---
 
-## Subagent Delegation Protocol & Resumable Tasks
+## Delegation & Verification Policy
 
-- **Delegation via `task` Tool**: Use specialized subagents (`orchestrator`, `senior-developer`, `qa-engineer`, `security-auditor`, `ui-ux`, etc.) for domain-specific subtasks.
-- **Resumable Task ID**: When a subagent task returns a resumable task ID on failure or iteration, resume the child session using that task ID with updated instructions rather than restarting from scratch.
-- **Prevent Circular Delegation**: Primary agents and subagents must never call themselves or cause infinite delegation loops.
+For any multi-step task:
+
+1. **Classify** it as feature development, bug investigation, or code refactoring.
+2. **Route** it: feature to planning then file picking; bug to `deep-thinker` then `researcher`; refactor to file picking then planning. Use the built-in `explore` agent for file picking and `plan`/`build` as the primary agent.
+3. **Delegate** with OpenCode's native `subagent` tool. Prefer built-in `explore` and `general` for read-only or generic work; use catalog specialists (`senior-developer`, `qa-engineer`, `security-auditor`, `ui-ux`, etc.) for domain work. No coordinator subagent performs this step for you.
+4. **Review** the result with `qa-engineer` before returning it.
+5. **Verify** with the project's own test, typecheck, and lint commands.
+6. **Hand off** with what changed, how it was verified, and what remains open.
+
+On failure, resume the child with its `sessionID`, at most 3 iterations, then escalate to the user with evidence. Do not chain nested delegation: custom agents do not grant `subagent` to one another.
 
 ---
 

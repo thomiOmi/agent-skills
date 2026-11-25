@@ -100,23 +100,12 @@ describe("Agent permissions", () => {
     }
   });
 
-  it("lets the orchestrator delegate but not to itself", () => {
-    const orchestrator = agents.find(agent => agent.fileName === "orchestrator.md");
-    expect(orchestrator).toBeDefined();
+  it("does not let custom agents launch nested subagents", () => {
+    const delegators = agents.filter(agent => agent.permissions.some(
+      permission => permission.action === "subagent" && permission.effect === "allow",
+    ));
 
-    const canDelegate = orchestrator?.permissions.some(
-      permission => permission.action === "subagent"
-        && permission.resource === "*"
-        && permission.effect === "allow",
-    );
-    const cannotSelfDelegate = orchestrator?.permissions.some(
-      permission => permission.action === "subagent"
-        && permission.resource === "orchestrator"
-        && permission.effect === "deny",
-    );
-
-    expect(canDelegate).toBe(true);
-    expect(cannotSelfDelegate).toBe(true);
+    expect(delegators.map(agent => agent.fileName)).toEqual([]);
   });
 
   it("keeps temperature under request.body", () => {

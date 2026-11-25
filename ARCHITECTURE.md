@@ -6,12 +6,12 @@ System architecture for the agent-skills Agent Orchestra.
 
 ## Overview
 
-Agent Orchestra turns OpenCode into a multi-role development team. The primary `plan` agent interacts with the user for planning, while the `orchestrator` subagent coordinates work across specialized subagents using a verification loop, mimicking real-world engineering orgs.
+Agent Orchestra turns OpenCode into a multi-role development team. The primary `plan` agent interacts with the user and coordinates work across specialized subagents using OpenCode's native `subagent` tool and a global Delegation & Verification Policy.
 
 **Key principles:**
 
-- **Primary plan agent for user interaction** - default primary agent is `plan`
-- **Orchestrator as coordinator** - delegates, does not do domain work directly
+- **Primary plan agent for user interaction and coordination** - default primary agent is `plan`
+- **Native delegation** - the primary agent routes work; no coordinator subagent is required
 - **Subagents are focused** - each owns a domain (coding, product, data, QA, security, design, etc.)
 - **Verification before delivery** - every result is verified before returning to the user
 - **Progressive disclosure** - skills are loaded on-demand, not all at once
@@ -23,14 +23,13 @@ Agent Orchestra turns OpenCode into a multi-role development team. The primary `
 
 ```mermaid
 flowchart TD
-    User["User Input / Discussion"] --> Plan["plan agent (built-in primary)"]
-    Plan --> Orchestrator["orchestrator subagent<br/>task decomposition"]
+    User["User Input / Discussion"] --> Plan["plan agent (built-in primary)<br/>classify, decompose, delegate"]
 
-    Orchestrator --> Eng["Engineering group<br/>frontend-developer, backend-developer,<br/>database-engineer, software-architect,<br/>ai-engineer, senior-developer"]
-    Orchestrator --> Prod["Product and Planning group<br/>product-manager, project-manager, data-analyst"]
-    Orchestrator --> QAG["Quality and Security group<br/>qa-engineer, security-auditor"]
-    Orchestrator --> Ops["Delivery group<br/>devops, docs-writer"]
-    Orchestrator --> Think["Reasoning and Content group<br/>brainstormer, deep-thinker, researcher,<br/>refactor-planner, marketing, ui-ux"]
+    Plan --> Eng["Engineering group<br/>frontend-developer, backend-developer,<br/>database-engineer, software-architect,<br/>ai-engineer, senior-developer"]
+    Plan --> Prod["Product and Planning group<br/>product-manager, project-manager, data-analyst"]
+    Plan --> QAG["Quality and Security group<br/>qa-engineer, security-auditor"]
+    Plan --> Ops["Delivery group<br/>devops, docs-writer"]
+    Plan --> Think["Reasoning and Content group<br/>brainstormer, deep-thinker, researcher,<br/>refactor-planner, marketing, ui-ux"]
 
     Eng --> SkillCheck{"Skill-level<br/>verification"}
     Prod --> SkillCheck
@@ -48,7 +47,7 @@ flowchart TD
     Remember --> Return["Return to user"]
 ```
 
-> Full detail for all 20 agents lives in the Agent Roster table below. The
+> Full detail for all 19 agents lives in the Agent Roster table below. The
 > diagram is deliberately grouped by domain so it does not need updating
 > every time the agent roster grows or shrinks.
 
@@ -65,7 +64,6 @@ flowchart TD
 
 | Agent | Mode | Role | Delegates To |
 |---|---|---|---|
-| **orchestrator** | subagent | Task decomposition, delegation, verification | All subagents via `task` tool |
 | **frontend-developer** | subagent | UI implementation, components, client state, styling | - |
 | **backend-developer** | subagent | API endpoints, business logic, auth, server-side integration | - |
 | **software-architect** | subagent | System design, ADRs, trade-off analysis, architecture review | - |
@@ -108,7 +106,7 @@ Workflow: `discussion to classify to route to decompose to implement to review t
 1. **Discussion** - user and primary `plan` agent clarify goals and requirements
 2. **Classify** - identify the task type: feature development, bug investigation, or code refactoring
 3. **Route** - feature: planning, then `explore` file picking, then implementation; bug: `deep-thinker` root cause, then `researcher` evidence, then implementation; refactor: `explore` file picking, then planning, then implementation
-4. **Decompose** - `orchestrator` subagent breaks the work into ordered subtasks with dependencies; live state stays in the conversation and durable items go to the project's issue tracker
+4. **Decompose** - the primary agent breaks the work into ordered subtasks with dependencies; live state stays in the conversation and durable items go to the project's issue tracker
 5. **Delegate** - subtasks dispatched to specialized subagents via the `subagent` tool
 6. **Review gate** - `qa-engineer` reviews the implementation; defects go back to the implementing subagent, at most 3 retries
 7. **Verify** - dual-layer quality gates (skill-level + project quality gate)
