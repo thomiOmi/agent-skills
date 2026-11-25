@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
-import { buildMetrics, renderComparison, renderMetrics, renderTable } from "../scripts/eval-report";
+import { buildMetrics, loadSummaries, renderComparison, renderMetrics, renderTable, SCENARIO_COUNT } from "../scripts/eval-report";
 
 function record(id: string): IDRecord {
   return { id, source: "main", sessionID: "ses_synthetic" };
@@ -113,6 +113,40 @@ describe("buildMetrics", () => {
   test("marks control as not observed when scenario 10 is absent", () => {
     expect(buildMetrics([summary(1, 1)]).controlScenario10ZeroCalls).toBeNull();
   });
+
+  test("uses the shared scenario count for totals and the scenario loop", () => {
+    expect(buildMetrics([]).totalScenarios).toBe(SCENARIO_COUNT);
+    const metrics = buildMetrics([
+      summary(1, 1, [record("skill-a")]),
+      { ...summary(1, 2), completedSubagentIDs: [record("agent-b")] },
+      { ...summary(SCENARIO_COUNT, 1, [record("skill-c")]) },
+      { ...summary(SCENARIO_COUNT, 2), completedSubagentIDs: [record("agent-d")] },
+    ]);
+    expect(metrics.disagreeingScenarios).toEqual([1, SCENARIO_COUNT]);
+    expect(metrics.controlScenario10ZeroCalls).toBe(false);
+  });
+
+  test("counts completed skill and subagent calls from boolean presence", () => {
+    const metrics = buildMetrics([
+      summary(1, 1, [record("skill-a")], [record("agent-a")]),
+      summary(2, 2, [record("skill-b")], [record("agent-b")]),
+      summary(3, 1),
+      summary(3, 2, [record("skill-c")]),
+    ]);
+    expect(metrics.scenariosWithCompletedSkill).toEqual({ run1: 1, run2: 2, anyRun: 3 });
+    expect(metrics.scenariosWithCompletedSubagent).toEqual({ run1: 1, run2: 1, anyRun: 2 });
+  });
+
+  test("rejects a stray JSON file without a TypeError", async () => {
+    const dir = await tempDir();
+    await writeFile(join(dir, "stray.json"), JSON.stringify({ unrelated: true }));
+    await expect(loadSummaries(dir)).rejects.toThrow("invalid summary");
+    const result = await runCli([dir]);
+    expect(result.code).toBe(1);
+    expect(result.errors).toContain("invalid summary");
+    expect(result.errors).not.toContain("TypeError");
+    await rm(dir, { recursive: true, force: true });
+  });
 });
 
 describe("CLI", () => {
@@ -145,6 +179,19 @@ describe("CLI", () => {
     expect(result.output).toContain("Completed skill, run 1");
     expect(result.output).not.toContain("| Scenario | Run (1/2) |");
     expect(renderComparison(buildMetrics([]), buildMetrics([]))).toContain("Failed subagent ID count");
+    await rm(dir, { recursive: true, force: true });
+  });
+
+  test("accepts --compare without a positional summary directory", async () => {
+    const dir = await tempDir();
+    const before = join(dir, "before.json");
+    const after = join(dir, "after.json");
+    await writeFile(before, JSON.stringify(buildMetrics(fixtures())));
+    await writeFile(after, JSON.stringify(buildMetrics([summary(1, 1, [record("skill-a")])])));
+    const result = await runCli(["--compare", before, after]);
+    expect(result.code).toBe(0);
+    expect(result.output).toContain("| Metric | Before | After |");
+    expect(result.output).not.toContain("| Scenario | Run (1/2) |");
     await rm(dir, { recursive: true, force: true });
   });
 });

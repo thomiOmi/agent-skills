@@ -2,6 +2,7 @@ import type { SourceFile } from "./types";
 import { createHash } from "node:crypto";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join, sep } from "node:path";
+import { comparePaths } from "./utils";
 
 const IGNORED_NAMES = new Set([".DS_Store", ".git", "Thumbs.db", "node_modules"]);
 
@@ -37,7 +38,16 @@ export function getSourceMounts(repoRoot: string): SourceMount[] {
  * @returns Lowercase hexadecimal digest.
  */
 export async function hashFile(path: string): Promise<string> {
-  const content = await readFile(path);
+  return hashContent(await readFile(path));
+}
+
+/**
+ * Hashes bytes with SHA-256 so scanned sources and destinations can be compared.
+ *
+ * @param content File bytes to hash.
+ * @returns Lowercase hexadecimal digest.
+ */
+export function hashContent(content: string | Uint8Array): string {
   return createHash("sha256").update(content).digest("hex");
 }
 
@@ -68,7 +78,7 @@ export async function collectSourceFiles(repoRoot: string): Promise<SourceFile[]
     }
   }
 
-  return files.sort((left, right) => left.relativePath.localeCompare(right.relativePath));
+  return files.sort((left, right) => comparePaths(left.relativePath, right.relativePath));
 }
 
 async function scanDirectory(
@@ -102,7 +112,6 @@ async function describeSourceFile(absolutePath: string, relativePath: string): P
   return {
     relativePath,
     absolutePath,
-    hash: createHash("sha256").update(content).digest("hex"),
-    size: content.byteLength,
+    hash: hashContent(content),
   };
 }

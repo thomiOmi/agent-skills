@@ -5,37 +5,44 @@ export interface Subtask {
   dependencies: string[];
 }
 
+interface KeywordGroup {
+  agent: string;
+  keywords: string[];
+}
+
+// Whole-token keywords prevent substrings such as "build" (contains "ui") or
+// "author" (contains "auth") from routing to the wrong specialist.
+const KEYWORD_GROUPS: KeywordGroup[] = [
+  { agent: "qa-engineer", keywords: ["test", "tests", "testing", "qa", "coverage"] },
+  { agent: "devops", keywords: ["deploy", "deployment", "ci", "cd", "docker", "infra", "infrastructure"] },
+  { agent: "marketing", keywords: ["seo", "content", "copy", "marketing"] },
+  { agent: "ui-ux", keywords: ["ui", "ux", "design", "frontend", "accessibility"] },
+  { agent: "security-auditor", keywords: ["security", "auth", "authentication", "vulnerability", "vulnerabilities", "owasp"] },
+];
+
+/**
+ * Suggests a specialist agent from whole-word keywords in a subtask description.
+ *
+ * @param description - subtask text to classify
+ * @returns agent name, defaulting to senior-developer when no keyword matches
+ */
 export function inferAgent(description: string): string {
-  const lower = description.toLowerCase();
-  if (lower.includes("test") || lower.includes("qa") || lower.includes("coverage")) {
-    return "qa-engineer";
+  const tokens = new Set(description.toLowerCase().match(/[a-z0-9]+/g) ?? []);
+  for (const group of KEYWORD_GROUPS) {
+    if (group.keywords.some(keyword => tokens.has(keyword))) {
+      return group.agent;
+    }
   }
-  if (
-    lower.includes("deploy")
-    || lower.includes("ci")
-    || lower.includes("cd")
-    || lower.includes("docker")
-    || lower.includes("infra")
-  ) { return "devops"; }
-  if (lower.includes("seo") || lower.includes("content") || lower.includes("copy") || lower.includes("marketing")) {
-    return "marketing";
-  }
-  if (
-    lower.includes("ui")
-    || lower.includes("ux")
-    || lower.includes("design")
-    || lower.includes("frontend")
-    || lower.includes("accessibility")
-  ) { return "ui-ux"; }
-  if (
-    lower.includes("security")
-    || lower.includes("auth")
-    || lower.includes("vulnerability")
-    || lower.includes("owasp")
-  ) { return "security-auditor"; }
   return "senior-developer";
 }
 
+/**
+ * Splits a task into sequentially dependent subtasks with suggested agents.
+ *
+ * @param task - newline-separated subtask descriptions
+ * @param _context - unused optional context retained for call-site compatibility
+ * @returns subtasks with stable ids and dependencies on the preceding step
+ */
 export function decomposeTask(task: string, _context?: string): Subtask[] {
   const subtasks: Subtask[] = [];
   const lines = task.split("\n").filter(l => l.trim());

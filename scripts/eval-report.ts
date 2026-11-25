@@ -4,7 +4,9 @@ import type { CollectionSummary } from "./eval-collect";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import process from "node:process";
-import { markdownRow } from "./eval-collect";
+import { markdownRow, SCENARIO_COUNT } from "./eval-collect";
+
+export { SCENARIO_COUNT } from "./eval-collect";
 
 export interface ReportMetrics {
   totalScenarios: number;
@@ -65,50 +67,48 @@ export function buildMetrics(summaries: CollectionSummary[]): ReportMetrics {
     }
   }
   const disagreeingScenarios: number[] = [];
-  for (let scenario = 1; scenario <= 10; scenario++) {
+  const hasCompletedSkill = (summary: CollectionSummary | undefined): boolean | undefined =>
+    summary ? summary.completedSkillIDs.length > 0 : undefined;
+  const hasCompletedSubagent = (summary: CollectionSummary | undefined): boolean | undefined =>
+    summary ? summary.completedSubagentIDs.length > 0 : undefined;
+  for (let scenario = 1; scenario <= SCENARIO_COUNT; scenario++) {
     const runs = byScenario.get(scenario);
     const first = runs?.get(1);
     const second = runs?.get(2);
-    const signature = (summary: CollectionSummary | undefined): string => {
-      if (!summary) {
-        return "missing";
-      }
-      return `${summary.completedSkillIDs.length > 0}/${summary.completedSubagentIDs.length > 0}`;
-    };
-    const firstSignature = signature(first);
-    const secondSignature = signature(second);
-    if (firstSignature !== "missing" && secondSignature !== "missing" && firstSignature !== secondSignature) {
+    const firstSkill = hasCompletedSkill(first);
+    const secondSkill = hasCompletedSkill(second);
+    const firstSubagent = hasCompletedSubagent(first);
+    const secondSubagent = hasCompletedSubagent(second);
+    if (firstSkill !== undefined && secondSkill !== undefined && firstSkill !== secondSkill) {
       disagreeingScenarios.push(scenario);
     }
-    if (firstSignature !== "missing" && firstSignature.startsWith("true")) {
+    if (firstSkill === true) {
       skill.run1++;
     }
-    if (secondSignature !== "missing" && secondSignature.startsWith("true")) {
+    if (secondSkill === true) {
       skill.run2++;
     }
-    if ((firstSignature !== "missing" && firstSignature.startsWith("true"))
-      || (secondSignature !== "missing" && secondSignature.startsWith("true"))) {
+    if (firstSkill === true || secondSkill === true) {
       skill.anyRun++;
     }
-    if (firstSignature !== "missing" && firstSignature.endsWith("true")) {
+    if (firstSubagent === true) {
       subagent.run1++;
     }
-    if (secondSignature !== "missing" && secondSignature.endsWith("true")) {
+    if (secondSubagent === true) {
       subagent.run2++;
     }
-    if ((firstSignature !== "missing" && firstSignature.endsWith("true"))
-      || (secondSignature !== "missing" && secondSignature.endsWith("true"))) {
+    if (firstSubagent === true || secondSubagent === true) {
       subagent.anyRun++;
     }
   }
-  const control = byScenario.get(10);
+  const control = byScenario.get(SCENARIO_COUNT);
   const controlSummaries = control ? [...control.values()] : [];
   const controlScenario10ZeroCalls = controlSummaries.length === 0
     ? null
     : controlSummaries.every(summary =>
         summary.completedSkillIDs.length === 0 && summary.completedSubagentIDs.length === 0);
   return {
-    totalScenarios: 10,
+    totalScenarios: SCENARIO_COUNT,
     summaryCount: summaries.length,
     scenariosWithCompletedSkill: skill,
     scenariosWithCompletedSubagent: subagent,
@@ -202,22 +202,55 @@ export function renderComparison(before: ReportMetrics, after: ReportMetrics): s
   return ["| Metric | Before | After |", "|---|---|---|", ...rows.map(row => `| ${row[0]} | ${row[1]} | ${row[2]} |`)].join("\n");
 }
 
-async function loadSummaries(dir: string): Promise<CollectionSummary[]> {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Guards the fields buildMetrics and markdownRow read, so stray JSON fails with a clear error. */
+function isCollectionSummary(value: unknown): value is CollectionSummary {
+  if (!isRecord(value)) {
+    return false;
+  }
+  const idFields = ["completedSkillIDs", "failedSkillIDs", "completedSubagentIDs", "failedSubagentIDs"];
+  return Number.isInteger(value.scenario)
+    && (value.run === 1 || value.run === 2)
+    && typeof value.sessionID === "string"
+    && typeof value.childSessionCount === "number"
+    && typeof value.childSessionsFound === "number"
+    && (value.childCoverage === "complete" || value.childCoverage === "incomplete")
+    && typeof value.completedSubagentCalls === "number"
+    && isRecord(value.failedCallsByToolName)
+    && Object.values(value.failedCallsByToolName).every(count => typeof count === "number")
+    && idFields.every(field => Array.isArray(value[field]))
+    && typeof value.errors === "number"
+    && typeof value.incomplete === "number"
+    && typeof value.mismatch === "boolean"
+    && Array.isArray(value.failures)
+    && Array.isArray(value.zeroToolSessions);
+}
+
+/** Loads every JSON file in a summary directory after validating its shape. */
+export async function loadSummaries(dir: string): Promise<CollectionSummary[]> {
   const files = (await readdir(dir)).filter(file => file.endsWith(".json")).sort();
   const summaries: CollectionSummary[] = [];
   for (const file of files) {
-    summaries.push(JSON.parse(await readFile(join(dir, file), "utf8")) as CollectionSummary);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(await readFile(join(dir, file), "utf8"));
+    }
+    catch (error) {
+      throw new Error(`invalid summary in ${file}: cannot parse JSON (${error instanceof Error ? error.message : String(error)})`);
+    }
+    if (!isCollectionSummary(parsed)) {
+      throw new Error(`invalid summary in ${file}: expected a CollectionSummary shape`);
+    }
+    summaries.push(parsed);
   }
   return summaries;
 }
 
 if (import.meta.main) {
   const args = Bun.argv.slice(2);
-  const summaryDir = args[0];
-  if (!summaryDir) {
-    process.stderr.write("usage: bun scripts/eval-report.ts <summary-dir> [--json <out>] [--compare <before.json> <after.json>]\n");
-    process.exit(1);
-  }
   const jsonIndex = args.indexOf("--json");
   const compareIndex = args.indexOf("--compare");
   try {
@@ -232,6 +265,10 @@ if (import.meta.main) {
       process.stdout.write(`${renderComparison(before, after)}\n`);
     }
     else {
+      const summaryDir = args[0];
+      if (!summaryDir) {
+        throw new Error("usage: bun scripts/eval-report.ts <summary-dir> [--json <out>] | --compare <before.json> <after.json>");
+      }
       const summaries = await loadSummaries(summaryDir);
       const metrics = buildMetrics(summaries);
       process.stdout.write(`${renderTable(summaries)}\n\n${renderMetrics(metrics)}\n`);

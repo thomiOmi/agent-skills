@@ -14,6 +14,7 @@ Provider-agnostic and language-agnostic - applies to any LLM API and any languag
 
 For designing or refining prompt structure, load `prompt-design`.
 For JSON output contracts and response parsing, load `structured-output`.
+If either skill cannot be loaded, use this fallback: give the model one unambiguous task with separated instructions and examples, validate all model output against an explicit schema, and handle malformed responses without crashing.
 
 ---
 

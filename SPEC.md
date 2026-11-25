@@ -41,6 +41,19 @@ Agents load skills progressively to optimize context window efficiency:
 2. **Instructions (< 5000 tokens / ~500 lines, recommended)**: Full `SKILL.md` body loaded when activated. This guideline is enforced as a hard check by `tests/validate-skills.test.ts`; bodies exceeding it will fail validation rather than produce a warning.
 3. **Resources (On-demand)**: Files in `references/`, `scripts/`, or `assets/` loaded only when needed.
 
+### Cross-Skill References
+
+A skill may point to another skill by name, but the pointer must be one-way and optional. The referenced skill can be missing, hidden from auto-discovery, or blocked by the selected agent's `skill` permission; the body text alone does not guarantee it will load.
+
+- State the fallback next to the pointer: a 3-5 line inline rule that covers the critical part of the referral.
+- Do not use `@` links to force-load another skill's files; they load immediately and consume context.
+- Prefer folding a thin, frequently-paired topic into `references/` of the owning skill instead of creating a second skill that must be co-loaded.
+- Keep references one level deep from `SKILL.md`.
+
+### Body Format
+
+The agentskills.io specification places no format restriction on the Markdown body. Use Markdown headings in `SKILL.md`: OpenCode injects the body into the conversation as Markdown, and other harnesses follow the same convention. XML tags remain appropriate for agent system prompts in `agents/*.md`, which are a different artifact. Never put XML tags in frontmatter `name` or `description`.
+
 ---
 
 ## Validation Test Suite

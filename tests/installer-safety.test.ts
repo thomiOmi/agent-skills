@@ -1,5 +1,5 @@
 import type { ConfigEnvironmentSnapshot, InstallerFixture } from "./installer-fixture";
-import { readdir, readFile, rm } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, symlink } from "node:fs/promises";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { parseJSONC } from "confbox";
@@ -270,6 +270,22 @@ describe("Installer safety", () => {
 
     expect(result.created).toBeGreaterThan(0);
     expect(await pathExists(join(fixture.target, "agents/orchestrator.md"))).toBe(true);
+  });
+
+  it("refuses to write through a parent directory linked outside the config root", async () => {
+    const fixture = await createFixture();
+    const outside = join(fixture.sandbox, "outside");
+    await mkdir(outside, { recursive: true });
+    await mkdir(fixture.target, { recursive: true });
+    await symlink(outside, join(fixture.target, "agents"), "junction");
+
+    expect(
+      installCommand({
+        source: fixture.repo,
+        targetDir: fixture.target,
+        skipBackup: true,
+      }),
+    ).rejects.toThrow("Refusing to write outside");
   });
 
   it("does not create a sibling .agents directory", async () => {

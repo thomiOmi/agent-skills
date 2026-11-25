@@ -44,7 +44,7 @@ Seven phases. Each has an owner, deliverables, and a definition of done. Delegat
 
 ## Scope Document (Intake output)
 
-Written during Intake, kept at the top of the project TASKS.md:
+Written during Intake and kept in the project's scope document or issue tracker:
 
 ```markdown
 ## Scope
@@ -97,9 +97,9 @@ Then proceed per the client's answer. This is the behavior the scope document ex
 
 ---
 
-## State in TASKS.md
+## Engagement State
 
-The engagement outlives a single session. Structure the project TASKS.md per phase so any future session resumes exactly where the arc stopped:
+The engagement outlives a single session. Keep phase state in the conversation and mirror it in the project's issue tracker so any future session resumes exactly where the arc stopped:
 
 ```markdown
 ## Scope
@@ -137,7 +137,7 @@ The engagement outlives a single session. Structure the project TASKS.md per pha
 - [ ] GATE 1 passed with explicit approval before Development
 - [ ] Scope changes recorded against the scope document
 - [ ] GATE 2 passed with explicit approval before Release
-- [ ] TASKS.md reflects the true phase state at every session end
+- [ ] Issue tracker reflects the true phase state at every session end
 - [ ] Handoff delivered after Release
 ```
 

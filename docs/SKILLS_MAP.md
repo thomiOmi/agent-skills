@@ -77,7 +77,7 @@ Cross-skill referral graph, boundary clarifications, and open decisions for the 
 
 ## Domain-Gap Assessment
 
-Four domain-gap candidates were evaluated (from TASKS.md backlog). No new skills were created because no dedicated agent owns any of these domains, and creating unreferenced skills would violate the one-skill-per-agent-moment principle.
+Four domain-gap candidates were evaluated. No new skills were created because no dedicated agent owns any of these domains, and creating unreferenced skills would violate the one-skill-per-agent-moment principle.
 
 | Candidate | Current coverage | Decision | Rationale |
 |-----------|-----------------|----------|-----------|

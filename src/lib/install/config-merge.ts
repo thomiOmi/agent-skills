@@ -158,7 +158,7 @@ export async function writeConfigFile(
     return;
   }
 
-  const json = stringifyJSONC(value, { space: 2 } as never);
+  const json = stringifyJSONC(value, { indent: 2 });
   await writeFileAtomic(path, `${json}\n`);
   consola.success(`ok  ${path}`);
 }
@@ -289,11 +289,11 @@ async function readFirstExisting(
         throw error;
       }
 
+      // A broken first candidate must not hide a valid later candidate.
       const message = error instanceof Error ? error.message : String(error);
       warnings.push(
-        `${message} Continuing because --force is set; the installer will use defaults for this source.`,
+        `${message} Continuing because --force is set; skipping this source.`,
       );
-      return null;
     }
   }
 

@@ -7,17 +7,20 @@ import { Plugin } from "@opencode/plugin";
  * are catastrophic or hard to reverse:
  * - recursive force delete targeting filesystem roots, home, or wildcards,
  *   including glob forms (`/*`, `~/*`, `$HOME/*`, `C:\*`), quoted home vars
- *   (`"$HOME"`, `"$env:USERPROFILE"`), and traversal forms that resolve to
- *   a root (`/.`, `/..`, `/tmp/..`)
+ *   (`"$HOME"`, `"$env:USERPROFILE"`), traversal forms that resolve to a
+ *   root (`/.`, `/..`, `/tmp/..`), relative escapes (`../..`, `../*`), and
+ *   uppercase flag variants (`-RF`, `-rF`)
  * - Windows-native `del` / `rmdir` with `/s` plus `/q` or `/f` against those
  *   same targets
- * - git force push (except --force-with-lease)
+ * - git force push (except a genuine --force-with-lease in the same invocation)
  * - filesystem creation/format tools (mkfs, fdisk, dd to /dev, format x:)
  * - DROP TABLE / DROP DATABASE / DROP SCHEMA statements
- * - chmod -R 777 on / or ~
+ * - chmod -R / --recursive 777 on /, /., ~, or $HOME
  *
- * Specific-path deletes (rm -rf node_modules, rm -rf /tmp/build) and
- * recoverable operations (git reset --hard) are deliberately allowed.
+ * Command chains are split on shell separators so a dangerous subcommand
+ * cannot hide after `;`, `|`, `&`, a newline, or parentheses. Specific-path
+ * deletes (rm -rf node_modules, rm -rf /tmp/build) and recoverable operations
+ * (git reset --hard) are deliberately allowed.
  * Permission prompts for shell commands remain governed by opencode.json config; this
  * guard is an additional safety layer, not a permission system.
  *
@@ -26,6 +29,7 @@ import { Plugin } from "@opencode/plugin";
  */
 
 const DELETE_COMMAND = /\b(?:rm|remove-item|del|rmdir)\b/i;
+const COMMAND_SEPARATOR = /[;&|\n()]+/;
 
 function hasRecursiveFlag(command: string): boolean {
   return /(?:^|\s)-\w*r/i.test(command)
@@ -34,7 +38,8 @@ function hasRecursiveFlag(command: string): boolean {
 }
 
 function hasForceFlag(command: string): boolean {
-  return /(?:^|\s)-\w*f/.test(command)
+  // Case-insensitive so `-RF` and `-rF` cannot slip past the guard.
+  return /(?:^|\s)-\w*f/i.test(command)
     || /(?:^|\s)(?:--force|-force)\b/i.test(command)
     || /(?:^|\s)\/[qf](?:\s|$)/i.test(command); // cmd-style quiet / force
 }
@@ -82,6 +87,30 @@ function isDotTarget(target: string): boolean {
 }
 
 /**
+ * True when a relative token walks out through `..` segments. Two or more
+ * parent hops escape the working tree; a single hop is catastrophic only
+ * when the rest of the token is a bare wildcard (`../*`).
+ */
+function isRelativeEscapeTarget(token: string): boolean {
+  const segments = token.split("/").filter(segment => segment !== "" && segment !== ".");
+  let parentHops = 0;
+  for (const segment of segments) {
+    if (segment !== "..") {
+      break;
+    }
+    parentHops += 1;
+  }
+  if (parentHops === 0) {
+    return false;
+  }
+  if (parentHops >= 2) {
+    return true;
+  }
+  const remainder = segments.slice(parentHops).join("/");
+  return remainder === "*";
+}
+
+/**
  * True when a delete operand targets a filesystem root, the home directory,
  * or a bare wildcard there. Tokens are quote-stripped and slash-normalized
  * before matching, and a wildcard token is judged by its base path so that
@@ -92,6 +121,9 @@ function isCatastrophicTarget(rawToken: string): boolean {
   if (token === "*") {
     return true;
   }
+  if (isRelativeEscapeTarget(token)) {
+    return true;
+  }
   const starIndex = token.indexOf("*");
   const base = starIndex >= 0 ? token.slice(0, starIndex) : token;
   if (starIndex >= 0) {
@@ -100,40 +132,61 @@ function isCatastrophicTarget(rawToken: string): boolean {
   return isDotTarget(token) || isRootBase(token) || isHomeBase(token) || isDriveRoot(token);
 }
 
+/**
+ * True when any shell subcommand is a recursive force delete of a
+ * catastrophic target. Splitting on shell separators prevents a trailing
+ * `;`, `|`, or newline from hiding the dangerous operand inside a token.
+ */
 function isRecursiveForceDelete(command: string): boolean {
-  if (!DELETE_COMMAND.test(command)) {
-    return false;
-  }
-  if (!hasRecursiveFlag(command) || !hasForceFlag(command)) {
-    return false;
-  }
-  // Every whitespace-separated token is checked; flag tokens never match the
-  // target predicates above, so scanning them is safe.
-  return command.split(/\s+/).some(isCatastrophicTarget);
+  return command.split(COMMAND_SEPARATOR).some((subcommand) => {
+    if (!DELETE_COMMAND.test(subcommand)) {
+      return false;
+    }
+    if (!hasRecursiveFlag(subcommand) || !hasForceFlag(subcommand)) {
+      return false;
+    }
+    return subcommand.split(/\s+/).some(isCatastrophicTarget);
+  });
 }
 
+/**
+ * True when a `git push` invocation in the chain uses a real force flag.
+ * The --force-with-lease exemption is scoped to the same subcommand and only
+ * counts as a standalone option, so an unrelated lease mention cannot excuse
+ * a force push, and `--force-with-lease=x` forms fail closed.
+ */
 function isForcePush(command: string): boolean {
-  if (!/\bgit\s+push\b/.test(command)) {
-    return false;
-  }
-  if (/--force-with-lease/.test(command)) {
-    return false;
-  }
-  // Boundary-terminated match so safe variants like --force-if-includes
-  // are not blocked alongside the real --force flag.
-  return /\s--force(?:\s|$)|\s-f(?:\s|$)/.test(command);
+  return command.split(COMMAND_SEPARATOR).some((subcommand) => {
+    if (!/\bgit\s+push\b/.test(subcommand)) {
+      return false;
+    }
+    if (/(?:^|\s)--force-with-lease(?:\s|$)/.test(subcommand)) {
+      return false;
+    }
+    return /(?:^|\s)--force(?:\s|$)|(?:^|\s)-f(?:\s|$)/.test(subcommand);
+  });
 }
 
+// Anchored to command position so an argument such as `echo fdisk` is safe.
 const DISK_DESTROY: RegExp[] = [
-  /\bmkfs(\.\w+)?\b/,
-  /\bdd\b[^;&|]+\bof=\/dev\//,
-  /\bfdisk\b/,
-  /\bformat\s+[a-z]:/i,
+  /^\s*(?:sudo\s+)?mkfs(?:\.\w+)?\b/i,
+  /^\s*(?:sudo\s+)?dd\b[^;&|]+\bof=\/dev\//i,
+  /^\s*(?:sudo\s+)?fdisk\b/i,
+  /^\s*(?:sudo\s+)?format\s+[a-z]:/i,
 ];
 
 const SQL_DROP = /\bdrop\s+(?:table|database|schema)\b/i;
 
-const CHMOD_ROOT = /\bchmod\s+-R\s+777\s+(?:\/|~)(?:\s|$)/;
+/**
+ * True when a subcommand is a recursive chmod 777 whose target is a
+ * catastrophic delete target (/, /., ~, $HOME, or a wildcard there).
+ */
+function isChmodRoot(command: string): boolean {
+  return command.split(COMMAND_SEPARATOR).some((subcommand) => {
+    const match = /^\s*(?:sudo\s+)?chmod\s+(?:-R|--recursive)\s+777\s+(\S+)/i.exec(subcommand);
+    return match !== null && isCatastrophicTarget(match[1] ?? "");
+  });
+}
 
 export function findDangerousCommand(command: string): string | null {
   if (isRecursiveForceDelete(command)) {
@@ -142,15 +195,17 @@ export function findDangerousCommand(command: string): string | null {
   if (isForcePush(command)) {
     return "git force push (use --force-with-lease instead, or never rewrite shared history)";
   }
-  for (const pattern of DISK_DESTROY) {
-    if (pattern.test(command)) {
-      return "Disk or filesystem destroy command";
+  for (const subcommand of command.split(COMMAND_SEPARATOR)) {
+    for (const pattern of DISK_DESTROY) {
+      if (pattern.test(subcommand)) {
+        return "Disk or filesystem destroy command";
+      }
     }
   }
   if (SQL_DROP.test(command)) {
     return "DROP TABLE / DATABASE / SCHEMA statement";
   }
-  if (CHMOD_ROOT.test(command)) {
+  if (isChmodRoot(command)) {
     return "chmod -R 777 on / or ~";
   }
   return null;

@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Project-level agent instructions for the agent-skills project.
-Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, `TASKS.md`, and `SPEC.md`.
+Read this file fully at the start of every session, along with project context documents: `PRD.md`, `DECISIONS.md`, `ARCHITECTURE.md`, and `SPEC.md`.
 `instructions/AGENTS.md` (global agent rules) and `instructions/OPENCODE.md` (OpenCode built-in tools reference) are available as needed; they are not auto-loaded by the installer and do not need to be read at the start of every session.
 
 ## Document Map
@@ -17,7 +17,6 @@ cross-reference it, not repeat the details.
 | `AGENTS.md` (this file) | Canonical agent roster, commands, boundaries, formatting rules | Which agents exist, what commands to run, what an agent must never do |
 | `PRD.md` | Product goals, personas, requirements, scope | Why this project exists and what is in or out of scope |
 | `ARCHITECTURE.md` | System design, diagrams, plugin hooks | How the pieces fit together technically |
-| `TASKS.md` | Live state: what is done, in progress, planned, and next | What is already shipped and what is next |
 | `DECISIONS.md` | Historical record of architectural choices | Why something was built this way instead of another way |
 | `SPEC.md` | Agent Skills format spec | How to author a new skill; how skill specification validation works |
 
@@ -67,7 +66,7 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 
 Invoke a specialist by asking the orchestrator to delegate to that subagent when you already know who should handle it.
 
-Slash commands live in `commands/` (17 files). Run project scripts via `bun run <script>`; see `package.json` scripts.
+Slash commands live in `commands/` (2 files: `commit`, `ship-pr`). Run project scripts via `bun run <script>`; see `package.json` scripts.
 
 ---
 

@@ -41,7 +41,7 @@ flowchart TD
     SkillCheck -- PASS --> CentralCheck{"Project quality gate<br/>own lint / typecheck / tests"}
     SkillCheck -- FAIL --> Eng
 
-    CentralCheck -- PASS --> Remember["TASKS.md & Context<br/>persistence"]
+    CentralCheck -- PASS --> Remember["Decisions + compaction<br/>handoff"]
     CentralCheck -- "FAIL &lt; 3 retries" --> Eng
     CentralCheck -- FAIL exhausted --> Escalate["Escalate to user"]
 
@@ -103,15 +103,16 @@ Adding support for a future harness (for example Claude Code, Codex CLI) means w
 
 ## Verification Loop
 
-Workflow: `discussion to plan to orchestrator to test to implement to review to verify to remember to improve`
+Workflow: `discussion to classify to route to decompose to implement to review to verify to handoff`
 
-1. **Discussion** - user and agent clarify goals and requirements
-2. **Plan** - built-in primary `plan` agent analyzes the request and creates a plan
-3. **Decompose** - `orchestrator` subagent breaks down tasks into `TASKS.md`
-4. **Delegate** - subtasks dispatched to specialized subagents via `task` tool
-5. **Verify** - dual-layer quality gates (skill-level + project quality gate)
-6. **Remember** - progress and decisions persisted to `TASKS.md`
-7. **Return** - verified results delivered to user
+1. **Discussion** - user and primary `plan` agent clarify goals and requirements
+2. **Classify** - identify the task type: feature development, bug investigation, or code refactoring
+3. **Route** - feature: planning, then `explore` file picking, then implementation; bug: `deep-thinker` root cause, then `researcher` evidence, then implementation; refactor: `explore` file picking, then planning, then implementation
+4. **Decompose** - `orchestrator` subagent breaks the work into ordered subtasks with dependencies; live state stays in the conversation and durable items go to the project's issue tracker
+5. **Delegate** - subtasks dispatched to specialized subagents via the `subagent` tool
+6. **Review gate** - `qa-engineer` reviews the implementation; defects go back to the implementing subagent, at most 3 retries
+7. **Verify** - dual-layer quality gates (skill-level + project quality gate)
+8. **Handoff** - decisions recorded in `DECISIONS.md`; OpenCode's built-in compaction carries the objective and next move; verified results returned to the user
 
 ---
 
@@ -164,16 +165,14 @@ This section deliberately does not repeat the mapping. A second copy would silen
 
 ## Plugin Hooks (OpenCode V2)
 
-Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.1.4 is a devDependency, and the OpenCode host resolves the runtime import to its own copy. Plugins register lifecycle hooks only (compaction, secrets-scanner, tool-guardian); they are not user-invokable custom tools, and the project ships no custom tools.
+Each hook lives in its own V2 plugin under `plugin/` and is loaded directly by OpenCode. Every plugin default-exports a definition with a stable ID and a `setup` function; `setup` registers the hook during load. `@opencode/plugin` 2.2.5 is a devDependency, and the OpenCode host resolves the runtime import to its own copy. Plugins register lifecycle hooks only (secrets-scanner, tool-guardian); they are not user-invokable custom tools, and the project ships no custom tools. OpenCode V2 handles compaction natively with an objective and next move, so the former `compaction.ts` plugin was removed.
 
-### compaction.ts
-
-Registers `ctx.session.hook("compaction")` and injects TASKS.md project state (Continue Here section) into the compaction system prompt, so task progress survives context compaction.
+Plugins are disabled through the `plugins` array in `opencode.jsonc` by prefixing the stable ID with `-` (for example `-agent-skills.secrets-scanner`). `AGENT_SKILLS_DISABLE_*` environment variables are not consumed by OpenCode or by these plugins.
 
 ### secrets-scanner.ts
 
-Registers `ctx.tool.hook("execute.before")` and blocks write/edit tool calls whose string arguments contain likely secrets (AWS, GitHub, OpenAI, Anthropic, Stripe, Google, Slack, private key blocks, hardcoded credential assignments). Throws before execution; placeholder values are ignored. Escape hatch: `AGENT_SKILLS_DISABLE_SECRETS_SCANNER=1`.
+Registers `ctx.tool.hook("execute.before")` and blocks write/edit tool calls whose content-bearing string fields (`content` for write, `newString` for edit) contain likely secrets (AWS, GitHub, OpenAI, Anthropic, Stripe, Google, Slack, private key blocks, hardcoded credential assignments). `filePath` and `oldString` are not scanned, so an edit that removes a secret is not blocked. Throws before execution; placeholder values are ignored.
 
 ### tool-guardian.ts
 
-Registers `ctx.shell.hook("create.before")` and blocks irreversible destructive shell commands: recursive force deletes targeting filesystem roots, home, or wildcards - including glob forms (`rm -rf /*`, `~/*`, `$HOME/*`, `C:\*`), quoted home vars (`"$HOME"`, `"$env:USERPROFILE"`), and traversal forms that resolve to a root (`/.`, `/..`, `/tmp/..`) - in both short flags like `-rf` and GNU long forms like `--recursive --force`; Windows-native `del` / `rmdir` with `/s` plus `/q` or `/f` against those same targets; git force push (except `--force-with-lease` and safe variants like `--force-if-includes`); mkfs/fdisk/dd to devices/format; DROP TABLE/DATABASE/SCHEMA; chmod -R 777 on / or ~. Specific-path deletes and recoverable operations are allowed. Escape hatch: `AGENT_SKILLS_DISABLE_TOOL_GUARDIAN=1`.
+Registers `ctx.shell.hook("create.before")` and blocks irreversible destructive shell commands: recursive force deletes targeting filesystem roots, home, or wildcards - including glob forms (`rm -rf /*`, `~/*`, `$HOME/*`, `C:\*`), quoted home vars (`"$HOME"`, `"$env:USERPROFILE"`), and traversal forms that resolve to a root, including relative multi-level forms (`../..`, `../*`) and chained commands separated by shell metacharacters - in both short flags like `-rf` and GNU long forms like `--recursive --force`; Windows-native `del` / `rmdir` with `/s` plus `/q` or `/f` against those same targets; git force push scoped to the same push invocation (except `--force-with-lease` and safe variants like `--force-if-includes`); mkfs/fdisk/dd to devices/format; DROP TABLE/DATABASE/SCHEMA; chmod -R 777 on / or ~. Specific-path deletes and recoverable operations are allowed.

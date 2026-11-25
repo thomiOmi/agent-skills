@@ -1,5 +1,4 @@
 import { describe, expect, it } from "bun:test";
-import { CompactionPlugin } from "../plugin/compaction";
 import { scanForSecrets, SecretsScannerPlugin } from "../plugin/secrets-scanner";
 import { findDangerousCommand, ToolGuardianPlugin } from "../plugin/tool-guardian";
 
@@ -87,6 +86,31 @@ describe("Secrets Scanner", () => {
     expect(scanForSecrets("const config = { apiKey: process.env.API_KEY }")).toBeNull();
   });
 
+  it("detects backtick and unquoted credential assignments", () => {
+    expect(scanForSecrets("const apiKey = `abcdefghijklmnopqrstuvwxyz12`;")).toMatch(
+      /Hardcoded credential assignment/,
+    );
+    expect(scanForSecrets("password=hunter2secretpassword")).toMatch(
+      /Hardcoded credential assignment/,
+    );
+    expect(scanForSecrets("const config = { apiKey: process.env.API_KEY }")).toBeNull();
+  });
+
+  it("masks generic credential values without leaking a prefix", () => {
+    const finding = scanForSecrets("const config = { password: \"correct-horse-battery\" }");
+    expect(finding).toMatch(/Hardcoded credential assignment/);
+    expect(finding).not.toContain("corr");
+    expect(scanForSecrets("token: ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm")).toMatch(
+      /ghp_\*\*\*\*/,
+    );
+  });
+
+  it("scans the tail of large content and fails closed on unscanned gaps", () => {
+    const prefix = `${"x".repeat(100_000)} `;
+    expect(scanForSecrets(`${prefix}AKIAIOSFODNN7EXAMPLE`)).toMatch(/AWS access key/);
+    expect(scanForSecrets("x".repeat(250_000))).toMatch(/Unscanned content/);
+  });
+
   it("passes clean content", () => {
     expect(scanForSecrets("const greeting = 'hello world'; export default greeting;")).toBeNull();
     expect(scanForSecrets("risk-based testing and task-description docs")).toBeNull();
@@ -119,6 +143,44 @@ describe("Secrets Scanner plugin", () => {
         input: { filePath: ".env", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
       } as never),
     ).resolves.toBeUndefined();
+  });
+
+  it("ignores filePath and oldString when scanning writes and edits", async () => {
+    const harness = createHarness();
+    await SecretsScannerPlugin.setup(harness.context);
+    const hook = getHook(harness.hooks.tool, "execute.before");
+
+    await expect(
+      hook({
+        tool: "edit",
+        input: {
+          filePath: "a.ts",
+          oldString: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm",
+          newString: "const token = process.env.GITHUB_TOKEN;",
+        },
+      } as never),
+    ).resolves.toBeUndefined();
+
+    await expect(
+      hook({
+        tool: "write",
+        input: {
+          filePath: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm.ts",
+          content: "const greeting = 'hello';",
+        },
+      } as never),
+    ).resolves.toBeUndefined();
+
+    await expect(
+      hook({
+        tool: "edit",
+        input: {
+          filePath: "a.ts",
+          oldString: "before",
+          newString: "AKIAIOSFODNN7EXAMPLE",
+        },
+      } as never),
+    ).rejects.toThrow(/secrets-scanner/);
   });
 });
 
@@ -155,6 +217,28 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("Remove-Item -Recurse -Force \"$env:USERPROFILE\"")).toMatch(/Recursive force delete/);
   });
 
+  it("blocks uppercase force-delete flag variants", () => {
+    expect(findDangerousCommand("rm -RF /")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rF /")).toMatch(/Recursive force delete/);
+  });
+
+  it("blocks delete commands split by shell metacharacters", () => {
+    expect(findDangerousCommand("rm -rf /; echo ok")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf ~/;echo")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf /|cat")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("echo ok && rm -rf /")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf /\n echo ok")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("(rm -rf /)")).toMatch(/Recursive force delete/);
+  });
+
+  it("blocks relative traversal escapes to parent and home", () => {
+    expect(findDangerousCommand("rm -rf ../..")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf ../../")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf ../*")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf ../../*")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf ../../..")).toMatch(/Recursive force delete/);
+  });
+
   it("blocks Windows-native recursive quiet deletes of drive roots", () => {
     expect(findDangerousCommand("del /s /q C:\\")).toMatch(/Recursive force delete/);
     expect(findDangerousCommand("rmdir /s /q C:\\")).toMatch(/Recursive force delete/);
@@ -181,6 +265,19 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("git push origin main")).toBeNull();
   });
 
+  it("scopes the force-with-lease exemption to the git push invocation", () => {
+    expect(findDangerousCommand("echo --force-with-lease; git push --force origin main")).toMatch(
+      /force push/,
+    );
+    expect(findDangerousCommand("git push --force origin main; echo --force-with-lease")).toMatch(
+      /force push/,
+    );
+    expect(findDangerousCommand("git push --force-with-lease=x --force origin main")).toMatch(
+      /force push/,
+    );
+    expect(findDangerousCommand("git push --force-with-lease origin main")).toBeNull();
+  });
+
   it("blocks disk destroy and SQL drops", () => {
     expect(findDangerousCommand("mkfs.ext4 /dev/sda1")).toMatch(/Disk or filesystem/);
     expect(findDangerousCommand("dd if=backup.img of=/dev/sda")).toMatch(/Disk or filesystem/);
@@ -188,6 +285,23 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("psql -c 'DROP TABLE users'")).toMatch(/DROP TABLE/);
     expect(findDangerousCommand("mysql -e 'DROP DATABASE prod'")).toMatch(/DROP TABLE/);
     expect(findDangerousCommand("chmod -R 777 /")).toMatch(/chmod/);
+  });
+
+  it("blocks disk destroy and chmod root variants case-insensitively", () => {
+    expect(findDangerousCommand("MKFS.ext4 /dev/sda1")).toMatch(/Disk or filesystem/);
+    expect(findDangerousCommand("DD if=backup.img of=/dev/sda")).toMatch(/Disk or filesystem/);
+    expect(findDangerousCommand("FDISK /dev/sda")).toMatch(/Disk or filesystem/);
+    expect(findDangerousCommand("chmod --recursive 777 /")).toMatch(/chmod/);
+    expect(findDangerousCommand("chmod -R 777 /.")).toMatch(/chmod/);
+    expect(findDangerousCommand("chmod -R 777 $HOME")).toMatch(/chmod/);
+    // eslint-disable-next-line no-template-curly-in-string -- literal shell string under test
+    expect(findDangerousCommand("chmod -R 777 ${HOME}")).toMatch(/chmod/);
+  });
+
+  it("allows destroy-like words outside command position", () => {
+    expect(findDangerousCommand("echo fdisk")).toBeNull();
+    expect(findDangerousCommand("echo MKFS.ext4")).toBeNull();
+    expect(findDangerousCommand("echo chmod -R 777 /")).toBeNull();
   });
 
   it("allows normal commands", () => {
@@ -210,10 +324,9 @@ describe("Tool Guardian plugin", () => {
 
 describe("V2 plugin definitions", () => {
   it("use stable unique ids", () => {
-    const ids = [CompactionPlugin.id, SecretsScannerPlugin.id, ToolGuardianPlugin.id];
+    const ids = [SecretsScannerPlugin.id, ToolGuardianPlugin.id];
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids).toEqual([
-      "agent-skills.compaction",
       "agent-skills.secrets-scanner",
       "agent-skills.tool-guardian",
     ]);

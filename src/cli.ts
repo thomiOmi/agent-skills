@@ -1,16 +1,14 @@
 #!/usr/bin/env bun
 import type { InstallMode } from "./commands/install";
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
 import { defineCommand, runMain } from "citty";
 import { consola } from "consola";
-import { installCommand } from "./commands/install";
+import { installCommand, MODES, readPackageVersion } from "./commands/install";
 import { getRepoRoot } from "./lib/paths";
 
 const installArgs = {
   "mode": {
     type: "enum" as const,
-    options: ["merge", "replace", "symlink"],
+    options: [...MODES],
     description: "Install mode: merge (default), replace, or symlink",
   },
   "force": {
@@ -59,8 +57,7 @@ function toInstallOptions(args: Record<string, unknown>) {
 }
 
 async function printVersion(): Promise<void> {
-  const pkg = JSON.parse(await readFile(resolve(getRepoRoot(), "package.json"), "utf-8")) as { version?: string };
-  consola.log(pkg.version ?? "0.0.0");
+  consola.log(await readPackageVersion(getRepoRoot()));
 }
 
 const installSubCommand = defineCommand({

@@ -8,8 +8,7 @@ documentation.
 
 - Read [AGENTS.md](./AGENTS.md) for repository rules and source-of-truth
   ownership.
-- Check [TASKS.md](./TASKS.md) and existing issues or pull requests before
-  starting work.
+- Check existing issues and pull requests before starting work.
 - For security vulnerabilities, follow [SECURITY.md](./SECURITY.md) instead
   of opening a public issue.
 
