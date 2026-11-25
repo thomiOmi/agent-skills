@@ -191,8 +191,32 @@ function isRecursiveForceDelete(command: string): boolean {
 }
 
 // Git global options (-c, -C, --no-pager, etc.) may sit between `git` and
-// `push`, so the verb cannot be matched as the immediate next token.
-const GIT_PUSH = /\bgit(?:\s+-[\w-]+(?:\s+\S+)??)*\s+push\b/i;
+// `push`. Token scanning keeps this linear and avoids a backtracking regex.
+function isGitPushInvocation(subcommand: string): boolean {
+  const tokens = subcommand.trim().split(/\s+/);
+  const gitIndex = tokens.findIndex(token => token.toLowerCase() === "git");
+  if (gitIndex === -1) {
+    return false;
+  }
+
+  let index = gitIndex + 1;
+  while (index < tokens.length) {
+    const token = tokens[index] ?? "";
+    if (token.toLowerCase() === "push") {
+      return true;
+    }
+    if (!token.startsWith("-")) {
+      return false;
+    }
+    // -c and -C consume their following argument.
+    if ((token === "-c" || token === "-C") && index + 1 < tokens.length) {
+      index += 2;
+      continue;
+    }
+    index += 1;
+  }
+  return false;
+}
 
 /**
  * True when a `git push` invocation in the chain uses a real force flag.
@@ -201,7 +225,7 @@ const GIT_PUSH = /\bgit(?:\s+-[\w-]+(?:\s+\S+)??)*\s+push\b/i;
  */
 function isForcePush(command: string): boolean {
   return command.split(COMMAND_SEPARATOR).some((subcommand) => {
-    if (!GIT_PUSH.test(subcommand)) {
+    if (!isGitPushInvocation(subcommand)) {
       return false;
     }
     const hasForce = /(?:^|\s)--force(?:\s|$)|(?:^|\s)-f(?:\s|$)/.test(subcommand);

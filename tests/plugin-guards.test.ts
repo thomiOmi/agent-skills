@@ -310,6 +310,15 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("git push --force-with-lease origin main")).toBeNull();
   });
 
+  it("detects git push behind global options and ignores other git verbs", () => {
+    expect(findDangerousCommand("git -c push.default=current push --force origin main")).toMatch(
+      /force push/,
+    );
+    expect(findDangerousCommand("git --no-pager push --force origin main")).toMatch(/force push/);
+    expect(findDangerousCommand("git status --force")).toBeNull();
+    expect(findDangerousCommand("git commit --force")).toBeNull();
+  });
+
   it("blocks disk destroy and SQL drops", () => {
     expect(findDangerousCommand("mkfs.ext4 /dev/sda1")).toMatch(/Disk or filesystem/);
     expect(findDangerousCommand("dd if=backup.img of=/dev/sda")).toMatch(/Disk or filesystem/);
