@@ -135,7 +135,7 @@ describe("Installer commands", () => {
     });
 
     expect(await readFile(join(fixture.target, "agents/orchestrator.md"), "utf-8"))
-      .toContain("Fixture orchestrator");
+      .toContain("Fixture coordinator");
     expect(await readFile(join(fixture.target, "skills/alpha/SKILL.md"), "utf-8"))
       .toContain("Alpha fixture skill");
     expect(await pathExists(join(fixture.target, "opencode.jsonc"))).toBe(true);
