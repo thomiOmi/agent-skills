@@ -1,6 +1,6 @@
 export type {
+  OpenCodeCliConfig,
   OpenCodeConfig,
-  OpenCodeTuiConfig,
   PreparedConfig,
   PreparedConfigs,
 } from "./install/config-merge";

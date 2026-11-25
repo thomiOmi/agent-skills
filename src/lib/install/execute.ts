@@ -49,7 +49,7 @@ export async function executeInstall(
   options: ExecuteInstallOptions,
 ): Promise<ExecuteInstallResult> {
   const { plan, configs, dryRun } = options;
-  const needsBackup = plan.hasChanges || configs.openCode.changed || configs.tui.changed;
+  const needsBackup = plan.hasChanges || configs.openCode.changed || configs.cli.changed;
   const backupPath = needsBackup && !options.skipBackup
     ? await backupGlobal({
         configRoot: plan.configRoot,
@@ -82,8 +82,8 @@ export async function executeInstall(
   if (configs.openCode.changed) {
     await writeConfigFile(configs.openCode.path, configs.openCode.value, false);
   }
-  if (configs.tui.changed) {
-    await writeConfigFile(configs.tui.path, configs.tui.value, false);
+  if (configs.cli.changed) {
+    await writeConfigFile(configs.cli.path, configs.cli.value, false);
   }
 
   await persistManifest(options, installedModes);

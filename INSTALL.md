@@ -14,7 +14,7 @@ cd agent-skills
 bun run setup
 ```
 
-`bun run setup` uses merge mode by default. It reads an ownership manifest, preserves user-modified and unmanaged files, backs up the config root before writing, and merges `opencode.jsonc` and `tui.jsonc` without discarding your settings.
+`bun run setup` uses merge mode by default. It reads an ownership manifest, preserves user-modified and unmanaged files, backs up the config root before writing, and merges `opencode.jsonc` and `cli.json` without discarding your settings.
 
 Package registry distribution and remote source installation are not supported.
 
@@ -49,7 +49,7 @@ Environment overrides:
 
 - `OPENCODE_CONFIG_DIR` sets the config root when `--target` is absent.
 - `OPENCODE_BACKUP_DIR` sets the backup root when `--target` is absent.
-- `OPENCODE_CONFIG` and `OPENCODE_TUI_CONFIG` are read as config merge sources. The installer still writes to the config root.
+- `OPENCODE_CONFIG` is read as a merge source. The terminal client applies `OPENCODE_CLI_CONFIG_CONTENT` at runtime; the installer does not write it into the global file.
 
 `--target` also places the default backup under `<target>/backups/` unless `--backup-path` is given. Nothing outside the target directory is written.
 
@@ -61,7 +61,7 @@ Environment overrides:
 | --- | --- | --- |
 | `instructions/AGENTS.md` | `AGENTS.md` | Global agent rules - read by the agent every session. Root `AGENTS.md` remains contributor guidance for this repository. |
 | `config/opencode.jsonc` | `opencode.jsonc` or an existing `opencode.json` | Global config - default_agent, experimental.subagent_depth, instructions, permissions, formatter, lsp, watcher. |
-| `config/tui.jsonc` | `tui.jsonc` or an existing `tui.json` | TUI config - theme, attention notifications. |
+| `config/cli.json` | `cli.json` | Terminal client config - theme and attention notifications. Legacy `tui.json(c)` is read as a migration source. |
 | `agents/*.md` | `agents/*.md` | 19 subagent definitions - senior-developer, qa-engineer, security-auditor, and domain specialists. Coordination uses the global Delegation & Verification Policy. |
 | `skills/*/` | `skills/*/` | 32 skill directories - SKILL.md + references/. Loaded on demand by the model. |
 | `commands/*.md` | `commands/*.md` | 2 slash commands - /commit and /ship-pr. |
@@ -98,7 +98,7 @@ Use `--backup-path <dir>` to create the timestamped directory under a custom roo
 
 ## Config Merge
 
-`opencode.jsonc` and `tui.jsonc` are deep-merged with the templates:
+`opencode.jsonc` and `cli.json` are deep-merged with the templates:
 
 - Your values win. Template values fill only missing keys.
 - Arrays are atomic. The installer never merges two arrays element by element.
@@ -106,11 +106,11 @@ Use `--backup-path <dir>` to create the timestamped directory under a custom roo
 - `default_agent` and `small_model` are never forced. If you set them, they stay as set.
 - `instructions` keeps your entries and appends `AGENTS.md` only when missing.
 - A top-level `subagent_depth` is migrated to `experimental.subagent_depth`.
-- An existing `opencode.json` or `tui.json` is updated in place instead of creating a duplicate `.jsonc` file.
+- An existing `opencode.json` is updated in place instead of creating a duplicate `.jsonc` file. Terminal settings are always written to `cli.json`; legacy `tui.json(c)` is a read-only migration source.
 - Comments in JSONC files are not preserved when a rewrite is required. The installer warns before dropping them.
 - An invalid existing config aborts in merge mode unless `--force` is set.
 
-`OPENCODE_CONFIG` and `OPENCODE_TUI_CONFIG` are read as merge sources when set. The installer still writes to the config root.
+`OPENCODE_CONFIG` is read as a merge source when set. `OPENCODE_CLI_CONFIG_CONTENT` is applied by OpenCode at runtime and is not written into the global file.
 
 ---
 

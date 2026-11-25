@@ -106,6 +106,6 @@ Slash commands live in `commands/` (2 files: `commit`, `ship-pr`). Run project s
 **Agent files:** agents/*.md (source - installed to ~/.config/opencode/agents/)
 **Skill files:** skills/*/SKILL.md (source - installed to ~/.config/opencode/skills/)
 **Global rules:** instructions/AGENTS.md (source of truth - installed to ~/.config/opencode/AGENTS.md)
-**Global config:** config/opencode.jsonc - config/tui.jsonc (templates - installed with config merge)
+**Global config:** config/opencode.jsonc - config/cli.json (templates - installed with config merge)
 **Installer modes:** merge (default), replace, symlink
 **CLI installer:** src/ (TypeScript + citty - not deployed, runs locally; writes only to the OpenCode config root)

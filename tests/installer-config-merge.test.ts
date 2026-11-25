@@ -267,13 +267,17 @@ describe("Installer config merge", () => {
     expect(await Bun.file(join(fixture.target, "opencode.jsonc")).exists()).toBe(false);
   });
 
-  it("preserves TUI keys and uses an existing tui.json", async () => {
+  it("preserves CLI keys and uses an existing cli.json", async () => {
     const fixture = await createFixture();
     await writeFixtureFile(
       fixture.target,
-      "tui.json",
+      "cli.json",
       JSON.stringify(
-        { theme: "custom", keybinds: { leader: "ctrl+x" } },
+        {
+          theme: "custom",
+          keybinds: { leader: "ctrl+x" },
+          attention: { sound: false },
+        },
         null,
         2,
       ),
@@ -281,10 +285,25 @@ describe("Installer config merge", () => {
 
     const configs = await prepareConfigs(fixture.repo, fixture.target);
 
-    expect(basename(configs.tui.path)).toBe("tui.json");
-    expect(configs.tui.value.theme).toBe("custom");
-    expect(configs.tui.value.keybinds).toEqual({ leader: "ctrl+x" });
-    expect(configs.tui.value.attention).toEqual({ enabled: true });
+    expect(basename(configs.cli.path)).toBe("cli.json");
+    expect(configs.cli.value.theme).toBe("custom");
+    expect(configs.cli.value.keybinds).toEqual({ leader: "ctrl+x" });
+    expect(configs.cli.value.attention).toEqual({ notifications: true, sound: false });
+  });
+
+  it("migrates legacy tui.json attention settings into cli.json", async () => {
+    const fixture = await createFixture();
+    await writeFixtureFile(
+      fixture.target,
+      "tui.json",
+      JSON.stringify({ attention: { enabled: false } }, null, 2),
+    );
+
+    const configs = await prepareConfigs(fixture.repo, fixture.target);
+
+    expect(basename(configs.cli.path)).toBe("cli.json");
+    expect(configs.cli.value.attention).toEqual({ notifications: false, sound: false });
+    expect(configs.cli.warnings.join("\n")).toContain("legacy attention.enabled");
   });
 
   it("is idempotent after writing the prepared configs", async () => {
@@ -292,12 +311,12 @@ describe("Installer config merge", () => {
     const first = await prepareConfigs(fixture.repo, fixture.target);
 
     await writeConfigFile(first.openCode.path, first.openCode.value, false);
-    await writeConfigFile(first.tui.path, first.tui.value, false);
+    await writeConfigFile(first.cli.path, first.cli.value, false);
 
     const second = await prepareConfigs(fixture.repo, fixture.target);
 
     expect(second.openCode.changed).toBe(false);
-    expect(second.tui.changed).toBe(false);
+    expect(second.cli.changed).toBe(false);
   });
 
   it("uses OPENCODE_CONFIG as a source and warns about the destination", async () => {
