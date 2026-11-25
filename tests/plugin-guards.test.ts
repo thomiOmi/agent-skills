@@ -1,6 +1,11 @@
 import { describe, expect, it } from "bun:test";
-import { scanForSecrets, SecretsScannerPlugin } from "../plugin/secrets-scanner";
+import { guardToolCall, scanForSecrets, SecretsScannerPlugin } from "../plugin/secrets-scanner";
 import { findDangerousCommand, ToolGuardianPlugin } from "../plugin/tool-guardian";
+
+// Built from fragments so test fixtures do not embed literal secret values.
+const ENCRYPTED_PRIVATE_KEY_HEADER = ["-----BEGIN ", "ENCRYPTED ", "PRIVATE KEY-----"].join("");
+const AWS_ACCESS_KEY = "AKIA" + "IOSFODNN7EXAMPLE";
+const SHORT_PASSWORD_ASSIGNMENT = "password=" + "hunter2";
 
 type HookCallback = (event: never) => Promise<void>;
 
@@ -65,6 +70,7 @@ function getHook(hooks: Record<string, HookCallback>, name: string): HookCallbac
 
 describe("Secrets Scanner", () => {
   it("detects known secret formats", () => {
+    expect(scanForSecrets(ENCRYPTED_PRIVATE_KEY_HEADER)).toMatch(/Private key/);
     expect(scanForSecrets("key = \"AKIAIOSFODNN7EXAMPLE\" and more")).toMatch(/AWS access key/);
     expect(scanForSecrets("token: ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm")).toMatch(/GitHub token/);
     expect(scanForSecrets("Bearer sk-proj-abcdefghij01234567890ABCDE")).toMatch(/OpenAI or Anthropic/);
@@ -115,6 +121,32 @@ describe("Secrets Scanner", () => {
     expect(scanForSecrets("const greeting = 'hello world'; export default greeting;")).toBeNull();
     expect(scanForSecrets("risk-based testing and task-description docs")).toBeNull();
   });
+
+  it("detects short password assignments without flagging code constants", () => {
+    expect(scanForSecrets(SHORT_PASSWORD_ASSIGNMENT)).toMatch(/Hardcoded credential/);
+    expect(scanForSecrets("const API_KEY = SOME_LONG_CONSTANT_2;")).toBeNull();
+  });
+
+  it("applies the template-expression exemption only at the start of a value", () => {
+    // eslint-disable-next-line no-template-curly-in-string -- literal credential value under test
+    expect(scanForSecrets("password: \"" + "${ENV_VALUE}\"")).toBeNull();
+    // eslint-disable-next-line no-template-curly-in-string -- literal credential value under test
+    expect(scanForSecrets("password: \"" + "hunter${ENV_VALUE}\"")).toMatch(/Hardcoded credential/);
+  });
+
+  it("overlaps scan windows so a boundary-straddling token is found", () => {
+    const prefix = `${"x".repeat(100_000 - 10 - 1)} `;
+    const suffix = ` ${"x".repeat(200_000 - prefix.length - AWS_ACCESS_KEY.length - 1)}`;
+    expect(scanForSecrets(prefix + AWS_ACCESS_KEY + suffix)).toMatch(/AWS access key/);
+    expect(scanForSecrets("x".repeat(200_001))).toMatch(/Unscanned content/);
+  });
+
+  it("scans content fields beyond the old string cap", () => {
+    const fields = Array.from({ length: 600 }, (_item, index) => ({
+      content: index === 599 ? AWS_ACCESS_KEY : "safe content",
+    }));
+    expect(() => guardToolCall("write", { fields })).toThrow(/secrets-scanner/);
+  });
 });
 
 describe("Secrets Scanner plugin", () => {
@@ -123,21 +155,21 @@ describe("Secrets Scanner plugin", () => {
     await SecretsScannerPlugin.setup(harness.context);
     const hook = getHook(harness.hooks.tool, "execute.before");
 
-    expect(
+    await expect(
       hook({
         tool: "write",
         input: { filePath: "a.ts", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
       } as never),
     ).rejects.toThrow(/secrets-scanner/);
 
-    expect(
+    await expect(
       hook({
         tool: "edit",
         input: { filePath: "a.ts", oldString: "before", newString: "AKIAIOSFODNN7EXAMPLE" },
       } as never),
     ).rejects.toThrow(/secrets-scanner/);
 
-    expect(
+    await expect(
       hook({
         tool: "read",
         input: { filePath: ".env", content: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm" },
@@ -309,6 +341,48 @@ describe("Tool Guardian", () => {
     expect(findDangerousCommand("git reset --hard HEAD~1")).toBeNull();
     expect(findDangerousCommand("chmod +x scripts/build.sh")).toBeNull();
   });
+
+  it("blocks commands wrapped in shell backticks", () => {
+    expect(findDangerousCommand("`rm -rf /`")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("echo ok `rm -rf /`")).toMatch(/Recursive force delete/);
+  });
+
+  it("blocks force push combined with lease or no-lease flags", () => {
+    expect(findDangerousCommand("git push --force-with-lease origin main --force")).toMatch(/force push/);
+    expect(findDangerousCommand("git push --force-with-lease origin main -f")).toMatch(/force push/);
+    expect(findDangerousCommand("git push --force-with-lease --no-force-with-lease origin main")).toMatch(
+      /force push/,
+    );
+    expect(findDangerousCommand("git push --no-force-with-lease origin main")).toMatch(/force push/);
+    expect(findDangerousCommand("git push --force-with-lease origin main")).toBeNull();
+  });
+
+  it("detects git push after global options", () => {
+    expect(findDangerousCommand("git -c core.quotepath=false push --force")).toMatch(/force push/);
+    expect(findDangerousCommand("git --no-pager push --force")).toMatch(/force push/);
+  });
+
+  it("blocks user home expansion and multi-hop relative traversal", () => {
+    expect(findDangerousCommand("rm -rf ~root")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf ../foo/../..")).toMatch(/Recursive force delete/);
+    expect(findDangerousCommand("rm -rf ./foo/../../..")).toMatch(/Recursive force delete/);
+  });
+
+  it("blocks quoted dd targets, sudo/env prefixes, and broader chmod masks", () => {
+    expect(findDangerousCommand("dd if=backup.img of=\"/dev/sda\"")).toMatch(/Disk or filesystem/);
+    expect(findDangerousCommand("sudo -u root mkfs.ext4 /dev/sda1")).toMatch(/Disk or filesystem/);
+    expect(findDangerousCommand("sudo --user root mkfs.ext4 /dev/sda1")).toMatch(/Disk or filesystem/);
+    expect(findDangerousCommand("sudo --user=root mkfs.ext4 /dev/sda1")).toMatch(/Disk or filesystem/);
+    expect(findDangerousCommand("env FOO=bar fdisk /dev/sda")).toMatch(/Disk or filesystem/);
+    expect(findDangerousCommand("chmod -R 7777 /")).toMatch(/chmod/);
+    expect(findDangerousCommand("chmod -R a+w ~")).toMatch(/chmod/);
+    expect(findDangerousCommand("sudo chmod -R 7777 /")).toMatch(/chmod/);
+  });
+
+  it("does not treat echoed delete commands as destructive", () => {
+    expect(findDangerousCommand("echo rm -rf /")).toBeNull();
+    expect(findDangerousCommand("echo rm -rf ~")).toBeNull();
+  });
 });
 
 describe("Tool Guardian plugin", () => {
@@ -317,8 +391,8 @@ describe("Tool Guardian plugin", () => {
     await ToolGuardianPlugin.setup(harness.context);
     const hook = getHook(harness.hooks.shell, "create.before");
 
-    expect(hook({ command: "rm -rf /" } as never)).rejects.toThrow(/tool-guardian/);
-    expect(hook({ command: "bun run test" } as never)).resolves.toBeUndefined();
+    await expect(hook({ command: "rm -rf /" } as never)).rejects.toThrow(/tool-guardian/);
+    await expect(hook({ command: "bun run test" } as never)).resolves.toBeUndefined();
   });
 });
 

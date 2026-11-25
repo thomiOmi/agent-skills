@@ -17,10 +17,12 @@ import { Plugin } from "@opencode/plugin";
  * - DROP TABLE / DROP DATABASE / DROP SCHEMA statements
  * - chmod -R / --recursive 777 on /, /., ~, or $HOME
  *
- * Command chains are split on shell separators so a dangerous subcommand
- * cannot hide after `;`, `|`, `&`, a newline, or parentheses. Specific-path
- * deletes (rm -rf node_modules, rm -rf /tmp/build) and recoverable operations
- * (git reset --hard) are deliberately allowed.
+ * Command chains are split on shell separators (including backticks) so a
+ * dangerous subcommand cannot hide after `;`, `|`, `&`, a newline, a backtick,
+ * or parentheses. Privilege prefixes such as `sudo -u root` and `env VAR=x`
+ * are stripped before matching. Specific-path deletes (rm -rf node_modules,
+ * rm -rf /tmp/build) and recoverable operations (git reset --hard) are
+ * deliberately allowed.
  * Permission prompts for shell commands remain governed by opencode.json config; this
  * guard is an additional safety layer, not a permission system.
  *
@@ -28,8 +30,47 @@ import { Plugin } from "@opencode/plugin";
  * to the `plugins` array in opencode.jsonc.
  */
 
-const DELETE_COMMAND = /\b(?:rm|remove-item|del|rmdir)\b/i;
-const COMMAND_SEPARATOR = /[;&|\n()]+/;
+const DELETE_COMMAND = /^(?:rm|remove-item|del|rmdir)\b/i;
+const COMMAND_SEPARATOR = /[;&|\n()`]+/;
+// sudo/env options that consume a following argument before the command token.
+const OPTION_WITH_ARGUMENT = /^(?:-[ughDCpTtUr]|--(?:user|group|host|chdir|target|timeout))\s+\S+\s*/;
+const OPTION_WITH_ARGUMENT_EXTRA = /^--(?:close-from|prompt|other-user)\s+\S+\s*/;
+
+/**
+ * Removes leading sudo/env invocations and their options so the destructive
+ * command that follows sits at the start of the returned string.
+ */
+function stripPrivilegePrefix(command: string): string {
+  let remainder = command.trimStart();
+  for (;;) {
+    const prefix = /^(?:sudo|env)\b\s*/.exec(remainder);
+    if (prefix === null) {
+      break;
+    }
+    remainder = remainder.slice(prefix[0].length);
+    for (;;) {
+      // Options taking a separate argument must consume it before the command
+      // token; bare flags and VAR=value assignments consume only one token.
+      const withArgument = OPTION_WITH_ARGUMENT.exec(remainder)
+        ?? OPTION_WITH_ARGUMENT_EXTRA.exec(remainder);
+      const assignment = /^\w+=\S+\s*/.exec(remainder);
+      const flag = /^-[\w-]+(?:=\S+)?\s*/.exec(remainder);
+      if (withArgument !== null) {
+        remainder = remainder.slice(withArgument[0].length);
+      }
+      else if (assignment !== null) {
+        remainder = remainder.slice(assignment[0].length);
+      }
+      else if (flag !== null) {
+        remainder = remainder.slice(flag[0].length);
+      }
+      else {
+        break;
+      }
+    }
+  }
+  return remainder;
+}
 
 function hasRecursiveFlag(command: string): boolean {
   return /(?:^|\s)-\w*r/i.test(command)
@@ -66,7 +107,7 @@ function isRootBase(target: string): boolean {
   return target.startsWith("/") && resolvesToRoot(target);
 }
 
-const HOME_BASE = /^(?:~|\$HOME|\$\{HOME\})(\/.*)?$/;
+const HOME_BASE = /^(?:~[\w.-]*|\$HOME|\$\{HOME\})(\/.*)?$/;
 const PS_HOME_BASE = /^\$env:(?:USERPROFILE|HOME)(\/.*)?$/i;
 
 function isHomeBase(target: string): boolean {
@@ -87,27 +128,25 @@ function isDotTarget(target: string): boolean {
 }
 
 /**
- * True when a relative token walks out through `..` segments. Two or more
- * parent hops escape the working tree; a single hop is catastrophic only
- * when the rest of the token is a bare wildcard (`../*`).
+ * True when a relative token walks out through `..` segments. Every segment
+ * is resolved against a stack so a `..` that appears after a named directory
+ * still counts as an escape from the working tree.
  */
 function isRelativeEscapeTarget(token: string): boolean {
   const segments = token.split("/").filter(segment => segment !== "" && segment !== ".");
-  let parentHops = 0;
+  const stack: string[] = [];
   for (const segment of segments) {
-    if (segment !== "..") {
-      break;
+    if (segment === "..") {
+      if (stack.length === 0) {
+        return true;
+      }
+      stack.pop();
     }
-    parentHops += 1;
+    else {
+      stack.push(segment);
+    }
   }
-  if (parentHops === 0) {
-    return false;
-  }
-  if (parentHops >= 2) {
-    return true;
-  }
-  const remainder = segments.slice(parentHops).join("/");
-  return remainder === "*";
+  return false;
 }
 
 /**
@@ -117,7 +156,7 @@ function isRelativeEscapeTarget(token: string): boolean {
  * `/*` and `~/*` are blocked while `./build/*` stays allowed.
  */
 function isCatastrophicTarget(rawToken: string): boolean {
-  const token = rawToken.replace(/["']/g, "").replace(/\\/g, "/");
+  const token = rawToken.replace(/["'`]/g, "").replace(/\\/g, "/");
   if (token === "*") {
     return true;
   }
@@ -139,52 +178,67 @@ function isCatastrophicTarget(rawToken: string): boolean {
  */
 function isRecursiveForceDelete(command: string): boolean {
   return command.split(COMMAND_SEPARATOR).some((subcommand) => {
-    if (!DELETE_COMMAND.test(subcommand)) {
+    // Anchor the delete verb to command position so `echo rm -rf /` stays safe.
+    const normalized = stripPrivilegePrefix(subcommand);
+    if (!DELETE_COMMAND.test(normalized)) {
       return false;
     }
-    if (!hasRecursiveFlag(subcommand) || !hasForceFlag(subcommand)) {
+    if (!hasRecursiveFlag(normalized) || !hasForceFlag(normalized)) {
       return false;
     }
-    return subcommand.split(/\s+/).some(isCatastrophicTarget);
+    return normalized.split(/\s+/).some(isCatastrophicTarget);
   });
 }
 
+// Git global options (-c, -C, --no-pager, etc.) may sit between `git` and
+// `push`, so the verb cannot be matched as the immediate next token.
+const GIT_PUSH = /\bgit(?:\s+-[\w-]+(?:\s+\S+)??)*\s+push\b/i;
+
 /**
  * True when a `git push` invocation in the chain uses a real force flag.
- * The --force-with-lease exemption is scoped to the same subcommand and only
- * counts as a standalone option, so an unrelated lease mention cannot excuse
- * a force push, and `--force-with-lease=x` forms fail closed.
+ * A standalone --force-with-lease exempts the push only when no bare force
+ * flag and no --no-force-with-lease appears in the same subcommand.
  */
 function isForcePush(command: string): boolean {
   return command.split(COMMAND_SEPARATOR).some((subcommand) => {
-    if (!/\bgit\s+push\b/.test(subcommand)) {
+    if (!GIT_PUSH.test(subcommand)) {
       return false;
     }
-    if (/(?:^|\s)--force-with-lease(?:\s|$)/.test(subcommand)) {
+    const hasForce = /(?:^|\s)--force(?:\s|$)|(?:^|\s)-f(?:\s|$)/.test(subcommand);
+    const hasLease = /(?:^|\s)--force-with-lease(?:\s|$)/.test(subcommand);
+    const hasNoLease = /(?:^|\s)--no-force-with-lease(?:\s|$)/.test(subcommand);
+    if (hasLease && !hasForce && !hasNoLease) {
       return false;
     }
-    return /(?:^|\s)--force(?:\s|$)|(?:^|\s)-f(?:\s|$)/.test(subcommand);
+    return hasForce || hasNoLease;
   });
 }
 
 // Anchored to command position so an argument such as `echo fdisk` is safe.
+// Privilege prefixes are stripped by the caller before these patterns run.
 const DISK_DESTROY: RegExp[] = [
-  /^\s*(?:sudo\s+)?mkfs(?:\.\w+)?\b/i,
-  /^\s*(?:sudo\s+)?dd\b[^;&|]+\bof=\/dev\//i,
-  /^\s*(?:sudo\s+)?fdisk\b/i,
-  /^\s*(?:sudo\s+)?format\s+[a-z]:/i,
+  /^mkfs(?:\.\w+)?\b/i,
+  /^dd\b[^;&|]+of=["']?\/dev\//i,
+  /^fdisk\b/i,
+  /^format\s+[a-z]:/i,
 ];
 
 const SQL_DROP = /\bdrop\s+(?:table|database|schema)\b/i;
 
+// Masks that grant world write access recursively on a catastrophic target.
+const CHMOD_ROOT_MASK = /^(?:0?7777?|[augo]*\+(?=[rwx]*w)[rwx]+)$/i;
+
 /**
- * True when a subcommand is a recursive chmod 777 whose target is a
- * catastrophic delete target (/, /., ~, $HOME, or a wildcard there).
+ * True when a subcommand is a recursive chmod with a world-writable mask whose
+ * target is a catastrophic delete target (/, /., ~, $HOME, or a wildcard).
  */
 function isChmodRoot(command: string): boolean {
   return command.split(COMMAND_SEPARATOR).some((subcommand) => {
-    const match = /^\s*(?:sudo\s+)?chmod\s+(?:-R|--recursive)\s+777\s+(\S+)/i.exec(subcommand);
-    return match !== null && isCatastrophicTarget(match[1] ?? "");
+    const match = /^chmod\s+(?:-R|--recursive)\s+(\S+)\s+(\S+)/i.exec(stripPrivilegePrefix(subcommand));
+    if (match === null) {
+      return false;
+    }
+    return CHMOD_ROOT_MASK.test(match[1] ?? "") && isCatastrophicTarget(match[2] ?? "");
   });
 }
 
@@ -196,8 +250,9 @@ export function findDangerousCommand(command: string): string | null {
     return "git force push (use --force-with-lease instead, or never rewrite shared history)";
   }
   for (const subcommand of command.split(COMMAND_SEPARATOR)) {
+    const normalized = stripPrivilegePrefix(subcommand);
     for (const pattern of DISK_DESTROY) {
-      if (pattern.test(subcommand)) {
+      if (pattern.test(normalized)) {
         return "Disk or filesystem destroy command";
       }
     }
