@@ -51,6 +51,8 @@ Cross-skill referral graph, boundary clarifications, and open decisions for the 
 | debugging | tech-debt | When the bug stems from accumulated technical debt |
 | code-review | security-review | Deep security audit beyond surface-level checks |
 | architecture-decision | planning | Broader system architecture context beyond a single ADR |
+| refactor-planner | tech-debt | Identifying debt to prioritize a refactoring plan |
+| refactor-planner | planning | System structure before changing module boundaries |
 
 ## Boundary Clarifications
 
@@ -88,10 +90,6 @@ Four domain-gap candidates were evaluated. No new skills were created because no
 Strongest future candidate: frontend state management — revisit if routing demand emerges or a dedicated agent is added.
 
 ## Open Decisions
-
-### refactor-planner skill absence
-
-No `skills/refactor-planner/` directory exists. The `refactor-planner` agent loads `tech-debt`, `planning`, `architecture-decision`, and `code-simplifier` instead. Refactoring is distributed across those skills rather than owned by a first-class `refactor-planner` skill. Confirm whether this is intentional or whether a `refactor-planner` SKILL.md should be added and wired into the `refactor-planner` agent and AGENTS.md Key Skills.
 
 ### security-review coverage for senior-developer
 

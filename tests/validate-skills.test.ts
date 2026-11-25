@@ -199,7 +199,7 @@ describe("Validate Skills (Agent Skills Specification)", () => {
       const { refs } = await loadSkill(name);
       totalRefCount += refs.length;
     }
-    expect(totalRefCount, "no references/references/*.md links found").toBeGreaterThan(0);
+    expect(totalRefCount, "no references/*.md links found").toBeGreaterThan(0);
   });
 });
 

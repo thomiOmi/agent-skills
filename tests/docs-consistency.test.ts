@@ -154,6 +154,19 @@ describe("Documentation consistency", () => {
     expect(prdSkillCount).toBe(skillNames.length);
   });
 
+  it("keeps SKILLS_MAP and eval baseline counts aligned with the filesystem", () => {
+    const skillsMap = readText(join(repoRoot, "docs", "SKILLS_MAP.md"));
+    const baseline = readText(join(repoRoot, "docs", "eval", "baseline.md"));
+
+    const mapSkillCount = Number(/for the (\d+) skills in/.exec(skillsMap)?.[1] ?? -1);
+    const baselineTotal = Number(/reports \*\*(\d+)\*\* agents total/.exec(baseline)?.[1] ?? -1);
+    const baselineInstalled = Number(/agents total: (\d+) installed subagents/.exec(baseline)?.[1] ?? -1);
+
+    expect(mapSkillCount).toBe(skillNames.length);
+    expect(baselineInstalled).toBe(agentNames.length);
+    expect(baselineTotal).toBe(agentNames.length + 7);
+  });
+
   it("uses experimental.subagent_depth in the shipped config template", () => {
     const config = parseJSONC<Record<string, unknown>>(
       readText(join(repoRoot, "config/opencode.jsonc")),
