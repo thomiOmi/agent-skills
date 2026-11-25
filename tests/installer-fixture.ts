@@ -60,11 +60,12 @@ const FIXTURE_FILES: Record<string, string> = {
     "}",
     "",
   ].join("\n"),
-  "config/tui.jsonc": [
+  "config/cli.json": [
     "{",
-    "  \"$schema\": \"https://opencode.ai/tui.json\",",
+    "  \"$schema\": \"https://opencode.ai/v2/cli.json\",",
     "  \"attention\": {",
-    "    \"enabled\": true",
+    "    \"notifications\": true,",
+    "    \"sound\": true",
     "  }",
     "}",
     "",
@@ -123,10 +124,8 @@ export async function removeInstallerFixture(fixture: InstallerFixture): Promise
  */
 export function isolateConfigEnvironment(): ConfigEnvironmentSnapshot {
   const openCode = process.env.OPENCODE_CONFIG;
-  const tui = process.env.OPENCODE_TUI_CONFIG;
 
   delete process.env.OPENCODE_CONFIG;
-  delete process.env.OPENCODE_TUI_CONFIG;
 
   return {
     restore: () => {
@@ -135,13 +134,6 @@ export function isolateConfigEnvironment(): ConfigEnvironmentSnapshot {
       }
       else {
         process.env.OPENCODE_CONFIG = openCode;
-      }
-
-      if (tui === undefined) {
-        delete process.env.OPENCODE_TUI_CONFIG;
-      }
-      else {
-        process.env.OPENCODE_TUI_CONFIG = tui;
       }
     },
   };

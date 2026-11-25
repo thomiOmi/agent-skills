@@ -144,7 +144,7 @@ export async function installCommand(opts: InstallOptions = {}): Promise<Install
     backupPath: opts.backupPath,
   });
 
-  const allWarnings = [...plan.warnings, ...configs.openCode.warnings, ...configs.tui.warnings];
+  const allWarnings = [...plan.warnings, ...configs.openCode.warnings, ...configs.cli.warnings];
   for (const warning of allWarnings) {
     consola.warn(warning);
   }

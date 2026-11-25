@@ -163,7 +163,7 @@ agent-skills/
 ├── .vscode/            # Editor settings and extension recommendations
 ├── agents/             # 19 specialized subagents (*.md)
 ├── commands/           # 2 slash commands (*.md): commit, ship-pr
-├── config/             # Global opencode.jsonc and tui.jsonc templates
+├── config/             # Global opencode.jsonc and cli.json templates
 ├── instructions/       # Global AGENTS.md + OPENCODE.md source
 ├── plugin/             # OpenCode V2 plugins + hooks
 │   ├── secrets-scanner.ts # Blocks writes containing secrets

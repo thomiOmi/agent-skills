@@ -53,7 +53,7 @@ describe("Installer commands", () => {
     expect(await pathExists(join(fixture.target, "plugins"))).toBe(true);
     expect(await pathExists(join(fixture.target, "AGENTS.md"))).toBe(true);
     expect(await pathExists(join(fixture.target, "opencode.jsonc"))).toBe(true);
-    expect(await pathExists(join(fixture.target, "tui.jsonc"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "cli.json"))).toBe(true);
     expect(await pathExists(join(fixture.target, ".agent-skills-manifest.json")))
       .toBe(true);
 
@@ -139,7 +139,7 @@ describe("Installer commands", () => {
     expect(await readFile(join(fixture.target, "skills/alpha/SKILL.md"), "utf-8"))
       .toContain("Alpha fixture skill");
     expect(await pathExists(join(fixture.target, "opencode.jsonc"))).toBe(true);
-    expect(await pathExists(join(fixture.target, "tui.jsonc"))).toBe(true);
+    expect(await pathExists(join(fixture.target, "cli.json"))).toBe(true);
   });
 
   it("keeps a symlink when a previously installed destination is updated", async () => {

@@ -13,7 +13,7 @@ export interface OpenCodeConfig {
   experimental?: Record<string, unknown>;
 }
 
-export interface OpenCodeTuiConfig {
+export interface OpenCodeCliConfig {
   [key: string]: unknown;
 }
 
@@ -26,7 +26,7 @@ export interface PreparedConfig<T> {
 
 export interface PreparedConfigs {
   openCode: PreparedConfig<OpenCodeConfig>;
-  tui: PreparedConfig<OpenCodeTuiConfig>;
+  cli: PreparedConfig<OpenCodeCliConfig>;
 }
 
 interface ConfigSource {
@@ -51,7 +51,7 @@ export class ConfigParseError extends Error {
 }
 
 /**
- * Prepares the OpenCode and TUI configurations without writing anything.
+ * Prepares the OpenCode server and terminal client configurations without writing anything.
  *
  * Existing user values win over template defaults. Arrays are treated as
  * atomic values so the installer never concatenates a user list behind their
@@ -71,7 +71,7 @@ export async function prepareConfigs(
 ): Promise<PreparedConfigs> {
   return {
     openCode: await prepareOpenCodeConfig(repoRoot, configRoot, options.force ?? false),
-    tui: await prepareTuiConfig(repoRoot, configRoot, options.force ?? false),
+    cli: await prepareCliConfig(repoRoot, configRoot, options.force ?? false),
   };
 }
 
@@ -170,6 +170,7 @@ interface PrepareConfigOptions {
   force: boolean;
   getCandidates: (configRoot: string) => string[];
   migrateSubagentDepth?: boolean;
+  transformSource?: (config: Record<string, unknown>, warnings: string[]) => void;
   readTemplate: (repoRoot: string) => Promise<Record<string, unknown>>;
   applyInstructions?: (config: Record<string, unknown>, warnings: string[]) => void;
 }
@@ -185,6 +186,9 @@ async function prepareConfig(
 
   if (options.migrateSubagentDepth) {
     migrateSubagentDepth(userConfig, warnings);
+  }
+  if (options.transformSource) {
+    options.transformSource(userConfig, warnings);
   }
 
   const value = mergeConfigDefaults(template, userConfig);
@@ -235,27 +239,49 @@ async function prepareOpenCodeConfig(
   return result;
 }
 
-async function prepareTuiConfig(
+async function prepareCliConfig(
   repoRoot: string,
   configRoot: string,
   force: boolean,
-): Promise<PreparedConfig<OpenCodeTuiConfig>> {
-  const templatePath = join(repoRoot, "config", "tui.jsonc");
-  const result = await prepareConfig(repoRoot, {
+): Promise<PreparedConfig<OpenCodeCliConfig>> {
+  const templatePath = join(repoRoot, "config", "cli.json");
+  if (process.env.OPENCODE_CLI_CONFIG_CONTENT !== undefined) {
+    // The terminal client merges this inline override at runtime; the installer
+    // must not write it into the global file.
+    consola.warn(
+      "OPENCODE_CLI_CONFIG_CONTENT is applied by OpenCode at runtime and is not merged into the global file.",
+    );
+  }
+  return prepareConfig(repoRoot, {
     configRoot,
-    destinationJsonc: "tui.jsonc",
-    destinationJson: "tui.json",
+    destinationJsonc: "cli.json",
+    destinationJson: "cli.json",
     force,
-    getCandidates: getTuiCandidates,
+    getCandidates: getCliCandidates,
+    transformSource: migrateLegacyAttention,
     readTemplate: async (_repoRootParam) => {
       if (await pathExists(templatePath)) {
         return readRequiredConfig(templatePath);
       }
-      return { $schema: "https://opencode.ai/tui.json", attention: { enabled: true } };
+      return {
+        $schema: "https://opencode.ai/v2/cli.json",
+        attention: { notifications: true, sound: true },
+      };
     },
   });
+}
 
-  return result;
+/** Translates the V1 `attention.enabled` shape into V2 notification fields. */
+function migrateLegacyAttention(config: Record<string, unknown>, warnings: string[]): void {
+  const attention = config.attention;
+  if (!isPlainRecord(attention) || typeof attention.enabled !== "boolean") {
+    return;
+  }
+  const enabled = attention.enabled;
+  delete attention.enabled;
+  attention.notifications ??= enabled;
+  attention.sound ??= enabled;
+  warnings.push("Moved legacy attention.enabled to attention.notifications and attention.sound.");
 }
 
 async function readRequiredConfig(path: string): Promise<Record<string, unknown>> {
@@ -364,17 +390,14 @@ function getOpenCodeCandidates(configRoot: string): string[] {
   return [...new Set(candidates)];
 }
 
-function getTuiCandidates(configRoot: string): string[] {
-  const candidates = [
-    join(configRoot, "tui.jsonc"),
+function getCliCandidates(configRoot: string): string[] {
+  // Native V2 file first; legacy V1 files are read only as migration sources.
+  return [...new Set([
+    join(configRoot, "cli.json"),
+    join(configRoot, "cli.jsonc"),
     join(configRoot, "tui.json"),
-  ];
-
-  if (process.env.OPENCODE_TUI_CONFIG !== undefined) {
-    candidates.unshift(resolve(process.env.OPENCODE_TUI_CONFIG));
-  }
-
-  return [...new Set(candidates)];
+    join(configRoot, "tui.jsonc"),
+  ])];
 }
 
 function applyInstructions(config: OpenCodeConfig, warnings: string[]): void {

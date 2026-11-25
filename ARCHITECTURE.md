@@ -148,8 +148,9 @@ a config cannot be parsed without `--force`. Backups run only when the plan
 contains changes, and the manifest is written atomically after the files.
 
 Config sources are the config-root files plus `OPENCODE_CONFIG` and
-`OPENCODE_TUI_CONFIG`. Project-local cwd configs are not merged into the
-global config. An existing `opencode.json` or `tui.json` is updated in place.
+`OPENCODE_CONFIG`. Terminal client settings are written to `cli.json`; legacy
+`tui.json(c)` files are read only as migration sources. Project-local cwd configs
+are not merged into the global config. An existing `opencode.json` is updated in place.
 
 ---
 
