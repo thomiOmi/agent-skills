@@ -150,6 +150,9 @@ describe("Validate Skills (Agent Skills Specification)", () => {
         expect(typeof frontmatter.metadata, `${name}: metadata must be an object`).toBe("object");
         expect(frontmatter.metadata, `${name}: metadata must not be null`).not.toBeNull();
         for (const [key, value] of Object.entries(frontmatter.metadata ?? {})) {
+          if (key === "opencode/autoinvoke" && typeof value === "boolean") {
+            continue;
+          }
           expect(typeof value, `${name}: metadata.${key} must be a string`).toBe("string");
         }
       }
@@ -163,6 +166,32 @@ describe("Validate Skills (Agent Skills Specification)", () => {
       }
     });
   }
+
+  it("hides process-only skills from automatic discovery", async () => {
+    const hidden = new Set([
+      "task-decomposition",
+      "project-lifecycle",
+      "memory-management",
+      "design-md",
+      "architecture-decision",
+      "test-planning",
+      "tech-debt",
+      "code-simplifier",
+      "config-management",
+      "prompt-design",
+      "structured-output",
+    ]);
+
+    for (const name of skillNames) {
+      const { frontmatter } = await loadSkill(name);
+      if (hidden.has(name)) {
+        expect(frontmatter.metadata?.["opencode/autoinvoke"], `${name}: hidden skill must set autoinvoke`).toBe(false);
+      }
+      else {
+        expect(frontmatter.metadata?.["opencode/autoinvoke"], `${name}: domain skill must stay discoverable`).toBeUndefined();
+      }
+    }
+  });
 
   it("contains at least one internal reference across the catalog", async () => {
     let totalRefCount = 0;

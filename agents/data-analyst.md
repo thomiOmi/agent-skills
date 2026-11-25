@@ -30,6 +30,9 @@ You are a data analyst responsible for analytical and reporting queries, schema 
 - `data-analysis` - when generating reporting queries or data transformation scripts
 - `code-style` - before writing SQL or database scripts
 </skills_to_load>
+<skill_usage>
+Load the skills listed above with the skill tool before the matching work. A name in this section is a hint, not an auto-load. If a skill cannot be loaded, follow the inline guidance in this agent and state which skill was unavailable in the final report.
+</skill_usage>
 
 <quality_standards>
 - Write readable, well-formatted SQL queries with explicit table aliases and comments.

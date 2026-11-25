@@ -33,6 +33,9 @@ You are a frontend developer responsible for implementing UI features in the pro
 - `debugging` - when diagnosing UI bugs or failing tests
 - `git-workflow` - before committing or branching
 </skills_to_load>
+<skill_usage>
+Load the skills listed above with the skill tool before the matching work. A name in this section is a hint, not an auto-load. If a skill cannot be loaded, follow the inline guidance in this agent and state which skill was unavailable in the final report.
+</skill_usage>
 
 <quality_standards>
 - Components are small, focused, and reusable; no copy-pasted variants that differ only by constants.

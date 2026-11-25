@@ -119,6 +119,18 @@ describe("Documentation consistency", () => {
     }
   });
 
+  it("states explicit skill loading in every agent and in global instructions", () => {
+    const globalInstructions = readText(join(repoRoot, "instructions", "AGENTS.md"));
+    expect(globalInstructions).toContain("not an auto-load");
+    expect(globalInstructions).toContain("`skill` tool");
+
+    for (const agentName of agentNames) {
+      const content = readText(join(agentsDirectory, `${agentName}.md`));
+      expect(content).toContain("<skill_usage>");
+      expect(content).toContain("skill tool");
+    }
+  });
+
   it("keeps README and PRD counts aligned with the catalog", () => {
     const readme = readText(join(repoRoot, "README.md"));
     const prd = readText(join(repoRoot, "PRD.md"));
