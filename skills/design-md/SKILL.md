@@ -5,7 +5,6 @@ license: MIT
 metadata:
   version: "2.0.0"
   author: thomiOmi
-  opencode/autoinvoke: false
 ---
 
 # DESIGN.md - Design System & Visual Identity Specification

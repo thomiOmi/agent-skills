@@ -5,7 +5,6 @@ license: MIT
 metadata:
   version: "1.0.0"
   author: thomiOmi
-  opencode/autoinvoke: false
 ---
 
 # Code Simplifier
