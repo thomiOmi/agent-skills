@@ -54,15 +54,11 @@ ALTER TABLE users ALTER COLUMN stripe_subscription_id SET NOT NULL;
 ## References
 
 - `references/schema-design.md` - normalization, naming, key types, common patterns
-- `references/migrations.md` - pointer to the `database-migration` skill, which owns migration execution
+- `references/migrations.md` - rollback rule, expand-contract, safe patterns, backfills, pre-flight checklist
 - `references/query-optimization.md` - N+1 detection, EXPLAIN, query patterns
 - `references/indexing.md` - when to index, index types, composite indexes
 
-For planning or running a schema migration (rollback, zero-downtime,
-backfills), load `database-migration` instead - this skill covers schema
-design and query performance. If it cannot be loaded, use this fallback:
-additive change first, backfill before constraint, verify row counts, and
-keep a tested rollback path before applying anything to production.
+For planning or running a schema migration, load `references/migrations.md`. It covers the rollback rule, expand-contract, safe patterns per change type, backfills, and the pre-flight checklist. If the reference cannot be read, use this fallback: additive change first, backfill before constraint, verify row counts, and keep a tested rollback path before applying anything to production.
 
 See `assets/templates.md` for migration and query review templates.
 

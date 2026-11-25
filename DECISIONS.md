@@ -132,6 +132,10 @@ The former workflow was one linear chain from discussion to improvement. The new
 
 `content-strategy` was a separate skill whose description explicitly delegated landing page copy and CTA formulas to `copywriting`; the marketing agent loaded both for the same authoring moment. Decision: move channel planning, brand voice, calendars, content types, and hard rules into `copywriting/references/content-strategy.md`, move its templates to `copywriting/assets/content-templates.md`, and drop the standalone skill. The merged description covers public-facing copy but deliberately does not claim prose editing, which remains `no-ai-slop`. Catalog count drops from 35 to 34. Date: 2026-11-25.
 
+### database-migration merged into database
+
+`database` already claimed the "migration" trigger in its description while delegating execution to `database-migration`, and `database-engineer` loaded both. Decision: put the rollback rule, expand-contract pattern, safe change patterns, backfills, and pre-flight checklist into `database/references/migrations.md`, remove the duplicate trigger and the standalone skill, and update `backend-patterns` to point at the reference. Catalog count drops from 34 to 33. Date: 2026-11-25.
+
 ---
 
 ## Conventions
