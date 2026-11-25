@@ -66,7 +66,7 @@ When a domain skill is available, load it. If it cannot be loaded, use the inlin
 | Designing or modifying an API                   | `api-conventions` | Keep resource names and error responses consistent |
 | Writing or updating docs                        | `documentation` | Update docs when public behavior changes |
 | Designing schema, ERD, or system plan           | `planning`   | Sketch inputs, outputs, and boundaries before coding |
-| Writing PRD, SDD, user stories, or requirements | `sdlc-documentation` | State goal, users, scope, and acceptance criteria |
+| Writing PRD, SDD, user stories, or requirements | `documentation` | State goal, users, scope, and acceptance criteria |
 | A bug or unexpected failure                     | `debugging`  | Reproduce before fixing; verify the fix |
 | Integrating an LLM or AI service                | `ai-integration` | Validate untrusted output and handle rate limits |
 

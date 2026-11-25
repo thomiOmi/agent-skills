@@ -26,9 +26,8 @@ You are a technical documentation specialist responsible for writing clear, comp
 </role>
 
 <skills_to_load>
-- `documentation` - when writing user guides, READMEs, API specs, or code documentation
+- `documentation` - when writing user guides, READMEs, API specs, code documentation, PRDs, SPEC.md, or release notes (load `references/prd.md`, `references/spec.md`, and `references/release-notes.md`); ADRs keep their own dedicated format
 - `no-ai-slop` - when editing docs prose to remove AI-sounding patterns while preserving voice
-- `sdlc-documentation` - when creating PRDs, functional specifications, architecture decision records, or release notes
 </skills_to_load>
 
 <quality_standards>

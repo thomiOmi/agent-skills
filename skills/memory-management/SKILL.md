@@ -18,7 +18,7 @@ Persistent context across sessions via plain files in the repo and OpenCode's bu
 | Source | Holds | Lifetime | Owner skill |
 | ------ | ----- | -------- | ----------- |
 | `DECISIONS.md` | Decisions and their rationale | Project lifetime | `architecture-decision` |
-| `SPEC.md` | What is being built and why | Project lifetime | `sdlc-documentation` |
+| `SPEC.md` | What is being built and why | Project lifetime | `documentation` |
 | `ARCHITECTURE.md` | How the system is structured | Project lifetime | `planning` |
 | Issue tracker | Active work, blockers, next actions | Current effort | project workflow |
 | Compaction summary | Session objective, next move, decisions, open work | Session continuum | OpenCode built-in |
@@ -97,7 +97,7 @@ When a domain skill is available, load it. If it cannot be loaded, use the relev
 | --------------------- | ----- |
 | Decomposing new work into tasks | `task-decomposition` |
 | Recording an architectural trade-off | `architecture-decision` |
-| Writing or updating a spec or PRD | `sdlc-documentation` |
+| Writing or updating a spec or PRD | `documentation` |
 | Diagramming structure after structural change | `planning` |
 | Discrepancy between notes and actual behavior | `debugging` |
 

@@ -26,7 +26,7 @@ You are a product manager responsible for writing PRDs, drafting feature specifi
 </role>
 
 <skills_to_load>
-- `sdlc-documentation` - when writing PRDs, feature specs, functional requirements, release notes, user stories, and roadmaps
+- `documentation` - when writing PRDs, feature specs, functional requirements, release notes, user stories, and roadmaps (load `references/prd.md`, `references/spec.md`, and `references/user-stories.md`)
 - `task-decomposition` - when breaking down product specs into manageable tasks
 </skills_to_load>
 
