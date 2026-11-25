@@ -136,6 +136,10 @@ The former workflow was one linear chain from discussion to improvement. The new
 
 `database` already claimed the "migration" trigger in its description while delegating execution to `database-migration`, and `database-engineer` loaded both. Decision: put the rollback rule, expand-contract pattern, safe change patterns, backfills, and pre-flight checklist into `database/references/migrations.md`, remove the duplicate trigger and the standalone skill, and update `backend-patterns` to point at the reference. Catalog count drops from 34 to 33. Date: 2026-11-25.
 
+### sdlc-documentation merged into documentation
+
+`documentation` already delegated PRDs and feature specs to `sdlc-documentation`, and both `docs-writer` and `product-manager` loaded it. Decision: move all eight SDLC reference templates into `documentation/references/` as flat files, move its assets under distinct names, and fold the SPEC.md guidance and SDLC checklist into `documentation/SKILL.md`. The merged description covers README/CHANGELOG/OpenAPI and SDLC artifacts, but ADR format remains owned by `architecture-decision`. The invariant that the PRD template has a single owner is preserved: `documentation/references/prd.md`. Catalog count drops from 33 to 32. Date: 2026-11-25.
+
 ---
 
 ## Conventions

@@ -1,6 +1,6 @@
 # Skill Catalog Map
 
-Cross-skill referral graph, boundary clarifications, and open decisions for the 33 skills in `skills/`. Skills are loosely coupled via explicit "load this skill" by-name pointers. No skill depends on another at runtime; pointers are activation-time delegations per SPEC.md progressive disclosure.
+Cross-skill referral graph, boundary clarifications, and open decisions for the 32 skills in `skills/`. Skills are loosely coupled via explicit "load this skill" by-name pointers. No skill depends on another at runtime; pointers are activation-time delegations per SPEC.md progressive disclosure.
 
 ## Cross-Skill Referral DAG
 
@@ -11,18 +11,18 @@ Cross-skill referral graph, boundary clarifications, and open decisions for the 
 | task-decomposition | api-conventions | Designing or modifying an API |
 | task-decomposition | documentation | Writing or updating docs |
 | task-decomposition | planning | Designing schema, ERD, or system plan |
-| task-decomposition | sdlc-documentation | Writing PRD, SDD, user stories, requirements |
+| task-decomposition | documentation | Writing PRD, SDD, user stories, requirements via references/ |
 | task-decomposition | debugging | A bug or unexpected failure |
 | task-decomposition | ai-integration | Integrating an LLM or AI service |
 | project-lifecycle | task-decomposition | Break one phase into ordered subtasks |
-| project-lifecycle | sdlc-documentation | Write the PRD and acceptance criteria |
+| project-lifecycle | documentation | Write the PRD and acceptance criteria via references/prd.md |
 | project-lifecycle | planning | Architecture decisions in the Design phase |
 | project-lifecycle | devops-deployment | Release mechanics and deployment |
 | project-lifecycle | code-review | Verification loop in Development |
 | project-lifecycle | testing | Verification loop in Development |
 | memory-management | task-decomposition | Decomposing new work into tasks |
 | memory-management | architecture-decision | Recording an architectural trade-off |
-| memory-management | sdlc-documentation | Writing or updating a spec or PRD |
+| memory-management | documentation | Writing or updating a spec or PRD via references/ |
 | memory-management | planning | Diagramming structure after structural change |
 | memory-management | debugging | Discrepancy between notes and actual behavior |
 | backend-patterns | api-conventions | Endpoint/request-response design |
@@ -41,7 +41,7 @@ Cross-skill referral graph, boundary clarifications, and open decisions for the 
 | config-management | devops-deployment | CI pipeline design, deployment, infrastructure |
 | config-management | database | Database schema and migrations |
 | data-analysis | database | Query optimization, indexing, schema design |
-| planning | sdlc-documentation | PRD, SDD, user stories, MVP scope, timelines |
+| planning | documentation | PRD, SDD, user stories, MVP scope, timelines via references/ |
 | api-conventions | documentation | OpenAPI spec generation |
 | testing | test-planning | Test strategies, QA entry/exit criteria, coverage targets |
 | test-planning | testing | Writing unit, integration, snapshot, and contract tests |
@@ -51,7 +51,6 @@ Cross-skill referral graph, boundary clarifications, and open decisions for the 
 | debugging | tech-debt | When the bug stems from accumulated technical debt |
 | code-review | security-review | Deep security audit beyond surface-level checks |
 | architecture-decision | planning | Broader system architecture context beyond a single ADR |
-| sdlc-documentation | architecture-decision | Recording ADRs for significant decisions |
 
 ## Boundary Clarifications
 

@@ -28,7 +28,7 @@ You are a project manager responsible for translating plans into executable road
 <skills_to_load>
 - `task-decomposition` - when breaking down initiatives into tracked subtasks with dependencies
 - `planning` - when sequencing milestones and visualizing timelines or dependencies
-- `sdlc-documentation` - when writing status reports, release plans, and coordination docs
+- `documentation` - when writing status reports, release plans, and coordination docs (load `references/sdlc-templates.md` for SDLC artifacts)
 </skills_to_load>
 
 <workflow>

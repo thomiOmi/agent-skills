@@ -50,14 +50,14 @@ Default primary agents: built-in `plan` (analysis) and `build` (implementation).
 | `database-engineer` | Schema design, migrations, indexing, query performance | subagent | database, data-analysis, api-conventions, testing |
 | `ai-engineer` | Prompt engineering, AI integration, RAG, structured output | subagent | prompt-design, structured-output, ai-integration, code-style, testing |
 | `senior-developer` | Tech lead: cross-domain review, standards, glue work, hard debugging | subagent | code-style, code-review, security-review, debugging, testing, api-conventions, database, git-workflow, planning, prompt-design, structured-output |
-| `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | sdlc-documentation, task-decomposition |
-| `project-manager` | Project planning, milestone tracking, risk, status reports | subagent | task-decomposition, planning, sdlc-documentation |
+| `product-manager` | PRDs, feature specs, user stories, roadmap | subagent | documentation, task-decomposition |
+| `project-manager` | Project planning, milestone tracking, risk, status reports | subagent | task-decomposition, planning, documentation |
 | `data-analyst` | SQL analysis, reporting, data profiling | subagent | database, data-analysis, code-style |
 | `qa-engineer` | Test strategy, coverage, quality gates | subagent | testing, test-planning, debugging |
 | `security-auditor` | Security review, auth, vulnerability assessment | subagent | security-review, code-style |
 | `devops` | CI/CD, deployment, infrastructure | subagent | devops-deployment |
 | `ui-ux` | Design system, frontend, accessibility | subagent | ui-design, design-md |
-| `docs-writer` | Technical writing, documentation | subagent | documentation, no-ai-slop, sdlc-documentation |
+| `docs-writer` | Technical writing, documentation | subagent | documentation, no-ai-slop |
 | `brainstormer` | Creative ideation, solution exploration | subagent | prompt-design, planning, code-style |
 | `deep-thinker` | Complex reasoning, root cause analysis | subagent | debugging, tech-debt, code-style, code-review |
 | `researcher` | Technical research, comparisons, evidence-based recommendations | subagent | research-methodology, planning |

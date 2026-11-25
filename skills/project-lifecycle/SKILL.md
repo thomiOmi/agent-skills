@@ -1,6 +1,6 @@
 ---
 name: project-lifecycle
-description: 'Use this skill when an agent takes on an end-to-end project engagement: taking a client request from intake through definition, design, development, quality, public release, and post-launch. Owns the phase sequence, phase gates, the scope document, and client status reporting. Do not use it for single technical tasks. For writing the PRD itself use sdlc-documentation; for decomposing one phase into tasks use task-decomposition; for release mechanics use devops-deployment. Triggers include: "end to end project", "build this project from scratch", "project kickoff", "project phases", "from idea to launch", "client status update", "project scope".'
+description: 'Use this skill when an agent takes on an end-to-end project engagement: taking a client request from intake through definition, design, development, quality, public release, and post-launch. Owns the phase sequence, phase gates, the scope document, and client status reporting. Do not use it for single technical tasks. For writing the PRD itself use the `documentation` skill; for decomposing one phase into tasks use task-decomposition; for release mechanics use devops-deployment. Triggers include: "end to end project", "build this project from scratch", "project kickoff", "project phases", "from idea to launch", "client status update", "project scope".'
 license: MIT
 metadata:
   version: "1.0.0"
@@ -125,7 +125,7 @@ The engagement outlives a single session. Keep phase state in the conversation a
 - Releasing without GATE 2 because "tests mostly pass".
 - Accepting mid-phase additions silently; that is how projects silently double.
 - Rewriting the PRD during Development without re-running the gate.
-- Duplicating the content of sdlc-documentation, planning, or devops-deployment; this skill sequences the work, those skills do the work.
+- Duplicating the content of documentation, planning, or devops-deployment; this skill sequences the work, those skills do the work.
 
 ---
 
@@ -146,7 +146,7 @@ The engagement outlives a single session. Keep phase state in the conversation a
 ## References
 
 - For breaking one phase into ordered subtasks: use `task-decomposition`
-- For writing the PRD and acceptance criteria: use `sdlc-documentation`
+- For writing the PRD and acceptance criteria: use the `documentation` skill and load its SDLC references
 - For architecture decisions in the Design phase: use `planning`
 - For release mechanics and deployment: use `devops-deployment`
 - For the verification loop in Development: use `code-review` and `testing`

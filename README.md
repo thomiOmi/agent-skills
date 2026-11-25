@@ -15,7 +15,6 @@ Skills are grouped by SDLC phase - pick the group that matches what you are doin
 | `task-decomposition` | Multi-file tasks, module reviews, conversation-based task state |
 | `planning` | Architecture design, diagrams, ERDs, ARCHITECTURE.md |
 | `architecture-decision` | Architecture Decision Records (ADRs) and trade-offs |
-| `sdlc-documentation` | SDLC specs, PRDs, user stories, acceptance criteria, release notes |
 | `project-lifecycle` | End-to-end project engagement: phases, gates, scope document, client updates |
 | `research-methodology` | Research plans, source evaluation, synthesis |
 
@@ -58,7 +57,7 @@ Skills are grouped by SDLC phase - pick the group that matches what you are doin
 
 | Skill | Description |
 |---|---|
-| `documentation` | README, changelog, OpenAPI spec, developer guides |
+| `documentation` | README, changelog, OpenAPI spec, developer guides, PRDs, SPEC.md, user stories |
 | `devops-deployment` | CI/CD pipelines, Docker, deployment infrastructure, monitoring |
 
 ### ⚙️ Operate & Maintain
@@ -170,7 +169,7 @@ agent-skills/
 │   ├── secrets-scanner.ts # Blocks writes containing secrets
 │   └── tool-guardian.ts  # Blocks destructive shell commands
 ├── scripts/            # ESLint and frontmatter dev utilities
-├── skills/             # 33 atomic domain skills (SKILL.md + resources)
+├── skills/             # 32 atomic domain skills (SKILL.md + resources)
 ├── src/                # CLI installer (plan/execute, manifest, config merge)
 └── tests/              # Test suites (bun test)
 ```
