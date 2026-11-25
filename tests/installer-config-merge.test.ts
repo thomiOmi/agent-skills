@@ -208,6 +208,28 @@ describe("Installer config merge", () => {
     ).toBe(true);
   });
 
+  it("uses a valid opencode.json when opencode.jsonc is invalid without force", async () => {
+    const fixture = await createFixture();
+    await writeFixtureFile(
+      fixture.target,
+      "opencode.jsonc",
+      "{ \"default_agent\": }",
+    );
+    await writeFixtureFile(
+      fixture.target,
+      "opencode.json",
+      JSON.stringify({ default_agent: "build", model: "custom/model" }, null, 2),
+    );
+
+    const configs = await prepareConfigs(fixture.repo, fixture.target);
+
+    expect(configs.openCode.value.default_agent).toBe("build");
+    expect(configs.openCode.value.model).toBe("custom/model");
+    expect(
+      configs.openCode.warnings.some(warning => warning.includes("opencode.jsonc")),
+    ).toBe(true);
+  });
+
   it("detects comments outside string values", () => {
     expect(hasJsonComments("{\"url\":\"https://example.com\"}")).toBe(false);
     expect(hasJsonComments("{\"a\":1} // comment")).toBe(true);

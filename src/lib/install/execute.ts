@@ -38,9 +38,9 @@ export interface ExecuteInstallResult {
 /**
  * Applies an installation plan and writes the new ownership manifest.
  *
- * The backup runs before the first write. File actions run before
- * configuration writes so a configuration parse error can never leave a
- * partially updated catalog behind.
+ * The backup runs before the first write. The caller parses the configurations
+ * before calling this function, so a parse error aborts the installation before
+ * any file is written.
  *
  * @param options Execution inputs.
  * @returns Action counts and the backup path.
@@ -104,7 +104,12 @@ async function installFile(
   await assertParentInsideRoot(file, configRoot);
 
   if (mode === "symlink") {
-    return createSymlinkOrCopy(file.sourcePath, file.destinationPath, file.action);
+    return createSymlinkOrCopy(
+      file.sourcePath,
+      file.destinationPath,
+      file.action,
+      file.relativePath,
+    );
   }
 
   const sourceInfo = await stat(file.sourcePath);
@@ -115,6 +120,13 @@ async function installFile(
   try {
     await cp(file.sourcePath, temporaryPath, copyOptions);
     await preserveMode(file.sourcePath, temporaryPath);
+
+    // Windows can reject a rename over an existing destination (for example
+    // a read-only file). The backup already captured it, so clear it only
+    // after the temporary copy is complete.
+    if (file.action === "update") {
+      await rm(file.destinationPath, { recursive: true, force: true });
+    }
     await rename(temporaryPath, file.destinationPath);
   }
   catch (error) {
@@ -149,6 +161,7 @@ async function createSymlinkOrCopy(
   sourcePath: string,
   destinationPath: string,
   action: PlannedAction,
+  relativePath: string,
 ): Promise<ManagedFileMode> {
   const sourceInfo = await stat(sourcePath);
   const linkType = sourceInfo.isDirectory()
@@ -163,7 +176,7 @@ async function createSymlinkOrCopy(
 
   try {
     await symlink(sourcePath, destinationPath, linkType);
-    consola.log(`  symlink ${destinationPath}`);
+    consola.log(`  symlink ${relativePath}`);
     return "symlink";
   }
   catch (error) {
@@ -175,7 +188,7 @@ async function createSymlinkOrCopy(
     // safe fallback because the manifest records the actual installed mode.
     await cp(sourcePath, destinationPath, { recursive: sourceInfo.isDirectory() });
     await preserveMode(sourcePath, destinationPath);
-    consola.log(`  copy    ${destinationPath}`);
+    consola.log(`  copy    ${relativePath}`);
     return "copy";
   }
 }

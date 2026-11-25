@@ -1,8 +1,9 @@
 import type { ConfigEnvironmentSnapshot, InstallerFixture } from "./installer-fixture";
-import { lstat, readFile } from "node:fs/promises";
+import { chmod, lstat, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import { parseJSONC } from "confbox";
+import { consola } from "consola";
 import { describeSource, installCommand } from "../src/commands/install";
 import { pathExists } from "../src/lib/install/utils";
 import {
@@ -167,6 +168,52 @@ describe("Installer commands", () => {
       await readFile(join(fixture.target, ".agent-skills-manifest.json"), "utf-8"),
     ) as { files: Record<string, { mode: string }> };
     expect(manifest.files["skills/alpha/SKILL.md"]?.mode).toBe("symlink");
+  });
+
+  it("logs relative paths for symlink-mode installs", async () => {
+    const fixture = await createFixture();
+    const logSpy = spyOn(consola, "log");
+    let loggedLines: string[] = [];
+
+    try {
+      await installCommand({
+        mode: "symlink",
+        source: fixture.repo,
+        targetDir: fixture.target,
+        skipBackup: true,
+      });
+      loggedLines = logSpy.mock.calls.map(call => String(call[0]));
+    }
+    finally {
+      logSpy.mockRestore();
+    }
+
+    expect(loggedLines.some(line => line.includes("skills/alpha/SKILL.md")))
+      .toBe(true);
+    expect(loggedLines.some(line => line.includes(join(fixture.target, "skills"))))
+      .toBe(false);
+  });
+
+  it("updates an existing file in copy mode when the destination is read-only", async () => {
+    const fixture = await createFixture();
+
+    await installCommand({
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+    await chmod(join(fixture.target, "skills/alpha/SKILL.md"), 0o444);
+    await writeFixtureFile(fixture.repo, "skills/alpha/SKILL.md", "# Alpha changed\n");
+
+    const result = await installCommand({
+      source: fixture.repo,
+      targetDir: fixture.target,
+      skipBackup: true,
+    });
+
+    expect(result.updated).toBeGreaterThan(0);
+    expect(await readFile(join(fixture.target, "skills/alpha/SKILL.md"), "utf-8"))
+      .toContain("Alpha changed");
   });
 
   it("is idempotent on a second merge run", async () => {
