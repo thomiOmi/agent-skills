@@ -3,9 +3,9 @@ name: no-ai-slop
 description: 'Use this skill when editing drafts to remove AI-generated writing patterns, when the user asks to make writing sound less AI, more human, more direct, or more opinionated, or when auditing text for AI slop patterns like "It''s not X. It''s Y.", "Here''s the thing", "studies show", or fake-profound endings. Do not edit prose without this skill loaded.'
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   author: thomiOmi
-  credits: "Adapted from petergyang/no-ai-slop (MIT License)"
+  credits: "Adapted from petergyang/no-ai-slop, conorbronsdon/avoid-ai-writing, hardikpandya/stop-slop (MIT License)"
 ---
 
 # No AI Slop
@@ -57,7 +57,7 @@ Act as a sharp human editor. Preserve the writer's point and personal voice whil
 
 **Interpretive metadiscourse.** Cut lines that step outside the subject: "That last part matters more than it sounds," "The key point is," "As you can see," and redundant "In other words."
 
-**Weasel attribution.** "Experts agree," "studies show," "many argue." Name the source or cut the claim. If the user has no source, ask instead of inventing one.
+**Weasel attribution.** "Experts agree," "studies show," "many argue." Name the source or cut the claim. If the user has no source, ask instead of inventing one. The same rule covers placeholders such as `[INSERT SOURCE]`, masked dates, and testimonials with no real attribution: flag them for the user rather than filling them in.
 
 **Fake-strong verbs.** Prefer "is" and "has" when clearer. "The app serves as a centralized hub" becomes "The app tracks sponsors, drafts, and approvals in one place."
 
@@ -78,6 +78,19 @@ Act as a sharp human editor. Preserve the writer's point and personal voice whil
 **Em dashes as a rhythm crutch.** In short copy, use none. In longer drafts, one or two are fine only when they clearly beat commas, periods, or parentheses. Remove clusters and decorative dashes.
 
 For code-related prose (naming, docstrings, comments), load `code-style`. If it cannot be loaded, use the existing file's naming and docstring conventions and keep comments to the reason, not the what.
+
+## References
+
+Load only the reference that matches the draft. Do not read all four.
+
+| Reference | Load when | What it adds |
+| --- | --- | --- |
+| `references/social-posts.md` | Editing a social or launch post | Generation tokens, tracking parameters, placeholders, hashtag blocks, attention hooks |
+| `references/conversational-register.md` | Cleaning a chat reply instead of a published draft | Wall-of-text replies, recap openers, narrated candor and reasoning, recap endings |
+| `references/preservation.md` | The draft contains facts, numbers, quotes, or citations | Pass limit, before/after fact check, handling unsupported claims |
+| `references/false-agency.md` | Inanimate subjects do human verbs or the actor is hidden | Concrete rewrites and the cases where passive voice stays |
+
+If a reference cannot be read, apply the one-line rule in the table and say which reference was unavailable.
 
 ## Workflow
 
