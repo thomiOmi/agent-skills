@@ -1,4 +1,4 @@
-import { isAbsolute, relative, resolve } from "node:path";
+import { isAbsolute, relative, resolve, sep } from "node:path";
 import { getBackupRoot, getGlobalRoot } from "../paths";
 
 export interface ResolvedTargets {
@@ -34,7 +34,7 @@ export function resolveInsideRoot(root: string, relativePath: string): string {
   const destination = resolve(root, relativePath);
   const fromRoot = relative(root, destination);
 
-  if (fromRoot === "" || fromRoot.startsWith("..") || isAbsolute(fromRoot)) {
+  if (fromRoot === "" || fromRoot === ".." || fromRoot.startsWith(`..${sep}`) || isAbsolute(fromRoot)) {
     throw new Error(`Refusing to write outside ${root}: ${relativePath}`);
   }
 

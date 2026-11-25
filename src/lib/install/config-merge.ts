@@ -60,8 +60,8 @@ export class ConfigParseError extends Error {
  * @param repoRoot Absolute path to the cloned repository.
  * @param configRoot Absolute OpenCode config root.
  * @param options Optional settings.
- * @param options.force When true, an unparseable existing config is replaced
- * after a warning instead of aborting the install.
+ * @param options.force When true, a malformed config with no valid fallback is
+ * skipped after a warning instead of aborting the install.
  * @returns Prepared values plus warnings.
  */
 export async function prepareConfigs(
@@ -270,11 +270,23 @@ async function readRequiredConfig(path: string): Promise<Record<string, unknown>
   return parseConfigText(path, raw);
 }
 
+/**
+ * Returns the first parseable config candidate, or null when none are usable.
+ *
+ * @param paths Candidate config paths in priority order.
+ * @param force Whether the warning mentions --force instead of the fallback.
+ * @param warnings Warnings collected for the user.
+ * @returns The selected source, or null when no candidate is usable.
+ * @throws The first parse error when every existing candidate is malformed and
+ * force is false.
+ */
 async function readFirstExisting(
   paths: string[],
   force: boolean,
   warnings: string[],
 ): Promise<ConfigSource | null> {
+  const errors: unknown[] = [];
+
   for (const path of paths) {
     if (!(await pathExists(path))) {
       continue;
@@ -285,16 +297,21 @@ async function readFirstExisting(
       return { path, raw, value: parseConfigText(path, raw) };
     }
     catch (error) {
-      if (!force) {
-        throw error;
-      }
+      errors.push(error);
 
-      // A broken first candidate must not hide a valid later candidate.
+      // A broken candidate must not hide a valid later one. Defer the error
+      // until every candidate has been tried so a valid fallback can win.
       const message = error instanceof Error ? error.message : String(error);
-      warnings.push(
-        `${message} Continuing because --force is set; skipping this source.`,
-      );
+      warnings.push(force
+        ? `${message} Continuing because --force is set; skipping this source.`
+        : `${message} Continuing with the next configuration candidate; skipping this source.`);
     }
+  }
+
+  // Without force, every malformed candidate being exhausted is fatal. Force
+  // keeps its existing override: skip them all and fall back to defaults.
+  if (errors.length > 0 && !force) {
+    throw errors[0];
   }
 
   return null;

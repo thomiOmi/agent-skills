@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "bun:test";
 import { createManifest } from "../src/lib/install/manifest";
 import { buildInstallPlan } from "../src/lib/install/plan";
+import { resolveInsideRoot } from "../src/lib/install/targets";
 import { comparePaths } from "../src/lib/install/utils";
 import { writeFixtureFile } from "./installer-fixture";
 
@@ -239,6 +240,15 @@ describe("Installer plan", () => {
         manifest: null,
       }),
     ).rejects.toThrow("Refusing to write outside");
+  });
+
+  it("accepts root-level names beginning with two dots while rejecting escapes", async () => {
+    const configRoot = await createConfigRoot();
+
+    expect(resolveInsideRoot(configRoot, "..config.json"))
+      .toBe(join(configRoot, "..config.json"));
+    expect(() => resolveInsideRoot(configRoot, "../escape.md"))
+      .toThrow("Refusing to write outside");
   });
 
   it("sorts planned files deterministically", async () => {
