@@ -88,22 +88,33 @@ async function scanDirectory(
 ): Promise<void> {
   const entries = await readdir(directory, { withFileTypes: true });
 
-  for (const entry of entries) {
-    if (IGNORED_NAMES.has(entry.name)) {
-      continue;
-    }
+  // Collect each entry's files separately so reads run concurrently while the
+  // results are appended in readdir order to keep the final sort deterministic.
+  const discovered = await Promise.all(
+    entries.map(async (entry) => {
+      if (IGNORED_NAMES.has(entry.name)) {
+        return [];
+      }
 
-    const absolutePath = join(directory, entry.name);
-    const relativePath = join(destinationPrefix, entry.name).split(sep).join("/");
+      const absolutePath = join(directory, entry.name);
+      const relativePath = join(destinationPrefix, entry.name).split(sep).join("/");
 
-    if (entry.isDirectory()) {
-      await scanDirectory(absolutePath, relativePath, files);
-      continue;
-    }
+      if (entry.isDirectory()) {
+        const nested: SourceFile[] = [];
+        await scanDirectory(absolutePath, relativePath, nested);
+        return nested;
+      }
 
-    if (entry.isFile() || entry.isSymbolicLink()) {
-      files.push(await describeSourceFile(absolutePath, relativePath));
-    }
+      if (entry.isFile() || entry.isSymbolicLink()) {
+        return [await describeSourceFile(absolutePath, relativePath)];
+      }
+
+      return [];
+    }),
+  );
+
+  for (const group of discovered) {
+    files.push(...group);
   }
 }
 

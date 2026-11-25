@@ -108,14 +108,9 @@ describe("Agent permissions", () => {
     expect(delegators.map(agent => agent.fileName)).toEqual([]);
   });
 
-  it("keeps temperature under request.body", () => {
+  it("does not configure inert request-body sampling", () => {
     for (const agent of agents) {
-      const temperature = agent.frontmatter.request?.body?.temperature;
-      if (temperature !== undefined) {
-        expect(typeof temperature).toBe("number");
-        expect(temperature as number).toBeGreaterThanOrEqual(0);
-        expect(temperature as number).toBeLessThanOrEqual(2);
-      }
+      expect(agent.frontmatter.request?.body?.temperature).toBeUndefined();
     }
   });
 

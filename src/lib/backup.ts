@@ -1,5 +1,7 @@
+import { randomBytes } from "node:crypto";
 import { cp, mkdir, readdir, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import process from "node:process";
 import { consola } from "consola";
 import { pathExists } from "./install/utils";
 import { getTimestamp } from "./paths";
@@ -21,7 +23,9 @@ export interface BackupOptions {
  * @returns Backup directory path, or null when there was nothing to back up.
  */
 export async function backupGlobal(opts: BackupOptions): Promise<string | null> {
-  const stamp = getTimestamp();
+  // Second-precision timestamps collide for repeated runs in the same second;
+  // the PID and random bytes keep each backup directory distinct and readable.
+  const stamp = `${getTimestamp()}-${process.pid}-${randomBytes(4).toString("hex")}`;
   const backupDir = opts.backupPath !== undefined
     ? join(opts.backupPath, stamp)
     : join(opts.backupRoot, stamp);

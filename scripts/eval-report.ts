@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /** Aggregates local eval summaries into a results table and ID-independent metrics. Dev-only. */
-import type { CollectionSummary } from "./eval-collect";
+import type { CollectionSummary, IDRecord } from "./eval-collect";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import process from "node:process";
@@ -206,6 +206,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+/** Guards the ID record fields downstream code reads, so a stray record cannot yield undefined IDs. */
+function isIDRecord(value: unknown): value is IDRecord {
+  return isRecord(value)
+    && typeof value.id === "string"
+    && (value.source === "main" || value.source === "child")
+    && typeof value.sessionID === "string";
+}
+
 /** Guards the fields buildMetrics and markdownRow read, so stray JSON fails with a clear error. */
 function isCollectionSummary(value: unknown): value is CollectionSummary {
   if (!isRecord(value)) {
@@ -221,7 +229,10 @@ function isCollectionSummary(value: unknown): value is CollectionSummary {
     && typeof value.completedSubagentCalls === "number"
     && isRecord(value.failedCallsByToolName)
     && Object.values(value.failedCallsByToolName).every(count => typeof count === "number")
-    && idFields.every(field => Array.isArray(value[field]))
+    && idFields.every((field) => {
+      const records = value[field];
+      return Array.isArray(records) && records.every(record => isIDRecord(record));
+    })
     && typeof value.errors === "number"
     && typeof value.incomplete === "number"
     && typeof value.mismatch === "boolean"

@@ -3,9 +3,6 @@ name: project-manager
 description: Project manager - project planning, milestone tracking, risk management, status reporting, and cross-team coordination.
 mode: subagent
 color: "#06b6d4"
-request:
-  body:
-    temperature: 0.3
 permissions:
   - action: read
     resource: "*"

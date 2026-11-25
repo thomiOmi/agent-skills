@@ -3,9 +3,6 @@ name: devops
 description: DevOps engineer - CI/CD, deployment, infrastructure, Docker, cloud services, monitoring.
 mode: subagent
 color: "#0891b2"
-request:
-  body:
-    temperature: 0.2
 permissions:
   - action: read
     resource: "*"

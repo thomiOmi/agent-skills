@@ -3,9 +3,6 @@ name: deep-thinker
 description: Complex reasoning specialist - root cause analysis, trade-off analysis, verification, and deep research.
 mode: subagent
 color: "#4f46e5"
-request:
-  body:
-    temperature: 0.1
 permissions:
   - action: read
     resource: "*"

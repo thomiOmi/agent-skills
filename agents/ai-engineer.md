@@ -3,9 +3,6 @@ name: ai-engineer
 description: AI engineer - LLM prompt design, AI integration, RAG systems, structured outputs, fine-tuning specs, and evaluation workflows.
 mode: subagent
 color: "#ec4899"
-request:
-  body:
-    temperature: 0.2
 permissions:
   - action: read
     resource: "*"
