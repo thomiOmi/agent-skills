@@ -145,6 +145,27 @@ describe("Documentation consistency", () => {
     }
   });
 
+  it("provides a skill routing table in global instructions", () => {
+    const globalInstructions = readText(join(repoRoot, "instructions", "AGENTS.md"));
+    expect(globalInstructions).toContain("## Skill Routing");
+
+    const rows = [
+      ["tests / coverage", "testing"],
+      ["security review", "security-review"],
+      ["README / docs / spec", "documentation"],
+      ["UI states / components", "ui-design"],
+      ["root cause / bug", "debugging"],
+      ["schema / migration", "database"],
+      ["commit / branch", "git-workflow"],
+    ] as const;
+
+    for (const [contains, skillId] of rows) {
+      expect(globalInstructions, `missing routing row for ${contains}`).toContain(contains);
+      expect(globalInstructions, `missing skill ${skillId} in routing table`).toContain(`\`${skillId}\``);
+      expect(skillNames).toContain(skillId);
+    }
+  });
+
   it("keeps README and PRD counts aligned with the catalog", () => {
     const readme = readText(join(repoRoot, "README.md"));
     const prd = readText(join(repoRoot, "PRD.md"));

@@ -80,6 +80,22 @@ On failure, resume the child with its `sessionID`, at most 3 iterations, then es
 
 ---
 
+## Skill Routing
+
+When a task matches a row, call the `skill` tool before the first read or edit. Pick one primary skill; a trivial one-line fix is exempt. If the skill cannot be loaded, follow the agent's inline guidance and say which skill was unavailable.
+
+| Task contains | Load |
+|---|---|
+| tests / coverage | `testing` |
+| security review | `security-review` |
+| README / docs / spec | `documentation` |
+| UI states / components | `ui-design` |
+| root cause / bug | `debugging` |
+| schema / migration | `database` |
+| commit / branch | `git-workflow` |
+
+---
+
 ## Task Management & Persistence
 
 - Keep live task state (Active, Waiting On, Done) visible in the conversation; mirror durable items in the project's issue tracker when one exists.
